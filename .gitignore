@@ -1,8 +1,10 @@
-# robot result folders or files
+scripts
 results
 browser
+log*.html
+robot_dashboard*.html
+report*.html
 *.xml
-*.html
 *.db
 playwright-log.txt
 *.robot
