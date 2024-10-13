@@ -26,98 +26,119 @@ from queries import *
 
 
 class StatisticsProcessor(ResultVisitor):
-    def __init__(self, add_datetime):
+    def __init__(
+        self, add_datetime: datetime, database_path: Path, generation_time: datetime
+    ):
         self.results = {}
         self.add_datetime = add_datetime
+        self.database_path = database_path
+        self.generation_time = generation_time
 
     def visit_total_statistics(self, stats):
-        self.results = {
-            "total": stats.total,
-            "passed": stats.passed,
-            "failed": stats.failed,
-            "skipped": stats.skipped,
-            "elapsed": stats.elapsed.microseconds,
-        }
+        self.results = [
+            (
+                self.add_datetime,
+                stats.total,
+                stats.passed,
+                stats.failed,
+                stats.skipped,
+                self.generation_time,
+                self.generation_time + stats.elapsed,
+                stats.elapsed.seconds,
+            )
+        ]
 
     def end_result(self, result):
-        print("stats", self.add_datetime, self.results["elapsed"])
+        connection = sqlite3.connect(self.database_path)
+        connection.executemany(INSERT_INTO_STATS, self.results)
+        connection.commit()
+        connection.close()
 
 
 class SuiteProcessor(ResultVisitor):
-    def __init__(self, add_datetime):
+    def __init__(self, add_datetime: datetime, database_path: Path):
         self.results = []
         self.add_datetime = add_datetime
+        self.database_path = database_path
 
     def visit_suite(self, suite: TestSuite):
         self.results.append(
-            {
-                "full_name": suite.full_name,
-                "name": suite.name,
-                "test_count": suite.test_count,
-                "passed": suite.passed,
-                "failed": suite.failed,
-                "skipped": suite.skipped,
-                "elapsed_time": suite.elapsed_time.microseconds,
-                "start_time": suite.start_time,
-                "end_time": suite.end_time,
-            }
+            (
+                self.add_datetime,
+                suite.full_name,
+                suite.name,
+                suite.test_count,
+                suite.passed,
+                suite.failed,
+                suite.skipped,
+                suite.elapsed_time.seconds,
+                suite.start_time,
+                suite.end_time,
+            )
         )
 
     def end_result(self, result):
-        print("suites", self.add_datetime)
-        for suite in self.results:
-            print(suite["name"])
+        connection = sqlite3.connect(self.database_path)
+        connection.executemany(INSERT_INTO_SUITES, self.results)
+        connection.commit()
+        connection.close()
 
 
 class TestProcessor(ResultVisitor):
-    def __init__(self, add_datetime):
+    def __init__(self, add_datetime: datetime, database_path: Path):
         self.results = []
         self.add_datetime = add_datetime
+        self.database_path = database_path
 
     def visit_test(self, test: TestCase):
         self.results.append(
-            {
-                "full_name": test.full_name,
-                "name": test.name,
-                "passed": test.passed,
-                "failed": test.failed,
-                "skipped": test.skipped,
-                "elapsed_time": test.elapsed_time.microseconds,
-                "start_time": test.start_time,
-                "end_time": test.end_time,
-                "tags": test.tags,
-            }
+            (
+                self.add_datetime,
+                test.full_name,
+                test.name,
+                test.passed,
+                test.failed,
+                test.skipped,
+                test.elapsed_time.seconds,
+                test.start_time,
+                test.end_time,
+                ",".join(test.tags),
+            )
         )
 
     def end_result(self, result):
-        print("tests", self.add_datetime)
-        for test in self.results:
-            print(test["name"])
+        connection = sqlite3.connect(self.database_path)
+        connection.executemany(INSERT_INTO_TESTS, self.results)
+        connection.commit()
+        connection.close()
 
 
 class KeywordProcessor(ResultVisitor):
-    def __init__(self, add_datetime):
+    def __init__(self, add_datetime: datetime, database_path: Path):
         self.results = []
         self.add_datetime = add_datetime
+        self.database_path = database_path
 
     def visit_keyword(self, keyword: Keyword):
         self.results.append(
-            {
-                "name": keyword.name,
-                "passed": keyword.passed,
-                "failed": keyword.failed,
-                "skipped": keyword.skipped,
-                "start_time": keyword.start_time,
-                "end_time": keyword.end_time,
-                "elapsedtime": keyword.elapsedtime,
-                "tags": keyword.tags,
-            }
+            (
+                self.add_datetime,
+                keyword.name,
+                keyword.passed,
+                keyword.failed,
+                keyword.skipped,
+                keyword.elapsedtime,
+                keyword.start_time,
+                keyword.end_time,
+                ",".join(keyword.tags),
+            )
         )
 
     def end_result(self, result):
-        print("keywords", self.add_datetime)
-        for keyword in self.results:
-            print(keyword["name"])
+        connection = sqlite3.connect(self.database_path)
+        connection.executemany(INSERT_INTO_KEYWORDS, self.results)
+        connection.commit()
+        connection.close()
 
 
 #####################################################################################
@@ -204,17 +225,26 @@ def process_database(database_path: Path):
         )
 
 
-def process_outputs(output_paths: list[list[str]]):
+def process_outputs(output_paths: list[list[str]], database_path: Path):
     if output_paths != None:
         for output_path in output_paths:
             output_path = output_path[0]
             print(f"2. Processing output XML(s): {basename(output_path)}")
             output = ExecutionResult(output_path)
             add_datetime = datetime.now()
-            output.visit(StatisticsProcessor(add_datetime))
-            output.visit(SuiteProcessor(add_datetime))
-            output.visit(TestProcessor(add_datetime))
-            output.visit(KeywordProcessor(add_datetime))
+            try:
+                output.visit(
+                    StatisticsProcessor(
+                        add_datetime, database_path, output.generation_time
+                    )
+                )
+                output.visit(SuiteProcessor(add_datetime, database_path))
+                output.visit(TestProcessor(add_datetime, database_path))
+                output.visit(KeywordProcessor(add_datetime, database_path))
+            except Exception as e:
+                print(
+                    f"ERROR: you are probably trying to add the same output again, {e}"
+                )
     else:
         print(
             f"2. Processing output XML(s): No output XML(s) were provided, skipping step"
@@ -245,5 +275,5 @@ def process_dashboard(generate_dashboard: bool, name_dashboard: str):
 if __name__ == "__main__":
     output_paths, database_path, generate_dashboard, name_dashboard = parse_arguments()
     process_database(database_path)
-    process_outputs(output_paths)
+    process_outputs(output_paths, database_path)
     process_dashboard(generate_dashboard, name_dashboard)
