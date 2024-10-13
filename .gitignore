@@ -8,3 +8,5 @@ report*.html
 *.db
 playwright-log.txt
 *.robot
+*.pyc
+__pycache__
