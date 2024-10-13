@@ -2,7 +2,7 @@ import argparse
 from datetime import datetime
 
 
-class ArgumentsParser():
+class ArgumentsParser:
     def parses_arguments(self):
         parser = argparse.ArgumentParser(add_help=False)
         parser.add_argument(

@@ -13,7 +13,9 @@ from database import DatabaseProcessor
 from dashboard import DashboardGenerator
 
 if __name__ == "__main__":
-    output_paths, database_path, generate_dashboard, name_dashboard = ArgumentsParser().parses_arguments()
+    output_paths, database_path, generate_dashboard, name_dashboard = (
+        ArgumentsParser().parses_arguments()
+    )
     DatabaseProcessor().create_database(database_path)
     OutputProcessor().process_outputs(output_paths, database_path)
     DashboardGenerator().generate_dashboard(generate_dashboard, name_dashboard)
