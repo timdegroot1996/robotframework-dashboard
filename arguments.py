@@ -59,9 +59,10 @@ class ArgumentParser:
             or arguments.generateDashboard.lower() == "true"
             else False
         )
+        generation_datetime = datetime.now()
         if arguments.nameDashboard == "":
             dashboard_name = (
-                f"robot_dashboard_{datetime.now().strftime('%Y%m%d-%H%M%S')}.html"
+                f"robot_dashboard_{generation_datetime.strftime('%Y%m%d-%H%M%S')}.html"
             )
         elif not arguments.nameDashboard.endswith(".html"):
             dashboard_name = f"{arguments.nameDashboard}.html"
@@ -72,4 +73,5 @@ class ArgumentParser:
             arguments.databasePath,
             generate_dashboard,
             dashboard_name,
+            generation_datetime,
         )

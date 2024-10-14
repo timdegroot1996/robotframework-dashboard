@@ -1,11 +1,12 @@
 from jinja2 import Environment, FileSystemLoader
 from os.path import join, abspath, dirname
 from pathlib import Path
+from datetime import datetime
 import codecs
 
 
 class DashboardGenerator:
-    def generate_dashboard(self, name_dashboard: str, data: dict):
+    def generate_dashboard(self, name_dashboard: str, data: dict, generation_datetime: datetime):
         # load template
         templates_dir = join(dirname(abspath(__file__)), "templates")
         file_loader = FileSystemLoader(templates_dir)
@@ -20,7 +21,7 @@ class DashboardGenerator:
         with codecs.open('robot_dashboard.html', "w", "utf-8") as dashboard_writer:
             dashboard_writer.write(
                 template.render(
-                    date=name_dashboard.replace("robot_dashboard_", "").replace(".html", ""),
+                    date=generation_datetime,
                     suites=data["suites"],
                     tests=data["tests"],
                     keywords=data["keywords"],
