@@ -17,10 +17,10 @@ class OutputProcessor:
                 output.visit(TestProcessor(output.generation_time, test_list))
                 output.visit(KeywordProcessor(output.generation_time, keyword_list))
                 output_data[output_path] = {
-            "suites": suite_list,
-            "tests": test_list,
-            "keywords": keyword_list,
-        }
+                    "suites": suite_list,
+                    "tests": test_list,
+                    "keywords": keyword_list,
+                }
         else:
             print(
                 f"2. Processing output XML(s): No output XML(s) were provided, skipping step"
