@@ -7,7 +7,7 @@ import codecs
 class DashboardGenerator:
     def generate_dashboard(self, generate_dashboard: bool, name_dashboard: str):
         if generate_dashboard == True:
-            print("3. Creating dashboard HTML (and directories)")
+            print(f"4. Creating dashboard HTML (and directories): {name_dashboard}")
 
             # load template
             templates_dir = join(dirname(abspath(__file__)), "templates")
@@ -23,4 +23,4 @@ class DashboardGenerator:
             with codecs.open(name_dashboard, "w", "utf-8") as dashboard_writer:
                 dashboard_writer.write(template.render(data="This is placeholder data"))
         else:
-            print("3. Creating dashboard HTML (and directories): Skipping step")
+            print("4. Creating dashboard HTML (and directories): skipping step")
