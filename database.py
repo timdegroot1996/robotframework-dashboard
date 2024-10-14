@@ -25,7 +25,7 @@ class DatabaseProcessor:
     def insert_output_data(self, output_data: dict):
 
         for run in output_data:
-            print(f"3. Inserting data into database: '{run}'")
+            print(f"3. Inserting output data into database: '{run}'")
             try:
                 self.insert_suites(output_data[run]["suites"])
                 self.insert_tests(output_data[run]["tests"])
