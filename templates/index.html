@@ -1,13 +1,22 @@
 <html>
-    <head>
+  <head> </head>
 
+  <body>
+    <h1>{{ title }}</h1>
 
-    </head>
+    <h2>Suite Data</h2>
+    {% for suite in suites %}
+    <p>{{suite}}</p>
+    {% endfor %}
 
+    <h2>Test Data</h2>
+    {% for test in tests %}
+    <p>{{test}}</p>
+    {% endfor %}
 
-    <body>
-
-        <h1>{{ data }}</h1>
-    </body>
-
+    <h2>Keyword Data</h2>
+    {% for keyword in keywords %}
+    <p>{{keyword}}</p>
+    {% endfor %}
+  </body>
 </html>

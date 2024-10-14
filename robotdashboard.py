@@ -15,7 +15,7 @@ from dashboard import DashboardGenerator
 from os.path import basename
 
 if __name__ == "__main__":
-    output_paths, database_path, generate_dashboard, name_dashboard = (
+    output_paths, database_path, generate_dashboard, dashboard_name = (
         ArgumentParser().parse_arguments()
     )
     print(f"1. Creating or using database: '{database_path}'")
@@ -33,9 +33,10 @@ if __name__ == "__main__":
     else:
         print(f"2. Processing output XML: skipping step")
         print(f"3. Inserting output data into database: skipping step")
-    database.close_database()
     if generate_dashboard:
-        print(f"4. Creating dashboard HTML: {name_dashboard}")
-        DashboardGenerator().generate_dashboard(name_dashboard)
+        dashboard_data = database.get_data()
+        print(f"4. Creating dashboard HTML: {dashboard_name}")
+        DashboardGenerator().generate_dashboard(dashboard_name, dashboard_data)
     else:
         print("4. Creating dashboard HTML: skipping step")
+    database.close_database()

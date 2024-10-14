@@ -5,7 +5,7 @@ import codecs
 
 
 class DashboardGenerator:
-    def generate_dashboard(self, name_dashboard: str):
+    def generate_dashboard(self, name_dashboard: str, data: dict):
         # load template
         templates_dir = join(dirname(abspath(__file__)), "templates")
         file_loader = FileSystemLoader(templates_dir)
@@ -18,4 +18,11 @@ class DashboardGenerator:
 
         # write template
         with codecs.open(name_dashboard, "w", "utf-8") as dashboard_writer:
-            dashboard_writer.write(template.render(data="This is placeholder data"))
+            dashboard_writer.write(
+                template.render(
+                    title=name_dashboard.replace("_", " ").replace(".html", ""),
+                    suites=data["suites"],
+                    tests=data["tests"],
+                    keywords=data["keywords"],
+                )
+            )

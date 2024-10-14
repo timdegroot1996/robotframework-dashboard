@@ -60,16 +60,16 @@ class ArgumentParser:
             else False
         )
         if arguments.nameDashboard == "":
-            name_dashboard = (
+            dashboard_name = (
                 f"robot_dashboard_{datetime.now().strftime('%Y%m%d-%H%M%S')}.html"
             )
         elif not arguments.nameDashboard.endswith(".html"):
-            name_dashboard = f"{arguments.nameDashboard}.html"
+            dashboard_name = f"{arguments.nameDashboard}.html"
         else:
-            name_dashboard = arguments.nameDashboard
+            dashboard_name = arguments.nameDashboard
         return (
             arguments.outputPath,
             arguments.databasePath,
             generate_dashboard,
-            name_dashboard,
+            dashboard_name,
         )
