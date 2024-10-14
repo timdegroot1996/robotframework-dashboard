@@ -32,7 +32,7 @@ class DatabaseProcessor:
                 self.insert_keywords(output_data[run]["keywords"])
             except Exception as e:
                 print(
-                    f"ERROR: you are probably trying to add the same output again, {e}"
+                    f" ERROR: you are probably trying to add the same output again, {e}"
                 )
 
     def insert_suites(self, suites: list[tuple]):
