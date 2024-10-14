@@ -16,24 +16,18 @@ class DatabaseProcessor:
         self.connection.close()
 
     def create_database(self):
-        print(f"1. Creating or using database: '{self.database_path}'")
         self.connection.cursor().execute(CREATE_SUITES)
         self.connection.cursor().execute(CREATE_TESTS)
         self.connection.cursor().execute(CREATE_KEYWORDS)
         self.connection.commit()
 
-    def insert_output_data(self, output_data: dict):
-
-        for run in output_data:
-            print(f"3. Inserting output data into database: '{run}'")
-            try:
-                self.insert_suites(output_data[run]["suites"])
-                self.insert_tests(output_data[run]["tests"])
-                self.insert_keywords(output_data[run]["keywords"])
-            except Exception as e:
-                print(
-                    f" ERROR: you are probably trying to add the same output again, {e}"
-                )
+    def insert_output_data(self, output_path: str, output_data: dict):
+        try:
+            self.insert_suites(output_data[output_path]["suites"])
+            self.insert_tests(output_data[output_path]["tests"])
+            self.insert_keywords(output_data[output_path]["keywords"])
+        except Exception as e:
+            print(f" ERROR: you are probably trying to add the same output again, {e}")
 
     def insert_suites(self, suites: list[tuple]):
         self.connection.executemany(INSERT_INTO_SUITES, suites)

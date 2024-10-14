@@ -1,31 +1,21 @@
 from robot.api import ExecutionResult, ResultVisitor
 from robot.result.model import TestCase, TestSuite, Keyword
 from datetime import datetime
-from os.path import basename
+from pathlib import Path
 
 
 class OutputProcessor:
-    def get_output_data(self, output_paths: list[list[str]]):
-        if output_paths != None:
-            output_data = {}
-            for output_path in output_paths:
-                output_path = output_path[0]
-                print(f"2. Processing output XML: {basename(output_path)}")
-                output = ExecutionResult(output_path)
-                suite_list, test_list, keyword_list = [], [], []
-                output.visit(SuiteProcessor(output.generation_time, suite_list))
-                output.visit(TestProcessor(output.generation_time, test_list))
-                output.visit(KeywordProcessor(output.generation_time, keyword_list))
-                output_data[output_path] = {
-                    "suites": suite_list,
-                    "tests": test_list,
-                    "keywords": keyword_list,
-                }
-        else:
-            print(
-                f"2. Processing output XML(s): No output XML(s) were provided, skipping step"
-            )
-        return output_data
+    def get_output_data(self, output_path: Path):
+        output = ExecutionResult(output_path)
+        suite_list, test_list, keyword_list = [], [], []
+        output.visit(SuiteProcessor(output.generation_time, suite_list))
+        output.visit(TestProcessor(output.generation_time, test_list))
+        output.visit(KeywordProcessor(output.generation_time, keyword_list))
+        return {
+            "suites": suite_list,
+            "tests": test_list,
+            "keywords": keyword_list,
+        }
 
 
 class SuiteProcessor(ResultVisitor):

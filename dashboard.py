@@ -5,22 +5,17 @@ import codecs
 
 
 class DashboardGenerator:
-    def generate_dashboard(self, generate_dashboard: bool, name_dashboard: str):
-        if generate_dashboard == True:
-            print(f"4. Creating dashboard HTML (and directories): {name_dashboard}")
+    def generate_dashboard(self, name_dashboard: str):
+        # load template
+        templates_dir = join(dirname(abspath(__file__)), "templates")
+        file_loader = FileSystemLoader(templates_dir)
+        env = Environment(loader=file_loader)
+        template = env.get_template("index.html")
 
-            # load template
-            templates_dir = join(dirname(abspath(__file__)), "templates")
-            file_loader = FileSystemLoader(templates_dir)
-            env = Environment(loader=file_loader)
-            template = env.get_template("index.html")
+        # handle possible subdirectories
+        path = Path(name_dashboard)
+        path.parent.mkdir(exist_ok=True, parents=True)
 
-            # handle possible subdirectories
-            path = Path(name_dashboard)
-            path.parent.mkdir(exist_ok=True, parents=True)
-
-            # write template
-            with codecs.open(name_dashboard, "w", "utf-8") as dashboard_writer:
-                dashboard_writer.write(template.render(data="This is placeholder data"))
-        else:
-            print("4. Creating dashboard HTML (and directories): skipping step")
+        # write template
+        with codecs.open(name_dashboard, "w", "utf-8") as dashboard_writer:
+            dashboard_writer.write(template.render(data="This is placeholder data"))
