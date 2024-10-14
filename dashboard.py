@@ -17,10 +17,10 @@ class DashboardGenerator:
         path.parent.mkdir(exist_ok=True, parents=True)
 
         # write template
-        with codecs.open(name_dashboard, "w", "utf-8") as dashboard_writer:
+        with codecs.open('robot_dashboard.html', "w", "utf-8") as dashboard_writer:
             dashboard_writer.write(
                 template.render(
-                    title=name_dashboard.replace("_", " ").replace(".html", ""),
+                    date=name_dashboard.replace("robot_dashboard_", "").replace(".html", ""),
                     suites=data["suites"],
                     tests=data["tests"],
                     keywords=data["keywords"],

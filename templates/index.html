@@ -1,8 +1,33 @@
 <html>
-  <head> </head>
-
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+        <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==">
+    </head>
+    <style>
+        canvas {
+        user-select: none;
+        }
+        @media (prefers-color-scheme: light) {
+        body {
+            background-color: #eee;
+        }
+        }
+        @media (prefers-color-scheme: dark) {
+        body {
+            background-color: #22272e;
+            color: #adb5bd;
+        }
+        }
+    </style>
   <body>
-    <h1>{{ title }}</h1>
+    <h1>Robot Framework Dashboard {{ date }}</h1>
+    
+    <div style="display: flex">
+        <canvas id="suiteStatistics" width="900", height="540"></canvas>
+        <canvas id="suitesOverTime" width="900", height="540"></canvas>
+    </div>
 
     <h2>Suite Data</h2>
     {% for suite in suites %}
@@ -14,9 +39,176 @@
     <p>{{test}}</p>
     {% endfor %}
 
-    <h2>Keyword Data</h2>
+    <!-- <h2>Keyword Data</h2>
     {% for keyword in keywords %}
     <p>{{keyword}}</p>
-    {% endfor %}
+    {% endfor %} -->
   </body>
+  <script>
+    // theme
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        Chart.defaults.color = "#ADBABD";
+        Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
+        Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
+        Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
+    }
+  </script>
+  <script>
+    // suite statistics
+    var suites = JSON.parse("{{suites}}".replace(/'/g, '"'))
+    var passed = []
+    var failed = []
+    var skipped = []
+    var labels = []
+    for (const [key, value] of Object.entries(suites)) {
+        passed.push(value.passed)
+        failed.push(value.failed)
+        skipped.push(value.skipped)
+        labels.push(`${value.full_name}: ${value.run_start}`)
+    }
+
+    const suiteStatisticsData = {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Skipped',
+                data: skipped,
+                backgroundColor: '#fed84f',
+                stack: 'Stack 0',
+            },
+            {
+                label: 'Failed',
+                data: failed,
+                backgroundColor: '#ce3e01',
+                stack: 'Stack 0',
+            },
+            {
+                label: 'Passed',
+                data: passed,
+                backgroundColor: '#97bd61',
+                stack: 'Stack 0',
+            },
+        ]
+    };
+
+    Chart.register(ChartDataLabels);
+    new Chart("suiteStatistics", {
+        type: 'bar',
+        data: suiteStatisticsData,
+        options: {
+            scales: {
+                x: {
+                    ticks: {
+                        display: false //this will remove only the label
+                    },
+                },
+                y: {
+                    stacked: true
+                }
+            },
+            responsive: false,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                datalabels: {
+                    align: 'center',
+                    anchor: 'center',
+                    color: '#000000'
+                },
+                interaction: {
+                    intersect: false,
+                },
+                title: {
+                display: true,
+                text: 'Suite Statistics'
+                }
+            }
+        }
+    });
+  </script>
+
+  <script>
+    // suites over time
+    const suitesOverTimeData = {
+        labels: [ // Date Objects
+            addDays(new Date(), 0),
+            addDays(new Date(), 1),
+            addDays(new Date(), 2),
+            addDays(new Date(), 3),
+            addDays(new Date(), 4),
+            addDays(new Date(), 5),
+            addDays(new Date(), 6),
+        ],
+        
+        datasets: [{
+            label: 'My First dataset',
+            borderColor: '#FF0000',
+            fill: false,
+            data: [Math.random(), Math.random(), Math.random(), Math.random()],
+        }, {
+            label: 'My Second dataset',
+            borderColor: '#0000FF',
+            fill: false,
+            data: [Math.random(), Math.random(), Math.random(), Math.random()],
+        }, {
+            label: 'Dataset with point data',
+            borderColor: '#00ff00',
+            fill: false,
+            data: [{
+                x: addDays(new Date(), 0),
+                y: Math.random()
+                }, {
+                x: addDays(new Date(), 3),
+                y: Math.random()
+                }, {
+                x: addDays(new Date(), 5),
+                y: Math.random()
+                }, {
+                x: addDays(new Date(), 15),
+                y: Math.random()
+            }],
+        }]
+    };
+
+    function addDays(date, days) {
+        var result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+
+    new Chart("suitesOverTime", {
+        type: 'line',
+        data: suitesOverTimeData,
+        options: {
+            responsive: false,
+            plugins: {
+            title: {
+                text: 'Chart.js Time Scale',
+                display: true
+            }
+            },
+            scales: {
+            x: {
+                type: 'time',
+                // time: {
+                // // Luxon format string
+                //     tooltipFormat: 'DD T'
+                // },
+                title: {
+                    display: true,
+                    text: 'Date'
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'value'
+                }
+            }
+            },
+        },
+    });
+    </script>
+<body>
 </html>
