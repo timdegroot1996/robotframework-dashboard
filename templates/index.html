@@ -6,48 +6,61 @@
         <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==">
     </head>
     <style>
+        h1 {
+            padding: 20px 20px 0px 20px;
+        }
+        h2 {
+            padding: 0px 20px 0px 20px;
+        }
+        :root {
+            color-scheme: dark;
+        }
+        body {
+            font-family: Helvetica, sans-serif;
+        }
         canvas {
-        user-select: none;
+            user-select: none;
         }
         @media (prefers-color-scheme: light) {
-        body {
-            background-color: #eee;
-        }
+            body {
+                background-color: #eee;
+            }
         }
         @media (prefers-color-scheme: dark) {
-        body {
-            background-color: #22272e;
-            color: #adb5bd;
+            body {
+                background-color: #1c2227;
+                color: #e2e1d7;
+            }
         }
+        .canvas-container {
+            width: 900;
+            overflow-x: scroll;
+            margin-left:20px;
         }
     </style>
   <body>
     <h1>Robot Framework Dashboard {{ date }}</h1>
     
+    <h2>Suite Statistics</h2>
     <div style="display: flex">
-        <canvas id="suiteStatistics" width="900", height="540"></canvas>
-        <canvas id="suitesOverTime" width="900", height="540"></canvas>
+        <div class="canvas-container">
+            <canvas id="suiteStatistics" width="900", height="540"></canvas>
+        </div>
+        <div class="canvas-container">
+            <canvas id="suitesOverTime" width="900", height="540"></canvas>
+        </div>
     </div>
 
-    <h2>Suite Data</h2>
-    {% for suite in suites %}
-    <p>{{suite}}</p>
-    {% endfor %}
-
-    <h2>Test Data</h2>
+    <!-- <h2>Test Data</h2>
     {% for test in tests %}
     <p>{{test}}</p>
-    {% endfor %}
-
-    <!-- <h2>Keyword Data</h2>
-    {% for keyword in keywords %}
-    <p>{{keyword}}</p>
     {% endfor %} -->
+
   </body>
   <script>
     // theme
     if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        Chart.defaults.color = "#ADBABD";
+        Chart.defaults.color = "#e2e1d7";
         Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
         Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
         Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
@@ -56,6 +69,7 @@
   <script>
     // suite statistics
     var suites = JSON.parse("{{suites}}".replace(/'/g, '"'))
+    suites.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
     var passed = []
     var failed = []
     var skipped = []
@@ -99,25 +113,46 @@
             scales: {
                 x: {
                     ticks: {
-                        display: false //this will remove only the label
+                        display: true,
+                        callback: function(value) {
+                            return this.getLabelForValue(value).split(':')[0]
+                        },
                     },
+                    title: {
+                        display: true,
+                        text: 'Run'
+                    }
                 },
                 y: {
-                    stacked: true
+                    stacked: true,
+                    title: {
+                        display: true,
+                        text: 'Amount Of Tests'
+                    }
                 }
+            },
+            interaction: {
+                mode: 'x'
             },
             responsive: false,
             plugins: {
                 legend: {
                     display: false,
+                    labels: {
+                        family: 'Helvetica, sans-serif',
+                    }
                 },
                 datalabels: {
                     align: 'center',
                     anchor: 'center',
-                    color: '#000000'
-                },
-                interaction: {
-                    intersect: false,
+                    formatter: function(value) {
+                        if(value >0 ){
+                            return value
+                        } else{
+                            value = "";
+                            return value;
+                        }
+                    }
                 },
                 title: {
                 display: true,
@@ -130,84 +165,69 @@
 
   <script>
     // suites over time
-    const suitesOverTimeData = {
-        labels: [ // Date Objects
-            addDays(new Date(), 0),
-            addDays(new Date(), 1),
-            addDays(new Date(), 2),
-            addDays(new Date(), 3),
-            addDays(new Date(), 4),
-            addDays(new Date(), 5),
-            addDays(new Date(), 6),
-        ],
-        
-        datasets: [{
-            label: 'My First dataset',
-            borderColor: '#FF0000',
-            fill: false,
-            data: [Math.random(), Math.random(), Math.random(), Math.random()],
-        }, {
-            label: 'My Second dataset',
-            borderColor: '#0000FF',
-            fill: false,
-            data: [Math.random(), Math.random(), Math.random(), Math.random()],
-        }, {
-            label: 'Dataset with point data',
-            borderColor: '#00ff00',
-            fill: false,
-            data: [{
-                x: addDays(new Date(), 0),
-                y: Math.random()
-                }, {
-                x: addDays(new Date(), 3),
-                y: Math.random()
-                }, {
-                x: addDays(new Date(), 5),
-                y: Math.random()
-                }, {
-                x: addDays(new Date(), 15),
-                y: Math.random()
-            }],
-        }]
-    };
-
-    function addDays(date, days) {
-        var result = new Date(date);
-        result.setDate(result.getDate() + days);
-        return result;
+    var labels = []
+    var sets = []
+    var datasets = []
+    for (const [run, stats] of Object.entries(suites)) {
+        var full_name = stats.full_name
+        var run_start = new Date(stats.run_start)
+        var elapsed_s = stats.elapsed_s
+        if (labels.includes(full_name)) {
+            var values = sets[full_name]
+            values.push({x: run_start, y: elapsed_s})
+            sets[full_name] = values
+        } else {
+            labels.push(full_name)
+            sets[full_name] = [{x: run_start, y: elapsed_s}]
+        }
+    }
+    for (const [run, data] of Object.entries(sets)) {
+        datasets.push({label: run, fill: false, borderDash: [5, 5], data: data})
     }
 
     new Chart("suitesOverTime", {
         type: 'line',
-        data: suitesOverTimeData,
+        data: { 
+            datasets: datasets 
+        },
         options: {
             responsive: false,
             plugins: {
-            title: {
-                text: 'Chart.js Time Scale',
-                display: true
-            }
+                title: {
+                    text: 'Suite Duration Over Time',
+                    display: true
+                }, 
+                datalabels: {
+                    display: false,
+                },
+                legend: {
+                    display: true,
+                    position: 'right',
+                    labels: {
+                        family: 'Helvetica, sans-serif',
+                        color: '#e2e1d7'
+                    }
+                },
             },
             scales: {
-            x: {
-                type: 'time',
-                // time: {
-                // // Luxon format string
-                //     tooltipFormat: 'DD T'
-                // },
-                title: {
-                    display: true,
-                    text: 'Date'
-                }
-            },
-            y: {
-                title: {
-                    display: true,
-                    text: 'value'
+                x: {
+                    type: 'time',
+                    time: {
+                        tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS' 
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Elapsed (seconds)'
+                    }
                 }
             }
-            },
-        },
+        }
     });
     </script>
 <body>
