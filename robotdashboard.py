@@ -28,14 +28,14 @@ if __name__ == "__main__":
             print(f"2. Processing output XML: '{basename(output_path)}'")
             output_data[output_path] = OutputProcessor().get_output_data(output_path)
         for output_path in output_data:
-            print(f"3. Inserting output data into database: '{output_path}'")
+            print(f"3. Inserting output data into database: '{basename(output_path)}'")
             database.insert_output_data(output_path, output_data)
     else:
         print(f"2. Processing output XML: skipping step")
         print(f"3. Inserting output data into database: skipping step")
     database.close_database()
     if generate_dashboard:
-        print(f"4. Creating dashboard HTML (and directories): {name_dashboard}")
+        print(f"4. Creating dashboard HTML: {name_dashboard}")
         DashboardGenerator().generate_dashboard(name_dashboard)
     else:
-        print("4. Creating dashboard HTML (and directories): skipping step")
+        print("4. Creating dashboard HTML: skipping step")
