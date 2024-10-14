@@ -8,7 +8,7 @@
 For specific argument usage take a look at the -h or --help
 """
 
-from arguments import ArgumentsParser
+from arguments import ArgumentParser
 from processors import OutputProcessor
 from database import DatabaseProcessor
 from dashboard import DashboardGenerator
@@ -16,7 +16,7 @@ from os.path import basename
 
 if __name__ == "__main__":
     output_paths, database_path, generate_dashboard, name_dashboard = (
-        ArgumentsParser().parses_arguments()
+        ArgumentParser().parse_arguments()
     )
     print(f"1. Creating or using database: '{database_path}'")
     database = DatabaseProcessor(database_path)

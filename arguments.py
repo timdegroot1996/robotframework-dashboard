@@ -1,10 +1,18 @@
 import argparse
 from datetime import datetime
+from version import __version__
 
 
-class ArgumentsParser:
-    def parses_arguments(self):
+class ArgumentParser:
+    def parse_arguments(self):
         parser = argparse.ArgumentParser(add_help=False)
+        parser.add_argument(
+            "-v",
+            "--version",
+            action="store_true",
+            dest="version",
+            help="Display application version information",
+        )
         parser.add_argument(
             "-h",
             "--help",
@@ -42,6 +50,9 @@ class ArgumentsParser:
             default="",
         )
         arguments = parser.parse_args()
+        if arguments.version:
+            print(__version__)
+            exit(0)
         generate_dashboard = (
             True
             if arguments.generateDashboard == True
