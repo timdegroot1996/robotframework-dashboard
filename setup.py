@@ -21,11 +21,10 @@ setup(
     install_requires=[
         "robotframework",
         "jinja2",
-        "sqlite3",
     ],
     entry_points={
         "console_scripts": [
-            "robotdashboard=robotframework-dashboard.robotdashboard:main",
+            "robotdashboard=robotframework_dashboard.robotdashboard:main",
         ]
     },
 )

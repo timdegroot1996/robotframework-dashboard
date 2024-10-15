@@ -1,0 +1,2 @@
+recursive-include robotframework_dashboard/templates *
+include MANIFEST.in
