@@ -24,7 +24,17 @@ class ArgumentParser:
             "-o",
             "--outputPath",
             help="Specifies  1 or more paths to output.xml. \
-                            Specify every XML with -o if you are providing more than one.",
+                            Specify every XML separately with -o if you are providing more than one.",
+            action="append",
+            nargs="*",
+            default=None,
+        )
+        parser.add_argument(
+            "-r",
+            "--removeRuns",
+            help="Specifies 1 or more indexes or run_start datetimes to remove from the database. \
+                            Specify every run separately with -r if you are providing more than one. \
+                            Examples: -r 0 -r 1 -r 10 or --removeRuns '2024-07-30 15:27:20.184407' -r 20",
             action="append",
             nargs="*",
             default=None,
@@ -34,7 +44,7 @@ class ArgumentParser:
             "--databasePath",
             help="Specifies the path to the database you want to \
                             store the results in.",
-            default="./robot_results.db",
+            default=".\\robot_results.db",
         )
         parser.add_argument(
             "-g",
@@ -49,6 +59,12 @@ class ArgumentParser:
             help="Specifies a custom HTML dashboard name",
             default="",
         )
+        parser.add_argument(
+            "-l",
+            "--listRuns",
+            help="Specifies if the runs should be listed",
+            default=True,
+        )
         arguments = parser.parse_args()
         if arguments.version:
             print(__version__)
@@ -59,10 +75,16 @@ class ArgumentParser:
             or arguments.generateDashboard.lower() == "true"
             else False
         )
+        list_runs = (
+            True
+            if arguments.listRuns == True
+            or arguments.listRuns.lower() == "true"
+            else False
+        )
         generation_datetime = datetime.now()
         if arguments.nameDashboard == "":
             dashboard_name = (
-                f"robot_dashboard_{generation_datetime.strftime('%Y%m%d-%H%M%S')}.html"
+                f".\\robot_dashboard_{generation_datetime.strftime('%Y%m%d-%H%M%S')}.html"
             )
         elif not arguments.nameDashboard.endswith(".html"):
             dashboard_name = f"{arguments.nameDashboard}.html"
@@ -74,4 +96,6 @@ class ArgumentParser:
             generate_dashboard,
             dashboard_name,
             generation_datetime,
+            list_runs,
+            arguments.removeRuns,
         )

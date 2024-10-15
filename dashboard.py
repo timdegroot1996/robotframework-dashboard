@@ -18,6 +18,10 @@ class DashboardGenerator:
         path = Path(name_dashboard)
         path.parent.mkdir(exist_ok=True, parents=True)
 
+        # warn in case of empty database
+        if len(data["suites"]) == 0:
+            print(f'  WARNING: There are no runs so the dashboard will be empty!')
+
         # write template
         with codecs.open('robot_dashboard.html', "w", "utf-8") as dashboard_writer:
             dashboard_writer.write(
