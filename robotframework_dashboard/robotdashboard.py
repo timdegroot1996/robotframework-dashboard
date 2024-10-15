@@ -9,13 +9,14 @@
 For specific argument usage take a look at the -h or --help
 """
 
-from arguments import ArgumentParser
-from processors import OutputProcessor
-from database import DatabaseProcessor
-from dashboard import DashboardGenerator
+from .arguments import ArgumentParser
+from .processors import OutputProcessor
+from .database import DatabaseProcessor
+from .dashboard import DashboardGenerator
 from os.path import basename
 
-if __name__ == "__main__":
+
+def main():
     (
         output_paths,
         database_path,
@@ -25,12 +26,16 @@ if __name__ == "__main__":
         list_runs,
         remove_runs,
     ) = ArgumentParser().parse_arguments()
-    print('==============================================================================')
+    print(
+        "=============================================================================="
+    )
     print(f" 1. Creating or using database\n  '{database_path}'")
     database = DatabaseProcessor(database_path)
     database.create_database()
-    
-    print('==============================================================================')
+
+    print(
+        "=============================================================================="
+    )
     if output_paths:
         output_data = {}
         print(f" 2. Processing output XML(s)")
@@ -43,21 +48,27 @@ if __name__ == "__main__":
     else:
         print(f" 2. Processing output XML(s): skipping step")
 
-    print('==============================================================================')
+    print(
+        "=============================================================================="
+    )
     if list_runs:
         print(f" 3. Listing all available runs in the database")
         database.list_runs()
     else:
         print(f" 3. Listing all available runs in the database: skipping step")
 
-    print('==============================================================================')
+    print(
+        "=============================================================================="
+    )
     if remove_runs != None:
         print(f" 4. Removing runs from the database")
         database.remove_runs(remove_runs)
     else:
         print(f" 4. Removing runs from the database: skipping step")
-    
-    print('==============================================================================')
+
+    print(
+        "=============================================================================="
+    )
     if generate_dashboard:
         dashboard_data = database.get_data()
         print(f" 5. Creating dashboard HTML\n  '{dashboard_name}'")
@@ -67,3 +78,7 @@ if __name__ == "__main__":
     else:
         print(" 5. Creating dashboard HTML: skipping step")
     database.close_database()
+
+
+if __name__ == "__main__":
+    main()

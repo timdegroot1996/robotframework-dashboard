@@ -1,6 +1,6 @@
 import argparse
 from datetime import datetime
-from version import __version__
+from .version import __version__
 
 
 class ArgumentParser:
@@ -77,15 +77,12 @@ class ArgumentParser:
         )
         list_runs = (
             True
-            if arguments.listRuns == True
-            or arguments.listRuns.lower() == "true"
+            if arguments.listRuns == True or arguments.listRuns.lower() == "true"
             else False
         )
         generation_datetime = datetime.now()
         if arguments.nameDashboard == "":
-            dashboard_name = (
-                f".\\robot_dashboard_{generation_datetime.strftime('%Y%m%d-%H%M%S')}.html"
-            )
+            dashboard_name = f".\\robot_dashboard_{generation_datetime.strftime('%Y%m%d-%H%M%S')}.html"
         elif not arguments.nameDashboard.endswith(".html"):
             dashboard_name = f"{arguments.nameDashboard}.html"
         else:

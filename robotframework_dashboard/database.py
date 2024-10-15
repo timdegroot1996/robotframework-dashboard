@@ -1,7 +1,6 @@
 import sqlite3
 from pathlib import Path
-from queries import *
-import time
+from .queries import *
 
 
 class DatabaseProcessor:
@@ -28,7 +27,9 @@ class DatabaseProcessor:
             self.insert_tests(output_data[output_path]["tests"])
             self.insert_keywords(output_data[output_path]["keywords"])
         except Exception as e:
-            print(f"   ERROR: you are probably trying to add the same output again, {e}")
+            print(
+                f"   ERROR: you are probably trying to add the same output again, {e}"
+            )
 
     def insert_suites(self, suites: list[tuple]):
         self.connection.executemany(INSERT_INTO_SUITES, suites)
@@ -66,15 +67,15 @@ class DatabaseProcessor:
         runs = []
         for entry in data:
             run = self.dict_from_row(entry)
-            runs.append(run['run_start'])
+            runs.append(run["run_start"])
         return runs
-    
+
     def list_runs(self):
         database_runs = self.get_runs()
         for index, run in enumerate(database_runs):
             print(f"  Run {str(index).ljust(6, ' ')}: {run}")
         if len(database_runs) == 0:
-            print(f'  WARNING: There are no runs so the dashboard will be empty!')
+            print(f"  WARNING: There are no runs so the dashboard will be empty!")
 
     def remove_runs(self, remove_runs):
         database_runs = self.get_runs()
@@ -82,18 +83,20 @@ class DatabaseProcessor:
             run = run[0]
             if run in database_runs:
                 self.remove_run(run)
-                print(f'  Removed run from the database: {run}')
+                print(f"  Removed run from the database: {run}")
             else:
                 try:
                     run_index = int(run)
                     run_start = database_runs[run_index]
                     self.remove_run(run_start)
-                    print(f'  Removed run from the database: {run_start}')
+                    print(f"  Removed run from the database: {run_start}")
                 except:
-                    print(f'  ERROR: Could not find run to remove the database: {run}')
+                    print(f"  ERROR: Could not find run to remove the database: {run}")
 
     def remove_run(self, run_start):
         self.connection.cursor().execute(DELETE_FROM_SUITES.format(run_start=run_start))
         self.connection.cursor().execute(DELETE_FROM_TESTS.format(run_start=run_start))
-        self.connection.cursor().execute(DELETE_FROM_KEYWORDS.format(run_start=run_start))
+        self.connection.cursor().execute(
+            DELETE_FROM_KEYWORDS.format(run_start=run_start)
+        )
         self.connection.commit()

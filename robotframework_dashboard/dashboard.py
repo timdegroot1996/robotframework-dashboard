@@ -2,12 +2,14 @@ from jinja2 import Environment, FileSystemLoader
 from os.path import join, abspath, dirname
 from pathlib import Path
 from datetime import datetime
-import codecs
+from codecs import open as codecs_open
 from json import dumps
 
 
 class DashboardGenerator:
-    def generate_dashboard(self, name_dashboard: str, data: dict, generation_datetime: datetime):
+    def generate_dashboard(
+        self, name_dashboard: str, data: dict, generation_datetime: datetime
+    ):
         # load template
         templates_dir = join(dirname(abspath(__file__)), "templates")
         file_loader = FileSystemLoader(templates_dir)
@@ -20,10 +22,10 @@ class DashboardGenerator:
 
         # warn in case of empty database
         if len(data["suites"]) == 0:
-            print(f'  WARNING: There are no runs so the dashboard will be empty!')
+            print(f"  WARNING: There are no runs so the dashboard will be empty!")
 
         # write template
-        with codecs.open('robot_dashboard.html', "w", "utf-8") as dashboard_writer:
+        with codecs_open("robot_dashboard.html", "w", "utf-8") as dashboard_writer:
             dashboard_writer.write(
                 template.render(
                     date=generation_datetime,
