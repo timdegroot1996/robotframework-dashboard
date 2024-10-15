@@ -3,6 +3,7 @@ from os.path import join, abspath, dirname
 from pathlib import Path
 from datetime import datetime
 import codecs
+from json import dumps
 
 
 class DashboardGenerator:
@@ -22,8 +23,8 @@ class DashboardGenerator:
             dashboard_writer.write(
                 template.render(
                     date=generation_datetime,
-                    suites=data["suites"],
-                    tests=data["tests"],
-                    keywords=data["keywords"],
+                    suites=dumps(data["suites"]),
+                    tests=dumps(data["tests"]),
+                    keywords=len(data["keywords"]),
                 )
             )

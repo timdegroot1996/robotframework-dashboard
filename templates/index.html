@@ -63,9 +63,9 @@
     <div class="header">
         <h1>Robot Framework Dashboard {{ date }}</h1>
         <div class="stats">
-            <p id='suiteCount'>a</p>
-            <p id='testCount'>b</p>
-            <p id='keywordCount'>c</p>
+            <p id='suiteCount'></p>
+            <p id='testCount'></p>
+            <p id='keywordCount'></p>
         </div>
     </div>
     
@@ -79,11 +79,6 @@
         </div>
     </div>
 
-    <!-- <h2>Test Data</h2>
-    {% for test in tests %}
-    <p>{{test}}</p>
-    {% endfor %} -->
-
   </body>
   <script>
     // theme
@@ -96,19 +91,14 @@
   </script>
   <script>
     // prepare input data
-    var suites = JSON.parse("{{suites}}".replace(/'/g, '"'))
-    suites.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-    var tests = JSON.parse("{{tests}}".replace(/'/g, '"'))
-    tests.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-    var keywords = JSON.parse("{{keywords}}".replace(/'/g, '"'))
-    keywords.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+    var suites = {{suites}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+    var tests = {{tests}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+    // var keywords = {{keywords}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
 
     // set top level counts
     document.getElementById('suiteCount').innerText = 'Suites: ' + suites.length
     document.getElementById('testCount').innerText = 'Tests: ' + tests.length
-    document.getElementById('keywordCount').innerText = 'Keywords: ' + keywords.length
-  </script>
-  <script>
+    document.getElementById('keywordCount').innerText = 'Keywords: ' + {{keywords}}
     // suite statistics
     var passed = []
     var failed = []
@@ -203,9 +193,6 @@
             }
         }
     });
-  </script>
-
-  <script>
     // suites over time
     var labels = []
     var sets = []
