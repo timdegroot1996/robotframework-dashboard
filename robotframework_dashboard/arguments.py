@@ -22,7 +22,7 @@ class ArgumentParser:
         )
         parser.add_argument(
             "-o",
-            "--outputPath",
+            "--outputpath",
             help="`path` Specifies  1 or more paths to output.xml. \
                             Specify every XML separately with -o if you are providing more than one.",
             action="append",
@@ -31,7 +31,7 @@ class ArgumentParser:
         )
         parser.add_argument(
             "-r",
-            "--removeRuns",
+            "--removeruns",
             help="`string` Specifies 1 or more indexes or run_start datetimes to remove from the database. \
                             Specify every run separately with -r if you are providing more than one. \
                             Examples: -r 0 -r 1 -r 10 or --removeRuns '2024-07-30 15:27:20.184407' -r 20",
@@ -41,26 +41,26 @@ class ArgumentParser:
         )
         parser.add_argument(
             "-d",
-            "--databasePath",
+            "--databasepath",
             help="`path` Specifies the path to the database you want to \
                             store the results in.",
             default=".\\robot_results.db",
         )
         parser.add_argument(
             "-n",
-            "--nameDashboard",
+            "--namedashboard",
             help="`path` Specifies a custom HTML dashboard name.",
             default="",
         )
         parser.add_argument(
             "-l",
-            "--listRuns",
+            "--listruns",
             help="`boolean` Specifies if the runs should be listed. Default is True, override if you only require the database.",
             default=True,
         )
         parser.add_argument(
             "-g",
-            "--generateDashboard",
+            "--generatedashboard",
             help="`boolean` Specifies if you want to generate the HTML \
                             dashboard. Default is True, override if you only require the database.",
             default=True,
@@ -71,28 +71,28 @@ class ArgumentParser:
             exit(0)
         generate_dashboard = (
             True
-            if arguments.generateDashboard == True
-            or arguments.generateDashboard.lower() == "true"
+            if arguments.generatedashboard == True
+            or arguments.generatedashboard.lower() == "true"
             else False
         )
         list_runs = (
             True
-            if arguments.listRuns == True or arguments.listRuns.lower() == "true"
+            if arguments.listruns == True or arguments.listruns.lower() == "true"
             else False
         )
         generation_datetime = datetime.now()
-        if arguments.nameDashboard == "":
+        if arguments.namedashboard == "":
             dashboard_name = f".\\robot_dashboard_{generation_datetime.strftime('%Y%m%d-%H%M%S')}.html"
-        elif not arguments.nameDashboard.endswith(".html"):
-            dashboard_name = f"{arguments.nameDashboard}.html"
+        elif not arguments.namedashboard.endswith(".html"):
+            dashboard_name = f"{arguments.namedashboard}.html"
         else:
-            dashboard_name = arguments.nameDashboard
+            dashboard_name = arguments.namedashboard
         return (
-            arguments.outputPath,
-            arguments.databasePath,
+            arguments.outputpath,
+            arguments.databasepath,
             generate_dashboard,
             dashboard_name,
             generation_datetime,
             list_runs,
-            arguments.removeRuns,
+            arguments.removeruns,
         )

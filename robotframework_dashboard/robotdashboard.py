@@ -1,4 +1,4 @@
-"""Usage: robotdashboard.py [outputPath] [databasePath] [removeRun] [nameDashboard] [generateDashboard] [listRuns]
+"""Usage: robotdashboard.py [outputpath] [databasepath] [removerun] [namedashboard] [generatedashboard] [listruns]
 
 1. Creates robot_results.db or specified database if it does not yet exist
 2. Optionally Reads test execution result from 1 or more output XML file(s) and uploads to the database
