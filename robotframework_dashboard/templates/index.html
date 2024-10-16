@@ -191,17 +191,20 @@
     document.getElementById('clearFilters').addEventListener('click', clear_filters)
 
     function set_lowest_highest_dates(suites) {
-        var lowest = ''
-        var highest = ''
+        var dates = []
         for (suite of suites) {
-            var suiteRunStart = new Date(suite.run_start)
-            // set initial values
-            if (lowest == '') { lowest = suiteRunStart}
-            if (highest == '') { lowest = suiteRunStart}
-            // update if found an earlier or later run
-            if (suiteRunStart < lowest) { lowest = suiteRunStart}
-            if (suiteRunStart > highest) { highest = suiteRunStart}
+            dates.push(new Date(suite.run_start))
         }
+        function offsetMinutes(date, minutes) {
+            return new Date(date.getTime() + minutes*60000);
+        }
+        var lowest = new Date(Math.min.apply(null,dates));
+        var highest = new Date(Math.max.apply(null,dates));
+        var tzoffset = (new Date()).getTimezoneOffset() * 60000;
+        lowest = (new Date(lowest - tzoffset))
+        highest = (new Date(highest - tzoffset))
+        lowest = offsetMinutes(lowest, - 1) // this is to account for seconds in the initial filter value
+        highest = offsetMinutes(highest, + 1) // this is to account for seconds in the initial filter value
         document.getElementById('fromDate').value = lowest.toISOString().split('T')[0]
         document.getElementById('fromTime').value = (lowest.toISOString().split('T')[1]).substring(0, 5)
         document.getElementById('toDate').value = highest.toISOString().split('T')[0]
