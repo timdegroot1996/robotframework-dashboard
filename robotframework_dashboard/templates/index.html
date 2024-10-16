@@ -1,115 +1,273 @@
 <html>
-    <head>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-        <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==">
-    </head>
-    <style>
-        h2 {
-            padding: 0px 20px 0px 20px;
+
+<head>
+    <script src='https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0'></script>
+    <script
+        src='https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js'></script>
+    <link rel='icon' type='image/x-icon'
+        href='data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA=='>
+</head>
+<style>
+    h2 {
+        padding: 0px 20px 0px 20px;
+    }
+
+    :root {
+        color-scheme: dark;
+        font-family: Helvetica, sans-serif;
+    }
+
+    canvas {
+        user-select: none;
+    }
+
+    @media (prefers-color-scheme: light) {
+        body {
+            background-color: #eee;
         }
-        :root {
-            color-scheme: dark;
-            font-family: Helvetica, sans-serif;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        body {
+            background-color: #1c2227;
+            color: #e2e1d7;
         }
-        canvas {
-            user-select: none;
-        }
-        @media (prefers-color-scheme: light) {
-            body {
-                background-color: #eee;
-            }
-        }
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #1c2227;
-                color: #e2e1d7;
-            }
-        }
-        .canvas-container {
-            width: 900;
-            /* overflow-x: scroll; */
-            margin-left:20px;
-        }
-        .header {
-            margin-top: 20px;
-            margin-left: 20px;
-        }
-        .header p {
-            display: inline;
-            vertical-align: top;
-            line-height: 28px;
-            margin-right: 20px;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-        }
-        .header .stats {
-            margin-top: 20px;
-            line-height: 28px;
-        }
-        .header h1 {
-            display: inline;
-            vertical-align: top;
-            line-height: 28px;
-        }
-    </style>
-  <body>
-    <div class="header">
+    }
+
+    .canvas-container {
+        width: 900;
+        /* overflow-x: scroll; */
+        margin-left: 20px;
+    }
+
+    .header {
+        margin-top: 20px;
+        margin-left: 20px;
+    }
+
+    .header p {
+        display: inline;
+        vertical-align: top;
+        line-height: 28px;
+        margin-right: 20px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .header .stats {
+        margin-top: 20px;
+        line-height: 28px;
+    }
+
+    .header h1 {
+        display: inline;
+        vertical-align: top;
+        line-height: 28px;
+    }
+
+    .filters {
+        margin-left: 20px;
+        display: flex;
+        justify-content: space-between;
+        width: 60%;
+    }
+</style>
+
+<body>
+    <div class='header'>
         <h1>Robot Framework Dashboard {{ date }}</h1>
-        <div class="stats">
+        <div class='stats'>
             <p id='suiteCount'></p>
             <p id='testCount'></p>
             <p id='keywordCount'></p>
         </div>
     </div>
-    
-    <h2>Suite Statistics</h2>
-    <div style="display: flex">
-        <div class="canvas-container">
-            <canvas id="suiteStatistics" width="900", height="540"></canvas>
+
+    <div class='filters'>
+        <div>
+            <label for='runs'>Runs</label>
+            <select id='runs'></select>
         </div>
-        <div class="canvas-container">
-            <canvas id="suitesOverTime" width="900", height="540"></canvas>
+        <div>
+            <label for='fromDate'>From Date</label>
+            <input id='fromDate' type='date'></input>
+        </div>
+        <div>
+            <label for='fromTime'>From Time</label>
+            <input id='fromTime' type='time'></input>
+        </div>
+        <div>
+            <label for='toDate'>To Date</label>
+            <input id='toDate' type='date'></input>
+        </div>
+        <div>
+            <label for='toTime'>To Time</label>
+            <input id='toTime' type='time'></input>
+        </div>
+        <div>
+            <button id='clearFilters'>Clear Filters</button>
         </div>
     </div>
 
-  </body>
-  <script>
+    <h2>Run Statistics</h2>
+    <div style='display: flex'>
+        <div class='canvas-container'>
+            <canvas id='suiteStatistics' width='900' , height='540'></canvas>
+        </div>
+        <div class='canvas-container'>
+            <canvas id='suitesOverTime' width='900' , height='540'></canvas>
+        </div>
+    </div>
+    <h2>Suite Statistics</h2>
+    <div style='display: flex'>
+        <div class='canvas-container'>
+            <canvas id='suiteStatistics' width='900' , height='540'></canvas>
+        </div>
+        <div class='canvas-container'>
+            <canvas id='suitesOverTime' width='900' , height='540'></canvas>
+        </div>
+    </div>
+    <h2>Test Statistics</h2>
+    <div style='display: flex'>
+        <div class='canvas-container'>
+            <canvas id='suiteStatistics' width='900' , height='540'></canvas>
+        </div>
+        <div class='canvas-container'>
+            <canvas id='suitesOverTime' width='900' , height='540'></canvas>
+        </div>
+    </div>
+    <h2>Keyword Statistics</h2>
+    <div style='display: flex'>
+        <div class='canvas-container'>
+            <canvas id='suiteStatistics' width='900' , height='540'></canvas>
+        </div>
+        <div class='canvas-container'>
+            <canvas id='suitesOverTime' width='900' , height='540'></canvas>
+        </div>
+    </div>
+
+</body>
+<script>
     // theme
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        Chart.defaults.color = "#e2e1d7";
-        Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
-        Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
-        Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        Chart.defaults.color = '#e2e1d7';
+        Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
+        Chart.defaults.backgroundColor = 'rgba(255,255,0,0.1)';
+        Chart.defaults.elements.line.borderColor = 'rgba(255,255,0,0.4)';
     }
     // prepare input data
-    var suites = {{suites}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-    var tests = {{tests}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+    var suites = {{ suites }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+    var tests = {{ tests }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
     // var keywords = {{keywords}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
 
-    // set top level counts and initialize graphs
+    // set top level counts
     document.getElementById('suiteCount').innerText = 'Suites: ' + suites.length
     document.getElementById('testCount').innerText = 'Tests: ' + tests.length
-    document.getElementById('keywordCount').innerText = 'Keywords: ' + {{keywords}}
-    create_suite_statistics_graph()
-    create_suites_over_time_graph()
+    document.getElementById('keywordCount').innerText = 'Keywords: ' + {{ keywords }}
 
-    function create_suite_statistics_graph() {
+    // initialize graphs and filters
+    add_runs_in_select()
+    var suiteStatisticsGraph
+    var suitesOverTimeGraph
+    update_all_graphs()
+
+    // eventlisteners for filters
+    document.getElementById('runs').addEventListener('change', update_all_graphs)
+    document.getElementById('fromDate').addEventListener('change', update_all_graphs)
+    document.getElementById('fromTime').addEventListener('change', update_all_graphs)
+    document.getElementById('toDate').addEventListener('change', update_all_graphs)
+    document.getElementById('toTime').addEventListener('change', update_all_graphs)
+    document.getElementById('clearFilters').addEventListener('click', clear_filters)
+
+    function update_all_graphs() {
+        // get filter data
+        var run = document.getElementById('runs').value
+        var fromDate = document.getElementById('fromDate').value
+        var fromTime = document.getElementById('fromTime').value
+        var toDate = document.getElementById('toDate').value
+        var toTime = document.getElementById('toTime').value
+
+        // filter inputData based on runs
+        var filteredRunSuites = {}
+        for (const [key, value] of Object.entries(suites)) {
+            if (run != 'All' && value.name != run) {
+                continue
+            } else {
+                filteredRunSuites[key] = value
+            }
+        }
+
+        // filter inputData based on from date time and to date time
+        var filteredDateTimeSuites = {}
+        if (fromDate && fromTime && toDate && toTime) {
+            var fromDateTime = new Date(`${fromDate} ${fromTime}:00`)
+            var toDateTime = new Date(`${toDate} ${toTime}:00`)
+            if (fromDateTime <= toDateTime) {
+                for (const [key, value] of Object.entries(filteredRunSuites)) {
+                    var run_start = new Date(value.run_start)
+                    if (run_start < fromDateTime || run_start > toDateTime) {
+                        continue
+                    } else {
+                        filteredDateTimeSuites[key] = value
+                    }
+                }
+            } else {
+                // you end up here if fromDate > toDate
+                filteredDateTimeSuites = filteredRunSuites
+            }
+        } else {
+            // no dates or not all value are provided
+            filteredDateTimeSuites = filteredRunSuites
+        }
+
+        // create (new) graphs
+        if (suiteStatisticsGraph) { suiteStatisticsGraph.destroy() }
+        create_suite_statistics_graph(filteredDateTimeSuites)
+        if (suitesOverTimeGraph) { suitesOverTimeGraph.destroy() }
+        create_suites_over_time_graph(filteredDateTimeSuites)
+    }
+
+    function clear_filters() {
+        var run = document.getElementById('runs').value = 'All'
+        var fromDate = document.getElementById('fromDate').value = ''
+        var fromTime = document.getElementById('fromTime').value = ''
+        var toDate = document.getElementById('toDate').value = ''
+        var toTime = document.getElementById('toTime').value = ''
+        update_all_graphs()
+    }
+
+    function add_runs_in_select() {
+        var runs = []
+        for (suite of suites) {
+            if (!runs.includes(suite.name)) {
+                runs.push(suite.name)
+            }
+        }
+        runsSelect = document.getElementById('runs');
+        runsSelect.options[runsSelect.options.length] = new Option('All', 'All');
+        for (run of runs) {
+            runsSelect.options[runsSelect.options.length] = new Option(run, run);
+        }
+    }
+
+    function create_suite_statistics_graph(filteredSuites) {
         var passed = []
         var failed = []
         var skipped = []
         var labels = []
-        for (const [key, value] of Object.entries(suites)) {
+        for (const [key, value] of Object.entries(filteredSuites)) {
             passed.push(value.passed)
             failed.push(value.failed)
             skipped.push(value.skipped)
             labels.push(`${value.full_name}: ${value.run_start}`)
         }
 
-        const suiteStatisticsData = {
+        var suiteStatisticsData
+        suiteStatisticsData = {
             labels: labels,
             datasets: [
                 {
@@ -134,7 +292,7 @@
         };
 
         Chart.register(ChartDataLabels);
-        new Chart("suiteStatistics", {
+        suiteStatisticsGraph = new Chart('suiteStatistics', {
             type: 'bar',
             data: suiteStatisticsData,
             options: {
@@ -142,7 +300,7 @@
                     x: {
                         ticks: {
                             display: true,
-                            callback: function(value) {
+                            callback: function (value) {
                                 return this.getLabelForValue(value).split(':')[0]
                             },
                         },
@@ -175,49 +333,49 @@
                         color: '#000000',
                         align: 'center',
                         anchor: 'center',
-                        formatter: function(value) {
-                            if(value >0 ){
+                        formatter: function (value) {
+                            if (value > 0) {
                                 return value
-                            } else{
-                                value = "";
+                            } else {
+                                value = '';
                                 return value;
                             }
                         }
                     },
                     title: {
-                    display: true,
-                    text: 'Suite Statistics'
+                        display: true,
+                        text: 'Suite Statistics'
                     }
                 }
             }
         });
     }
 
-    function create_suites_over_time_graph() {
+    function create_suites_over_time_graph(filteredSuites) {
         var labels = []
         var sets = []
         var datasets = []
-        for (const [run, stats] of Object.entries(suites)) {
-            var full_name = stats.full_name
-            var run_start = new Date(stats.run_start)
-            var elapsed_s = stats.elapsed_s
+        for (const [key, value] of Object.entries(filteredSuites)) {
+            var full_name = value.full_name
+            var run_start = new Date(value.run_start)
+            var elapsed_s = value.elapsed_s
             if (labels.includes(full_name)) {
                 var values = sets[full_name]
-                values.push({x: run_start, y: elapsed_s})
+                values.push({ x: run_start, y: elapsed_s })
                 sets[full_name] = values
             } else {
                 labels.push(full_name)
-                sets[full_name] = [{x: run_start, y: elapsed_s}]
+                sets[full_name] = [{ x: run_start, y: elapsed_s }]
             }
         }
-        for (const [run, data] of Object.entries(sets)) {
-            datasets.push({label: run, fill: false, borderDash: [5, 5], data: data})
+        for (const [key, value] of Object.entries(sets)) {
+            datasets.push({ label: key, fill: false, borderDash: [5, 5], data: value })
         }
 
-        new Chart("suitesOverTime", {
+        suitesOverTimeGraph = new Chart('suitesOverTime', {
             type: 'line',
-            data: { 
-                datasets: datasets 
+            data: {
+                datasets: datasets
             },
             options: {
                 responsive: false,
@@ -225,7 +383,7 @@
                     title: {
                         text: 'Suite Duration Over Time',
                         display: true
-                    }, 
+                    },
                     datalabels: {
                         display: false,
                     },
@@ -242,7 +400,7 @@
                     x: {
                         type: 'time',
                         time: {
-                            tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS' 
+                            tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
                         },
                         title: {
                             display: true,
@@ -260,37 +418,39 @@
             }
         });
     }
-    </script>
+</script>
+
 <body>
+
 </html>
 
-<!-- var chart = new CanvasJS.Chart("chartContainer",
+<!-- var chart = new CanvasJS.Chart('chartContainer',
                                {
   title: {
-    text: "How long an event occurred for on a given day"
+    text: 'How long an event occurred for on a given day'
   },
   axisY: {
     minimum: (new Date(2016, 0, 28, 11, 30)).getTime(),            
     interval: (1 * 60 * 60 * 1000),
     labelFormatter: function(e){
-      return CanvasJS.formatDate(e.value, "DD - h:mm TT");
+      return CanvasJS.formatDate(e.value, 'DD - h:mm TT');
     },
     gridThickness: 2
   },
 
   toolTip:{
     contentFormatter: function ( e ) {
-      return "<strong>" + e.entries[0].dataPoint.label + "</strong></br> Start: " +  CanvasJS.formatDate(e.entries[0].dataPoint.y[0], "DD - h:mm TT") + "</br>End : " +  CanvasJS.formatDate(e.entries[0].dataPoint.y[1], "DD - h:mm TT");  
+      return '<strong>' + e.entries[0].dataPoint.label + '</strong></br> Start: ' +  CanvasJS.formatDate(e.entries[0].dataPoint.y[0], 'DD - h:mm TT') + '</br>End : ' +  CanvasJS.formatDate(e.entries[0].dataPoint.y[1], 'DD - h:mm TT');  
     }},
 
   data: [
     {
-      type: "rangeBar",
+      type: 'rangeBar',
       dataPoints: [
-        { label: "Walking", y: [(new Date(2016, 0, 28, 12, 20)).getTime(), (new Date(2016, 0, 28, 13, 00)).getTime()] },
-        { label: "Walking", y: [(new Date(2016, 0, 28, 15, 20)).getTime(), (new Date(2016, 0, 28, 18, 00)).getTime()] },
-        { label: "Running", y: [(new Date(2016, 0, 28, 13, 20)).getTime(), (new Date(2016, 0, 28, 14, 20)).getTime()] },
-        { label: "Walking", y: [(new Date(2016, 0, 28, 14, 20)).getTime(), (new Date(2016, 0, 28, 15, 00)).getTime()] }
+        { label: 'Walking', y: [(new Date(2016, 0, 28, 12, 20)).getTime(), (new Date(2016, 0, 28, 13, 00)).getTime()] },
+        { label: 'Walking', y: [(new Date(2016, 0, 28, 15, 20)).getTime(), (new Date(2016, 0, 28, 18, 00)).getTime()] },
+        { label: 'Running', y: [(new Date(2016, 0, 28, 13, 20)).getTime(), (new Date(2016, 0, 28, 14, 20)).getTime()] },
+        { label: 'Walking', y: [(new Date(2016, 0, 28, 14, 20)).getTime(), (new Date(2016, 0, 28, 15, 00)).getTime()] }
       ]
     }
   ]                      

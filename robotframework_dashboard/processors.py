@@ -36,7 +36,6 @@ class SuiteProcessor(ResultVisitor):
                 stats.skipped,
                 suite.elapsed_time.total_seconds(),
                 suite.start_time,
-                suite.end_time,
             )
         )
 
@@ -57,7 +56,6 @@ class TestProcessor(ResultVisitor):
                 test.skipped,
                 test.elapsed_time.total_seconds(),
                 test.start_time,
-                test.end_time,
                 ",".join(test.tags),
             )
         )
@@ -78,7 +76,6 @@ class KeywordProcessor(ResultVisitor):
                 keyword.skipped,
                 keyword.elapsedtime / 1000,
                 keyword.start_time,
-                keyword.end_time,
                 ",".join(keyword.tags),
             )
         )
