@@ -69,6 +69,13 @@ class ArgumentParser:
         if arguments.version:
             print(__version__)
             exit(0)
+        outputs = None
+        if arguments.outputpath:
+            outputs = []
+            for output in arguments.outputpath:
+                path = output[0].split(':')[0]
+                tags = output[0].split(':')[1:]
+                outputs.append([path, tags])
         generate_dashboard = (
             True
             if arguments.generatedashboard == True
@@ -88,7 +95,7 @@ class ArgumentParser:
         else:
             dashboard_name = arguments.namedashboard
         return (
-            arguments.outputpath,
+            outputs,
             arguments.databasepath,
             generate_dashboard,
             dashboard_name,

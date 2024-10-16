@@ -93,6 +93,10 @@
             <select id='runs'></select>
         </div>
         <div>
+            <label for='tag'>Tag</label>
+            <select id='tag'></select>
+        </div>
+        <div>
             <label for='fromDate'>From Date</label>
             <input id='fromDate' type='date'></input>
         </div>
@@ -164,79 +168,125 @@
     var tests = {{ tests }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
     // var keywords = {{keywords}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
 
-    // set top level counts
+    // set default values
     document.getElementById('suiteCount').innerText = 'Suites: ' + suites.length
     document.getElementById('testCount').innerText = 'Tests: ' + tests.length
     document.getElementById('keywordCount').innerText = 'Keywords: ' + {{ keywords }}
+    set_lowest_highest_dates(suites)
 
     // initialize graphs and filters
     add_runs_in_select()
+    add_tags_in_select()
     var suiteStatisticsGraph
     var suitesOverTimeGraph
     update_all_graphs()
 
     // eventlisteners for filters
     document.getElementById('runs').addEventListener('change', update_all_graphs)
+    document.getElementById('tag').addEventListener('change', update_all_graphs)
     document.getElementById('fromDate').addEventListener('change', update_all_graphs)
     document.getElementById('fromTime').addEventListener('change', update_all_graphs)
     document.getElementById('toDate').addEventListener('change', update_all_graphs)
     document.getElementById('toTime').addEventListener('change', update_all_graphs)
     document.getElementById('clearFilters').addEventListener('click', clear_filters)
 
+    function set_lowest_highest_dates(suites) {
+        var lowest = ''
+        var highest = ''
+        for (suite of suites) {
+            var suiteRunStart = new Date(suite.run_start)
+            // set initial values
+            if (lowest == '') { lowest = suiteRunStart}
+            if (highest == '') { lowest = suiteRunStart}
+            // update if found an earlier or later run
+            if (suiteRunStart < lowest) { lowest = suiteRunStart}
+            if (suiteRunStart > highest) { highest = suiteRunStart}
+        }
+        document.getElementById('fromDate').value = lowest.toISOString().split('T')[0]
+        document.getElementById('fromTime').value = (lowest.toISOString().split('T')[1]).substring(0, 5)
+        document.getElementById('toDate').value = highest.toISOString().split('T')[0]
+        document.getElementById('toTime').value = (highest.toISOString().split('T')[1]).substring(0, 5)
+    }
+
     function update_all_graphs() {
-        // get filter data
+        var filtered = filter_runs(suites)
+        filtered = filter_tags(filtered)
+        filtered = filter_dates(filtered)
+
+        if (suiteStatisticsGraph) { suiteStatisticsGraph.destroy() }
+        if (suitesOverTimeGraph) { suitesOverTimeGraph.destroy() }
+      
+        create_suite_statistics_graph(filtered)
+        create_suites_over_time_graph(filtered)
+    }
+
+    function filter_runs(suites) {
         var run = document.getElementById('runs').value
+        var filtered = {}
+        for (const [key, value] of Object.entries(suites)) {
+            if (run != 'All' && value.name != run) {
+                continue
+            } else {
+                filtered[key] = value
+            }
+        }
+        return filtered
+    }
+
+    function filter_tags(suites) {
+        var tag = document.getElementById('tag').value
+        var filtered = {}
+        for (const [key, value] of Object.entries(suites)) {
+            if (tag != 'All') {
+                var runTags = value.tags.split(',')
+                for (runTag of runTags) {
+                    if (tag != runTag) {
+                        continue
+                    } else {
+                        filtered[key] = value
+                    }
+                }
+            } else {
+                filtered = suites
+            }
+        }
+        return filtered
+    }
+
+    function filter_dates(suites) {
         var fromDate = document.getElementById('fromDate').value
         var fromTime = document.getElementById('fromTime').value
         var toDate = document.getElementById('toDate').value
         var toTime = document.getElementById('toTime').value
 
-        // filter inputData based on runs
-        var filteredRunSuites = {}
-        for (const [key, value] of Object.entries(suites)) {
-            if (run != 'All' && value.name != run) {
-                continue
-            } else {
-                filteredRunSuites[key] = value
-            }
-        }
-
-        // filter inputData based on from date time and to date time
-        var filteredDateTimeSuites = {}
+        var filtered = {}
         if (fromDate && fromTime && toDate && toTime) {
             var fromDateTime = new Date(`${fromDate} ${fromTime}:00`)
             var toDateTime = new Date(`${toDate} ${toTime}:00`)
             if (fromDateTime <= toDateTime) {
-                for (const [key, value] of Object.entries(filteredRunSuites)) {
+                for (const [key, value] of Object.entries(suites)) {
                     var run_start = new Date(value.run_start)
                     if (run_start < fromDateTime || run_start > toDateTime) {
                         continue
                     } else {
-                        filteredDateTimeSuites[key] = value
+                        filtered[key] = value
                     }
                 }
             } else {
                 // you end up here if fromDate > toDate
-                filteredDateTimeSuites = filteredRunSuites
+                filtered = suites
             }
         } else {
             // no dates or not all value are provided
-            filteredDateTimeSuites = filteredRunSuites
+            filtered = suites
         }
-
-        // create (new) graphs
-        if (suiteStatisticsGraph) { suiteStatisticsGraph.destroy() }
-        create_suite_statistics_graph(filteredDateTimeSuites)
-        if (suitesOverTimeGraph) { suitesOverTimeGraph.destroy() }
-        create_suites_over_time_graph(filteredDateTimeSuites)
+        return filtered
     }
 
     function clear_filters() {
-        var run = document.getElementById('runs').value = 'All'
-        var fromDate = document.getElementById('fromDate').value = ''
-        var fromTime = document.getElementById('fromTime').value = ''
-        var toDate = document.getElementById('toDate').value = ''
-        var toTime = document.getElementById('toTime').value = ''
+        document.getElementById('runs').value = 'All'
+        document.getElementById('tag').value = 'All'
+        set_lowest_highest_dates(suites)
         update_all_graphs()
     }
 
@@ -254,12 +304,29 @@
         }
     }
 
-    function create_suite_statistics_graph(filteredSuites) {
+    function add_tags_in_select() {
+        var tags = []
+        for (suite of suites) {
+            var suiteTags = suite.tags.split(',')
+            for (tag of suiteTags) {
+                if (!tags.includes(tag) && tag != '') {
+                    tags.push(tag)
+                }
+            }
+        }
+        tagsSelect = document.getElementById('tag');
+        tagsSelect.options[tagsSelect.options.length] = new Option('All', 'All');
+        for (tag of tags) {
+            tagsSelect.options[tagsSelect.options.length] = new Option(tag, tag);
+        }
+    }
+
+    function create_suite_statistics_graph(filtered) {
         var passed = []
         var failed = []
         var skipped = []
         var labels = []
-        for (const [key, value] of Object.entries(filteredSuites)) {
+        for (const [key, value] of Object.entries(filtered)) {
             passed.push(value.passed)
             failed.push(value.failed)
             skipped.push(value.skipped)
@@ -351,11 +418,11 @@
         });
     }
 
-    function create_suites_over_time_graph(filteredSuites) {
+    function create_suites_over_time_graph(filtered) {
         var labels = []
         var sets = []
         var datasets = []
-        for (const [key, value] of Object.entries(filteredSuites)) {
+        for (const [key, value] of Object.entries(filtered)) {
             var full_name = value.full_name
             var run_start = new Date(value.run_start)
             var elapsed_s = value.elapsed_s

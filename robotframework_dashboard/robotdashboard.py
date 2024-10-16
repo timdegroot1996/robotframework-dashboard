@@ -19,7 +19,7 @@ from time import time
 
 def main():
     (
-        output_paths,
+        outputs,
         database_path,
         generate_dashboard,
         dashboard_name,
@@ -38,17 +38,20 @@ def main():
     print(
         "=============================================================================="
     )
-    if output_paths:
+    if outputs:
         output_data = {}
         print(f" 2. Processing output XML(s)")
-        for output_path in output_paths:
-            output_path = output_path[0]
+        for output in outputs:
+            output_path = output[0]
+            tags = output[1]
             start = time()
             print(f"  Processing output XML '{basename(output_path)}'")
             output_data[output_path] = OutputProcessor().get_output_data(output_path)
-            database.insert_output_data(output_path, output_data)
+            database.insert_output_data(output_path, output_data, tags)
             end = time()
-            print(f"  Processed output XML '{basename(output_path)}' in {round(end-start, 2)} seconds")
+            print(
+                f"  Processed output XML '{basename(output_path)}' in {round(end-start, 2)} seconds"
+            )
     else:
         print(f" 2. Processing output XML(s)\n  skipping step")
 
@@ -81,7 +84,9 @@ def main():
             dashboard_name, dashboard_data, generation_datetime
         )
         end = time()
-        print(f"  created dashboard '{dashboard_name}' in {round(end-start, 2)} seconds")
+        print(
+            f"  created dashboard '{dashboard_name}' in {round(end-start, 2)} seconds"
+        )
     else:
         print(" 5. Creating dashboard HTML\n  skipping step")
     database.close_database()

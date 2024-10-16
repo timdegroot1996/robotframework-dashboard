@@ -21,9 +21,9 @@ class DatabaseProcessor:
         self.connection.cursor().execute(CREATE_KEYWORDS)
         self.connection.commit()
 
-    def insert_output_data(self, output_path: str, output_data: dict):
+    def insert_output_data(self, output_path: str, output_data: dict, tags: list):
         try:
-            self.insert_suites(output_data[output_path]["suites"])
+            self.insert_suites(output_data[output_path]["suites"], tags)
             self.insert_tests(output_data[output_path]["tests"])
             self.insert_keywords(output_data[output_path]["keywords"])
         except Exception as e:
@@ -31,8 +31,12 @@ class DatabaseProcessor:
                 f"   ERROR: you are probably trying to add the same output again, {e}"
             )
 
-    def insert_suites(self, suites: list[tuple]):
-        self.connection.executemany(INSERT_INTO_SUITES, suites)
+    def insert_suites(self, suites: list[tuple], tags: list):
+        full_suites = []
+        for suite in suites:
+            suite += (','.join(tags),)
+            full_suites.append(suite)
+        self.connection.executemany(INSERT_INTO_SUITES, full_suites)
         self.connection.commit()
 
     def insert_tests(self, tests: list[tuple]):
