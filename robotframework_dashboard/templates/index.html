@@ -85,177 +85,181 @@
         Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
         Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
     }
-  </script>
-  <script>
     // prepare input data
     var suites = {{suites}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
     var tests = {{tests}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
     // var keywords = {{keywords}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
 
-    // set top level counts
+    // set top level counts and initialize graphs
     document.getElementById('suiteCount').innerText = 'Suites: ' + suites.length
     document.getElementById('testCount').innerText = 'Tests: ' + tests.length
     document.getElementById('keywordCount').innerText = 'Keywords: ' + {{keywords}}
-    // suite statistics
-    var passed = []
-    var failed = []
-    var skipped = []
-    var labels = []
-    for (const [key, value] of Object.entries(suites)) {
-        passed.push(value.passed)
-        failed.push(value.failed)
-        skipped.push(value.skipped)
-        labels.push(`${value.full_name}: ${value.run_start}`)
-    }
+    create_suite_statistics_graph()
+    create_suites_over_time_graph()
 
-    const suiteStatisticsData = {
-        labels: labels,
-        datasets: [
-            {
-                label: 'Failed',
-                data: failed,
-                backgroundColor: '#ce3e01',
-                stack: 'Stack 0',
-            },
-            {
-                label: 'Skipped',
-                data: skipped,
-                backgroundColor: '#fed84f',
-                stack: 'Stack 0',
-            },
-            {
-                label: 'Passed',
-                data: passed,
-                backgroundColor: '#97bd61',
-                stack: 'Stack 0',
-            },
-        ]
-    };
+    function create_suite_statistics_graph() {
+        var passed = []
+        var failed = []
+        var skipped = []
+        var labels = []
+        for (const [key, value] of Object.entries(suites)) {
+            passed.push(value.passed)
+            failed.push(value.failed)
+            skipped.push(value.skipped)
+            labels.push(`${value.full_name}: ${value.run_start}`)
+        }
 
-    Chart.register(ChartDataLabels);
-    new Chart("suiteStatistics", {
-        type: 'bar',
-        data: suiteStatisticsData,
-        options: {
-            scales: {
-                x: {
-                    ticks: {
-                        display: true,
-                        callback: function(value) {
-                            return this.getLabelForValue(value).split(':')[0]
+        const suiteStatisticsData = {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Failed',
+                    data: failed,
+                    backgroundColor: '#ce3e01',
+                    stack: 'Stack 0',
+                },
+                {
+                    label: 'Skipped',
+                    data: skipped,
+                    backgroundColor: '#fed84f',
+                    stack: 'Stack 0',
+                },
+                {
+                    label: 'Passed',
+                    data: passed,
+                    backgroundColor: '#97bd61',
+                    stack: 'Stack 0',
+                },
+            ]
+        };
+
+        Chart.register(ChartDataLabels);
+        new Chart("suiteStatistics", {
+            type: 'bar',
+            data: suiteStatisticsData,
+            options: {
+                scales: {
+                    x: {
+                        ticks: {
+                            display: true,
+                            callback: function(value) {
+                                return this.getLabelForValue(value).split(':')[0]
+                            },
                         },
-                    },
-                    title: {
-                        display: true,
-                        text: 'Run'
-                    }
-                },
-                y: {
-                    stacked: true,
-                    title: {
-                        display: true,
-                        text: 'Amount Of Tests'
-                    },
-                    grace: '5%'
-                }
-            },
-            interaction: {
-                mode: 'x'
-            },
-            responsive: false,
-            plugins: {
-                legend: {
-                    display: false,
-                    labels: {
-                        family: 'Helvetica, sans-serif',
-                    }
-                },
-                datalabels: {
-                    color: '#000000',
-                    align: 'center',
-                    anchor: 'center',
-                    formatter: function(value) {
-                        if(value >0 ){
-                            return value
-                        } else{
-                            value = "";
-                            return value;
+                        title: {
+                            display: true,
+                            text: 'Run'
                         }
+                    },
+                    y: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Amount Of Tests'
+                        },
+                        grace: '5%'
                     }
                 },
-                title: {
-                display: true,
-                text: 'Suite Statistics'
+                interaction: {
+                    mode: 'x'
+                },
+                responsive: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                        labels: {
+                            family: 'Helvetica, sans-serif',
+                        }
+                    },
+                    datalabels: {
+                        color: '#000000',
+                        align: 'center',
+                        anchor: 'center',
+                        formatter: function(value) {
+                            if(value >0 ){
+                                return value
+                            } else{
+                                value = "";
+                                return value;
+                            }
+                        }
+                    },
+                    title: {
+                    display: true,
+                    text: 'Suite Statistics'
+                    }
                 }
             }
-        }
-    });
-    // suites over time
-    var labels = []
-    var sets = []
-    var datasets = []
-    for (const [run, stats] of Object.entries(suites)) {
-        var full_name = stats.full_name
-        var run_start = new Date(stats.run_start)
-        var elapsed_s = stats.elapsed_s
-        if (labels.includes(full_name)) {
-            var values = sets[full_name]
-            values.push({x: run_start, y: elapsed_s})
-            sets[full_name] = values
-        } else {
-            labels.push(full_name)
-            sets[full_name] = [{x: run_start, y: elapsed_s}]
-        }
-    }
-    for (const [run, data] of Object.entries(sets)) {
-        datasets.push({label: run, fill: false, borderDash: [5, 5], data: data})
+        });
     }
 
-    new Chart("suitesOverTime", {
-        type: 'line',
-        data: { 
-            datasets: datasets 
-        },
-        options: {
-            responsive: false,
-            plugins: {
-                title: {
-                    text: 'Suite Duration Over Time',
-                    display: true
-                }, 
-                datalabels: {
-                    display: false,
-                },
-                legend: {
-                    display: true,
-                    position: 'right',
-                    labels: {
-                        family: 'Helvetica, sans-serif',
-                        color: '#e2e1d7'
-                    }
-                },
-            },
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS' 
-                    },
-                    title: {
-                        display: true,
-                        text: 'Date'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Elapsed (seconds)'
-                    },
-                    grace: '5%'
-                }
+    function create_suites_over_time_graph() {
+        var labels = []
+        var sets = []
+        var datasets = []
+        for (const [run, stats] of Object.entries(suites)) {
+            var full_name = stats.full_name
+            var run_start = new Date(stats.run_start)
+            var elapsed_s = stats.elapsed_s
+            if (labels.includes(full_name)) {
+                var values = sets[full_name]
+                values.push({x: run_start, y: elapsed_s})
+                sets[full_name] = values
+            } else {
+                labels.push(full_name)
+                sets[full_name] = [{x: run_start, y: elapsed_s}]
             }
         }
-    });
+        for (const [run, data] of Object.entries(sets)) {
+            datasets.push({label: run, fill: false, borderDash: [5, 5], data: data})
+        }
+
+        new Chart("suitesOverTime", {
+            type: 'line',
+            data: { 
+                datasets: datasets 
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    title: {
+                        text: 'Suite Duration Over Time',
+                        display: true
+                    }, 
+                    datalabels: {
+                        display: false,
+                    },
+                    legend: {
+                        display: true,
+                        position: 'right',
+                        labels: {
+                            family: 'Helvetica, sans-serif',
+                            color: '#e2e1d7'
+                        }
+                    },
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS' 
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Elapsed (seconds)'
+                        },
+                        grace: '5%'
+                    }
+                }
+            }
+        });
+    }
     </script>
 <body>
 </html>

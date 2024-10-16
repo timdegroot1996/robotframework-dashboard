@@ -1,6 +1,6 @@
 """Usage: robotdashboard.py [outputpath] [databasepath] [removerun] [namedashboard] [generatedashboard] [listruns]
 
-1. Creates robot_results.db or specified database if it does not yet exist
+1. Database preparation creates robot_results.db or specified database if it does not yet exist
 2. Optionally Reads test execution result from 1 or more output XML file(s) and uploads to the database
 3. Lists all runs currently available in the database, ordered by the time they were entered
 4. Optionally Removes run(s) specified by run_date or index of being added
@@ -14,6 +14,7 @@ from .processors import OutputProcessor
 from .database import DatabaseProcessor
 from .dashboard import DashboardGenerator
 from os.path import basename
+from time import time
 
 
 def main():
@@ -29,9 +30,10 @@ def main():
     print(
         "=============================================================================="
     )
-    print(f" 1. Creating or using database\n  '{database_path}'")
+    print(f" 1. Database preparation")
     database = DatabaseProcessor(database_path)
     database.create_database()
+    print(f"  created database connection: '{database_path}'")
 
     print(
         "=============================================================================="
@@ -41,12 +43,14 @@ def main():
         print(f" 2. Processing output XML(s)")
         for output_path in output_paths:
             output_path = output_path[0]
-            print(f"  Processing output XML: '{basename(output_path)}'")
+            start = time()
+            print(f"  Processing output XML '{basename(output_path)}'")
             output_data[output_path] = OutputProcessor().get_output_data(output_path)
-            print(f"  Inserting output data into database: '{basename(output_path)}'")
             database.insert_output_data(output_path, output_data)
+            end = time()
+            print(f"  Processed output XML '{basename(output_path)}' in {round(end-start, 2)} seconds")
     else:
-        print(f" 2. Processing output XML(s): skipping step")
+        print(f" 2. Processing output XML(s)\n  skipping step")
 
     print(
         "=============================================================================="
@@ -55,7 +59,7 @@ def main():
         print(f" 3. Listing all available runs in the database")
         database.list_runs()
     else:
-        print(f" 3. Listing all available runs in the database: skipping step")
+        print(f" 3. Listing all available runs in the database\n  skipping step")
 
     print(
         "=============================================================================="
@@ -64,21 +68,20 @@ def main():
         print(f" 4. Removing runs from the database")
         database.remove_runs(remove_runs)
     else:
-        print(f" 4. Removing runs from the database: skipping step")
+        print(f" 4. Removing runs from the database\n  skipping step")
 
     print(
         "=============================================================================="
     )
     if generate_dashboard:
+        start = time()
+        print(f" 5. Creating dashboard HTML")
         dashboard_data = database.get_data()
-        print(f" 5. Creating dashboard HTML\n  '{dashboard_name}'")
         DashboardGenerator().generate_dashboard(
             dashboard_name, dashboard_data, generation_datetime
         )
+        end = time()
+        print(f"  created dashboard '{dashboard_name}' in {round(end-start, 2)} seconds")
     else:
-        print(" 5. Creating dashboard HTML: skipping step")
+        print(" 5. Creating dashboard HTML\n  skipping step")
     database.close_database()
-
-
-if __name__ == "__main__":
-    main()
