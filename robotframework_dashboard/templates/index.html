@@ -11,8 +11,6 @@
         }
         :root {
             color-scheme: dark;
-        }
-        body {
             font-family: Helvetica, sans-serif;
         }
         canvas {
@@ -31,7 +29,7 @@
         }
         .canvas-container {
             width: 900;
-            overflow-x: scroll;
+            /* overflow-x: scroll; */
             margin-left:20px;
         }
         .header {
@@ -57,7 +55,6 @@
             vertical-align: top;
             line-height: 28px;
         }
-
     </style>
   <body>
     <div class="header">
@@ -262,3 +259,36 @@
     </script>
 <body>
 </html>
+
+<!-- var chart = new CanvasJS.Chart("chartContainer",
+                               {
+  title: {
+    text: "How long an event occurred for on a given day"
+  },
+  axisY: {
+    minimum: (new Date(2016, 0, 28, 11, 30)).getTime(),            
+    interval: (1 * 60 * 60 * 1000),
+    labelFormatter: function(e){
+      return CanvasJS.formatDate(e.value, "DD - h:mm TT");
+    },
+    gridThickness: 2
+  },
+
+  toolTip:{
+    contentFormatter: function ( e ) {
+      return "<strong>" + e.entries[0].dataPoint.label + "</strong></br> Start: " +  CanvasJS.formatDate(e.entries[0].dataPoint.y[0], "DD - h:mm TT") + "</br>End : " +  CanvasJS.formatDate(e.entries[0].dataPoint.y[1], "DD - h:mm TT");  
+    }},
+
+  data: [
+    {
+      type: "rangeBar",
+      dataPoints: [
+        { label: "Walking", y: [(new Date(2016, 0, 28, 12, 20)).getTime(), (new Date(2016, 0, 28, 13, 00)).getTime()] },
+        { label: "Walking", y: [(new Date(2016, 0, 28, 15, 20)).getTime(), (new Date(2016, 0, 28, 18, 00)).getTime()] },
+        { label: "Running", y: [(new Date(2016, 0, 28, 13, 20)).getTime(), (new Date(2016, 0, 28, 14, 20)).getTime()] },
+        { label: "Walking", y: [(new Date(2016, 0, 28, 14, 20)).getTime(), (new Date(2016, 0, 28, 15, 00)).getTime()] }
+      ]
+    }
+  ]                      
+});
+chart.render(); -->
