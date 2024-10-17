@@ -21,7 +21,7 @@ class DashboardGenerator:
         path.parent.mkdir(exist_ok=True, parents=True)
 
         # warn in case of empty database
-        if len(data["suites"]) == 0:
+        if len(data["runs"]) == 0:
             print(f"  WARNING: There are no runs so the dashboard will be empty!")
 
         # write template
@@ -29,6 +29,7 @@ class DashboardGenerator:
             dashboard_writer.write(
                 template.render(
                     date=generation_datetime,
+                    runs=dumps(data["runs"]),
                     suites=dumps(data["suites"]),
                     tests=dumps(data["tests"]),
                     keywords=len(data["keywords"]),

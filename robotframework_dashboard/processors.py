@@ -7,25 +7,27 @@ from pathlib import Path
 class OutputProcessor:
     def get_output_data(self, output_path: Path):
         output = ExecutionResult(output_path)
-        suite_list, test_list, keyword_list = [], [], []
+        run_list, suite_list, test_list, keyword_list = [], [], [], []
+        output.visit(RunProcessor(output.generation_time, run_list))
         output.visit(SuiteProcessor(output.generation_time, suite_list))
         output.visit(TestProcessor(output.generation_time, test_list))
         output.visit(KeywordProcessor(output.generation_time, keyword_list))
         return {
+            "runs": run_list,
             "suites": suite_list,
             "tests": test_list,
             "keywords": keyword_list,
         }
 
 
-class SuiteProcessor(ResultVisitor):
-    def __init__(self, run_time: datetime, suite_list: list):
-        self.suite_list = suite_list
+class RunProcessor(ResultVisitor):
+    def __init__(self, run_time: datetime, run_list: list):
+        self.run_list = run_list
         self.run_time = run_time
 
     def visit_suite(self, suite: TestSuite):
         stats = suite.statistics
-        self.suite_list.append(
+        self.run_list.append(
             (
                 self.run_time,
                 suite.full_name,
@@ -38,6 +40,32 @@ class SuiteProcessor(ResultVisitor):
                 suite.start_time,
             )
         )
+
+class SuiteProcessor(ResultVisitor):
+
+    def __init__(self, run_time: datetime, suite_list: list):
+        self.suite_list = suite_list
+        self.run_time = run_time
+
+    def start_suite(self, suite: TestSuite):
+        if suite.tests:
+            try:
+                stats = suite.statistics.all
+            except:
+                stats = suite.statistics
+            self.suite_list.append(
+                (
+                    self.run_time,
+                    suite.longname,
+                    suite.name,
+                    stats.total,
+                    stats.passed,
+                    stats.failed,
+                    stats.skipped,
+                    suite.elapsed_time.total_seconds(),
+                    suite.start_time,
+                )
+            )
 
 
 class TestProcessor(ResultVisitor):

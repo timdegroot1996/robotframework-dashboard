@@ -16,6 +16,7 @@ class DatabaseProcessor:
         self.connection.close()
 
     def create_database(self):
+        self.connection.cursor().execute(CREATE_RUNS)
         self.connection.cursor().execute(CREATE_SUITES)
         self.connection.cursor().execute(CREATE_TESTS)
         self.connection.cursor().execute(CREATE_KEYWORDS)
@@ -23,7 +24,8 @@ class DatabaseProcessor:
 
     def insert_output_data(self, output_path: str, output_data: dict, tags: list):
         try:
-            self.insert_suites(output_data[output_path]["suites"], tags)
+            self.insert_runs(output_data[output_path]["runs"], tags)
+            self.insert_suites(output_data[output_path]["suites"])
             self.insert_tests(output_data[output_path]["tests"])
             self.insert_keywords(output_data[output_path]["keywords"])
         except Exception as e:
@@ -31,12 +33,16 @@ class DatabaseProcessor:
                 f"   ERROR: you are probably trying to add the same output again, {e}"
             )
 
-    def insert_suites(self, suites: list[tuple], tags: list):
-        full_suites = []
-        for suite in suites:
-            suite += (','.join(tags),)
-            full_suites.append(suite)
-        self.connection.executemany(INSERT_INTO_SUITES, full_suites)
+    def insert_runs(self, runs: list[tuple], tags: list):
+        full_runs = []
+        for run in runs:
+            run += (','.join(tags),)
+            full_runs.append(run)
+        self.connection.executemany(INSERT_INTO_RUNS, full_runs)
+        self.connection.commit()
+
+    def insert_suites(self, suites: list[tuple]):
+        self.connection.executemany(INSERT_INTO_SUITES, suites)
         self.connection.commit()
 
     def insert_tests(self, tests: list[tuple]):
@@ -48,7 +54,11 @@ class DatabaseProcessor:
         self.connection.commit()
 
     def get_data(self):
-        data, suites, tests, keywords = {}, [], [], []
+        data, runs, suites, tests, keywords = {}, [], [], [], []
+        run_rows = self.connection.cursor().execute(SELECT_FROM_RUNS).fetchall()
+        for run_row in run_rows:
+            runs.append(self.dict_from_row(run_row))
+        data["runs"] = runs
         suite_rows = self.connection.cursor().execute(SELECT_FROM_SUITES).fetchall()
         for suite_row in suite_rows:
             suites.append(self.dict_from_row(suite_row))
@@ -67,7 +77,7 @@ class DatabaseProcessor:
         return dict(zip(row.keys(), row))
 
     def get_runs(self):
-        data = self.connection.cursor().execute(SELECT_RUNS_FROM_SUITES).fetchall()
+        data = self.connection.cursor().execute(SELECT_STARTS_FROM_RUNS).fetchall()
         runs = []
         for entry in data:
             run = self.dict_from_row(entry)
@@ -98,6 +108,7 @@ class DatabaseProcessor:
                     print(f"  ERROR: Could not find run to remove the database: {run}")
 
     def remove_run(self, run_start):
+        self.connection.cursor().execute(DELETE_FROM_RUNS.format(run_start=run_start))
         self.connection.cursor().execute(DELETE_FROM_SUITES.format(run_start=run_start))
         self.connection.cursor().execute(DELETE_FROM_TESTS.format(run_start=run_start))
         self.connection.cursor().execute(

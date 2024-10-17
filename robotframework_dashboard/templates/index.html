@@ -39,6 +39,11 @@
         width: 900;
         /* overflow-x: scroll; */
         margin-left: 20px;
+        text-align: center; 
+    }
+    .canvas-container button {
+        /* position: absolute; */
+        top: 50%;
     }
 
     .header {
@@ -73,7 +78,7 @@
         margin-left: 20px;
         display: flex;
         justify-content: space-between;
-        width: 60%;
+        width: 80%;
     }
 </style>
 
@@ -81,6 +86,7 @@
     <div class='header'>
         <h1>Robot Framework Dashboard {{ date }}</h1>
         <div class='stats'>
+            <p id='runCount'></p>
             <p id='suiteCount'></p>
             <p id='testCount'></p>
             <p id='keywordCount'></p>
@@ -117,13 +123,14 @@
         </div>
     </div>
 
-    <h2>Run Statistics</h2>
+    <h2 id="runTitle">Run Statistics</h2>
     <div style='display: flex'>
         <div class='canvas-container'>
-            <canvas id='suiteStatistics' width='900' , height='540'></canvas>
+            <canvas id='runStatistics' width='900' , height='540'></canvas>
         </div>
         <div class='canvas-container'>
-            <canvas id='suitesOverTime' width='900' , height='540'></canvas>
+            <canvas id='runsOverTime' width='900' , height='540'></canvas>
+            <button onclick='swap_runs_over_time()'>Swap Bar/Line View</button>
         </div>
     </div>
     <h2>Suite Statistics</h2>
@@ -138,19 +145,19 @@
     <h2>Test Statistics</h2>
     <div style='display: flex'>
         <div class='canvas-container'>
-            <canvas id='suiteStatistics' width='900' , height='540'></canvas>
+            <canvas id='testStatistics' width='900' , height='540'></canvas>
         </div>
         <div class='canvas-container'>
-            <canvas id='suitesOverTime' width='900' , height='540'></canvas>
+            <canvas id='testsOverTime' width='900' , height='540'></canvas>
         </div>
     </div>
     <h2>Keyword Statistics</h2>
     <div style='display: flex'>
         <div class='canvas-container'>
-            <canvas id='suiteStatistics' width='900' , height='540'></canvas>
+            <canvas id='keywordStatistics' width='900' , height='540'></canvas>
         </div>
         <div class='canvas-container'>
-            <canvas id='suitesOverTime' width='900' , height='540'></canvas>
+            <canvas id='keywordsOverTime' width='900' , height='540'></canvas>
         </div>
     </div>
 
@@ -164,22 +171,25 @@
         Chart.defaults.elements.line.borderColor = 'rgba(255,255,0,0.4)';
     }
     // prepare input data
+    var runs = {{ runs }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
     var suites = {{ suites }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
     var tests = {{ tests }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
     // var keywords = {{keywords}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
 
     // set default values
-    document.getElementById('suiteCount').innerText = 'Suites: ' + suites.length
+    document.getElementById('runCount').innerText = 'Runs: ' + runs.length
     document.getElementById('testCount').innerText = 'Tests: ' + tests.length
+    document.getElementById('suiteCount').innerText = 'Suites: ' + suites.length
     document.getElementById('keywordCount').innerText = 'Keywords: ' + {{ keywords }}
-    set_lowest_highest_dates(suites)
+    set_lowest_highest_dates(runs)
 
     // initialize graphs and filters
-    add_runs_in_select()
-    add_tags_in_select()
-    var suiteStatisticsGraph
-    var suitesOverTimeGraph
-    update_all_graphs()
+    add_runs_in_select(runs)
+    add_tags_in_select(runs)
+    var runStatisticsGraph
+    var runsOverTimeGraph
+    var swapRunsOverTimeView = true
+    update_all_graphs(swapRunsOverTimeView)
 
     // eventlisteners for filters
     document.getElementById('runs').addEventListener('change', update_all_graphs)
@@ -190,21 +200,16 @@
     document.getElementById('toTime').addEventListener('change', update_all_graphs)
     document.getElementById('clearFilters').addEventListener('click', clear_filters)
 
-    function set_lowest_highest_dates(suites) {
+    function set_lowest_highest_dates(runs) {
         var dates = []
-        for (suite of suites) {
-            dates.push(new Date(suite.run_start))
-        }
-        function offsetMinutes(date, minutes) {
-            return new Date(date.getTime() + minutes*60000);
+        for (run of runs) {
+            dates.push(new Date(run.run_start))
         }
         var lowest = new Date(Math.min.apply(null,dates));
         var highest = new Date(Math.max.apply(null,dates));
         var tzoffset = (new Date()).getTimezoneOffset() * 60000;
-        lowest = (new Date(lowest - tzoffset))
-        highest = (new Date(highest - tzoffset))
-        lowest = offsetMinutes(lowest, - 1) // this is to account for seconds in the initial filter value
-        highest = offsetMinutes(highest, + 1) // this is to account for seconds in the initial filter value
+        lowest = new Date((new Date(lowest - tzoffset)).getTime() + -1*60000) // this is to account for seconds in the initial filter value
+        highest =new Date((new Date(highest - tzoffset)).getTime() + 1*60000) // this is to account for seconds in the initial filter value
         document.getElementById('fromDate').value = lowest.toISOString().split('T')[0]
         document.getElementById('fromTime').value = (lowest.toISOString().split('T')[1]).substring(0, 5)
         document.getElementById('toDate').value = highest.toISOString().split('T')[0]
@@ -212,21 +217,35 @@
     }
 
     function update_all_graphs() {
-        var filtered = filter_runs(suites)
+        var filtered = filter_runs(runs)
         filtered = filter_tags(filtered)
         filtered = filter_dates(filtered)
 
-        if (suiteStatisticsGraph) { suiteStatisticsGraph.destroy() }
-        if (suitesOverTimeGraph) { suitesOverTimeGraph.destroy() }
-      
-        create_suite_statistics_graph(filtered)
-        create_suites_over_time_graph(filtered)
+        // set titles with amount of filtered runs
+        document.getElementById('runTitle').innerText = `Run Statistics (${Object.keys(filtered).length} runs)`
+
+        // destroy and create new graphs
+        if (runStatisticsGraph) { runStatisticsGraph.destroy() }
+        if (runsOverTimeGraph) { runsOverTimeGraph.destroy() }
+        create_run_statistics_graph(filtered)
+        create_runs_over_time_graph(filtered, swapRunsOverTimeView)
     }
 
-    function filter_runs(suites) {
+    function swap_runs_over_time() {
+        runsOverTimeGraph.destroy()
+        if (swapRunsOverTimeView) {
+            swapRunsOverTimeView = false
+            update_all_graphs()
+        } else {
+            swapRunsOverTimeView = true
+            update_all_graphs()
+        }
+    }
+
+    function filter_runs(runs) {
         var run = document.getElementById('runs').value
         var filtered = {}
-        for (const [key, value] of Object.entries(suites)) {
+        for (const [key, value] of Object.entries(runs)) {
             if (run != 'All' && value.name != run) {
                 continue
             } else {
@@ -236,10 +255,10 @@
         return filtered
     }
 
-    function filter_tags(suites) {
+    function filter_tags(runs) {
         var tag = document.getElementById('tag').value
         var filtered = {}
-        for (const [key, value] of Object.entries(suites)) {
+        for (const [key, value] of Object.entries(runs)) {
             if (tag != 'All') {
                 var runTags = value.tags.split(',')
                 for (runTag of runTags) {
@@ -250,13 +269,13 @@
                     }
                 }
             } else {
-                filtered = suites
+                filtered = runs
             }
         }
         return filtered
     }
 
-    function filter_dates(suites) {
+    function filter_dates(runs) {
         var fromDate = document.getElementById('fromDate').value
         var fromTime = document.getElementById('fromTime').value
         var toDate = document.getElementById('toDate').value
@@ -267,7 +286,7 @@
             var fromDateTime = new Date(`${fromDate} ${fromTime}:00`)
             var toDateTime = new Date(`${toDate} ${toTime}:00`)
             if (fromDateTime <= toDateTime) {
-                for (const [key, value] of Object.entries(suites)) {
+                for (const [key, value] of Object.entries(runs)) {
                     var run_start = new Date(value.run_start)
                     if (run_start < fromDateTime || run_start > toDateTime) {
                         continue
@@ -277,11 +296,12 @@
                 }
             } else {
                 // you end up here if fromDate > toDate
-                filtered = suites
+                alert('Filter error: The selected from date + time is later than your selected to date + time. Date filter has not been applied!')
+                filtered = runs
             }
         } else {
             // no dates or not all value are provided
-            filtered = suites
+            filtered = runs
         }
         return filtered
     }
@@ -289,29 +309,29 @@
     function clear_filters() {
         document.getElementById('runs').value = 'All'
         document.getElementById('tag').value = 'All'
-        set_lowest_highest_dates(suites)
+        set_lowest_highest_dates(runs)
         update_all_graphs()
     }
 
-    function add_runs_in_select() {
-        var runs = []
-        for (suite of suites) {
-            if (!runs.includes(suite.name)) {
-                runs.push(suite.name)
+    function add_runs_in_select(runs) {
+        var runOptions = []
+        for (run of runs) {
+            if (!runOptions.includes(run.name)) {
+                runOptions.push(run.name)
             }
         }
         runsSelect = document.getElementById('runs');
         runsSelect.options[runsSelect.options.length] = new Option('All', 'All');
-        for (run of runs) {
-            runsSelect.options[runsSelect.options.length] = new Option(run, run);
+        for (runOption of runOptions) {
+            runsSelect.options[runsSelect.options.length] = new Option(runOption, runOption);
         }
     }
 
-    function add_tags_in_select() {
+    function add_tags_in_select(runs) {
         var tags = []
-        for (suite of suites) {
-            var suiteTags = suite.tags.split(',')
-            for (tag of suiteTags) {
+        for (run of runs) {
+            var runTags = run.tags.split(',')
+            for (tag of runTags) {
                 if (!tags.includes(tag) && tag != '') {
                     tags.push(tag)
                 }
@@ -324,11 +344,8 @@
         }
     }
 
-    function create_suite_statistics_graph(filtered) {
-        var passed = []
-        var failed = []
-        var skipped = []
-        var labels = []
+    function create_run_statistics_graph(filtered) {
+        var [passed, failed, skipped, labels] = [[],[],[],[]]
         for (const [key, value] of Object.entries(filtered)) {
             passed.push(value.passed)
             failed.push(value.failed)
@@ -336,8 +353,8 @@
             labels.push(`${value.full_name}: ${value.run_start}`)
         }
 
-        var suiteStatisticsData
-        suiteStatisticsData = {
+        var runStatisticsData
+        runStatisticsData = {
             labels: labels,
             datasets: [
                 {
@@ -362,9 +379,9 @@
         };
 
         Chart.register(ChartDataLabels);
-        suiteStatisticsGraph = new Chart('suiteStatistics', {
+        runStatisticsGraph = new Chart('runStatistics', {
             type: 'bar',
-            data: suiteStatisticsData,
+            data: runStatisticsData,
             options: {
                 scales: {
                     x: {
@@ -414,79 +431,175 @@
                     },
                     title: {
                         display: true,
-                        text: 'Suite Statistics'
+                        text: 'Run Statistics'
                     }
                 }
             }
         });
     }
 
-    function create_suites_over_time_graph(filtered) {
-        var labels = []
-        var sets = []
-        var datasets = []
-        for (const [key, value] of Object.entries(filtered)) {
-            var full_name = value.full_name
-            var run_start = new Date(value.run_start)
-            var elapsed_s = value.elapsed_s
-            if (labels.includes(full_name)) {
-                var values = sets[full_name]
-                values.push({ x: run_start, y: elapsed_s })
-                sets[full_name] = values
-            } else {
-                labels.push(full_name)
-                sets[full_name] = [{ x: run_start, y: elapsed_s }]
-            }
-        }
-        for (const [key, value] of Object.entries(sets)) {
-            datasets.push({ label: key, fill: false, borderDash: [5, 5], data: value })
-        }
-
-        suitesOverTimeGraph = new Chart('suitesOverTime', {
-            type: 'line',
-            data: {
-                datasets: datasets
-            },
-            options: {
-                responsive: false,
-                plugins: {
-                    title: {
-                        text: 'Suite Duration Over Time',
-                        display: true
-                    },
-                    datalabels: {
-                        display: false,
-                    },
-                    legend: {
-                        display: true,
-                        position: 'right',
-                        labels: {
-                            family: 'Helvetica, sans-serif',
-                            color: '#e2e1d7'
-                        }
-                    },
-                },
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Elapsed (seconds)'
-                        },
-                        grace: '5%'
+    function create_runs_over_time_graph(filtered, swapRunsOverTimeView) {
+        if (swapRunsOverTimeView) {
+            var [labels, data] = [[], {0: []}]
+            // prepare data for bar chart
+            for (const [key, value] of Object.entries(filtered)) {
+                labels.push(`${value.full_name}: ${value.run_start}`)
+                var dataLength = data[0].length
+                if (data[value.name]) {
+                    // add 0 to all not matching, and value.elapsed to matching
+                    data[value.name].push(value.elapsed_s)
+                } else {
+                    // add longest amount of 0's to matched and 1 zero to not matching
+                    data[value.name] = []
+                    for (let step = 0; step < dataLength; step++) {
+                        data[value.name].push(0)
+                    }
+                    data[value.name].push(value.elapsed_s)
+                }
+                // add 0 to every other value
+                for (d in data) {
+                    if (d != value.name) {
+                        data[d].push(0)
                     }
                 }
             }
-        });
+            delete data[0]
+            var runStatisticsData = {
+                labels: labels,
+                datasets: [],
+            }
+            for (key in data) {
+                runStatisticsData['datasets'].push({
+                    label: key,
+                    data: data[key],
+                    stack: 'Stack 0'
+                })
+
+            }
+            // create graph
+            runsOverTimeGraph = new Chart('runsOverTime', {
+                type: 'bar',
+                data: runStatisticsData,
+                options: {
+                    scales: {
+                        x: {
+                            ticks: {
+                                display: true,
+                                callback: function (value) {
+                                    return this.getLabelForValue(value).split(':')[0]
+                                },
+                            },
+                            title: {
+                                display: true,
+                                text: 'Run'
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Duration'
+                            },
+                            grace: '5%'
+                        }
+                    },
+                    interaction: {
+                        mode: 'x'
+                    },
+                    responsive: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                            labels: {
+                                family: 'Helvetica, sans-serif',
+                            }
+                        },
+                        datalabels: {
+                            color: '#000000',
+                            align: 'center',
+                            anchor: 'center',
+                            formatter: function (value) {
+                                if (value > 0) {
+                                    return value
+                                } else {
+                                    value = '';
+                                    return value;
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Run Statistics'
+                        }
+                    }
+                }
+            });
+        } else {
+            var [labels, datasets, sets] = [[], [], {}]
+            // prepare data in the correct format
+            for (const [key, value] of Object.entries(filtered)) {
+                var full_name = value.full_name
+                var run_start = new Date(value.run_start)
+                var elapsed_s = value.elapsed_s
+                if (labels.includes(full_name)) {
+                    var values = sets[full_name]
+                    values.push({ x: run_start, y: elapsed_s })
+                    sets[full_name] = values
+                } else {
+                    labels.push(full_name)
+                    sets[full_name] = [{ x: run_start, y: elapsed_s }]
+                }
+            }
+            for (const [key, value] of Object.entries(sets)) {
+                datasets.push({ label: key, fill: false, borderDash: [5, 5], data: value })
+            }
+            // create graph
+            runsOverTimeGraph = new Chart('runsOverTime', {
+                type: 'line',
+                data: {
+                    datasets: datasets
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        title: {
+                            text: 'Run Duration Over Time',
+                            display: true
+                        },
+                        datalabels: {
+                            display: false,
+                        },
+                        legend: {
+                            display: true,
+                            position: 'right',
+                            labels: {
+                                family: 'Helvetica, sans-serif',
+                                color: '#e2e1d7'
+                            }
+                        },
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Elapsed (seconds)'
+                            },
+                            grace: '5%'
+                        }
+                    }
+                }
+            });
+        }
     }
 </script>
 
