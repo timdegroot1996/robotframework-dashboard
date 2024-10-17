@@ -447,14 +447,14 @@
                 var dataLength = data[0].length
                 if (data[value.name]) {
                     // add 0 to all not matching, and value.elapsed to matching
-                    data[value.name].push(value.elapsed_s)
+                    data[value.name].push(Math.round(value.elapsed_s))
                 } else {
                     // add longest amount of 0's to matched and 1 zero to not matching
                     data[value.name] = []
                     for (let step = 0; step < dataLength; step++) {
                         data[value.name].push(0)
                     }
-                    data[value.name].push(value.elapsed_s)
+                    data[value.name].push(Math.round(value.elapsed_s))
                 }
                 // add 0 to every other value
                 for (d in data) {
@@ -540,7 +540,7 @@
             for (const [key, value] of Object.entries(filtered)) {
                 var full_name = value.full_name
                 var run_start = new Date(value.run_start)
-                var elapsed_s = value.elapsed_s
+                var elapsed_s = Math.round(value.elapsed_s)
                 if (labels.includes(full_name)) {
                     var values = sets[full_name]
                     values.push({ x: run_start, y: elapsed_s })
