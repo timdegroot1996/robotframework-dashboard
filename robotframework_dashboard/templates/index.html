@@ -1,794 +1,876 @@
 <html>
-
-<head>
-    <script src='https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js'></script>
-    <script src='https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0'></script>
-    <script
-        src='https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js'></script>
-    <link rel='icon' type='image/x-icon'
-        href='data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA=='>
-</head>
-<style>
-    h2 {
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA=="
+    />
+    <style>
+      h2 {
         padding: 0px 20px 0px 20px;
-    }
+      }
 
-    :root {
+      :root {
         color-scheme: dark;
         font-family: Helvetica, sans-serif;
-    }
+      }
 
-    canvas {
+      canvas {
         user-select: none;
-    }
+      }
 
-    @media (prefers-color-scheme: light) {
+      @media (prefers-color-scheme: light) {
         body {
-            background-color: #eee;
+          background-color: #eee;
         }
-    }
+      }
 
-    @media (prefers-color-scheme: dark) {
+      @media (prefers-color-scheme: dark) {
         body {
-            background-color: #1c2227;
-            color: #e2e1d7;
+          background-color: #1c2227;
+          color: #e2e1d7;
         }
-    }
+      }
 
-    .canvas-container {
+      .canvas-container {
         width: 900;
         margin-left: 20px;
         text-align: center;
-    }
+      }
 
-    .canvas-container button {
+      .canvas-container button {
         top: 50%;
-    }
+      }
 
-    .canvas-container select {
+      .canvas-container select {
         margin-bottom: 20px;
-    }
+      }
 
-
-    .header {
+      .header {
         margin-top: 20px;
         margin-left: 20px;
-    }
+      }
 
-    .header p {
+      .header p {
         display: inline;
         vertical-align: top;
         line-height: 28px;
         margin-right: 20px;
-    }
+      }
 
-    .header {
+      .header {
         display: flex;
         justify-content: space-between;
-    }
+      }
 
-    .header .stats {
+      .header .stats {
         margin-top: 20px;
         line-height: 28px;
-    }
+      }
 
-    .header h1 {
+      .header h1 {
         display: inline;
         vertical-align: top;
         line-height: 28px;
-    }
+      }
 
-    .filters {
+      .filters {
         margin-left: 20px;
         display: flex;
         justify-content: space-between;
         width: 80%;
-    }
-</style>
+      }
+    </style>
+  </head>
 
-<body>
-    <div class='header'>
-        <h1>Robot Framework Dashboard {{ date }}</h1>
-        <div class='stats'>
-            <p id='runCount'></p>
-            <p id='suiteCount'></p>
-            <p id='testCount'></p>
-            <p id='keywordCount'></p>
-        </div>
+  <body>
+    <div class="header">
+      <h1>Robot Framework Dashboard {{ date }}</h1>
+      <div class="stats">
+        <p id="runCount"></p>
+        <p id="suiteCount"></p>
+        <p id="testCount"></p>
+        <p id="keywordCount"></p>
+      </div>
     </div>
 
-    <div class='filters'>
-        <div>
-            <label for='runs'>Runs</label>
-            <select id='runs'></select>
-        </div>
-        <div>
-            <label for='tag'>Tag</label>
-            <select id='tag'></select>
-        </div>
-        <div>
-            <label for='fromDate'>From Date</label>
-            <input id='fromDate' type='date'></input>
-        </div>
-        <div>
-            <label for='fromTime'>From Time</label>
-            <input id='fromTime' type='time'></input>
-        </div>
-        <div>
-            <label for='toDate'>To Date</label>
-            <input id='toDate' type='date'></input>
-        </div>
-        <div>
-            <label for='toTime'>To Time</label>
-            <input id='toTime' type='time'></input>
-        </div>
-        <div>
-            <button id='clearFilters'>Clear Filters</button>
-        </div>
+    <div class="filters">
+      <div>
+        <label for="runs">Runs</label>
+        <select id="runs"></select>
+      </div>
+      <div>
+        <label for="tag">Tag</label>
+        <select id="tag"></select>
+      </div>
+      <div>
+        <label for="fromDate">From Date</label>
+        <input id="fromDate" type="date" />
+      </div>
+      <div>
+        <label for="fromTime">From Time</label>
+        <input id="fromTime" type="time" />
+      </div>
+      <div>
+        <label for="toDate">To Date</label>
+        <input id="toDate" type="date" />
+      </div>
+      <div>
+        <label for="toTime">To Time</label>
+        <input id="toTime" type="time" />
+      </div>
+      <div>
+        <button id="clearFilters">Clear Filters</button>
+      </div>
     </div>
 
     <h2 id="runTitle">Run Statistics</h2>
-    <div style='display: flex'>
-        <div class='canvas-container'>
-            <canvas id='runStatistics' width='900' , height='540'></canvas>
-        </div>
-        <div class='canvas-container'>
-            <canvas id='runsOverTime' width='900' , height='540'></canvas>
-            <button onclick='swap_runs_over_time()'>Swap Bar/Line View</button>
-        </div>
+    <div style="display: flex">
+      <div class="canvas-container">
+        <canvas id="runStatisticsGraph" width="900" , height="540"></canvas>
+      </div>
+      <div class="canvas-container">
+        <canvas id="runDurationGraph" width="900" , height="540"></canvas>
+        <button onclick="swap_runs_over_time()">Swap Bar/Line View</button>
+      </div>
     </div>
     <h2>Suite Statistics</h2>
-    <div style='display: flex'>
-        <div class='canvas-container'>
-            <canvas id='suiteStatistics' width='900' , height='540'></canvas>
+    <div style="display: flex">
+      <div class="canvas-container">
+        <div>
+          <label for="suiteSelectSuites">Select Suite</label>
+          <select id="suiteSelectSuites"></select>
         </div>
-        <div class='canvas-container'>
-            <canvas id='suitesOverTime' width='900' , height='540'></canvas>
-        </div>
+        <canvas id="suitePercentagesGraph" width="900" , height="540"></canvas>
+      </div>
+      <div class="canvas-container">
+        <canvas id="suitesOverTime" width="900" , height="540"></canvas>
+      </div>
     </div>
     <h2>Test Statistics</h2>
-    
-    <div style='display: flex'>
-        <div class='canvas-container'>
-            <div>
-                <label for='suiteSelect'>Select Suite</label>
-                <select id='suiteSelect'></select>
-            </div>
-            <canvas id='testsOverTime' width='900' , height='540'></canvas>
+
+    <div style="display: flex">
+      <div class="canvas-container">
+        <div>
+          <label for="suiteSelectTests">Select Suite</label>
+          <select id="suiteSelectTests"></select>
         </div>
-        <div class='canvas-container'>
-            <canvas id='testsOverTime2' width='900' , height='540'></canvas>
-        </div>
+        <canvas id="testStatusGraph" width="900" , height="540"></canvas>
+      </div>
+      <div class="canvas-container">
+        <canvas id="testStatusGraph2" width="900" , height="540"></canvas>
+      </div>
     </div>
     <h2>Keyword Statistics</h2>
-    <div style='display: flex'>
-        <div class='canvas-container'>
-            <canvas id='keywordStatistics' width='900' , height='540'></canvas>
-        </div>
-        <div class='canvas-container'>
-            <canvas id='keywordsOverTime' width='900' , height='540'></canvas>
-        </div>
+    <div style="display: flex">
+      <div class="canvas-container">
+        <canvas id="keywordStatistics" width="900" , height="540"></canvas>
+      </div>
+      <div class="canvas-container">
+        <canvas id="keywordsOverTime" width="900" , height="540"></canvas>
+      </div>
     </div>
 
-</body>
-<script>
-    // theme
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        Chart.defaults.color = '#e2e1d7';
-        Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
-        Chart.defaults.backgroundColor = 'rgba(255,255,0,0.1)';
-        Chart.defaults.elements.line.borderColor = 'rgba(255,255,0,0.4)';
-    }
+    <script>
+      // theme
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          Chart.defaults.color = '#e2e1d7';
+          Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
+          Chart.defaults.backgroundColor = 'rgba(255,255,0,0.1)';
+          Chart.defaults.elements.line.borderColor = 'rgba(255,255,0,0.4)';
+      }
 
-    // colors
-    var failedColor = '#ce3e01'
-    var skippedColor = '#fed84f'
-    var passedColor = '#97bd61'
-    var greyColor = '#D3D3D3'
+      // colors
+      var failedColor = '#ce3e01'
+      var skippedColor = '#fed84f'
+      var passedColor = '#97bd61'
+      var greyColor = '#D3D3D3'
 
-    // prepare input data
-    var runs = {{ runs }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-    var suites = {{ suites }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-    var tests = {{ tests }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-    // var keywords = {{keywords}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+      // prepare input data
+      var runs = {{ runs }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+      var suites = {{ suites }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+      var tests = {{ tests }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+      // var keywords = {{keywords}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
 
-    // set default values
-    document.getElementById('runCount').innerText = 'Runs: ' + runs.length
-    document.getElementById('testCount').innerText = 'Tests: ' + tests.length
-    document.getElementById('suiteCount').innerText = 'Suites: ' + suites.length
-    document.getElementById('keywordCount').innerText = 'Keywords: ' + {{ keywords }}
+      // set default values
+      document.getElementById('runCount').innerText = 'Runs: ' + runs.length
+      document.getElementById('testCount').innerText = 'Tests: ' + tests.length
+      document.getElementById('suiteCount').innerText = 'Suites: ' + suites.length
+      document.getElementById('keywordCount').innerText = 'Keywords: ' + {{ keywords }}
 
-    // set filters and selects
-    set_lowest_highest_dates(runs)
-    add_runs_in_select(runs)
-    add_tags_in_select(runs)
-    // create graphs
-    var runStatisticsGraph
-    var runsOverTimeGraph
-    var testsOverTimeGraph
-    // var to swap runs over time view
-    var swapRunsOverTimeView = true
-    // filtered data vars
-    var filteredRuns
-    var filteredSuites
-    var filteredTests
+      // set filters and selects
+      set_lowest_highest_dates(runs)
+      add_runs_in_select(runs)
+      add_tags_in_select(runs)
+      // create graphs
+      var runStatisticsGraph
+      var runDurationGraph
+      var suitePercentagesGraph
+      var testStatusGraph
+      // var to swap runs over time view
+      var swapRunDurationOverTime = true
+      // filtered data vars
+      var filteredRuns
+      var filteredSuites
+      var filteredTests
 
-    //initialize graphs
-    update_data_and_graphs()
+      //initialize graphs
+      update_data_and_graphs()
 
-    // eventlisteners
-    document.getElementById('runs').addEventListener('change', update_data_and_graphs)
-    document.getElementById('tag').addEventListener('change', update_data_and_graphs)
-    document.getElementById('fromDate').addEventListener('change', update_data_and_graphs)
-    document.getElementById('fromTime').addEventListener('change', update_data_and_graphs)
-    document.getElementById('toDate').addEventListener('change', update_data_and_graphs)
-    document.getElementById('toTime').addEventListener('change', update_data_and_graphs)
+      // eventlisteners
+      document.getElementById('runs').addEventListener('change', update_data_and_graphs)
+      document.getElementById('tag').addEventListener('change', update_data_and_graphs)
+      document.getElementById('fromDate').addEventListener('change', update_data_and_graphs)
+      document.getElementById('fromTime').addEventListener('change', update_data_and_graphs)
+      document.getElementById('toDate').addEventListener('change', update_data_and_graphs)
+      document.getElementById('toTime').addEventListener('change', update_data_and_graphs)
 
-    document.getElementById('clearFilters').addEventListener('click', clear_filters)
-    document.getElementById('suiteSelect').addEventListener('change', update_graphs)
+      document.getElementById('clearFilters').addEventListener('click', clear_filters)
+      document.getElementById('suiteSelectTests').addEventListener('change', update_graphs)
+      document.getElementById('suiteSelectSuites').addEventListener('change', update_graphs)
+
+      function set_lowest_highest_dates(runs) {
+          var dates = []
+          for (run of runs) {
+              dates.push(new Date(run.run_start))
+          }
+          var lowest = new Date(Math.min.apply(null, dates));
+          var highest = new Date(Math.max.apply(null, dates));
+          var tzoffset = (new Date()).getTimezoneOffset() * 60000;
+          lowest = new Date((new Date(lowest - tzoffset)).getTime() + -1 * 60000) // this is to account for seconds in the initial filter value
+          highest = new Date((new Date(highest - tzoffset)).getTime() + 1 * 60000) // this is to account for seconds in the initial filter value
+          document.getElementById('fromDate').value = lowest.toISOString().split('T')[0]
+          document.getElementById('fromTime').value = (lowest.toISOString().split('T')[1]).substring(0, 5)
+          document.getElementById('toDate').value = highest.toISOString().split('T')[0]
+          document.getElementById('toTime').value = (highest.toISOString().split('T')[1]).substring(0, 5)
+      }
+
+      function update_data_and_graphs() {
+          update_filtered_data()
+          update_graphs(swapRunDurationOverTime)
+      }
+
+      function update_filtered_data() {
+          // filter run data
+          filteredRuns = filter_runs(runs)
+          filteredRuns = filter_tags(filteredRuns)
+          filteredRuns = filter_dates(filteredRuns)
+          // filter suites and tests based on filtered runs
+          filteredSuites = filter_suites(filteredRuns)
+          filteredTests = filter_tests(filteredRuns)
+          // update tests select based on filtered runs
+          add_suites_in_selects(filteredSuites)
+      }
+
+      function update_graphs() {
+          // set titles with amount of filtered runs
+          document.getElementById('runTitle').innerText = `Run Statistics (${Object.keys(filteredRuns).length} runs)`
+
+          // destroy and create new graphs
+          if (runStatisticsGraph) { runStatisticsGraph.destroy() }
+          if (runDurationGraph) { runDurationGraph.destroy() }
+          if (suitePercentagesGraph) { suitePercentagesGraph.destroy() }
+          if (testStatusGraph) { testStatusGraph.destroy() }
+          create_run_statistics_over_time_graph(filteredRuns)
+          create_run_duration_over_time_graph(filteredRuns, swapRunDurationOverTime)
+          create_suite_percentages_over_time_graph(filteredSuites)
+          create_test_status_over_time_graph(filteredTests)
+      }
 
 
-    function set_lowest_highest_dates(runs) {
-        var dates = []
-        for (run of runs) {
-            dates.push(new Date(run.run_start))
-        }
-        var lowest = new Date(Math.min.apply(null, dates));
-        var highest = new Date(Math.max.apply(null, dates));
-        var tzoffset = (new Date()).getTimezoneOffset() * 60000;
-        lowest = new Date((new Date(lowest - tzoffset)).getTime() + -1 * 60000) // this is to account for seconds in the initial filter value
-        highest = new Date((new Date(highest - tzoffset)).getTime() + 1 * 60000) // this is to account for seconds in the initial filter value
-        document.getElementById('fromDate').value = lowest.toISOString().split('T')[0]
-        document.getElementById('fromTime').value = (lowest.toISOString().split('T')[1]).substring(0, 5)
-        document.getElementById('toDate').value = highest.toISOString().split('T')[0]
-        document.getElementById('toTime').value = (highest.toISOString().split('T')[1]).substring(0, 5)
-    }
+      function swap_runs_over_time() {
+          runDurationGraph.destroy()
+          if (swapRunDurationOverTime) {
+              swapRunDurationOverTime = false
+              update_graphs()
+          } else {
+              swapRunDurationOverTime = true
+              update_graphs()
+          }
+      }
 
-    function update_data_and_graphs() {
-        update_filtered_data()
-        update_graphs(swapRunsOverTimeView)
-    }
+      function filter_runs(runs) {
+          var run = document.getElementById('runs').value
+          var filteredRuns = {}
+          for (const [key, value] of Object.entries(runs)) {
+              if (run != 'All' && value.name != run) {
+                  continue
+              } else {
+                  filteredRuns[key] = value
+              }
+          }
+          return filteredRuns
+      }
 
-    function update_filtered_data() {
-        // filter run data
-        filteredRuns = filter_runs(runs)
-        filteredRuns = filter_tags(filteredRuns)
-        filteredRuns = filter_dates(filteredRuns)
-        // filter suites and tests based on filtered runs
-        filteredSuites = filter_suites(filteredRuns)
-        filteredTests = filter_tests(filteredRuns)
-        // update tests select based on filtered runs
-        add_suites_in_select(filteredSuites)
-    }
+      function filter_tags(runs) {
+          var tag = document.getElementById('tag').value
+          var filteredRuns = {}
+          for (const [key, value] of Object.entries(runs)) {
+              if (tag != 'All') {
+                  var runTags = value.tags.split(',')
+                  for (runTag of runTags) {
+                      if (tag != runTag) {
+                          continue
+                      } else {
+                          filteredRuns[key] = value
+                      }
+                  }
+              } else {
+                  filteredRuns = runs
+              }
+          }
+          return filteredRuns
+      }
 
-    function update_graphs() {
-        // set titles with amount of filtered runs
-        document.getElementById('runTitle').innerText = `Run Statistics (${Object.keys(filteredRuns).length} runs)`
+      function filter_dates(runs) {
+          var fromDate = document.getElementById('fromDate').value
+          var fromTime = document.getElementById('fromTime').value
+          var toDate = document.getElementById('toDate').value
+          var toTime = document.getElementById('toTime').value
 
-        // destroy and create new graphs
-        if (runStatisticsGraph) { runStatisticsGraph.destroy() }
-        if (runsOverTimeGraph) { runsOverTimeGraph.destroy() }
-        if (testsOverTimeGraph) { testsOverTimeGraph.destroy() }
-        create_run_statistics_graph(filteredRuns)
-        create_runs_over_time_graph(filteredRuns, swapRunsOverTimeView)
-        create_tests_over_time_graph(filteredTests)
-        
-        // update_test_graphs()
-    }
+          var filteredRuns = {}
+          if (fromDate && fromTime && toDate && toTime) {
+              var fromDateTime = new Date(`${fromDate} ${fromTime}:00`)
+              var toDateTime = new Date(`${toDate} ${toTime}:00`)
+              if (fromDateTime <= toDateTime) {
+                  for (const [key, value] of Object.entries(runs)) {
+                      var run_start = new Date(value.run_start)
+                      if (run_start < fromDateTime || run_start > toDateTime) {
+                          continue
+                      } else {
+                          filteredRuns[key] = value
+                      }
+                  }
+              } else {
+                  // you end up here if fromDate > toDate
+                  alert('Filter error: The selected from date + time is later than your selected to date + time. Date filter has not been applied!')
+                  filteredRuns = runs
+              }
+          } else {
+              // no dates or not all value are provided
+              filteredRuns = runs
+          }
+          return filteredRuns
+      }
 
-    // function update_test_graphs() {
-    //     if (testsOverTimeGraph) { testsOverTimeGraph.destroy() }
-    //     create_tests_over_time_graph(filteredTests)
-    // }
+      function filter_suites(filteredRuns) {
+          var validRunStarts = []
+          for (const [key, value] of Object.entries(filteredRuns)) {
+              validRunStarts.push(value.run_start)
+          }
+          var filteredSuites = []
+          for (const [key, value] of Object.entries(suites)) {
+              if (validRunStarts.includes(value.run_start)) {
+                  filteredSuites.push(value)
+              }
+          }
+          return filteredSuites
+      }
 
-    function swap_runs_over_time() {
-        runsOverTimeGraph.destroy()
-        if (swapRunsOverTimeView) {
-            swapRunsOverTimeView = false
-            update_graphs()
-        } else {
-            swapRunsOverTimeView = true
-            update_graphs()
-        }
-    }
 
-    function filter_runs(runs) {
-        var run = document.getElementById('runs').value
-        var filteredRuns = {}
-        for (const [key, value] of Object.entries(runs)) {
-            if (run != 'All' && value.name != run) {
-                continue
-            } else {
-                filteredRuns[key] = value
-            }
-        }
-        return filteredRuns
-    }
+      function filter_tests(filteredRuns) {
+          var validRunStarts = []
+          for (const [key, value] of Object.entries(filteredRuns)) {
+              validRunStarts.push(value.run_start)
+          }
+          var filteredTests = []
+          for (const [key, value] of Object.entries(tests)) {
+              if (validRunStarts.includes(value.run_start)) {
+                  filteredTests.push(value)
+              }
+          }
+          return filteredTests
+      }
 
-    function filter_tags(runs) {
-        var tag = document.getElementById('tag').value
-        var filteredRuns = {}
-        for (const [key, value] of Object.entries(runs)) {
-            if (tag != 'All') {
-                var runTags = value.tags.split(',')
-                for (runTag of runTags) {
-                    if (tag != runTag) {
-                        continue
-                    } else {
-                        filteredRuns[key] = value
-                    }
-                }
-            } else {
-                filteredRuns = runs
-            }
-        }
-        return filteredRuns
-    }
+      function clear_filters() {
+          document.getElementById('runs').value = 'All'
+          document.getElementById('tag').value = 'All'
+          set_lowest_highest_dates(runs)
+          update_graphs()
+      }
 
-    function filter_dates(runs) {
-        var fromDate = document.getElementById('fromDate').value
-        var fromTime = document.getElementById('fromTime').value
-        var toDate = document.getElementById('toDate').value
-        var toTime = document.getElementById('toTime').value
+      function add_runs_in_select(runs) {
+          var runOptions = []
+          for (run of runs) {
+              if (!runOptions.includes(run.name)) {
+                  runOptions.push(run.name)
+              }
+          }
+          runsSelect = document.getElementById('runs');
+          runsSelect.options[runsSelect.options.length] = new Option('All', 'All');
+          for (runOption of runOptions) {
+              runsSelect.options[runsSelect.options.length] = new Option(runOption, runOption);
+          }
+      }
 
-        var filteredRuns = {}
-        if (fromDate && fromTime && toDate && toTime) {
-            var fromDateTime = new Date(`${fromDate} ${fromTime}:00`)
-            var toDateTime = new Date(`${toDate} ${toTime}:00`)
-            if (fromDateTime <= toDateTime) {
-                for (const [key, value] of Object.entries(runs)) {
-                    var run_start = new Date(value.run_start)
-                    if (run_start < fromDateTime || run_start > toDateTime) {
-                        continue
-                    } else {
-                        filteredRuns[key] = value
-                    }
-                }
-            } else {
-                // you end up here if fromDate > toDate
-                alert('Filter error: The selected from date + time is later than your selected to date + time. Date filter has not been applied!')
-                filteredRuns = runs
-            }
-        } else {
-            // no dates or not all value are provided
-            filteredRuns = runs
-        }
-        return filteredRuns
-    }
+      function add_tags_in_select(runs) {
+          var tags = []
+          for (run of runs) {
+              var runTags = run.tags.split(',')
+              for (tag of runTags) {
+                  if (!tags.includes(tag) && tag != '') {
+                      tags.push(tag)
+                  }
+              }
+          }
+          tagsSelect = document.getElementById('tag');
+          tagsSelect.options[tagsSelect.options.length] = new Option('All', 'All');
+          for (tag of tags) {
+              tagsSelect.options[tagsSelect.options.length] = new Option(tag, tag);
+          }
+      }
 
-    function filter_suites(filteredRuns) {
-        var validRunStarts = []
+      function add_suites_in_selects(filteredSuites) {
+          document.getElementById('suiteSelectTests').innerHTML = ''
+          document.getElementById('suiteSelectSuites').innerHTML = ''
+          var suiteNames = []
+          for (suite of filteredSuites) {
+              if (!suiteNames.includes(suite.name)) {
+                  suiteNames.push(suite.name)
+              }
+          }
+          suiteSelectTests = document.getElementById('suiteSelectTests');
+          suiteSelectSuites = document.getElementById('suiteSelectSuites');
+          for (suiteName of suiteNames) {
+              suiteSelectTests.options[suiteSelectTests.options.length] = new Option(suiteName, suiteName);
+              suiteSelectSuites.options[suiteSelectSuites.options.length] = new Option(suiteName, suiteName);
+          }
+      }
+
+      function create_run_statistics_over_time_graph(filteredRuns) {
+          var [passed, failed, skipped, labels] = [[], [], [], []]
+          for (const [key, value] of Object.entries(filteredRuns)) {
+              passed.push(value.passed)
+              failed.push(value.failed)
+              skipped.push(value.skipped)
+              labels.push(`${value.full_name}: ${value.run_start}`)
+          }
+
+          var runStatisticsData
+          runStatisticsData = {
+              labels: labels,
+              datasets: [
+                  {
+                      label: 'Failed',
+                      data: failed,
+                      backgroundColor: failedColor,
+                      stack: 'Stack 0',
+                  },
+                  {
+                      label: 'Skipped',
+                      data: skipped,
+                      backgroundColor: skippedColor,
+                      stack: 'Stack 0',
+                  },
+                  {
+                      label: 'Passed',
+                      data: passed,
+                      backgroundColor: passedColor,
+                      stack: 'Stack 0',
+                  },
+              ]
+          };
+
+          Chart.register(ChartDataLabels);
+          runStatisticsGraph = new Chart('runStatisticsGraph', {
+              type: 'bar',
+              data: runStatisticsData,
+              options: {
+                  scales: {
+                      x: {
+                          ticks: {
+                              display: true,
+                              callback: function (value) {
+                                  return this.getLabelForValue(value).split(':')[0]
+                              },
+                          },
+                          title: {
+                              display: true,
+                              text: 'Run'
+                          }
+                      },
+                      y: {
+                          stacked: true,
+                          title: {
+                              display: true,
+                              text: 'Amount Of Tests'
+                          },
+                          grace: '5%'
+                      }
+                  },
+                  interaction: {
+                      mode: 'x'
+                  },
+                  responsive: false,
+                  plugins: {
+                      legend: {
+                          display: false,
+                          labels: {
+                              family: 'Helvetica, sans-serif',
+                          }
+                      },
+                      datalabels: {
+                          color: '#000000',
+                          align: 'center',
+                          anchor: 'center',
+                          formatter: function (value) {
+                              if (value > 0) {
+                                  return value
+                              } else {
+                                  value = '';
+                                  return value;
+                              }
+                          }
+                      },
+                      title: {
+                          display: true,
+                          text: 'Run Statistics'
+                      }
+                  }
+              }
+          });
+      }
+
+      function create_run_duration_over_time_graph(filteredRuns, swapRunDurationOverTime) {
+          if (swapRunDurationOverTime) {
+              var [labels, data] = [[], { 0: [] }]
+              // prepare data for bar chart
+              for (const [key, value] of Object.entries(filteredRuns)) {
+                  labels.push(`${value.full_name}: ${value.run_start}`)
+                  var dataLength = data[0].length
+                  if (data[value.name]) {
+                      // add 0 to all not matching, and value.elapsed to matching
+                      data[value.name].push(Math.round(value.elapsed_s))
+                  } else {
+                      // add longest amount of 0's to matched and 1 zero to not matching
+                      data[value.name] = []
+                      for (let step = 0; step < dataLength; step++) {
+                          data[value.name].push(0)
+                      }
+                      data[value.name].push(Math.round(value.elapsed_s))
+                  }
+                  // add 0 to every other value
+                  for (d in data) {
+                      if (d != value.name) {
+                          data[d].push(0)
+                      }
+                  }
+              }
+              delete data[0]
+              var runStatisticsData = {
+                  labels: labels,
+                  datasets: [],
+              }
+              for (key in data) {
+                  runStatisticsData['datasets'].push({
+                      label: key,
+                      data: data[key],
+                      stack: 'Stack 0'
+                  })
+
+              }
+              // create graph
+              runDurationGraph = new Chart('runDurationGraph', {
+                  type: 'bar',
+                  data: runStatisticsData,
+                  options: {
+                      scales: {
+                          x: {
+                              ticks: {
+                                  display: true,
+                                  callback: function (value) {
+                                      return this.getLabelForValue(value).split(':')[0]
+                                  },
+                              },
+                              title: {
+                                  display: true,
+                                  text: 'Run'
+                              }
+                          },
+                          y: {
+                              stacked: true,
+                              title: {
+                                  display: true,
+                                  text: 'Duration'
+                              },
+                              grace: '5%'
+                          }
+                      },
+                      interaction: {
+                          mode: 'x'
+                      },
+                      responsive: false,
+                      plugins: {
+                          legend: {
+                              display: false,
+                              labels: {
+                                  family: 'Helvetica, sans-serif',
+                              }
+                          },
+                          datalabels: {
+                              color: '#000000',
+                              align: 'center',
+                              anchor: 'center',
+                              formatter: function (value) {
+                                  if (value > 0) {
+                                      return value
+                                  } else {
+                                      value = '';
+                                      return value;
+                                  }
+                              }
+                          },
+                          title: {
+                              display: true,
+                              text: 'Run Duration Over Time'
+                          },
+                          tooltip: {
+                              filter: tooltipItem => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0
+                          }
+                      }
+                  }
+              });
+          } else {
+              var [labels, datasets, sets] = [[], [], {}]
+              // prepare data in the correct format
+              for (const [key, value] of Object.entries(filteredRuns)) {
+                  var full_name = value.full_name
+                  var run_start = new Date(value.run_start)
+                  var elapsed_s = Math.round(value.elapsed_s)
+                  if (labels.includes(full_name)) {
+                      var values = sets[full_name]
+                      values.push({ x: run_start, y: elapsed_s })
+                      sets[full_name] = values
+                  } else {
+                      labels.push(full_name)
+                      sets[full_name] = [{ x: run_start, y: elapsed_s }]
+                  }
+              }
+              for (const [key, value] of Object.entries(sets)) {
+                  datasets.push({ label: key, fill: false, borderDash: [5, 5], data: value })
+              }
+              // create graph
+              runDurationGraph = new Chart('runDurationGraph', {
+                  type: 'line',
+                  data: {
+                      datasets: datasets
+                  },
+                  options: {
+                      responsive: false,
+                      plugins: {
+                          title: {
+                              text: 'Run Duration Over Time',
+                              display: true
+                          },
+                          datalabels: {
+                              display: false,
+                          },
+                          legend: {
+                              display: true,
+                              position: 'right',
+                              labels: {
+                                  family: 'Helvetica, sans-serif',
+                                  color: '#e2e1d7'
+                              }
+                          },
+                      },
+                      scales: {
+                          x: {
+                              type: 'time',
+                              time: {
+                                  tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
+                              },
+                              title: {
+                                  display: true,
+                                  text: 'Date'
+                              }
+                          },
+                          y: {
+                              title: {
+                                  display: true,
+                                  text: 'Elapsed (seconds)'
+                              },
+                              grace: '5%'
+                          }
+                      }
+                  }
+              });
+          }
+      }
+
+      function create_suite_percentages_over_time_graph(filteredSuites) {
+        var suiteSelectSuites = document.getElementById('suiteSelectSuites').value
+        console.log(suiteSelectSuites)
+
+        var [labels, datasets, sets] = [[], [], {}]
+        // prepare data in the correct format
         for (const [key, value] of Object.entries(filteredRuns)) {
-            validRunStarts.push(value.run_start)
-        }
-        var filteredSuites = []
-        for (const [key, value] of Object.entries(suites)) {
-            if (validRunStarts.includes(value.run_start)) {
-                filteredSuites.push(value)
+            var full_name = value.full_name
+            var run_start = new Date(value.run_start)
+            var elapsed_s = Math.round(value.elapsed_s)
+            if (labels.includes(full_name)) {
+                var values = sets[full_name]
+                values.push({ x: run_start, y: elapsed_s })
+                sets[full_name] = values
+            } else {
+                labels.push(full_name)
+                sets[full_name] = [{ x: run_start, y: elapsed_s }]
             }
         }
-        return filteredSuites
-    }
-
-
-    function filter_tests(filteredRuns) {
-        var validRunStarts = []
-        for (const [key, value] of Object.entries(filteredRuns)) {
-            validRunStarts.push(value.run_start)
+        for (const [key, value] of Object.entries(sets)) {
+            datasets.push({ label: key, fill: false, borderDash: [5, 5], data: value })
         }
-        var filteredTests = []
-        for (const [key, value] of Object.entries(tests)) {
-            if (validRunStarts.includes(value.run_start)) {
-                filteredTests.push(value)
-            }
-        }
-        return filteredTests
-    }
-
-    function clear_filters() {
-        document.getElementById('runs').value = 'All'
-        document.getElementById('tag').value = 'All'
-        set_lowest_highest_dates(runs)
-        update_graphs()
-    }
-
-    function add_runs_in_select(runs) {
-        var runOptions = []
-        for (run of runs) {
-            if (!runOptions.includes(run.name)) {
-                runOptions.push(run.name)
-            }
-        }
-        runsSelect = document.getElementById('runs');
-        runsSelect.options[runsSelect.options.length] = new Option('All', 'All');
-        for (runOption of runOptions) {
-            runsSelect.options[runsSelect.options.length] = new Option(runOption, runOption);
-        }
-    }
-
-    function add_tags_in_select(runs) {
-        var tags = []
-        for (run of runs) {
-            var runTags = run.tags.split(',')
-            for (tag of runTags) {
-                if (!tags.includes(tag) && tag != '') {
-                    tags.push(tag)
-                }
-            }
-        }
-        tagsSelect = document.getElementById('tag');
-        tagsSelect.options[tagsSelect.options.length] = new Option('All', 'All');
-        for (tag of tags) {
-            tagsSelect.options[tagsSelect.options.length] = new Option(tag, tag);
-        }
-    }
-
-    function add_suites_in_select(filteredSuites) {
-        document.getElementById('suiteSelect').innerHTML = ''
-        var suiteNames = []
-        for (suite of filteredSuites) {
-            if (!suiteNames.includes(suite.name)) {
-                suiteNames.push(suite.name)
-            }
-        }
-        suiteSelect = document.getElementById('suiteSelect');
-        for (suiteName of suiteNames) {
-            suiteSelect.options[suiteSelect.options.length] = new Option(suiteName, suiteName);
-        }
-        // document.getElementById('suiteSelect').value = suiteNames[0]
-    }
-
-    function create_run_statistics_graph(filteredRuns) {
-        var [passed, failed, skipped, labels] = [[], [], [], []]
-        for (const [key, value] of Object.entries(filteredRuns)) {
-            passed.push(value.passed)
-            failed.push(value.failed)
-            skipped.push(value.skipped)
-            labels.push(`${value.full_name}: ${value.run_start}`)
-        }
-
-        var runStatisticsData
-        runStatisticsData = {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Failed',
-                    data: failed,
-                    backgroundColor: failedColor,
-                    stack: 'Stack 0',
-                },
-                {
-                    label: 'Skipped',
-                    data: skipped,
-                    backgroundColor: skippedColor,
-                    stack: 'Stack 0',
-                },
-                {
-                    label: 'Passed',
-                    data: passed,
-                    backgroundColor: passedColor,
-                    stack: 'Stack 0',
-                },
-            ]
-        };
-
-        Chart.register(ChartDataLabels);
-        runStatisticsGraph = new Chart('runStatistics', {
-            type: 'bar',
-            data: runStatisticsData,
+        // create graph
+        suitePercentagesGraph = new Chart('suitePercentagesGraph', {
+            type: 'line',
+            data: {
+                datasets: datasets
+            },
             options: {
+                responsive: false,
+                plugins: {
+                    title: {
+                        text: 'Run Duration Over Time',
+                        display: true
+                    },
+                    datalabels: {
+                        display: false,
+                    },
+                    legend: {
+                        display: true,
+                        position: 'right',
+                        labels: {
+                            family: 'Helvetica, sans-serif',
+                            color: '#e2e1d7'
+                        }
+                    },
+                },
                 scales: {
                     x: {
-                        ticks: {
-                            display: true,
-                            callback: function (value) {
-                                return this.getLabelForValue(value).split(':')[0]
-                            },
+                        type: 'time',
+                        time: {
+                            tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
                         },
                         title: {
                             display: true,
-                            text: 'Run'
+                            text: 'Date'
                         }
                     },
                     y: {
-                        stacked: true,
                         title: {
                             display: true,
-                            text: 'Amount Of Tests'
+                            text: 'Elapsed (seconds)'
                         },
                         grace: '5%'
                     }
-                },
-                interaction: {
-                    mode: 'x'
-                },
-                responsive: false,
-                plugins: {
-                    legend: {
-                        display: false,
-                        labels: {
-                            family: 'Helvetica, sans-serif',
-                        }
-                    },
-                    datalabels: {
-                        color: '#000000',
-                        align: 'center',
-                        anchor: 'center',
-                        formatter: function (value) {
-                            if (value > 0) {
-                                return value
-                            } else {
-                                value = '';
-                                return value;
-                            }
-                        }
-                    },
-                    title: {
-                        display: true,
-                        text: 'Run Statistics'
-                    }
                 }
             }
         });
-    }
 
-    function create_runs_over_time_graph(filteredRuns, swapRunsOverTimeView) {
-        if (swapRunsOverTimeView) {
-            var [labels, data] = [[], { 0: [] }]
-            // prepare data for bar chart
-            for (const [key, value] of Object.entries(filteredRuns)) {
-                labels.push(`${value.full_name}: ${value.run_start}`)
-                var dataLength = data[0].length
-                if (data[value.name]) {
-                    // add 0 to all not matching, and value.elapsed to matching
-                    data[value.name].push(Math.round(value.elapsed_s))
-                } else {
-                    // add longest amount of 0's to matched and 1 zero to not matching
-                    data[value.name] = []
-                    for (let step = 0; step < dataLength; step++) {
-                        data[value.name].push(0)
-                    }
-                    data[value.name].push(Math.round(value.elapsed_s))
-                }
-                // add 0 to every other value
-                for (d in data) {
-                    if (d != value.name) {
-                        data[d].push(0)
-                    }
-                }
-            }
-            delete data[0]
-            var runStatisticsData = {
-                labels: labels,
-                datasets: [],
-            }
-            for (key in data) {
-                runStatisticsData['datasets'].push({
-                    label: key,
-                    data: data[key],
-                    stack: 'Stack 0'
-                })
+      }
 
-            }
-            // create graph
-            runsOverTimeGraph = new Chart('runsOverTime', {
-                type: 'bar',
-                data: runStatisticsData,
-                options: {
-                    scales: {
-                        x: {
-                            ticks: {
-                                display: true,
-                                callback: function (value) {
-                                    return this.getLabelForValue(value).split(':')[0]
-                                },
-                            },
-                            title: {
-                                display: true,
-                                text: 'Run'
-                            }
-                        },
-                        y: {
-                            stacked: true,
-                            title: {
-                                display: true,
-                                text: 'Duration'
-                            },
-                            grace: '5%'
-                        }
-                    },
-                    interaction: {
-                        mode: 'x'
-                    },
-                    responsive: false,
-                    plugins: {
-                        legend: {
-                            display: false,
-                            labels: {
-                                family: 'Helvetica, sans-serif',
-                            }
-                        },
-                        datalabels: {
-                            color: '#000000',
-                            align: 'center',
-                            anchor: 'center',
-                            formatter: function (value) {
-                                if (value > 0) {
-                                    return value
-                                } else {
-                                    value = '';
-                                    return value;
-                                }
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: 'Run Statistics'
-                        }
-                    }
-                }
-            });
-        } else {
-            var [labels, datasets, sets] = [[], [], {}]
-            // prepare data in the correct format
-            for (const [key, value] of Object.entries(filteredRuns)) {
-                var full_name = value.full_name
-                var run_start = new Date(value.run_start)
-                var elapsed_s = Math.round(value.elapsed_s)
-                if (labels.includes(full_name)) {
-                    var values = sets[full_name]
-                    values.push({ x: run_start, y: elapsed_s })
-                    sets[full_name] = values
-                } else {
-                    labels.push(full_name)
-                    sets[full_name] = [{ x: run_start, y: elapsed_s }]
-                }
-            }
-            for (const [key, value] of Object.entries(sets)) {
-                datasets.push({ label: key, fill: false, borderDash: [5, 5], data: value })
-            }
-            // create graph
-            runsOverTimeGraph = new Chart('runsOverTime', {
-                type: 'line',
-                data: {
-                    datasets: datasets
-                },
-                options: {
-                    responsive: false,
-                    plugins: {
-                        title: {
-                            text: 'Run Duration Over Time',
-                            display: true
-                        },
-                        datalabels: {
-                            display: false,
-                        },
-                        legend: {
-                            display: true,
-                            position: 'right',
-                            labels: {
-                                family: 'Helvetica, sans-serif',
-                                color: '#e2e1d7'
-                            }
-                        },
-                    },
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: {
-                                tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
-                            },
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Elapsed (seconds)'
-                            },
-                            grace: '5%'
-                        }
-                    }
-                }
-            });
-        }
-    }
+      function create_test_status_over_time_graph(filteredTests) {
+          var suiteSelectTests = document.getElementById('suiteSelectTests').value
+          var labels = []
+          var runStarts = []
+          for (const [key, value] of Object.entries(filteredTests)) {
+              if (!value.full_name.split('.').at(-2) == suiteSelectTests) {
+                  continue
+              }
+              if (!labels.includes(value.name)) {
+                  labels.push(value.name)
+              }
+              if (!runStarts.includes(value.run_start)) {
+                  runStarts.push(value.run_start)
+              }
+          }
 
-    function create_tests_over_time_graph(filteredTests) {
-        var suiteSelect = document.getElementById('suiteSelect').value
-        var labels = []
-        var runStarts = []
-        for (const [key, value] of Object.entries(filteredTests)) {
-            if (!value.full_name.includes(suiteSelect)) {
-                continue
-            }
-            if (!labels.includes(value.name)) {
-                labels.push(value.name)
-            }
-            if (!runStarts.includes(value.run_start)) {
-                runStarts.push(value.run_start)
-            }
-        }
+          var datasets = []
+          var runAxis = 0
+          for (runStart of runStarts) {
+              for (label of labels) {
+                  var foundTests = filteredTests.filter(obj => {
+                      // filter only tests in this suite, suite select check is required for duplicate test names over suites
+                      return (obj.name === label && obj.run_start == runStart && obj.full_name.split('.').at(-2) == suiteSelectTests)
+                  })
+                  if (foundTests.length == 1) {
+                      var value = foundTests[0]
+                      if (value.passed == 1) {
+                          datasets.push({
+                              label: label,
+                              data: [{ x: [runAxis, runAxis + 1], y: label }],
+                              backgroundColor: [passedColor],
+                              borderWidth: 1
+                          })
+                      } else if (value.failed == 1) {
+                          datasets.push({
+                              label: label,
+                              data: [{ x: [runAxis, runAxis + 1], y: label }],
+                              backgroundColor: [failedColor],
+                              borderWidth: 1
+                          })
+                      } else if (value.skipped == 1) {
+                          datasets.push({
+                              label: label,
+                              data: [{ x: [runAxis, runAxis + 1], y: label }],
+                              backgroundColor: [skippedColor],
+                              borderWidth: 1
+                          })
+                      }
+                  } else {
+                      datasets.push({
+                          label: label,
+                          data: [{ x: [runAxis, runAxis + 1], y: label }],
+                          backgroundColor: [greyColor],
+                          borderWidth: 1
+                      })
+                  }
+              }
+              runAxis += 1
+          }
 
-        var datasets = []
-        var runAxis = 0
-        for (runStart of runStarts) {
-            for (label of labels) {
-                var foundTests = filteredTests.filter(obj => {
-                    return (obj.name === label && obj.run_start == runStart)
-                })
-                if (foundTests.length == 1) {
-                    var value = foundTests[0]
-                    if (value.passed == 1) {
-                        datasets.push({
-                            label: label,
-                            data: [{ x: [runAxis, runAxis + 1], y: label }],
-                            backgroundColor: [passedColor],
-                            borderWidth: 1
-                        })
-                    } else if (value.failed == 1) {
-                        datasets.push({
-                            label: label,
-                            data: [{ x: [runAxis, runAxis + 1], y: label }],
-                            backgroundColor: [failedColor],
-                            borderWidth: 1
-                        })
-                    } else if (value.skipped == 1) {
-                        datasets.push({
-                            label: label,
-                            data: [{ x: [runAxis, runAxis + 1], y: label }],
-                            backgroundColor: [skippedColor],
-                            borderWidth: 1
-                        })
-                    }
-                } else {
-                    datasets.push({
-                        label: label,
-                        data: [{ x: [runAxis, runAxis + 1], y: label }],
-                        backgroundColor: [greyColor],
-                        borderWidth: 1
-                    })
-                }
-            }
-            runAxis += 1
-        }
-
-        testsOverTimeGraph = new Chart('testsOverTime', {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: datasets,
-            },
-            options: {
-                indexAxis: 'y',
-                scales: {
-                    y: {
-                        stacked: true,
-                    },
-                    x: {
-                        position: 'top',
-                        ticks: {
-                            callback: function (value, index, ticks) {
-                                return runStarts[this.getLabelForValue(value)]
-                            }
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    datalabels: {
-                        display: false,
-                    },
-                }
-            }
-        });
-    }
-</script>
-
-<body>
-
+          testStatusGraph = new Chart('testStatusGraph', {
+              type: 'bar',
+              data: {
+                  labels: labels,
+                  datasets: datasets,
+              },
+              options: {
+                  indexAxis: 'y',
+                  scales: {
+                      y: {
+                          stacked: true,
+                      },
+                      x: {
+                          position: 'top',
+                          ticks: {
+                              callback: function (value, index, ticks) {
+                                  return runStarts[this.getLabelForValue(value)]
+                              }
+                          }
+                      }
+                  },
+                  plugins: {
+                      legend: {
+                          display: false
+                      },
+                      datalabels: {
+                          display: false,
+                      },
+                      tooltip: {
+                          callbacks: {
+                              label: function(context) {
+                                  return runStarts[context.raw.x[0]];
+                              }
+                          }
+                      },
+                  }
+              }
+          });
+      }
+    </script>
+  </body>
 </html>
