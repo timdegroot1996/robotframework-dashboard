@@ -37,14 +37,18 @@
 
     .canvas-container {
         width: 900;
-        /* overflow-x: scroll; */
         margin-left: 20px;
-        text-align: center; 
+        text-align: center;
     }
+
     .canvas-container button {
-        /* position: absolute; */
         top: 50%;
     }
+
+    .canvas-container select {
+        margin-bottom: 20px;
+    }
+
 
     .header {
         margin-top: 20px;
@@ -143,12 +147,17 @@
         </div>
     </div>
     <h2>Test Statistics</h2>
+    
     <div style='display: flex'>
         <div class='canvas-container'>
-            <canvas id='testStatistics' width='900' , height='540'></canvas>
+            <div>
+                <label for='suiteSelect'>Select Suite</label>
+                <select id='suiteSelect'></select>
+            </div>
+            <canvas id='testsOverTime' width='900' , height='540'></canvas>
         </div>
         <div class='canvas-container'>
-            <canvas id='testsOverTime' width='900' , height='540'></canvas>
+            <canvas id='testsOverTime2' width='900' , height='540'></canvas>
         </div>
     </div>
     <h2>Keyword Statistics</h2>
@@ -170,6 +179,13 @@
         Chart.defaults.backgroundColor = 'rgba(255,255,0,0.1)';
         Chart.defaults.elements.line.borderColor = 'rgba(255,255,0,0.4)';
     }
+
+    // colors
+    var failedColor = '#ce3e01'
+    var skippedColor = '#fed84f'
+    var passedColor = '#97bd61'
+    var greyColor = '#D3D3D3'
+
     // prepare input data
     var runs = {{ runs }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
     var suites = {{ suites }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
@@ -181,83 +197,117 @@
     document.getElementById('testCount').innerText = 'Tests: ' + tests.length
     document.getElementById('suiteCount').innerText = 'Suites: ' + suites.length
     document.getElementById('keywordCount').innerText = 'Keywords: ' + {{ keywords }}
-    set_lowest_highest_dates(runs)
 
-    // initialize graphs and filters
+    // set filters and selects
+    set_lowest_highest_dates(runs)
     add_runs_in_select(runs)
     add_tags_in_select(runs)
+    // create graphs
     var runStatisticsGraph
     var runsOverTimeGraph
+    var testsOverTimeGraph
+    // var to swap runs over time view
     var swapRunsOverTimeView = true
-    update_all_graphs(swapRunsOverTimeView)
+    // filtered data vars
+    var filteredRuns
+    var filteredSuites
+    var filteredTests
 
-    // eventlisteners for filters
-    document.getElementById('runs').addEventListener('change', update_all_graphs)
-    document.getElementById('tag').addEventListener('change', update_all_graphs)
-    document.getElementById('fromDate').addEventListener('change', update_all_graphs)
-    document.getElementById('fromTime').addEventListener('change', update_all_graphs)
-    document.getElementById('toDate').addEventListener('change', update_all_graphs)
-    document.getElementById('toTime').addEventListener('change', update_all_graphs)
+    //initialize graphs
+    update_data_and_graphs()
+
+    // eventlisteners
+    document.getElementById('runs').addEventListener('change', update_data_and_graphs)
+    document.getElementById('tag').addEventListener('change', update_data_and_graphs)
+    document.getElementById('fromDate').addEventListener('change', update_data_and_graphs)
+    document.getElementById('fromTime').addEventListener('change', update_data_and_graphs)
+    document.getElementById('toDate').addEventListener('change', update_data_and_graphs)
+    document.getElementById('toTime').addEventListener('change', update_data_and_graphs)
+
     document.getElementById('clearFilters').addEventListener('click', clear_filters)
+    document.getElementById('suiteSelect').addEventListener('change', update_graphs)
+
 
     function set_lowest_highest_dates(runs) {
         var dates = []
         for (run of runs) {
             dates.push(new Date(run.run_start))
         }
-        var lowest = new Date(Math.min.apply(null,dates));
-        var highest = new Date(Math.max.apply(null,dates));
+        var lowest = new Date(Math.min.apply(null, dates));
+        var highest = new Date(Math.max.apply(null, dates));
         var tzoffset = (new Date()).getTimezoneOffset() * 60000;
-        lowest = new Date((new Date(lowest - tzoffset)).getTime() + -1*60000) // this is to account for seconds in the initial filter value
-        highest =new Date((new Date(highest - tzoffset)).getTime() + 1*60000) // this is to account for seconds in the initial filter value
+        lowest = new Date((new Date(lowest - tzoffset)).getTime() + -1 * 60000) // this is to account for seconds in the initial filter value
+        highest = new Date((new Date(highest - tzoffset)).getTime() + 1 * 60000) // this is to account for seconds in the initial filter value
         document.getElementById('fromDate').value = lowest.toISOString().split('T')[0]
         document.getElementById('fromTime').value = (lowest.toISOString().split('T')[1]).substring(0, 5)
         document.getElementById('toDate').value = highest.toISOString().split('T')[0]
         document.getElementById('toTime').value = (highest.toISOString().split('T')[1]).substring(0, 5)
     }
 
-    function update_all_graphs() {
-        var filtered = filter_runs(runs)
-        filtered = filter_tags(filtered)
-        filtered = filter_dates(filtered)
+    function update_data_and_graphs() {
+        update_filtered_data()
+        update_graphs(swapRunsOverTimeView)
+    }
 
+    function update_filtered_data() {
+        // filter run data
+        filteredRuns = filter_runs(runs)
+        filteredRuns = filter_tags(filteredRuns)
+        filteredRuns = filter_dates(filteredRuns)
+        // filter suites and tests based on filtered runs
+        filteredSuites = filter_suites(filteredRuns)
+        filteredTests = filter_tests(filteredRuns)
+        // update tests select based on filtered runs
+        add_suites_in_select(filteredSuites)
+    }
+
+    function update_graphs() {
         // set titles with amount of filtered runs
-        document.getElementById('runTitle').innerText = `Run Statistics (${Object.keys(filtered).length} runs)`
+        document.getElementById('runTitle').innerText = `Run Statistics (${Object.keys(filteredRuns).length} runs)`
 
         // destroy and create new graphs
         if (runStatisticsGraph) { runStatisticsGraph.destroy() }
         if (runsOverTimeGraph) { runsOverTimeGraph.destroy() }
-        create_run_statistics_graph(filtered)
-        create_runs_over_time_graph(filtered, swapRunsOverTimeView)
+        if (testsOverTimeGraph) { testsOverTimeGraph.destroy() }
+        create_run_statistics_graph(filteredRuns)
+        create_runs_over_time_graph(filteredRuns, swapRunsOverTimeView)
+        create_tests_over_time_graph(filteredTests)
+        
+        // update_test_graphs()
     }
+
+    // function update_test_graphs() {
+    //     if (testsOverTimeGraph) { testsOverTimeGraph.destroy() }
+    //     create_tests_over_time_graph(filteredTests)
+    // }
 
     function swap_runs_over_time() {
         runsOverTimeGraph.destroy()
         if (swapRunsOverTimeView) {
             swapRunsOverTimeView = false
-            update_all_graphs()
+            update_graphs()
         } else {
             swapRunsOverTimeView = true
-            update_all_graphs()
+            update_graphs()
         }
     }
 
     function filter_runs(runs) {
         var run = document.getElementById('runs').value
-        var filtered = {}
+        var filteredRuns = {}
         for (const [key, value] of Object.entries(runs)) {
             if (run != 'All' && value.name != run) {
                 continue
             } else {
-                filtered[key] = value
+                filteredRuns[key] = value
             }
         }
-        return filtered
+        return filteredRuns
     }
 
     function filter_tags(runs) {
         var tag = document.getElementById('tag').value
-        var filtered = {}
+        var filteredRuns = {}
         for (const [key, value] of Object.entries(runs)) {
             if (tag != 'All') {
                 var runTags = value.tags.split(',')
@@ -265,14 +315,14 @@
                     if (tag != runTag) {
                         continue
                     } else {
-                        filtered[key] = value
+                        filteredRuns[key] = value
                     }
                 }
             } else {
-                filtered = runs
+                filteredRuns = runs
             }
         }
-        return filtered
+        return filteredRuns
     }
 
     function filter_dates(runs) {
@@ -281,7 +331,7 @@
         var toDate = document.getElementById('toDate').value
         var toTime = document.getElementById('toTime').value
 
-        var filtered = {}
+        var filteredRuns = {}
         if (fromDate && fromTime && toDate && toTime) {
             var fromDateTime = new Date(`${fromDate} ${fromTime}:00`)
             var toDateTime = new Date(`${toDate} ${toTime}:00`)
@@ -291,26 +341,55 @@
                     if (run_start < fromDateTime || run_start > toDateTime) {
                         continue
                     } else {
-                        filtered[key] = value
+                        filteredRuns[key] = value
                     }
                 }
             } else {
                 // you end up here if fromDate > toDate
                 alert('Filter error: The selected from date + time is later than your selected to date + time. Date filter has not been applied!')
-                filtered = runs
+                filteredRuns = runs
             }
         } else {
             // no dates or not all value are provided
-            filtered = runs
+            filteredRuns = runs
         }
-        return filtered
+        return filteredRuns
+    }
+
+    function filter_suites(filteredRuns) {
+        var validRunStarts = []
+        for (const [key, value] of Object.entries(filteredRuns)) {
+            validRunStarts.push(value.run_start)
+        }
+        var filteredSuites = []
+        for (const [key, value] of Object.entries(suites)) {
+            if (validRunStarts.includes(value.run_start)) {
+                filteredSuites.push(value)
+            }
+        }
+        return filteredSuites
+    }
+
+
+    function filter_tests(filteredRuns) {
+        var validRunStarts = []
+        for (const [key, value] of Object.entries(filteredRuns)) {
+            validRunStarts.push(value.run_start)
+        }
+        var filteredTests = []
+        for (const [key, value] of Object.entries(tests)) {
+            if (validRunStarts.includes(value.run_start)) {
+                filteredTests.push(value)
+            }
+        }
+        return filteredTests
     }
 
     function clear_filters() {
         document.getElementById('runs').value = 'All'
         document.getElementById('tag').value = 'All'
         set_lowest_highest_dates(runs)
-        update_all_graphs()
+        update_graphs()
     }
 
     function add_runs_in_select(runs) {
@@ -344,9 +423,24 @@
         }
     }
 
-    function create_run_statistics_graph(filtered) {
-        var [passed, failed, skipped, labels] = [[],[],[],[]]
-        for (const [key, value] of Object.entries(filtered)) {
+    function add_suites_in_select(filteredSuites) {
+        document.getElementById('suiteSelect').innerHTML = ''
+        var suiteNames = []
+        for (suite of filteredSuites) {
+            if (!suiteNames.includes(suite.name)) {
+                suiteNames.push(suite.name)
+            }
+        }
+        suiteSelect = document.getElementById('suiteSelect');
+        for (suiteName of suiteNames) {
+            suiteSelect.options[suiteSelect.options.length] = new Option(suiteName, suiteName);
+        }
+        // document.getElementById('suiteSelect').value = suiteNames[0]
+    }
+
+    function create_run_statistics_graph(filteredRuns) {
+        var [passed, failed, skipped, labels] = [[], [], [], []]
+        for (const [key, value] of Object.entries(filteredRuns)) {
             passed.push(value.passed)
             failed.push(value.failed)
             skipped.push(value.skipped)
@@ -360,19 +454,19 @@
                 {
                     label: 'Failed',
                     data: failed,
-                    backgroundColor: '#ce3e01',
+                    backgroundColor: failedColor,
                     stack: 'Stack 0',
                 },
                 {
                     label: 'Skipped',
                     data: skipped,
-                    backgroundColor: '#fed84f',
+                    backgroundColor: skippedColor,
                     stack: 'Stack 0',
                 },
                 {
                     label: 'Passed',
                     data: passed,
-                    backgroundColor: '#97bd61',
+                    backgroundColor: passedColor,
                     stack: 'Stack 0',
                 },
             ]
@@ -438,11 +532,11 @@
         });
     }
 
-    function create_runs_over_time_graph(filtered, swapRunsOverTimeView) {
+    function create_runs_over_time_graph(filteredRuns, swapRunsOverTimeView) {
         if (swapRunsOverTimeView) {
-            var [labels, data] = [[], {0: []}]
+            var [labels, data] = [[], { 0: [] }]
             // prepare data for bar chart
-            for (const [key, value] of Object.entries(filtered)) {
+            for (const [key, value] of Object.entries(filteredRuns)) {
                 labels.push(`${value.full_name}: ${value.run_start}`)
                 var dataLength = data[0].length
                 if (data[value.name]) {
@@ -537,7 +631,7 @@
         } else {
             var [labels, datasets, sets] = [[], [], {}]
             // prepare data in the correct format
-            for (const [key, value] of Object.entries(filtered)) {
+            for (const [key, value] of Object.entries(filteredRuns)) {
                 var full_name = value.full_name
                 var run_start = new Date(value.run_start)
                 var elapsed_s = Math.round(value.elapsed_s)
@@ -601,41 +695,100 @@
             });
         }
     }
+
+    function create_tests_over_time_graph(filteredTests) {
+        var suiteSelect = document.getElementById('suiteSelect').value
+        var labels = []
+        var runStarts = []
+        for (const [key, value] of Object.entries(filteredTests)) {
+            if (!value.full_name.includes(suiteSelect)) {
+                continue
+            }
+            if (!labels.includes(value.name)) {
+                labels.push(value.name)
+            }
+            if (!runStarts.includes(value.run_start)) {
+                runStarts.push(value.run_start)
+            }
+        }
+
+        var datasets = []
+        var runAxis = 0
+        for (runStart of runStarts) {
+            for (label of labels) {
+                var foundTests = filteredTests.filter(obj => {
+                    return (obj.name === label && obj.run_start == runStart)
+                })
+                if (foundTests.length == 1) {
+                    var value = foundTests[0]
+                    if (value.passed == 1) {
+                        datasets.push({
+                            label: label,
+                            data: [{ x: [runAxis, runAxis + 1], y: label }],
+                            backgroundColor: [passedColor],
+                            borderWidth: 1
+                        })
+                    } else if (value.failed == 1) {
+                        datasets.push({
+                            label: label,
+                            data: [{ x: [runAxis, runAxis + 1], y: label }],
+                            backgroundColor: [failedColor],
+                            borderWidth: 1
+                        })
+                    } else if (value.skipped == 1) {
+                        datasets.push({
+                            label: label,
+                            data: [{ x: [runAxis, runAxis + 1], y: label }],
+                            backgroundColor: [skippedColor],
+                            borderWidth: 1
+                        })
+                    }
+                } else {
+                    datasets.push({
+                        label: label,
+                        data: [{ x: [runAxis, runAxis + 1], y: label }],
+                        backgroundColor: [greyColor],
+                        borderWidth: 1
+                    })
+                }
+            }
+            runAxis += 1
+        }
+
+        testsOverTimeGraph = new Chart('testsOverTime', {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: datasets,
+            },
+            options: {
+                indexAxis: 'y',
+                scales: {
+                    y: {
+                        stacked: true,
+                    },
+                    x: {
+                        position: 'top',
+                        ticks: {
+                            callback: function (value, index, ticks) {
+                                return runStarts[value]
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    datalabels: {
+                        display: false,
+                    },
+                }
+            }
+        });
+    }
 </script>
 
 <body>
 
 </html>
-
-<!-- var chart = new CanvasJS.Chart('chartContainer',
-                               {
-  title: {
-    text: 'How long an event occurred for on a given day'
-  },
-  axisY: {
-    minimum: (new Date(2016, 0, 28, 11, 30)).getTime(),            
-    interval: (1 * 60 * 60 * 1000),
-    labelFormatter: function(e){
-      return CanvasJS.formatDate(e.value, 'DD - h:mm TT');
-    },
-    gridThickness: 2
-  },
-
-  toolTip:{
-    contentFormatter: function ( e ) {
-      return '<strong>' + e.entries[0].dataPoint.label + '</strong></br> Start: ' +  CanvasJS.formatDate(e.entries[0].dataPoint.y[0], 'DD - h:mm TT') + '</br>End : ' +  CanvasJS.formatDate(e.entries[0].dataPoint.y[1], 'DD - h:mm TT');  
-    }},
-
-  data: [
-    {
-      type: 'rangeBar',
-      dataPoints: [
-        { label: 'Walking', y: [(new Date(2016, 0, 28, 12, 20)).getTime(), (new Date(2016, 0, 28, 13, 00)).getTime()] },
-        { label: 'Walking', y: [(new Date(2016, 0, 28, 15, 20)).getTime(), (new Date(2016, 0, 28, 18, 00)).getTime()] },
-        { label: 'Running', y: [(new Date(2016, 0, 28, 13, 20)).getTime(), (new Date(2016, 0, 28, 14, 20)).getTime()] },
-        { label: 'Walking', y: [(new Date(2016, 0, 28, 14, 20)).getTime(), (new Date(2016, 0, 28, 15, 00)).getTime()] }
-      ]
-    }
-  ]                      
-});
-chart.render(); -->
