@@ -134,7 +134,8 @@
       </div>
       <div class="canvas-container">
         <canvas id="runDurationGraph" width="900" , height="540"></canvas>
-        <button onclick="swap_runs_over_time()">Swap Bar/Line View</button>
+        <button id="updateRunDurationGraphBar">Bar View</button>
+        <button id="updateRunDurationGraphLine">Line View</button>
       </div>
     </div>
     <h2>Suite Statistics</h2>
@@ -144,7 +145,10 @@
           <label for="suiteSelectSuites">Select Suite</label>
           <select id="suiteSelectSuites"></select>
         </div>
-        <canvas id="suitePercentagesGraph" width="900" , height="540"></canvas>
+        <canvas id="suiteStatisticsGraph" width="900" , height="540"></canvas>
+        <button id="updateSuiteStatisticsGraphBarAmount">Bar View Amount</button>
+        <button id="updateSuiteStatisticsGraphBarPercentages">Bar View Percentages</button>
+        <button id="updateSuiteStatisticsGraphLine">Line View</button>
       </div>
       <div class="canvas-container">
         <canvas id="suitesOverTime" width="900" , height="540"></canvas>
@@ -202,37 +206,43 @@
       document.getElementById('keywordCount').innerText = 'Keywords: ' + {{ keywords }}
 
       // set filters and selects
-      set_lowest_highest_dates(runs)
-      add_runs_in_select(runs)
-      add_tags_in_select(runs)
+      set_lowest_highest_dates()
+      add_runs_in_select()
+      add_tags_in_select()
       // create graphs
       var runStatisticsGraph
       var runDurationGraph
-      var suitePercentagesGraph
+      var runDurationGraphType = 'bar'
+      var suiteStatisticsGraph
+      var suiteStatisticsGraphType = 'amount'
       var testStatusGraph
-      // var to swap runs over time view
-      var swapRunDurationOverTime = true
       // filtered data vars
       var filteredRuns
       var filteredSuites
       var filteredTests
 
       //initialize graphs
-      update_data_and_graphs()
+      update_data_and_all_graphs()
 
       // eventlisteners
-      document.getElementById('runs').addEventListener('change', update_data_and_graphs)
-      document.getElementById('tag').addEventListener('change', update_data_and_graphs)
-      document.getElementById('fromDate').addEventListener('change', update_data_and_graphs)
-      document.getElementById('fromTime').addEventListener('change', update_data_and_graphs)
-      document.getElementById('toDate').addEventListener('change', update_data_and_graphs)
-      document.getElementById('toTime').addEventListener('change', update_data_and_graphs)
+      document.getElementById('runs').addEventListener('change', update_data_and_all_graphs)
+      document.getElementById('tag').addEventListener('change', update_data_and_all_graphs)
+      document.getElementById('fromDate').addEventListener('change', update_data_and_all_graphs)
+      document.getElementById('fromTime').addEventListener('change', update_data_and_all_graphs)
+      document.getElementById('toDate').addEventListener('change', update_data_and_all_graphs)
+      document.getElementById('toTime').addEventListener('change', update_data_and_all_graphs)
+
+      document.getElementById('updateRunDurationGraphBar').addEventListener('click', (e) => {update_run_duration_graph('bar')})
+      document.getElementById('updateRunDurationGraphLine').addEventListener('click', (e) => {update_run_duration_graph('line') })
+      document.getElementById('updateSuiteStatisticsGraphBarAmount').addEventListener('click', (e) => {update_suite_statistics_graph('amount') })
+      document.getElementById('updateSuiteStatisticsGraphBarPercentages').addEventListener('click', (e) => {update_suite_statistics_graph('percentages') })
+      document.getElementById('updateSuiteStatisticsGraphLine').addEventListener('click', (e) => {update_suite_statistics_graph('line') })
 
       document.getElementById('clearFilters').addEventListener('click', clear_filters)
-      document.getElementById('suiteSelectTests').addEventListener('change', update_graphs)
-      document.getElementById('suiteSelectSuites').addEventListener('change', update_graphs)
+      document.getElementById('suiteSelectSuites').addEventListener('change', update_suite_statistics_graph)
+      document.getElementById('suiteSelectTests').addEventListener('change', update_test_statistics_graph)
 
-      function set_lowest_highest_dates(runs) {
+      function set_lowest_highest_dates() {
           var dates = []
           for (run of runs) {
               dates.push(new Date(run.run_start))
@@ -248,9 +258,9 @@
           document.getElementById('toTime').value = (highest.toISOString().split('T')[1]).substring(0, 5)
       }
 
-      function update_data_and_graphs() {
+      function update_data_and_all_graphs() {
           update_filtered_data()
-          update_graphs(swapRunDurationOverTime)
+          update_all_graphs()
       }
 
       function update_filtered_data() {
@@ -262,34 +272,44 @@
           filteredSuites = filter_suites(filteredRuns)
           filteredTests = filter_tests(filteredRuns)
           // update tests select based on filtered runs
-          add_suites_in_selects(filteredSuites)
+          add_suites_in_selects()
       }
 
-      function update_graphs() {
+      function update_all_graphs() {
           // set titles with amount of filtered runs
           document.getElementById('runTitle').innerText = `Run Statistics (${Object.keys(filteredRuns).length} runs)`
 
           // destroy and create new graphs
-          if (runStatisticsGraph) { runStatisticsGraph.destroy() }
-          if (runDurationGraph) { runDurationGraph.destroy() }
-          if (suitePercentagesGraph) { suitePercentagesGraph.destroy() }
-          if (testStatusGraph) { testStatusGraph.destroy() }
-          create_run_statistics_over_time_graph(filteredRuns)
-          create_run_duration_over_time_graph(filteredRuns, swapRunDurationOverTime)
-          create_suite_percentages_over_time_graph(filteredSuites)
-          create_test_status_over_time_graph(filteredTests)
+          update_run_statistics_graph()
+          update_run_duration_graph()
+          update_suite_statistics_graph()
+          update_test_statistics_graph()
       }
 
+      function update_run_statistics_graph() {
+        if (runStatisticsGraph) { runStatisticsGraph.destroy() }
+        create_run_statistics_graph()
+      }
 
-      function swap_runs_over_time() {
-          runDurationGraph.destroy()
-          if (swapRunDurationOverTime) {
-              swapRunDurationOverTime = false
-              update_graphs()
-          } else {
-              swapRunDurationOverTime = true
-              update_graphs()
-          }
+      function update_run_duration_graph(type) {
+        if (typeof(type) ==='string') {
+            runDurationGraphType = type
+        }
+        if (runDurationGraph) { runDurationGraph.destroy() }
+        create_run_duration_graph()
+      }
+
+      function update_suite_statistics_graph(type) {
+        if (typeof(type) ==='string') {
+            suiteStatisticsGraphType = type
+        }
+        if (suiteStatisticsGraph) { suiteStatisticsGraph.destroy() }
+        create_suite_statistics_graph()
+      }
+
+      function update_test_statistics_graph() {
+        if (testStatusGraph) { testStatusGraph.destroy() }
+        create_test_status_graph()
       }
 
       function filter_runs(runs) {
@@ -305,7 +325,7 @@
           return filteredRuns
       }
 
-      function filter_tags(runs) {
+      function filter_tags() {
           var tag = document.getElementById('tag').value
           var filteredRuns = {}
           for (const [key, value] of Object.entries(runs)) {
@@ -325,7 +345,7 @@
           return filteredRuns
       }
 
-      function filter_dates(runs) {
+      function filter_dates() {
           var fromDate = document.getElementById('fromDate').value
           var fromTime = document.getElementById('fromTime').value
           var toDate = document.getElementById('toDate').value
@@ -356,7 +376,7 @@
           return filteredRuns
       }
 
-      function filter_suites(filteredRuns) {
+      function filter_suites() {
           var validRunStarts = []
           for (const [key, value] of Object.entries(filteredRuns)) {
               validRunStarts.push(value.run_start)
@@ -371,7 +391,7 @@
       }
 
 
-      function filter_tests(filteredRuns) {
+      function filter_tests() {
           var validRunStarts = []
           for (const [key, value] of Object.entries(filteredRuns)) {
               validRunStarts.push(value.run_start)
@@ -389,10 +409,10 @@
           document.getElementById('runs').value = 'All'
           document.getElementById('tag').value = 'All'
           set_lowest_highest_dates(runs)
-          update_graphs()
+          update_data_and_all_graphs()
       }
 
-      function add_runs_in_select(runs) {
+      function add_runs_in_select() {
           var runOptions = []
           for (run of runs) {
               if (!runOptions.includes(run.name)) {
@@ -406,7 +426,7 @@
           }
       }
 
-      function add_tags_in_select(runs) {
+      function add_tags_in_select() {
           var tags = []
           for (run of runs) {
               var runTags = run.tags.split(',')
@@ -423,7 +443,7 @@
           }
       }
 
-      function add_suites_in_selects(filteredSuites) {
+      function add_suites_in_selects() {
           document.getElementById('suiteSelectTests').innerHTML = ''
           document.getElementById('suiteSelectSuites').innerHTML = ''
           var suiteNames = []
@@ -440,7 +460,7 @@
           }
       }
 
-      function create_run_statistics_over_time_graph(filteredRuns) {
+      function create_run_statistics_graph() {
           var [passed, failed, skipped, labels] = [[], [], [], []]
           for (const [key, value] of Object.entries(filteredRuns)) {
               passed.push(value.passed)
@@ -449,8 +469,7 @@
               labels.push(`${value.full_name}: ${value.run_start}`)
           }
 
-          var runStatisticsData
-          runStatisticsData = {
+          var runStatisticsData = {
               labels: labels,
               datasets: [
                   {
@@ -534,8 +553,8 @@
           });
       }
 
-      function create_run_duration_over_time_graph(filteredRuns, swapRunDurationOverTime) {
-          if (swapRunDurationOverTime) {
+      function create_run_duration_graph() {
+          if (runDurationGraphType == 'bar') {
               var [labels, data] = [[], { 0: [] }]
               // prepare data for bar chart
               for (const [key, value] of Object.entries(filteredRuns)) {
@@ -633,7 +652,7 @@
                       }
                   }
               });
-          } else {
+          } else if (runDurationGraphType == 'line') {
               var [labels, datasets, sets] = [[], [], {}]
               // prepare data in the correct format
               for (const [key, value] of Object.entries(filteredRuns)) {
@@ -675,7 +694,7 @@
                                   family: 'Helvetica, sans-serif',
                                   color: '#e2e1d7'
                               }
-                          },
+                          }
                       },
                       scales: {
                           x: {
@@ -701,83 +720,254 @@
           }
       }
 
-      function create_suite_percentages_over_time_graph(filteredSuites) {
+      function create_suite_statistics_graph() {
         var suiteSelectSuites = document.getElementById('suiteSelectSuites').value
-        console.log(suiteSelectSuites)
-
-        var [labels, datasets, sets] = [[], [], {}]
-        // prepare data in the correct format
-        for (const [key, value] of Object.entries(filteredRuns)) {
-            var full_name = value.full_name
-            var run_start = new Date(value.run_start)
-            var elapsed_s = Math.round(value.elapsed_s)
-            if (labels.includes(full_name)) {
-                var values = sets[full_name]
-                values.push({ x: run_start, y: elapsed_s })
-                sets[full_name] = values
-            } else {
-                labels.push(full_name)
-                sets[full_name] = [{ x: run_start, y: elapsed_s }]
-            }
-        }
-        for (const [key, value] of Object.entries(sets)) {
-            datasets.push({ label: key, fill: false, borderDash: [5, 5], data: value })
-        }
-        // create graph
-        suitePercentagesGraph = new Chart('suitePercentagesGraph', {
-            type: 'line',
-            data: {
-                datasets: datasets
-            },
-            options: {
-                responsive: false,
-                plugins: {
-                    title: {
-                        text: 'Run Duration Over Time',
-                        display: true
-                    },
-                    datalabels: {
-                        display: false,
-                    },
-                    legend: {
-                        display: true,
-                        position: 'right',
-                        labels: {
-                            family: 'Helvetica, sans-serif',
-                            color: '#e2e1d7'
+        var [passed, failed, skipped, labels] = [[], [], [], []]
+        for (const [key, value] of Object.entries(filteredSuites)) {
+            if (value.name == suiteSelectSuites) {
+                if (suiteStatisticsGraphType == 'percentages') {
+                    var [passed, failed, skipped, labels] = [[], [], [], []]
+                    for (const [key, value] of Object.entries(filteredSuites)) {
+                        if (value.name == suiteSelectSuites) {
+                            passed.push(Math.round(value.passed/value.total * 100))
+                            failed.push(Math.round(value.failed/value.total * 100))
+                            skipped.push(Math.round(value.skipped/value.total * 100))
+                            labels.push(value.run_start)
                         }
-                    },
-                },
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Elapsed (seconds)'
-                        },
-                        grace: '5%'
                     }
+                } else {
+                    passed.push(value.passed)
+                    failed.push(value.failed)
+                    skipped.push(value.skipped)
+                    labels.push(value.run_start)
                 }
             }
-        });
+        }
 
-      }
+        if (suiteStatisticsGraphType != 'line') { 
+            var suiteStatisticsData = {
+              labels: labels,
+              datasets: [
+                  {
+                      label: 'Failed',
+                      data: failed,
+                      backgroundColor: failedColor,
+                      stack: 'Stack 0',
+                  },
+                  {
+                      label: 'Skipped',
+                      data: skipped,
+                      backgroundColor: skippedColor,
+                      stack: 'Stack 0',
+                  },
+                  {
+                      label: 'Passed',
+                      data: passed,
+                      backgroundColor: passedColor,
+                      stack: 'Stack 0',
+                  },
+              ]
+          };
+        } else {
+            var suiteStatisticsData = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Failed',
+                        data: failed,
+                        backgroundColor: failedColor,
+                        borderColor: failedColor,
+                    },
+                    {
+                        label: 'Skipped',
+                        data: skipped,
+                        backgroundColor: skippedColor,
+                        borderColor: skippedColor,
+                    },
+                    {
+                        label: 'Passed',
+                        data: passed,
+                        backgroundColor: passedColor,
+                        borderColor: passedColor,
+                    },
+                ]
+            };
+        }
 
-      function create_test_status_over_time_graph(filteredTests) {
+        if (suiteStatisticsGraphType == 'line') {
+            suiteStatisticsGraph = new Chart('suiteStatisticsGraph', {
+                type: 'line',
+                data: suiteStatisticsData,
+                options: {
+                    responsive: false,
+                    plugins: {
+                        title: {
+                            text: `${suiteSelectSuites} Statistics`,
+                            display: true
+                        },
+                        datalabels: {
+                            display: false,
+                        },
+                        legend: {
+                            display: true,
+                            position: 'right',
+                            labels: {
+                                family: 'Helvetica, sans-serif',
+                                color: '#e2e1d7'
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Amount Of Tests'
+                            },
+                            grace: '5%'
+                        }
+                    }
+                }
+            });
+        } else if ( suiteStatisticsGraphType == 'amount') {
+          Chart.register(ChartDataLabels);
+          suiteStatisticsGraph = new Chart('suiteStatisticsGraph', {
+              type: 'bar',
+              data: suiteStatisticsData,
+              options: {
+                  scales: {
+                      x: {
+                          ticks: {
+                              display: true,
+                              callback: function (value) {
+                                  return this.getLabelForValue(value).split(':')[0]
+                              },
+                          },
+                          title: {
+                              display: true,
+                              text: 'Run'
+                          }
+                      },
+                      y: {
+                          stacked: true,
+                          title: {
+                              display: true,
+                              text: 'Amount Of Tests'
+                          },
+                          grace: '5%'
+                      }
+                  },
+                  interaction: {
+                      mode: 'x'
+                  },
+                  responsive: false,
+                  plugins: {
+                      legend: {
+                          display: false,
+                          labels: {
+                              family: 'Helvetica, sans-serif',
+                          }
+                      },
+                      datalabels: {
+                          color: '#000000',
+                          align: 'center',
+                          anchor: 'center',
+                          formatter: function (value) {
+                              if (value > 0) {
+                                  return value
+                              } else {
+                                  value = '';
+                                  return value;
+                              }
+                          }
+                      },
+                      title: {
+                          display: true,
+                          text: `${suiteSelectSuites} Statistics`,
+                      }
+                  }
+              }
+          });
+        } else if ( suiteStatisticsGraphType == 'percentages') {
+            Chart.register(ChartDataLabels);
+            suiteStatisticsGraph = new Chart('suiteStatisticsGraph', {
+                type: 'bar',
+                data: suiteStatisticsData,
+                options: {
+                  scales: {
+                      x: {
+                          ticks: {
+                              display: true,
+                              callback: function (value) {
+                                  return this.getLabelForValue(value).split(':')[0]
+                              },
+                          },
+                          title: {
+                              display: true,
+                              text: 'Run'
+                          }
+                      },
+                      y: {
+                          stacked: true,
+                          title: {
+                              display: true,
+                              text: 'Percentage'
+                          },
+                        }
+                      }
+                  },
+                  interaction: {
+                      mode: 'x'
+                  },
+                  responsive: false,
+                  plugins: {
+                      legend: {
+                          display: false,
+                          labels: {
+                              family: 'Helvetica, sans-serif',
+                          }
+                      },
+                      datalabels: {
+                          color: '#000000',
+                          align: 'center',
+                          anchor: 'center',
+                          formatter: function (value) {
+                              if (value > 0) {
+                                  return value
+                              } else {
+                                  value = '';
+                                  return value;
+                              }
+                          }
+                      },
+                      title: {
+                          display: true,
+                          text: `${suiteSelectSuites} Statistics`,
+                      }
+                    }
+                });
+            }
+        }
+
+      function create_test_status_graph() {
           var suiteSelectTests = document.getElementById('suiteSelectTests').value
           var labels = []
           var runStarts = []
           for (const [key, value] of Object.entries(filteredTests)) {
-              if (!value.full_name.split('.').at(-2) == suiteSelectTests) {
+              if (value.full_name.split('.').at(-2) != suiteSelectTests) {
                   continue
               }
               if (!labels.includes(value.name)) {
@@ -794,9 +984,9 @@
               for (label of labels) {
                   var foundTests = filteredTests.filter(obj => {
                       // filter only tests in this suite, suite select check is required for duplicate test names over suites
-                      return (obj.name === label && obj.run_start == runStart && obj.full_name.split('.').at(-2) == suiteSelectTests)
+                      return (obj.name == label && obj.run_start == runStart && obj.full_name.split('.').at(-2) == suiteSelectTests)
                   })
-                  if (foundTests.length == 1) {
+                  if (foundTests.length > 0) {
                       var value = foundTests[0]
                       if (value.passed == 1) {
                           datasets.push({
