@@ -771,7 +771,7 @@
                         position: 'top',
                         ticks: {
                             callback: function (value, index, ticks) {
-                                return runStarts[value]
+                                return runStarts[this.getLabelForValue(value)]
                             }
                         }
                     }
