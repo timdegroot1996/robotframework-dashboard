@@ -28,10 +28,10 @@ class DashboardGenerator:
         with codecs_open("robot_dashboard.html", "w", "utf-8") as dashboard_writer:
             dashboard_writer.write(
                 template.render(
-                    date=generation_datetime,
+                    date=str(generation_datetime)[:-7],
                     runs=dumps(data["runs"]),
                     suites=dumps(data["suites"]),
                     tests=dumps(data["tests"]),
-                    keywords=len(data["keywords"]),
+                    keywords=dumps(data["keywords"]),
                 )
             )

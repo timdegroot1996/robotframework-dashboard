@@ -1,194 +1,194 @@
-<html>
-
-<head>
+<html data-bs-theme="dark">
+  <head>
+    <!-- ChartJs import -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    <!-- ChartJs Datalabel plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <link rel="icon" type="image/x-icon"
-        href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==" />
+
+    <!-- ChartJs timeline plugin (helps create time axis) -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <!-- DataTables and Bootstrap imports -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.js"></script>
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA=="
+    />
+
     <style>
-        h2 {
-            padding: 0px 20px 0px 20px;
+      :root {
+        color-scheme: dark;
+        font-family: Helvetica, sans-serif;
+      }
+      @media (prefers-color-scheme: light) {
+        body {
+          background-color: #eee;
         }
+      }
 
-        :root {
-            color-scheme: dark;
-            font-family: Helvetica, sans-serif;
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #1c2227;
+          color: #e2e1d7;
         }
-
-        canvas {
-            user-select: none;
-        }
-
-        @media (prefers-color-scheme: light) {
-            body {
-                background-color: #eee;
-            }
-        }
-
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #1c2227;
-                color: #e2e1d7;
-            }
-        }
-
-        .canvas-container {
-            width: 900;
-            margin-left: 20px;
-            text-align: center;
-        }
-
-        .canvas-container select {
-            margin-bottom: 20px;
-        }
-
-        .runs {
-            display: flex;
-            margin-left: 20px;
-        }
-
-        .statistics {
-            display: flex;
-            margin-left: 20px;
-        }
-
-        .centered-select {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .header {
-            margin-top: 20px;
-            margin-left: 20px;
-        }
-
-        .header p {
-            display: inline;
-            vertical-align: top;
-            line-height: 28px;
-            margin-right: 20px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .header .stats {
-            margin-top: 20px;
-            line-height: 28px;
-        }
-
-        .header h1 {
-            display: inline;
-            vertical-align: top;
-            line-height: 28px;
-        }
-
-        .filters {
-            margin-left: 20px;
-            display: flex;
-            justify-content: space-between;
-            width: 80%;
-        }
+      }
+      .container-fluid {
+        padding: 10px 30px 10px 30px;
+      }
+      .canvas {
+        width: 800px;
+        height: 540;
+        text-align: center;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <div class="header">
-        <h1>Robot Framework Dashboard {{ date }}</h1>
-        <div class="stats">
-            <p id="runCount"></p>
-            <p id="suiteCount"></p>
-            <p id="testCount"></p>
-            <p id="keywordCount"></p>
+  <body>
+    <div class="container-fluid">
+      <!-- Title row -->
+      <div class="row mt-4">
+        <div class="col-8">
+          <h1>Robot Framework Dashboard {{ date }}</h1>
         </div>
-    </div>
+        <div class="col-1 d-flex">
+          <p class="mt-auto" id="runCount"></p>
+        </div>
+        <div class="col-1 d-flex">
+          <p class="mt-auto" id="suiteCount"></p>
+        </div>
+        <div class="col-1 d-flex">
+          <p class="mt-auto" id="testCount"></p>
+        </div>
+        <div class="col-1 d-flex">
+          <p class="mt-auto" id="keywordCount"></p>
+        </div>
+      </div>
 
-    <div class="filters">
-        <div>
-            <label for="runs">Runs</label>
-            <select id="runs"></select>
+      <!-- Filter row -->
+      <div class="row mt-4">
+        <div class="col-auto">
+          <label class="form-label form-label-sm" for="runs">Runs</label>
+          <select class="form-select form-select-sm" id="runs"></select>
         </div>
-        <div>
-            <label for="tag">Tag</label>
-            <select id="tag"></select>
+        <div class="col-auto">
+          <label class="form-label form-label-sm" for="tag">Tag</label>
+          <select class="form-select form-select-sm" id="tag"></select>
         </div>
-        <div>
-            <label for="fromDate">From Date</label>
-            <input id="fromDate" type="date" />
+        <div class="col-auto">
+          <label class="form-label form-label-sm" for="fromDate">From</label>
+          <input class="form-control form-control-sm" id="fromDate" type="date" />
         </div>
-        <div>
-            <label for="fromTime">From Time</label>
-            <input id="fromTime" type="time" />
+        <div class="col-auto">
+          <label class="form-label form-label-sm" for="fromTime">From</label>
+          <input class="form-control form-control-sm" id="fromTime" type="time" />
         </div>
-        <div>
-            <label for="toDate">To Date</label>
-            <input id="toDate" type="date" />
+        <div class="col-auto">
+          <label class="form-label form-label-sm" for="toDate">To</label>
+          <input class="form-control form-control-sm" id="toDate" type="date" />
         </div>
-        <div>
-            <label for="toTime">To Time</label>
-            <input id="toTime" type="time" />
+        <div class="col-auto">
+          <label class="form-label form-label-sm" for="toTime">To</label>
+          <input class="form-control form-control-sm" id="toTime" type="time" />
         </div>
-        <div>
-            <button id="clearFilters">Clear Filters</button>
+        <div class="col-auto d-flex">
+          <button class="btn btn-outline-primary btn-sm mt-auto" id="resetFilters">Reset Filters</button>
         </div>
-    </div>
+      </div>
 
-    <h2 id="runTitle">Run Statistics</h2>
-    <div class='runs'>
-        <div class="canvas-container">
-            <canvas id="runStatisticsGraph" width="900" , height="540"></canvas>
+      <!-- Run title row -->
+      <div class="row mt-4">
+        <div class="col-5">
+          <h2 id="runTitle">Run Statistics</h2>
         </div>
-        <div class="canvas-container">
-            <canvas id="runDurationGraph" width="900" , height="540"></canvas>
-            <button id="updateRunDurationGraphBar">Bar View</button>
-            <button id="updateRunDurationGraphLine">Line View</button>
+      </div>
+
+      <!-- Run row  -->
+      <div class="row mt-4">
+        <div class="col canvas mb-5">
+          <canvas id="runStatisticsGraph"></canvas>
         </div>
-    </div>
-    <h2>Suite Statistics</h2>
-    <div class="centered-select">
-        <label for="suiteSelectSuites">Select Suite</label>
-        <select id="suiteSelectSuites"></select>
-    </div>
-    <div class='statistics'>
-        <div class="canvas-container">
-            <canvas id="suiteStatisticsGraph" width="900" , height="540"></canvas>
-            <button id="updateSuiteStatisticsGraphBarAmount">Bar View Amount</button>
-            <button id="updateSuiteStatisticsGraphBarPercentages">Bar View Percentages</button>
-            <button id="updateSuiteStatisticsGraphLine">Line View</button>
+        <div class="col canvas mb-5">
+          <canvas id="runDurationGraph"></canvas>
+          <br />
+          <button class="btn btn-outline-primary btn-sm" id="updateRunDurationGraphBar">Bar View</button>
+          <button class="btn btn-outline-primary btn-sm" id="updateRunDurationGraphLine">Line View</button>
         </div>
-        <div class="canvas-container">
-            <canvas id="suiteDurationGraph" width="900" , height="540"></canvas>
-            <button id="updateSuiteDurationGraphBar">Bar View</button>
-            <button id="updateSuiteDurationGraphLine">Line View</button>
+      </div>
+
+      <!-- Suite title and filters row -->
+      <div class="row mt-4">
+        <div class="col-5">
+          <h2>Suite Statistics</h2>
         </div>
-    </div>
-    <h2>Test Statistics</h2>
-    <div class="centered-select">
-        <label for="suiteSelectTests">Select Suite</label>
-        <select id="suiteSelectTests"></select>
-    </div>
-    <div style="display: flex">
-        <div class="canvas-container">
-            <canvas id="testStatusGraph" width="900" , height="540"></canvas>
+        <div class="col-auto">
+          <label class="form-label form-label-sm" for="suiteSelectSuites">Select Suite</label>
+          <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
         </div>
-        <div class="canvas-container">
-            <canvas id="testDurationGraph" width="900" , height="540"></canvas>
-            <button id="updateTestDurationGraphBar">Bar View</button>
-            <button id="updateTestDurationGraphLine">Line View</button>
+      </div>
+
+      <!-- Suite row -->
+      <div class="row mt-4">
+        <div class="col canvas mb-5">
+          <canvas id="suiteStatisticsGraph"></canvas>
+          <br />
+          <button class="btn btn-outline-primary btn-sm" id="updateSuiteStatisticsGraphBarAmount">Bar View Amount</button>
+          <button class="btn btn-outline-primary btn-sm" id="updateSuiteStatisticsGraphBarPercentages">Bar View Percentages</button>
+          <button class="btn btn-outline-primary btn-sm" id="updateSuiteStatisticsGraphLine">Line View</button>
         </div>
-    </div>
-    <h2>Keyword Statistics</h2>
-    <div style="display: flex">
-        <div class="canvas-container">
-            <canvas id="keywordStatistics" width="900" , height="540"></canvas>
+        <div class="col canvas mb-5">
+          <canvas id="suiteDurationGraph"></canvas>
+          <br />
+          <button class="btn btn-outline-primary btn-sm" id="updateSuiteDurationGraphBar">Bar View</button>
+          <button class="btn btn-outline-primary btn-sm" id="updateSuiteDurationGraphLine">Line View</button>
         </div>
-        <div class="canvas-container">
-            <canvas id="keywordsOverTime" width="900" , height="540"></canvas>
+      </div>
+
+      <!-- Test title and filters row -->
+      <div class="row mt-4">
+        <div class="col-5">
+          <h2>Test Statistics</h2>
         </div>
+        <div class="col-auto">
+          <label class="form-label form-label-sm" for="suiteSelectTests">Select Suite</label>
+          <select class="form-select form-select-sm" id="suiteSelectTests"></select>
+        </div>
+      </div>
+
+      <!-- Test row -->
+      <div class="row mt-4">
+        <div class="col canvas mb-5">
+          <canvas id="testStatusGraph"></canvas>
+        </div>
+        <div class="col canvas mb-5">
+          <canvas id="testDurationGraph"></canvas>
+          <br />
+          <button class="btn btn-outline-primary btn-sm" id="updateTestDurationGraphBar">Bar View</button>
+          <button class="btn btn-outline-primary btn-sm" id="updateTestDurationGraphLine">Line View</button>
+        </div>
+      </div>
+
+      <!-- Keyword title row -->
+      <div class="row mt-4">
+        <div class="col-5">
+          <h2>Keyword Statistics</h2>
+        </div>
+      </div>
+      <!-- Keyword row -->
+      <div class="row mt-4">
+        <div class="col canvas mb-5">
+          <canvas id="keywordStatistics"></canvas>
+        </div>
+        <div class="col canvas mb-5">
+          <canvas id="keywordsOverTime"></canvas>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -214,13 +214,13 @@
         var runs = {{ runs }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var suites = {{ suites }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var tests = {{ tests }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-        // var keywords = {{keywords}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+        var keywords = {{keywords}}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
 
         // set default values
         document.getElementById('runCount').innerText = 'Runs: ' + runs.length
         document.getElementById('testCount').innerText = 'Tests: ' + tests.length
         document.getElementById('suiteCount').innerText = 'Suites: ' + suites.length
-        document.getElementById('keywordCount').innerText = 'Keywords: ' + {{ keywords }}
+        document.getElementById('keywordCount').innerText = 'Keywords: ' + keywords.length
 
         // set filters and selects
         set_lowest_highest_dates()
@@ -266,7 +266,7 @@
         document.getElementById('updateTestDurationGraphBar').addEventListener('click', (e) => { update_test_duration_graph('bar') })
         document.getElementById('updateTestDurationGraphLine').addEventListener('click', (e) => { update_test_duration_graph('line') })
 
-        document.getElementById('clearFilters').addEventListener('click', clear_filters)
+        document.getElementById('resetFilters').addEventListener('click', reset_filters)
         document.getElementById('suiteSelectSuites').addEventListener('change', (e) => {
             update_suite_duration_graph(),
                 update_suite_statistics_graph()
@@ -456,7 +456,7 @@
             return filteredTests
         }
 
-        function clear_filters() {
+        function reset_filters() {
             document.getElementById('runs').value = 'All'
             document.getElementById('tag').value = 'All'
             set_lowest_highest_dates(runs)
@@ -549,6 +549,8 @@
                 type: 'bar',
                 data: runStatisticsData,
                 options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
                     scales: {
                         x: {
                             ticks: {
@@ -574,7 +576,6 @@
                     interaction: {
                         mode: 'x'
                     },
-                    responsive: false,
                     plugins: {
                         datalabels: {
                             color: '#000000',
@@ -641,6 +642,8 @@
                     type: 'bar',
                     data: runStatisticsData,
                     options: {
+                      responsive: true,
+      maintainAspectRatio: false,
                         scales: {
                             x: {
                                 ticks: {
@@ -666,7 +669,6 @@
                         interaction: {
                             mode: 'x'
                         },
-                        responsive: false,
                         plugins: {
                             datalabels: {
                                 color: '#000000',
@@ -716,7 +718,8 @@
                         datasets: datasets
                     },
                     options: {
-                        responsive: false,
+                      responsive: true,
+      maintainAspectRatio: false,
                         plugins: {
                             title: {
                                 text: 'Run Duration Over Time',
@@ -832,7 +835,8 @@
                     type: 'line',
                     data: suiteStatisticsData,
                     options: {
-                        responsive: false,
+                      responsive: true,
+      maintainAspectRatio: false,
                         plugins: {
                             title: {
                                 text: `${suiteSelectSuites} Statistics`,
@@ -882,6 +886,8 @@
                     type: 'bar',
                     data: suiteStatisticsData,
                     options: {
+                      responsive: true,
+      maintainAspectRatio: false,
                         scales: {
                             x: {
                                 ticks: {
@@ -934,6 +940,8 @@
                     type: 'bar',
                     data: suiteStatisticsData,
                     options: {
+                      responsive: true,
+      maintainAspectRatio: false,
                         scales: {
                             x: {
                                 ticks: {
@@ -1026,6 +1034,8 @@
                     type: 'bar',
                     data: suiteDurationData,
                     options: {
+                      responsive: true,
+      maintainAspectRatio: false,
                         scales: {
                             x: {
                                 ticks: {
@@ -1051,7 +1061,6 @@
                         interaction: {
                             mode: 'x'
                         },
-                        responsive: false,
                         plugins: {
                             datalabels: {
                                 color: '#000000',
@@ -1104,7 +1113,8 @@
                         datasets: datasets
                     },
                     options: {
-                        responsive: false,
+                      responsive: true,
+      maintainAspectRatio: false,
                         plugins: {
                             title: {
                                 text: 'Suite Duration Over Time',
@@ -1209,6 +1219,8 @@
                     datasets: datasets,
                 },
                 options: {
+                  responsive: true,
+      maintainAspectRatio: false,
                     indexAxis: 'y',
                     scales: {
                         y: {
@@ -1289,6 +1301,8 @@
                     type: 'bar',
                     data: testDurationData,
                     options: {
+                      responsive: true,
+      maintainAspectRatio: false,
                         scales: {
                             x: {
                                 ticks: {
@@ -1314,7 +1328,6 @@
                         interaction: {
                             mode: 'x'
                         },
-                        responsive: false,
                         plugins: {
                             datalabels: {
                                 color: '#000000',
@@ -1367,7 +1380,8 @@
                         datasets: datasets
                     },
                     options: {
-                        responsive: false,
+                      responsive: true,
+      maintainAspectRatio: false,
                         plugins: {
                             title: {
                                 text: 'Suite Duration Over Time',
@@ -1405,6 +1419,5 @@
             }
         }
     </script>
-</body>
-
+  </body>
 </html>
