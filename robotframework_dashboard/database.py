@@ -77,31 +77,33 @@ class DatabaseProcessor:
         return dict(zip(row.keys(), row))
 
     def get_runs(self):
-        data = self.connection.cursor().execute(SELECT_STARTS_FROM_RUNS).fetchall()
+        data = self.connection.cursor().execute(SELECT_NAME_START_FROM_RUNS).fetchall()
         runs = []
+        names = []
         for entry in data:
-            run = self.dict_from_row(entry)
-            runs.append(run["run_start"])
-        return runs
+            entry = self.dict_from_row(entry)
+            runs.append(entry["run_start"])
+            names.append(entry["name"])
+        return runs, names
 
     def list_runs(self):
-        database_runs = self.get_runs()
-        for index, run in enumerate(database_runs):
-            print(f"  Run {str(index).ljust(6, ' ')}: {run}")
-        if len(database_runs) == 0:
+        run_starts, run_names = self.get_runs()
+        for index, run_start in enumerate(run_starts):
+            print(f"  Run {str(index).ljust(3, ' ')} | {run_start} | {run_names[index]}")
+        if len(run_starts) == 0:
             print(f"  WARNING: There are no runs so the dashboard will be empty!")
 
     def remove_runs(self, remove_runs):
-        database_runs = self.get_runs()
+        run_starts, run_names = self.get_runs()
         for run in remove_runs:
             run = run[0]
-            if run in database_runs:
+            if run in run_starts:
                 self.remove_run(run)
                 print(f"  Removed run from the database: {run}")
             else:
                 try:
                     run_index = int(run)
-                    run_start = database_runs[run_index]
+                    run_start = run_starts[run_index]
                     self.remove_run(run_start)
                     print(f"  Removed run from the database: {run_start}")
                 except:
