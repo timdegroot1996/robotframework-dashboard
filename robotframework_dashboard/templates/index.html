@@ -40,11 +40,22 @@
             text-align: center;
         }
 
-        .canvas-container button {
-            top: 50%;
+        .canvas-container select {
+            margin-bottom: 20px;
         }
 
-        .canvas-container select {
+        .runs {
+            display: flex;
+            margin-left: 20px;
+        }
+
+        .statistics {
+            display: flex;
+            margin-left: 20px;
+        }
+
+        .centered-select {
+            text-align: center;
             margin-bottom: 20px;
         }
 
@@ -127,7 +138,7 @@
     </div>
 
     <h2 id="runTitle">Run Statistics</h2>
-    <div style="display: flex">
+    <div class='runs'>
         <div class="canvas-container">
             <canvas id="runStatisticsGraph" width="900" , height="540"></canvas>
         </div>
@@ -138,33 +149,36 @@
         </div>
     </div>
     <h2>Suite Statistics</h2>
-    <div style="display: flex">
+    <div class="centered-select">
+        <label for="suiteSelectSuites">Select Suite</label>
+        <select id="suiteSelectSuites"></select>
+    </div>
+    <div class='statistics'>
         <div class="canvas-container">
-            <div>
-                <label for="suiteSelectSuites">Select Suite</label>
-                <select id="suiteSelectSuites"></select>
-            </div>
             <canvas id="suiteStatisticsGraph" width="900" , height="540"></canvas>
             <button id="updateSuiteStatisticsGraphBarAmount">Bar View Amount</button>
             <button id="updateSuiteStatisticsGraphBarPercentages">Bar View Percentages</button>
             <button id="updateSuiteStatisticsGraphLine">Line View</button>
         </div>
         <div class="canvas-container">
-            <canvas id="suitesOverTime" width="900" , height="540"></canvas>
+            <canvas id="suiteDurationGraph" width="900" , height="540"></canvas>
+            <button id="updateSuiteDurationGraphBar">Bar View</button>
+            <button id="updateSuiteDurationGraphLine">Line View</button>
         </div>
     </div>
     <h2>Test Statistics</h2>
-
+    <div class="centered-select">
+        <label for="suiteSelectTests">Select Suite</label>
+        <select id="suiteSelectTests"></select>
+    </div>
     <div style="display: flex">
         <div class="canvas-container">
-            <div>
-                <label for="suiteSelectTests">Select Suite</label>
-                <select id="suiteSelectTests"></select>
-            </div>
             <canvas id="testStatusGraph" width="900" , height="540"></canvas>
         </div>
         <div class="canvas-container">
-            <canvas id="testStatusGraph2" width="900" , height="540"></canvas>
+            <canvas id="testDurationGraph" width="900" , height="540"></canvas>
+            <button id="updateTestDurationGraphBar">Bar View</button>
+            <button id="updateTestDurationGraphLine">Line View</button>
         </div>
     </div>
     <h2>Keyword Statistics</h2>
@@ -187,10 +201,14 @@
         }
 
         // colors
-        var failedColor = '#ce3e01'
-        var skippedColor = '#fed84f'
-        var passedColor = '#97bd61'
-        var greyColor = '#D3D3D3'
+        var passedBackgroundColor = '#97bd61'
+        var passedBorderColor = '#97bd61'
+        var skippedBackgroundColor = '#fed84f'
+        var skippedBorderColor = '#fed84f'
+        var failedBackgroundColor = '#ce3e01'
+        var failedBorderColor = '#ce3e01'
+        var greyBackgroundColor = '#D3D3D3'
+        var greyBorderColor = '#D3D3D3'
 
         // prepare input data
         var runs = {{ runs }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
@@ -213,8 +231,12 @@
         var runDurationGraph
         var runDurationGraphType = 'bar'
         var suiteStatisticsGraph
-        var suiteStatisticsGraphType = 'amount'
+        var suiteStatisticsGraphType = 'percentages'
+        var suiteDurationGraph
+        var suiteDurationGraphType = 'line'
         var testStatusGraph
+        var testDurationGraph
+        var testDurationGraphType = 'line'
         // filtered data vars
         var filteredRuns
         var filteredSuites
@@ -233,13 +255,26 @@
 
         document.getElementById('updateRunDurationGraphBar').addEventListener('click', (e) => { update_run_duration_graph('bar') })
         document.getElementById('updateRunDurationGraphLine').addEventListener('click', (e) => { update_run_duration_graph('line') })
+
         document.getElementById('updateSuiteStatisticsGraphBarAmount').addEventListener('click', (e) => { update_suite_statistics_graph('amount') })
         document.getElementById('updateSuiteStatisticsGraphBarPercentages').addEventListener('click', (e) => { update_suite_statistics_graph('percentages') })
         document.getElementById('updateSuiteStatisticsGraphLine').addEventListener('click', (e) => { update_suite_statistics_graph('line') })
 
+        document.getElementById('updateSuiteDurationGraphBar').addEventListener('click', (e) => { update_suite_duration_graph('bar') })
+        document.getElementById('updateSuiteDurationGraphLine').addEventListener('click', (e) => { update_suite_duration_graph('line') })
+
+        document.getElementById('updateTestDurationGraphBar').addEventListener('click', (e) => { update_test_duration_graph('bar') })
+        document.getElementById('updateTestDurationGraphLine').addEventListener('click', (e) => { update_test_duration_graph('line') })
+
         document.getElementById('clearFilters').addEventListener('click', clear_filters)
-        document.getElementById('suiteSelectSuites').addEventListener('change', update_suite_statistics_graph)
-        document.getElementById('suiteSelectTests').addEventListener('change', update_test_statistics_graph)
+        document.getElementById('suiteSelectSuites').addEventListener('change', (e) => {
+            update_suite_duration_graph(),
+                update_suite_statistics_graph()
+        })
+        document.getElementById('suiteSelectTests').addEventListener('change', (e) => {
+            update_test_statistics_graph(),
+                update_test_duration_graph()
+        })
 
         function set_lowest_highest_dates() {
             var dates = []
@@ -282,7 +317,9 @@
             update_run_statistics_graph()
             update_run_duration_graph()
             update_suite_statistics_graph()
+            update_suite_duration_graph()
             update_test_statistics_graph()
+            update_test_duration_graph()
         }
 
         function update_run_statistics_graph() {
@@ -306,12 +343,28 @@
             create_suite_statistics_graph()
         }
 
+        function update_suite_duration_graph(type) {
+            if (typeof (type) === 'string') {
+                suiteDurationGraphType = type
+            }
+            if (suiteDurationGraph) { suiteDurationGraph.destroy() }
+            create_suite_duration_graph()
+        }
+
         function update_test_statistics_graph() {
             if (testStatusGraph) { testStatusGraph.destroy() }
             create_test_status_graph()
         }
 
-        function filter_runs(runs) {
+        function update_test_duration_graph(type) {
+            if (typeof (type) === 'string') {
+                testDurationGraphType = type
+            }
+            if (testDurationGraph) { testDurationGraph.destroy() }
+            create_test_duration_graph()
+        }
+
+        function filter_runs() {
             var run = document.getElementById('runs').value
             var filteredRuns = {}
             for (const [key, value] of Object.entries(runs)) {
@@ -388,7 +441,6 @@
             }
             return filteredSuites
         }
-
 
         function filter_tests() {
             var validRunStarts = []
@@ -474,19 +526,19 @@
                     {
                         label: 'Failed',
                         data: failed,
-                        backgroundColor: failedColor,
+                        backgroundColor: failedBackgroundColor,
                         stack: 'Stack 0',
                     },
                     {
                         label: 'Skipped',
                         data: skipped,
-                        backgroundColor: skippedColor,
+                        backgroundColor: skippedBackgroundColor,
                         stack: 'Stack 0',
                     },
                     {
                         label: 'Passed',
                         data: passed,
-                        backgroundColor: passedColor,
+                        backgroundColor: passedBackgroundColor,
                         stack: 'Stack 0',
                     },
                 ]
@@ -555,14 +607,14 @@
                     var dataLength = data[0].length
                     if (data[value.name]) {
                         // add 0 to all not matching, and value.elapsed to matching
-                        data[value.name].push(Math.round(value.elapsed_s))
+                        data[value.name].push(Math.round(value.elapsed_s * 100)/100)
                     } else {
                         // add longest amount of 0's to matched and 1 zero to not matching
                         data[value.name] = []
                         for (let step = 0; step < dataLength; step++) {
                             data[value.name].push(0)
                         }
-                        data[value.name].push(Math.round(value.elapsed_s))
+                        data[value.name].push(Math.round(value.elapsed_s * 100)/100)
                     }
                     // add 0 to every other value
                     for (d in data) {
@@ -641,11 +693,10 @@
                 });
             } else if (runDurationGraphType == 'line') {
                 var [labels, datasets, sets] = [[], [], {}]
-                // prepare data in the correct format
                 for (const [key, value] of Object.entries(filteredRuns)) {
                     var full_name = value.full_name
                     var run_start = new Date(value.run_start)
-                    var elapsed_s = Math.round(value.elapsed_s)
+                    var elapsed_s = Math.round(value.elapsed_s * 100)/100
                     if (labels.includes(full_name)) {
                         var values = sets[full_name]
                         values.push({ x: run_start, y: elapsed_s })
@@ -658,7 +709,7 @@
                 for (const [key, value] of Object.entries(sets)) {
                     datasets.push({ label: key, fill: false, data: value })
                 }
-                // create graph
+
                 runDurationGraph = new Chart('runDurationGraph', {
                     type: 'line',
                     data: {
@@ -712,9 +763,9 @@
                         var [passed, failed, skipped, labels] = [[], [], [], []]
                         for (const [key, value] of Object.entries(filteredSuites)) {
                             if (value.name == suiteSelectSuites) {
-                                passed.push(Math.round(value.passed / value.total * 100))
-                                failed.push(Math.round(value.failed / value.total * 100))
-                                skipped.push(Math.round(value.skipped / value.total * 100))
+                                passed.push(Math.round(value.passed / value.total * 100 * 100)/100)
+                                failed.push(Math.round(value.failed / value.total * 100 * 100)/100)
+                                skipped.push(Math.round(value.skipped / value.total * 100 * 100)/100)
                                 labels.push(value.run_start)
                             }
                         }
@@ -734,19 +785,19 @@
                         {
                             label: 'Failed',
                             data: failed,
-                            backgroundColor: failedColor,
+                            backgroundColor: failedBackgroundColor,
                             stack: 'Stack 0',
                         },
                         {
                             label: 'Skipped',
                             data: skipped,
-                            backgroundColor: skippedColor,
+                            backgroundColor: skippedBackgroundColor,
                             stack: 'Stack 0',
                         },
                         {
                             label: 'Passed',
                             data: passed,
-                            backgroundColor: passedColor,
+                            backgroundColor: passedBackgroundColor,
                             stack: 'Stack 0',
                         },
                     ]
@@ -758,25 +809,24 @@
                         {
                             label: 'Failed',
                             data: failed,
-                            backgroundColor: failedColor,
-                            borderColor: failedColor,
+                            backgroundColor: failedBackgroundColor,
+                            borderColor: failedBackgroundColor,
                         },
                         {
                             label: 'Skipped',
                             data: skipped,
-                            backgroundColor: skippedColor,
-                            borderColor: skippedColor,
+                            backgroundColor: skippedBackgroundColor,
+                            borderColor: skippedBackgroundColor,
                         },
                         {
                             label: 'Passed',
                             data: passed,
-                            backgroundColor: passedColor,
-                            borderColor: passedColor,
+                            backgroundColor: passedBackgroundColor,
+                            borderColor: passedBackgroundColor,
                         },
                     ]
                 };
             }
-
             if (suiteStatisticsGraphType == 'line') {
                 suiteStatisticsGraph = new Chart('suiteStatisticsGraph', {
                     type: 'line',
@@ -929,6 +979,169 @@
             }
         }
 
+        function create_suite_duration_graph() {
+            var suiteSelectSuites = document.getElementById('suiteSelectSuites').value
+            if (suiteDurationGraphType == 'bar') {
+                var [labels, data] = [[], { 0: [] }]
+                // prepare data for bar chart
+                for (const [key, value] of Object.entries(filteredSuites)) {
+                    if (value.name != suiteSelectSuites) {
+                        continue
+                    }
+                    labels.push(`${value.name}: ${value.run_start}`)
+                    var dataLength = data[0].length
+                    if (data[value.name]) {
+                        // add 0 to all not matching, and value.elapsed to matching
+                        data[value.name].push(Math.round(value.elapsed_s * 100)/100)
+                    } else {
+                        // add longest amount of 0's to matched and 1 zero to not matching
+                        data[value.name] = []
+                        for (let step = 0; step < dataLength; step++) {
+                            data[value.name].push(0)
+                        }
+                        data[value.name].push(Math.round(value.elapsed_s * 100)/100)
+                    }
+                    // add 0 to every other value
+                    for (d in data) {
+                        if (d != value.name) {
+                            data[d].push(0)
+                        }
+                    }
+                }
+                delete data[0]
+                var suiteDurationData = {
+                    labels: labels,
+                    datasets: [],
+                }
+                for (key in data) {
+                    suiteDurationData['datasets'].push({
+                        label: key,
+                        data: data[key],
+                        stack: 'Stack 0'
+                    })
+
+                }
+                // create graph
+                suiteDurationGraph = new Chart('suiteDurationGraph', {
+                    type: 'bar',
+                    data: suiteDurationData,
+                    options: {
+                        scales: {
+                            x: {
+                                ticks: {
+                                    display: true,
+                                    callback: function (value) {
+                                        return this.getLabelForValue(value).split(': ')[1]
+                                    },
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Run'
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                title: {
+                                    display: true,
+                                    text: 'Duration'
+                                },
+                                grace: '5%'
+                            }
+                        },
+                        interaction: {
+                            mode: 'x'
+                        },
+                        responsive: false,
+                        plugins: {
+                            datalabels: {
+                                color: '#000000',
+                                align: 'center',
+                                anchor: 'center',
+                                formatter: function (value) {
+                                    if (value > 0) {
+                                        return value
+                                    } else {
+                                        value = '';
+                                        return value;
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Suite Duration Over Time'
+                            },
+                            tooltip: {
+                                filter: tooltipItem => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0
+                            }
+                        }
+                    }
+                });
+            } else if (suiteDurationGraphType == 'line') {
+                var [labels, datasets, sets] = [[], [], {}]
+                for (const [key, value] of Object.entries(filteredSuites)) {
+                    if (value.name != suiteSelectSuites) {
+                        continue
+                    }
+                    var name = value.name
+                    var run_start = new Date(value.run_start)
+                    var elapsed_s = Math.round(value.elapsed_s * 100)/100
+                    if (labels.includes(name)) {
+                        var values = sets[name]
+                        values.push({ x: run_start, y: elapsed_s })
+                        sets[name] = values
+                    } else {
+                        labels.push(name)
+                        sets[name] = [{ x: run_start, y: elapsed_s }]
+                    }
+                }
+                for (const [key, value] of Object.entries(sets)) {
+                    datasets.push({ label: key, fill: false, data: value })
+                }
+
+                suiteDurationGraph = new Chart('suiteDurationGraph', {
+                    type: 'line',
+                    data: {
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            title: {
+                                text: 'Suite Duration Over Time',
+                                display: true
+                            },
+                            datalabels: {
+                                display: false,
+                            },
+                            legend: {
+                                display: true,
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Elapsed (seconds)'
+                                },
+                                grace: '5%'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
         function create_test_status_graph() {
             var suiteSelectTests = document.getElementById('suiteSelectTests').value
             var labels = []
@@ -959,21 +1172,21 @@
                             datasets.push({
                                 label: label,
                                 data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                backgroundColor: [passedColor],
+                                backgroundColor: [passedBackgroundColor],
                                 borderWidth: 1
                             })
                         } else if (value.failed == 1) {
                             datasets.push({
                                 label: label,
                                 data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                backgroundColor: [failedColor],
+                                backgroundColor: [failedBackgroundColor],
                                 borderWidth: 1
                             })
                         } else if (value.skipped == 1) {
                             datasets.push({
                                 label: label,
                                 data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                backgroundColor: [skippedColor],
+                                backgroundColor: [skippedBackgroundColor],
                                 borderWidth: 1
                             })
                         }
@@ -981,7 +1194,7 @@
                         datasets.push({
                             label: label,
                             data: [{ x: [runAxis, runAxis + 1], y: label }],
-                            backgroundColor: [greyColor],
+                            backgroundColor: [greyBackgroundColor],
                             borderWidth: 1
                         })
                     }
@@ -1027,6 +1240,169 @@
                     }
                 }
             });
+        }
+
+        function create_test_duration_graph() {
+            var suiteSelectTests = document.getElementById('suiteSelectTests').value
+            if (testDurationGraphType == 'bar') {
+                var [labels, data] = [[], { 0: [] }]
+                // prepare data for bar chart
+                for (const [key, value] of Object.entries(filteredTests)) {
+                    if (value.full_name.split('.').at(-2) != suiteSelectTests) {
+                        continue
+                    }
+                    labels.push(`${value.name}: ${value.run_start}`)
+                    var dataLength = data[0].length
+                    if (data[value.name]) {
+                        // add 0 to all not matching, and value.elapsed to matching
+                        data[value.name].push(Math.round(value.elapsed_s * 100)/100)
+                    } else {
+                        // add longest amount of 0's to matched and 1 zero to not matching
+                        data[value.name] = []
+                        for (let step = 0; step < dataLength; step++) {
+                            data[value.name].push(0)
+                        }
+                        data[value.name].push(Math.round(value.elapsed_s * 100)/100)
+                    }
+                    // add 0 to every other value
+                    for (d in data) {
+                        if (d != value.name) {
+                            data[d].push(0)
+                        }
+                    }
+                }
+                delete data[0]
+                var testDurationData = {
+                    labels: labels,
+                    datasets: [],
+                }
+                for (key in data) {
+                    testDurationData['datasets'].push({
+                        label: key,
+                        data: data[key],
+                        stack: 'Stack 0'
+                    })
+
+                }
+                // create graph
+                testDurationGraph = new Chart('testDurationGraph', {
+                    type: 'bar',
+                    data: testDurationData,
+                    options: {
+                        scales: {
+                            x: {
+                                ticks: {
+                                    display: true,
+                                    callback: function (value) {
+                                        return this.getLabelForValue(value).split(': ')[1]
+                                    },
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Run'
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                title: {
+                                    display: true,
+                                    text: 'Duration'
+                                },
+                                grace: '5%'
+                            }
+                        },
+                        interaction: {
+                            mode: 'x'
+                        },
+                        responsive: false,
+                        plugins: {
+                            datalabels: {
+                                color: '#000000',
+                                align: 'center',
+                                anchor: 'center',
+                                formatter: function (value) {
+                                    if (value > 0) {
+                                        return value
+                                    } else {
+                                        value = '';
+                                        return value;
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Test Duration Over Time'
+                            },
+                            tooltip: {
+                                filter: tooltipItem => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0
+                            }
+                        }
+                    }
+                });
+            } else if (testDurationGraphType == 'line') {
+                var [labels, datasets, sets] = [[], [], {}]
+                for (const [key, value] of Object.entries(filteredTests)) {
+                    if (value.full_name.split('.').at(-2) != suiteSelectTests) {
+                        continue
+                    }
+                    var name = value.name
+                    var run_start = new Date(value.run_start)
+                    var elapsed_s = Math.round(value.elapsed_s * 100)/100
+                    if (labels.includes(name)) {
+                        var values = sets[name]
+                        values.push({ x: run_start, y: elapsed_s })
+                        sets[name] = values
+                    } else {
+                        labels.push(name)
+                        sets[name] = [{ x: run_start, y: elapsed_s }]
+                    }
+                }
+                for (const [key, value] of Object.entries(sets)) {
+                    datasets.push({ label: key, fill: false, data: value })
+                }
+
+                testDurationGraph = new Chart('testDurationGraph', {
+                    type: 'line',
+                    data: {
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            title: {
+                                text: 'Suite Duration Over Time',
+                                display: true
+                            },
+                            datalabels: {
+                                display: false,
+                            },
+                            legend: {
+                                display: true,
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Elapsed (seconds)'
+                                },
+                                grace: '5%'
+                            }
+                        }
+                    }
+                });
+            }
         }
     </script>
 </body>
