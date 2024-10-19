@@ -39,15 +39,14 @@ def main():
         "=============================================================================="
     )
     if outputs:
-        output_data = {}
         print(f" 2. Processing output XML(s)")
         for output in outputs:
             output_path = output[0]
             tags = output[1]
             start = time()
             print(f"  Processing output XML '{basename(output_path)}'")
-            output_data[output_path] = OutputProcessor().get_output_data(output_path)
-            database.insert_output_data(output_path, output_data, tags)
+            output_data = OutputProcessor().get_output_data(output_path)
+            database.insert_output_data(output_data, tags)
             end = time()
             print(
                 f"  Processed output XML '{basename(output_path)}' in {round(end-start, 2)} seconds"

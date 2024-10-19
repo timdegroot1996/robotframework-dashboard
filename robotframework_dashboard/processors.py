@@ -12,12 +12,56 @@ class OutputProcessor:
         output.visit(SuiteProcessor(output.generation_time, suite_list))
         output.visit(TestProcessor(output.generation_time, test_list))
         output.visit(KeywordProcessor(output.generation_time, keyword_list))
+        average_keyword_list = self.calculate_keyword_averages(keyword_list)
         return {
             "runs": run_list,
             "suites": suite_list,
             "tests": test_list,
-            "keywords": keyword_list,
+            "keywords": average_keyword_list,
         }
+
+    def calculate_keyword_averages(self, keyword_list: list):
+        average_keyword_dict = {}
+        average_keyword_list = []
+        for keyword in keyword_list:
+            run_start = keyword[0]
+            name = keyword[1]
+            passed = int(keyword[2])
+            failed = int(keyword[3])
+            skipped = int(keyword[4])
+            elapsed_s = keyword[5]
+            if not name in average_keyword_dict.keys():
+                average_keyword_dict[name] = {
+                    "passed": passed,
+                    "failed": failed,
+                    "skipped": skipped,
+                    "elapsed_s": [elapsed_s],
+                }
+            else:
+                average_keyword_dict[name]["passed"] += passed
+                average_keyword_dict[name]["failed"] += failed
+                average_keyword_dict[name]["skipped"] += skipped
+                average_keyword_dict[name]["elapsed_s"].append(elapsed_s)
+        for name in average_keyword_dict.keys():
+            elapsed_list = average_keyword_dict[name]["elapsed_s"]
+            sum_elapsed_list = sum(elapsed_list)
+            len_elapsed_list = len(elapsed_list)
+            min_elapsed_list = min(elapsed_list)
+            max_elapsed_list = max(elapsed_list)
+            average_keyword_list.append(
+                (
+                    run_start,  # run_start
+                    name,  # keyword name
+                    average_keyword_dict[name]["passed"],  # amount of passes
+                    average_keyword_dict[name]["failed"],  # amount of fails
+                    average_keyword_dict[name]["skipped"],  # amount of skips
+                    sum_elapsed_list,  # total usage time
+                    sum_elapsed_list / len_elapsed_list,  # average usage time
+                    min_elapsed_list,  # fastest usage time
+                    max_elapsed_list,  # slowest usage time
+                )
+            )
+        return average_keyword_list
 
 
 class RunProcessor(ResultVisitor):
@@ -40,6 +84,7 @@ class RunProcessor(ResultVisitor):
                 suite.start_time,
             )
         )
+
 
 class SuiteProcessor(ResultVisitor):
 
@@ -102,8 +147,9 @@ class KeywordProcessor(ResultVisitor):
                 keyword.passed,
                 keyword.failed,
                 keyword.skipped,
-                keyword.elapsedtime / 1000,
-                keyword.start_time,
-                ",".join(keyword.tags),
+                keyword.elapsed_time.total_seconds(),
+                # keyword.message,
+                # keyword.start_time,
+                # ",".join(keyword.tags),
             )
         )

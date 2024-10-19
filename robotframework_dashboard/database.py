@@ -22,12 +22,12 @@ class DatabaseProcessor:
         self.connection.cursor().execute(CREATE_KEYWORDS)
         self.connection.commit()
 
-    def insert_output_data(self, output_path: str, output_data: dict, tags: list):
+    def insert_output_data(self, output_data: dict, tags: list):
         try:
-            self.insert_runs(output_data[output_path]["runs"], tags)
-            self.insert_suites(output_data[output_path]["suites"])
-            self.insert_tests(output_data[output_path]["tests"])
-            self.insert_keywords(output_data[output_path]["keywords"])
+            self.insert_runs(output_data["runs"], tags)
+            self.insert_suites(output_data["suites"])
+            self.insert_tests(output_data["tests"])
+            self.insert_keywords(output_data["keywords"])
         except Exception as e:
             print(
                 f"   ERROR: you are probably trying to add the same output again, {e}"
