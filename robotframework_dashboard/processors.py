@@ -55,6 +55,7 @@ class OutputProcessor:
                     average_keyword_dict[name]["passed"],  # amount of passes
                     average_keyword_dict[name]["failed"],  # amount of fails
                     average_keyword_dict[name]["skipped"],  # amount of skips
+                    len_elapsed_list,  # times used
                     sum_elapsed_list,  # total usage time
                     sum_elapsed_list / len_elapsed_list,  # average usage time
                     min_elapsed_list,  # fastest usage time
