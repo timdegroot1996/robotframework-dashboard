@@ -78,27 +78,27 @@
       <!-- Filter row -->
       <div class="row mt-4">
         <div class="col-auto">
-          <label class="form-label form-label-sm" for="runs">Runs</label>
+          <label class="form-label form-label-sm" for="runs">Runs:</label>
           <select class="form-select form-select-sm" id="runs"></select>
         </div>
         <div class="col-auto">
-          <label class="form-label form-label-sm" for="tag">Tag</label>
+          <label class="form-label form-label-sm" for="tag">Tags:</label>
           <select class="form-select form-select-sm" id="tag"></select>
         </div>
         <div class="col-auto">
-          <label class="form-label form-label-sm" for="fromDate">From</label>
+          <label class="form-label form-label-sm" for="fromDate">From Date:</label>
           <input class="form-control form-control-sm" id="fromDate" type="date" />
         </div>
         <div class="col-auto">
-          <label class="form-label form-label-sm" for="fromTime">From</label>
+          <label class="form-label form-label-sm" for="fromTime">From Time:</label>
           <input class="form-control form-control-sm" id="fromTime" type="time" />
         </div>
         <div class="col-auto">
-          <label class="form-label form-label-sm" for="toDate">To</label>
+          <label class="form-label form-label-sm" for="toDate">To Date:</label>
           <input class="form-control form-control-sm" id="toDate" type="date" />
         </div>
         <div class="col-auto">
-          <label class="form-label form-label-sm" for="toTime">To</label>
+          <label class="form-label form-label-sm" for="toTime">To Time:</label>
           <input class="form-control form-control-sm" id="toTime" type="time" />
         </div>
         <div class="col-auto d-flex">
@@ -241,8 +241,8 @@
         var skippedBorderColor = '#fed84f'
         var failedBackgroundColor = '#ce3e01'
         var failedBorderColor = '#ce3e01'
-        var greyBackgroundColor = '#D3D3D3'
-        var greyBorderColor = '#D3D3D3'
+        var greyBackgroundColor = '#1c2227'
+        var greyBorderColor = '#1c2227'
 
         // prepare input data
         var runs = {{ runs }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
