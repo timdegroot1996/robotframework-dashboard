@@ -41,10 +41,6 @@
             }
         }
 
-        .container-fluid {
-            padding: 10px 30px 10px 30px;
-        }
-
         .canvas {
             width: 800px;
             height: 540;
@@ -55,203 +51,251 @@
             left: 300px;
             position: relative;
         }
+
+        .card{
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid">
-        <!-- Title row -->
-        <div class="row mt-2">
-            <div class="col-8">
-                <h1>Robot Framework Dashboard {{ date }}</h1>
-            </div>
-            <div class="col-1 d-flex">
-                <p class="mt-auto" id="runCount"></p>
-            </div>
-            <div class="col-1 d-flex">
-                <p class="mt-auto" id="suiteCount"></p>
-            </div>
-            <div class="col-1 d-flex">
-                <p class="mt-auto" id="testCount"></p>
-            </div>
-            <div class="col-1 d-flex">
-                <p class="mt-auto" id="keywordCount"></p>
-            </div>
-        </div>
+    <div class="container-fluid mt-4">
+        <div class="card">
+            <div class="card-body">
+                <!-- Title row -->
+                <div class="row">
+                    <div class="col-8">
+                        <h1>Robot Framework Dashboard {{ date }}</h1>
+                    </div>
+                    <div class="col-1 d-flex">
+                        <p class="mt-auto" id="runCount"></p>
+                    </div>
+                    <div class="col-1 d-flex">
+                        <p class="mt-auto" id="suiteCount"></p>
+                    </div>
+                    <div class="col-1 d-flex">
+                        <p class="mt-auto" id="testCount"></p>
+                    </div>
+                    <div class="col-1 d-flex">
+                        <p class="mt-auto" id="keywordCount"></p>
+                    </div>
+                </div>
 
-        <!-- Filter row -->
-        <div class="row mt-4">
-            <div class="col-auto">
-                <label class="form-label form-label-sm" for="runs">Runs</label>
-                <select class="form-select form-select-sm" id="runs"></select>
-            </div>
-            <div class="col-auto">
-                <label class="form-label form-label-sm" for="tag">Tags</label>
-                <select class="form-select form-select-sm" id="tag"></select>
-            </div>
-            <div class="col-auto">
-                <label class="form-label form-label-sm" for="fromDate">From Date</label>
-                <input class="form-control form-control-sm" id="fromDate" type="date" />
-            </div>
-            <div class="col-auto">
-                <label class="form-label form-label-sm" for="fromTime">From Time</label>
-                <input class="form-control form-control-sm" id="fromTime" type="time" />
-            </div>
-            <div class="col-auto">
-                <label class="form-label form-label-sm" for="toDate">To Date</label>
-                <input class="form-control form-control-sm" id="toDate" type="date" />
-            </div>
-            <div class="col-auto">
-                <label class="form-label form-label-sm" for="toTime">To Time</label>
-                <input class="form-control form-control-sm" id="toTime" type="time" />
-            </div>
-            <div class="col-auto d-flex">
-                <button class="btn btn-outline-primary btn-sm mt-auto" id="resetFilters">Reset Filters</button>
-            </div>
-        </div>
-
-        <!-- Run title row -->
-        <div class="row mt-4">
-            <div class="col-5">
-                <h2 id="runTitle">Run Statistics</h2>
-            </div>
-        </div>
-
-        <!-- Run row  -->
-        <div class="row mt-4">
-            <div class="col canvas mb-5">
-                <canvas id="runStatisticsGraph"></canvas>
-                <button class="btn btn-outline-primary btn-sm" id="updateRunStatisticsGraphBarPercentages">Percentages</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateRunStatisticsGraphBarAmount">Amount</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateRunStatisticsGraphLine">Timeline</button>
-            </div>
-            <div class="col canvas mb-5">
-                <canvas id="runDurationGraph"></canvas>
-                <button class="btn btn-outline-primary btn-sm" id="updateRunDurationGraphBar">Bar View</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateRunDurationGraphLine">Line View</button>
-            </div>
-        </div>
-
-        <!-- Suite title and filters row -->
-        <div class="row mt-4">
-            <div class="col-5">
-                <h2>Suite Statistics</h2>
-            </div>
-            <div class="col-auto">
-                <label class="form-label form-label-sm" for="suiteSelectSuites">Select Suite</label>
-                <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
-            </div>
-        </div>
-
-        <!-- Suite row -->
-        <div class="row mt-4">
-            <div class="col canvas mb-5">
-                <canvas id="suiteStatisticsGraph"></canvas>
-                <button class="btn btn-outline-primary btn-sm" id="updateSuiteStatisticsGraphBarPercentages">Percentages</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateSuiteStatisticsGraphBarAmount">Amount</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateSuiteStatisticsGraphLine">Timeline</button>
-            </div>
-            <div class="col canvas mb-5">
-                <canvas id="suiteDurationGraph"></canvas>
-                <button class="btn btn-outline-primary btn-sm" id="updateSuiteDurationGraphBar">Bar View</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateSuiteDurationGraphLine">Line View</button>
-            </div>
-        </div>
-
-        <!-- Test title and filters row -->
-        <div class="row mt-4">
-            <div class="col-4">
-                <h2>Test Statistics</h2>
-            </div>
-            <div class="col-auto d-flex">
-                <div class="form-check form-switch mt-4">
-                    <input class="form-check-input" type="checkbox" role="switch" id="showOnlySelectedTestStatistic">
-                    <label class="form-check-label" for="showOnlySelectedTestStatistic">Show Only Selected Test
-                        Statistics</label>
+                <!-- Filter row -->
+                <div class="row">
+                    <div class="col-auto">
+                        <label class="form-label form-label-sm" for="runs">Runs</label>
+                        <select class="form-select form-select-sm" id="runs"></select>
+                    </div>
+                    <div class="col-auto">
+                        <label class="form-label form-label-sm" for="tag">Tags</label>
+                        <select class="form-select form-select-sm" id="tag"></select>
+                    </div>
+                    <div class="col-auto">
+                        <label class="form-label form-label-sm" for="fromDate">From Date</label>
+                        <input class="form-control form-control-sm" id="fromDate" type="date" />
+                    </div>
+                    <div class="col-auto">
+                        <label class="form-label form-label-sm" for="fromTime">From Time</label>
+                        <input class="form-control form-control-sm" id="fromTime" type="time" />
+                    </div>
+                    <div class="col-auto">
+                        <label class="form-label form-label-sm" for="toDate">To Date</label>
+                        <input class="form-control form-control-sm" id="toDate" type="date" />
+                    </div>
+                    <div class="col-auto">
+                        <label class="form-label form-label-sm" for="toTime">To Time</label>
+                        <input class="form-control form-control-sm" id="toTime" type="time" />
+                    </div>
+                    <div class="col-auto d-flex">
+                        <button class="btn btn-outline-primary btn-sm mt-auto" id="resetFilters">Reset Filters</button>
+                    </div>
                 </div>
             </div>
-            <div class="col-auto">
-                <label class="form-label form-label-sm" for="suiteSelectTests">Select Suite</label>
-                <select class="form-select form-select-sm" id="suiteSelectTests"></select>
-            </div>
-            <div class="col-auto">
-                <label class="form-label form-label-sm" for="suiteSelectTests">Select Test</label>
-                <select class="form-select form-select-sm" id="testSelect"></select>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <!-- Run title row -->
+                <div class="row">
+                    <div class="col-5">
+                        <h2 id="runTitle">Run Statistics</h2>
+                    </div>
+                </div>
+
+                <!-- Run row  -->
+                <div class="row">
+                    <div class="col canvas mb-5">
+                        <canvas id="runStatisticsGraph"></canvas>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="updateRunStatisticsGraphBarPercentages">Percentages</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="updateRunStatisticsGraphBarAmount">Amount</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="updateRunStatisticsGraphLine">Timeline</button>
+                    </div>
+                    <div class="col canvas mb-5">
+                        <canvas id="runDurationGraph"></canvas>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateRunDurationGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateRunDurationGraphLine">Line
+                            View</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Test row -->
-        <div class="row mt-4">
-            <div class="col canvas mb-5">
-                <canvas id="testStatusGraph"></canvas>
-            </div>
-            <div class="col canvas mb-5">
-                <canvas id="testDurationGraph"></canvas>
-                <button class="btn btn-outline-primary btn-sm" id="updateTestDurationGraphBar">Bar View</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateTestDurationGraphLine">Line View</button>
+        <div class="card">
+            <div class="card-body">
+                <!-- Suite title and filters row -->
+                <div class="row">
+                    <div class="col-5">
+                        <h2>Suite Statistics</h2>
+                    </div>
+                    <div class="col-auto">
+                        <label class="form-label form-label-sm" for="suiteSelectSuites">Select Suite</label>
+                        <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
+                    </div>
+                </div>
+
+                <!-- Suite row -->
+                <div class="row">
+                    <div class="col canvas mb-5">
+                        <canvas id="suiteStatisticsGraph"></canvas>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="updateSuiteStatisticsGraphBarPercentages">Percentages</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="updateSuiteStatisticsGraphBarAmount">Amount</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="updateSuiteStatisticsGraphLine">Timeline</button>
+                    </div>
+                    <div class="col canvas mb-5">
+                        <canvas id="suiteDurationGraph"></canvas>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateSuiteDurationGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateSuiteDurationGraphLine">Line
+                            View</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Keyword title row -->
-        <div class="row mt-4">
-            <div class="col-5">
-                <h2>Keyword Statistics</h2>
+        <div class="card">
+            <div class="card-body">
+                <!-- Test title and filters row -->
+                <div class="row">
+                    <div class="col-4">
+                        <h2>Test Statistics</h2>
+                    </div>
+                    <div class="col-auto d-flex">
+                        <div class="form-check form-switch mt-4">
+                            <input class="form-check-input" type="checkbox" role="switch"
+                                id="showOnlySelectedTestStatistic">
+                            <label class="form-check-label" for="showOnlySelectedTestStatistic">Show Only Selected Test
+                                Statistics</label>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <label class="form-label form-label-sm" for="suiteSelectTests">Select Suite</label>
+                        <select class="form-select form-select-sm" id="suiteSelectTests"></select>
+                    </div>
+                    <div class="col-auto">
+                        <label class="form-label form-label-sm" for="suiteSelectTests">Select Test</label>
+                        <select class="form-select form-select-sm" id="testSelect"></select>
+                    </div>
+                </div>
+
+                <!-- Test row -->
+                <div class="row">
+                    <div class="col canvas mb-5">
+                        <canvas id="testStatusGraph"></canvas>
+                    </div>
+                    <div class="col canvas mb-5">
+                        <canvas id="testDurationGraph"></canvas>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateTestDurationGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateTestDurationGraphLine">Line
+                            View</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Keyword row -->
-        <div class="row mt-4">
-            <div class="col canvas">
-                <table class="table table-striped" id="keywordTable"></table>
-            </div>
-        </div>
-        <!-- Keyword title row -->
-        <div class="row">
-            <!-- Empty div is used for aligning -->
-            <div class="col-5"></div>
-            <div class="col-auto">
-                <label class="form-label form-label-sm" for="keywordSelect">Select Keyword</label>
-                <select class="form-select form-select-sm" id="keywordSelect"></select>
-            </div>
-        </div>
-        <div class="row mt-4">
-            <div class="col canvas mb-5">
-                <canvas id="keywordStatisticsGraph"></canvas>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordStatisticsGraphBarPercentages">Percentages</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordStatisticsGraphBarAmount">Amount</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordStatisticsGraphLine">Timeline</button>
-            </div>
-            <div class="col canvas mb-5">
-                <canvas id="keywordTimesRunGraph"></canvas>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordTimesRunGraphBar">Bar View</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordTimesRunGraphLine">Line View</button>
-            </div>
-        </div>
-        <div class="row mt-4">
-            <div class="col canvas mb-5">
-                <canvas id="keywordTotalTimeGraph"></canvas>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordTotalTimeGraphBar">Bar View</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordTotalTimeGraphLine">Line View</button>
-            </div>
-            <div class="col canvas mb-5">
-                <canvas id="keywordAverageTimeGraph"></canvas>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordAverageTimeGraphBar">Bar View</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordAverageTimeGraphLine">Line View</button>
-            </div>
-        </div>
-        <div class="row mt-4">
-            <div class="col canvas mb-5">
-                <canvas id="keywordMinTimeGraph"></canvas>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordMinTimeGraphBar">Bar View</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordMinTimeGraphLine">Line View</button>
-            </div>
-            <div class="col canvas mb-5">
-                <canvas id="keywordMaxTimeGraph"></canvas>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordMaxTimeGraphBar">Bar View</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordMaxTimeGraphLine">Line View</button>
-            </div>
-        </div>
+        <div class="card">
+            <div class="card-body">
+                <!-- Keyword title row -->
+                <div class="row">
+                    <div class="col-5">
+                        <h2>Keyword Statistics</h2>
+                    </div>
+                </div>
 
+                <!-- Keyword row -->
+                <div class="row">
+                    <div class="col canvas">
+                        <table class="table table-striped" id="keywordTable"></table>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Empty div is used for aligning -->
+                    <div class="col-5"></div>
+                    <div class="col-auto">
+                        <label class="form-label form-label-sm" for="keywordSelect">Select Keyword</label>
+                        <select class="form-select form-select-sm" id="keywordSelect"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col canvas mb-5">
+                        <canvas id="keywordStatisticsGraph"></canvas>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="updateKeywordStatisticsGraphBarPercentages">Percentages</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="updateKeywordStatisticsGraphBarAmount">Amount</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="updateKeywordStatisticsGraphLine">Timeline</button>
+                    </div>
+                    <div class="col canvas mb-5">
+                        <canvas id="keywordTimesRunGraph"></canvas>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTimesRunGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTimesRunGraphLine">Line
+                            View</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col canvas mb-5">
+                        <canvas id="keywordTotalTimeGraph"></canvas>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTotalTimeGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTotalTimeGraphLine">Line
+                            View</button>
+                    </div>
+                    <div class="col canvas mb-5">
+                        <canvas id="keywordAverageTimeGraph"></canvas>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordAverageTimeGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordAverageTimeGraphLine">Line
+                            View</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col canvas mb-5">
+                        <canvas id="keywordMinTimeGraph"></canvas>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMinTimeGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMinTimeGraphLine">Line
+                            View</button>
+                    </div>
+                    <div class="col canvas mb-5">
+                        <canvas id="keywordMaxTimeGraph"></canvas>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMaxTimeGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMaxTimeGraphLine">Line
+                            View</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
             // theme
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -1108,6 +1152,7 @@
                             },
                             x: {
                                 ticks: {
+                                    minRotation: 20,
                                     callback: function (value, index, ticks) {
                                         return runStarts[this.getLabelForValue(value)]
                                     }
@@ -1739,6 +1784,9 @@
                                     title: {
                                         display: true,
                                         text: xTitle
+                                    },
+                                    ticks: {
+                                        minRotation: 20
                                     }
                                 },
                                 y: {
