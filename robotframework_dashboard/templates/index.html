@@ -24,7 +24,6 @@
 
     <style>
         :root {
-            color-scheme: dark;
             font-family: Helvetica, sans-serif;
         }
 
@@ -35,6 +34,9 @@
         }
 
         @media (prefers-color-scheme: dark) {
+            :root {
+                color-scheme: dark;
+            }
             body {
                 background-color: #1c2227;
                 color: #e2e1d7;
@@ -303,6 +305,8 @@
                 Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
                 Chart.defaults.backgroundColor = 'rgba(255,255,0,0.1)';
                 Chart.defaults.elements.line.borderColor = 'rgba(255,255,0,0.4)';
+            } else { 
+                document.getElementsByTagName('html')[0].setAttribute('data-bs-theme', 'light')
             }
 
             // colors
