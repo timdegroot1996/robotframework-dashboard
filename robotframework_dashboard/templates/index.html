@@ -121,6 +121,9 @@
         <div class="row mt-4">
             <div class="col canvas mb-5">
                 <canvas id="runStatisticsGraph"></canvas>
+                <button class="btn btn-outline-primary btn-sm" id="updateRunStatisticsGraphBarPercentages">Percentages</button>
+                <button class="btn btn-outline-primary btn-sm" id="updateRunStatisticsGraphBarAmount">Amount</button>
+                <button class="btn btn-outline-primary btn-sm" id="updateRunStatisticsGraphLine">Timeline</button>
             </div>
             <div class="col canvas mb-5">
                 <canvas id="runDurationGraph"></canvas>
@@ -144,16 +147,12 @@
         <div class="row mt-4">
             <div class="col canvas mb-5">
                 <canvas id="suiteStatisticsGraph"></canvas>
-                <br />
-                <button class="btn btn-outline-primary btn-sm" id="updateSuiteStatisticsGraphBarAmount">Bar View
-                    Amount</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateSuiteStatisticsGraphBarPercentages">Bar View
-                    Percentages</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateSuiteStatisticsGraphLine">Line View</button>
+                <button class="btn btn-outline-primary btn-sm" id="updateSuiteStatisticsGraphBarPercentages">Percentages</button>
+                <button class="btn btn-outline-primary btn-sm" id="updateSuiteStatisticsGraphBarAmount">Amount</button>
+                <button class="btn btn-outline-primary btn-sm" id="updateSuiteStatisticsGraphLine">Timeline</button>
             </div>
             <div class="col canvas mb-5">
                 <canvas id="suiteDurationGraph"></canvas>
-                <br />
                 <button class="btn btn-outline-primary btn-sm" id="updateSuiteDurationGraphBar">Bar View</button>
                 <button class="btn btn-outline-primary btn-sm" id="updateSuiteDurationGraphLine">Line View</button>
             </div>
@@ -188,7 +187,6 @@
             </div>
             <div class="col canvas mb-5">
                 <canvas id="testDurationGraph"></canvas>
-                <br />
                 <button class="btn btn-outline-primary btn-sm" id="updateTestDurationGraphBar">Bar View</button>
                 <button class="btn btn-outline-primary btn-sm" id="updateTestDurationGraphLine">Line View</button>
             </div>
@@ -219,11 +217,9 @@
         <div class="row mt-4">
             <div class="col canvas mb-5">
                 <canvas id="keywordStatisticsGraph"></canvas>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordStatisticsGraphBarAmount">Bar View
-                    Amount</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordStatisticsGraphBarPercentages">Bar View
-                    Percentages</button>
-                <button class="btn btn-outline-primary btn-sm" id="updateKeywordStatisticsGraphLine">Line View</button>
+                <button class="btn btn-outline-primary btn-sm" id="updateKeywordStatisticsGraphBarPercentages">Percentages</button>
+                <button class="btn btn-outline-primary btn-sm" id="updateKeywordStatisticsGraphBarAmount">Amount</button>
+                <button class="btn btn-outline-primary btn-sm" id="updateKeywordStatisticsGraphLine">Timeline</button>
             </div>
             <div class="col canvas mb-5">
                 <canvas id="keywordTimesRunGraph"></canvas>
@@ -254,9 +250,6 @@
                 <button class="btn btn-outline-primary btn-sm" id="updateKeywordMaxTimeGraphBar">Bar View</button>
                 <button class="btn btn-outline-primary btn-sm" id="updateKeywordMaxTimeGraphLine">Line View</button>
             </div>
-        </div>
-        <div class="row mt-4">
-
         </div>
 
         <script>
@@ -296,6 +289,7 @@
             add_tags_in_select()
             // create graphs
             var runStatisticsGraph
+            var runStatisticsGraphType = 'percentages'
             var runDurationGraph
             var runDurationGraphType = 'bar'
             var suiteStatisticsGraph
@@ -337,11 +331,15 @@
             document.getElementById('toDate').addEventListener('change', update_data_and_all_graphs)
             document.getElementById('toTime').addEventListener('change', update_data_and_all_graphs)
 
+            document.getElementById('updateRunStatisticsGraphBarPercentages').addEventListener('click', (e) => { update_run_statistics_graph('percentages') })
+            document.getElementById('updateRunStatisticsGraphBarAmount').addEventListener('click', (e) => { update_run_statistics_graph('amount') })
+            document.getElementById('updateRunStatisticsGraphLine').addEventListener('click', (e) => { update_run_statistics_graph('line') })
+
             document.getElementById('updateRunDurationGraphBar').addEventListener('click', (e) => { update_run_duration_graph('bar') })
             document.getElementById('updateRunDurationGraphLine').addEventListener('click', (e) => { update_run_duration_graph('line') })
 
-            document.getElementById('updateSuiteStatisticsGraphBarAmount').addEventListener('click', (e) => { update_suite_statistics_graph('amount') })
             document.getElementById('updateSuiteStatisticsGraphBarPercentages').addEventListener('click', (e) => { update_suite_statistics_graph('percentages') })
+            document.getElementById('updateSuiteStatisticsGraphBarAmount').addEventListener('click', (e) => { update_suite_statistics_graph('amount') })
             document.getElementById('updateSuiteStatisticsGraphLine').addEventListener('click', (e) => { update_suite_statistics_graph('line') })
 
             document.getElementById('updateSuiteDurationGraphBar').addEventListener('click', (e) => { update_suite_duration_graph('bar') })
@@ -350,8 +348,8 @@
             document.getElementById('updateTestDurationGraphBar').addEventListener('click', (e) => { update_test_duration_graph('bar') })
             document.getElementById('updateTestDurationGraphLine').addEventListener('click', (e) => { update_test_duration_graph('line') })
 
-            document.getElementById('updateKeywordStatisticsGraphBarAmount').addEventListener('click', (e) => { update_keyword_statistics_graph('amount') })
             document.getElementById('updateKeywordStatisticsGraphBarPercentages').addEventListener('click', (e) => { update_keyword_statistics_graph('percentages') })
+            document.getElementById('updateKeywordStatisticsGraphBarAmount').addEventListener('click', (e) => { update_keyword_statistics_graph('amount') })
             document.getElementById('updateKeywordStatisticsGraphLine').addEventListener('click', (e) => { update_keyword_statistics_graph('line') })
 
             document.getElementById('updateKeywordTimesRunGraphBar').addEventListener('click', (e) => { update_keyword_times_run_graph('bar') })
@@ -453,7 +451,10 @@
                 update_keyword_max_time_graph()
             }
 
-            function update_run_statistics_graph() {
+            function update_run_statistics_graph(type) {
+                if (typeof (type) === 'string') {
+                    runStatisticsGraphType = type
+                }
                 if (runStatisticsGraph) { runStatisticsGraph.destroy() }
                 create_run_statistics_graph()
             }
@@ -736,39 +737,81 @@
             function create_run_statistics_graph() {
                 var [passed, failed, skipped, labels] = [[], [], [], []]
                 for (const [key, value] of Object.entries(filteredRuns)) {
-                    passed.push(value.passed)
-                    failed.push(value.failed)
-                    skipped.push(value.skipped)
-                    labels.push(value.run_start)
+                    if (runStatisticsGraphType == 'percentages') {
+                        passed.push(Math.round(value.passed / value.total * 100 * 100) / 100)
+                        failed.push(Math.round(value.failed / value.total * 100 * 100) / 100)
+                        skipped.push(Math.round(value.skipped / value.total * 100 * 100) / 100)
+                        labels.push(value.run_start)
+                    } else {
+                        passed.push(value.passed)
+                        failed.push(value.failed)
+                        skipped.push(value.skipped)
+                        labels.push(value.run_start)
+                    }
                 }
 
-                var runStatisticsData = {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Failed',
-                            data: failed,
-                            backgroundColor: failedBackgroundColor,
-                            stack: 'Stack 0',
-                        },
-                        {
-                            label: 'Skipped',
-                            data: skipped,
-                            backgroundColor: skippedBackgroundColor,
-                            stack: 'Stack 0',
-                        },
-                        {
-                            label: 'Passed',
-                            data: passed,
-                            backgroundColor: passedBackgroundColor,
-                            stack: 'Stack 0',
-                        },
-                    ]
-                };
-
-                Chart.register(ChartDataLabels);
-                var config = get_graph_config('bar', runStatisticsData, 'Run Statistics (Bar)', 'Run', 'Amount Of Tests')
-                runStatisticsGraph = new Chart('runStatisticsGraph', config)
+                // required for both bar charts
+                if (runStatisticsGraphType != 'line') {
+                    var runStatisticsData = {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Failed',
+                                data: failed,
+                                backgroundColor: failedBackgroundColor,
+                                stack: 'Stack 0',
+                            },
+                            {
+                                label: 'Skipped',
+                                data: skipped,
+                                backgroundColor: skippedBackgroundColor,
+                                stack: 'Stack 0',
+                            },
+                            {
+                                label: 'Passed',
+                                data: passed,
+                                backgroundColor: passedBackgroundColor,
+                                stack: 'Stack 0',
+                            },
+                        ]
+                    };
+                } else {
+                    var runStatisticsData = {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Failed',
+                                data: failed,
+                                backgroundColor: failedBackgroundColor,
+                                borderColor: failedBackgroundColor,
+                            },
+                            {
+                                label: 'Skipped',
+                                data: skipped,
+                                backgroundColor: skippedBackgroundColor,
+                                borderColor: skippedBackgroundColor,
+                            },
+                            {
+                                label: 'Passed',
+                                data: passed,
+                                backgroundColor: passedBackgroundColor,
+                                borderColor: passedBackgroundColor,
+                            },
+                        ]
+                    }
+                }
+                if (runStatisticsGraphType == 'line') {
+                    var config = get_graph_config('line', runStatisticsData, 'Run Of Tests (Line)', 'Date', 'amount')
+                    runStatisticsGraph = new Chart('runStatisticsGraph', config);
+                } else if (runStatisticsGraphType == 'amount') {
+                    Chart.register(ChartDataLabels);
+                    var config = get_graph_config('bar', runStatisticsData, 'Run Statistics (Bar)', 'Run', 'Amount Of Tests')
+                    runStatisticsGraph = new Chart('runStatisticsGraph', config)
+                } else if (runStatisticsGraphType == 'percentages') {
+                    Chart.register(ChartDataLabels);
+                    var config = get_graph_config('bar', runStatisticsData, 'Run Statistics (Bar)', 'Run', 'Percentage')
+                    runStatisticsGraph = new Chart('runStatisticsGraph', config)
+                }
             }
 
             function create_run_duration_graph() {
