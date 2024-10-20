@@ -385,7 +385,6 @@
                 add_tests_in_select()
             })
             document.getElementById('testSelect').addEventListener('change', (e) => {
-                console.log(showOnlySelectedTestStatistic)
                 if (showOnlySelectedTestStatistic) { update_test_status_graph() }
                 update_test_duration_graph()
             })
@@ -768,52 +767,8 @@
                 };
 
                 Chart.register(ChartDataLabels);
-                runStatisticsGraph = new Chart('runStatisticsGraph', {
-                    type: 'bar',
-                    data: runStatisticsData,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            mode: 'x'
-                        },
-                        scales: {
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Run'
-                                }
-                            },
-                            y: {
-                                stacked: true,
-                                title: {
-                                    display: true,
-                                    text: 'Amount Of Tests'
-                                },
-                                grace: '5%'
-                            }
-                        },
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Run Statistics (Bar)'
-                            },
-                            datalabels: {
-                                color: '#000000',
-                                align: 'center',
-                                anchor: 'center',
-                                formatter: function (value) {
-                                    if (value > 0) {
-                                        return value
-                                    } else {
-                                        value = '';
-                                        return value;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
+                var config = get_graph_config('bar', runStatisticsData, 'Run Statistics (Bar)', 'Run', 'Amount Of Tests')
+                runStatisticsGraph = new Chart('runStatisticsGraph', config)
             }
 
             function create_run_duration_graph() {
@@ -842,68 +797,20 @@
                         }
                     }
                     delete data[0]
-                    var runStatisticsData = {
+                    var runDurationData = {
                         labels: labels,
                         datasets: [],
                     }
                     for (key in data) {
-                        runStatisticsData['datasets'].push({
+                        runDurationData['datasets'].push({
                             label: key,
                             data: data[key],
                             stack: 'Stack 0'
                         })
 
                     }
-                    // create graph
-                    runDurationGraph = new Chart('runDurationGraph', {
-                        type: 'bar',
-                        data: runStatisticsData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            interaction: {
-                                mode: 'x'
-                            },
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Run'
-                                    }
-                                },
-                                y: {
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Duration'
-                                    },
-                                    grace: '5%'
-                                }
-                            },
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Run Duration (Bar)'
-                                },
-                                tooltip: {
-                                    filter: tooltipItem => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0
-                                },
-                                datalabels: {
-                                    color: '#000000',
-                                    align: 'center',
-                                    anchor: 'center',
-                                    formatter: function (value) {
-                                        if (value > 0) {
-                                            return value
-                                        } else {
-                                            value = '';
-                                            return value;
-                                        }
-                                    }
-                                },
-                            }
-                        }
-                    });
+                    var config = get_graph_config('bar', runDurationData, 'Run Duration (Bar)', 'Run', 'Duration')
+                    runDurationGraph = new Chart('runDurationGraph', config)
                 } else if (runDurationGraphType == 'line') {
                     var [labels, datasets, sets] = [[], [], {}]
                     for (const [key, value] of Object.entries(filteredRuns)) {
@@ -922,49 +829,8 @@
                     for (const [key, value] of Object.entries(sets)) {
                         datasets.push({ label: key, fill: false, data: value })
                     }
-
-                    runDurationGraph = new Chart('runDurationGraph', {
-                        type: 'line',
-                        data: {
-                            datasets: datasets
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                title: {
-                                    text: 'Run Duration (Line)',
-                                    display: true
-                                },
-                                datalabels: {
-                                    display: false,
-                                },
-                                legend: {
-                                    display: true,
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    type: 'time',
-                                    time: {
-                                        tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Date'
-                                    }
-                                },
-                                y: {
-                                    beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Duration'
-                                    },
-                                    grace: '5%'
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('line', { datasets: datasets }, 'Run Duration (Line)', 'Date', 'Duration')
+                    runDurationGraph = new Chart('runDurationGraph', config);
                 }
             }
 
@@ -1038,153 +904,16 @@
                     };
                 }
                 if (suiteStatisticsGraphType == 'line') {
-                    suiteStatisticsGraph = new Chart('suiteStatisticsGraph', {
-                        type: 'line',
-                        data: suiteStatisticsData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                title: {
-                                    text: 'Suite Statistics',
-                                    display: true
-                                },
-                                datalabels: {
-                                    display: false,
-                                },
-                                legend: {
-                                    display: true,
-                                    position: 'right',
-                                    labels: {
-                                        family: 'Helvetica, sans-serif',
-                                        color: '#e2e1d7'
-                                    }
-                                },
-                                tooltip: {
-                                    mode: 'index',
-                                    intersect: false,
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    type: 'time',
-                                    time: {
-                                        tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Date'
-                                    }
-                                },
-                                y: {
-                                    beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Amount Of Tests (Line)'
-                                    },
-                                    grace: '5%'
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('line', suiteStatisticsData, 'Amount Of Tests (Line)', 'Date', 'amount')
+                    suiteStatisticsGraph = new Chart('suiteStatisticsGraph', config);
                 } else if (suiteStatisticsGraphType == 'amount') {
                     Chart.register(ChartDataLabels);
-                    suiteStatisticsGraph = new Chart('suiteStatisticsGraph', {
-                        type: 'bar',
-                        data: suiteStatisticsData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Run'
-                                    }
-                                },
-                                y: {
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Amount Of Tests'
-                                    },
-                                    grace: '5%'
-                                }
-                            },
-                            interaction: {
-                                mode: 'x'
-                            },
-                            plugins: {
-                                datalabels: {
-                                    color: '#000000',
-                                    align: 'center',
-                                    anchor: 'center',
-                                    formatter: function (value) {
-                                        if (value > 0) {
-                                            return value
-                                        } else {
-                                            value = '';
-                                            return value;
-                                        }
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Suite Statistics (Bar)',
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('bar', suiteStatisticsData, 'Suite Statistics (Bar)', 'Run', 'Amount Of Tests')
+                    suiteStatisticsGraph = new Chart('suiteStatisticsGraph', config)
                 } else if (suiteStatisticsGraphType == 'percentages') {
                     Chart.register(ChartDataLabels);
-                    suiteStatisticsGraph = new Chart('suiteStatisticsGraph', {
-                        type: 'bar',
-                        data: suiteStatisticsData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    ticks: {
-                                        display: true,
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Run'
-                                    }
-                                },
-                                y: {
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Percentage'
-                                    },
-                                }
-                            },
-                            interaction: {
-                                mode: 'x'
-                            },
-                            plugins: {
-                                datalabels: {
-                                    color: '#000000',
-                                    align: 'center',
-                                    anchor: 'center',
-                                    formatter: function (value) {
-                                        if (value > 0) {
-                                            return value
-                                        } else {
-                                            value = '';
-                                            return value;
-                                        }
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Suite Statistics (Bar)',
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('bar', suiteStatisticsData, 'Suite Statistics (Bar)', 'Run', 'Percentage')
+                    suiteStatisticsGraph = new Chart('suiteStatisticsGraph', config)
                 }
             }
 
@@ -1228,58 +957,9 @@
                             data: data[key],
                             stack: 'Stack 0'
                         })
-
                     }
-                    // create graph
-                    suiteDurationGraph = new Chart('suiteDurationGraph', {
-                        type: 'bar',
-                        data: suiteDurationData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Run'
-                                    }
-                                },
-                                y: {
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Duration'
-                                    },
-                                    grace: '5%'
-                                }
-                            },
-                            interaction: {
-                                mode: 'x'
-                            },
-                            plugins: {
-                                datalabels: {
-                                    color: '#000000',
-                                    align: 'center',
-                                    anchor: 'center',
-                                    formatter: function (value) {
-                                        if (value > 0) {
-                                            return value
-                                        } else {
-                                            value = '';
-                                            return value;
-                                        }
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Suite Duration (Bar)'
-                                },
-                                tooltip: {
-                                    filter: tooltipItem => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('bar', suiteDurationData, 'Suite Duration (Bar)', 'Run', 'Duration')
+                    suiteDurationGraph = new Chart('suiteDurationGraph', config)
                 } else if (suiteDurationGraphType == 'line') {
                     var [labels, datasets, sets] = [[], [], {}]
                     for (const [key, value] of Object.entries(filteredSuites)) {
@@ -1301,49 +981,8 @@
                     for (const [key, value] of Object.entries(sets)) {
                         datasets.push({ label: key, fill: false, data: value })
                     }
-
-                    suiteDurationGraph = new Chart('suiteDurationGraph', {
-                        type: 'line',
-                        data: {
-                            datasets: datasets
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                title: {
-                                    text: 'Suite Duration (Line)',
-                                    display: true
-                                },
-                                datalabels: {
-                                    display: false,
-                                },
-                                legend: {
-                                    display: true,
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    type: 'time',
-                                    time: {
-                                        tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Date'
-                                    }
-                                },
-                                y: {
-                                    beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Duration'
-                                    },
-                                    grace: '5%'
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('line', { datasets: datasets }, 'Suite Duration (Line)', 'Date', 'Duration')
+                    suiteDurationGraph = new Chart('suiteDurationGraph', config);
                 }
             }
 
@@ -1410,7 +1049,6 @@
                     }
                     runAxis += 1
                 }
-
                 testStatusGraph = new Chart('testStatusGraph', {
                     type: 'bar',
                     data: {
@@ -1502,56 +1140,8 @@
                         })
 
                     }
-                    // create graph
-                    testDurationGraph = new Chart('testDurationGraph', {
-                        type: 'bar',
-                        data: testDurationData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Run'
-                                    }
-                                },
-                                y: {
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Duration'
-                                    },
-                                    grace: '5%'
-                                }
-                            },
-                            interaction: {
-                                mode: 'x'
-                            },
-                            plugins: {
-                                datalabels: {
-                                    color: '#000000',
-                                    align: 'center',
-                                    anchor: 'center',
-                                    formatter: function (value) {
-                                        if (value > 0) {
-                                            return value
-                                        } else {
-                                            value = '';
-                                            return value;
-                                        }
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Test Duration (Bar)'
-                                },
-                                tooltip: {
-                                    filter: tooltipItem => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('bar', testDurationData, 'Test Duration (Bar)', 'Run', 'Duration')
+                    testDurationGraph = new Chart('testDurationGraph', config)
                 } else if (testDurationGraphType == 'line') {
                     var [labels, datasets, sets] = [[], [], {}]
                     for (const [key, value] of Object.entries(filteredTests)) {
@@ -1577,48 +1167,8 @@
                         datasets.push({ label: key, fill: false, data: value })
                     }
 
-                    testDurationGraph = new Chart('testDurationGraph', {
-                        type: 'line',
-                        data: {
-                            datasets: datasets
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                title: {
-                                    text: 'Test Duration (Line)',
-                                    display: true
-                                },
-                                datalabels: {
-                                    display: false,
-                                },
-                                legend: {
-                                    display: true,
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    type: 'time',
-                                    time: {
-                                        tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Date'
-                                    }
-                                },
-                                y: {
-                                    beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Duration'
-                                    },
-                                    grace: '5%'
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('line', { datasets: datasets }, 'Test Duration (Line)', 'Date', 'Duration')
+                    testDurationGraph = new Chart('testDurationGraph', config);
                 }
             }
 
@@ -1730,153 +1280,16 @@
                     };
                 }
                 if (keywordStatisticsGraphType == 'line') {
-                    keywordStatisticsGraph = new Chart('keywordStatisticsGraph', {
-                        type: 'line',
-                        data: keywordStatisticsData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                title: {
-                                    text: 'Keyword Statistics (Line)',
-                                    display: true
-                                },
-                                datalabels: {
-                                    display: false,
-                                },
-                                legend: {
-                                    display: true,
-                                    position: 'right',
-                                    labels: {
-                                        family: 'Helvetica, sans-serif',
-                                        color: '#e2e1d7'
-                                    }
-                                },
-                                tooltip: {
-                                    mode: 'index',
-                                    intersect: false,
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    type: 'time',
-                                    time: {
-                                        tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Date'
-                                    }
-                                },
-                                y: {
-                                    beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Amount'
-                                    },
-                                    grace: '5%'
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('line', keywordStatisticsData, 'Keyword Statistics (Line)', 'Date', 'Amount')
+                    keywordStatisticsGraph = new Chart('keywordStatisticsGraph', config);
                 } else if (keywordStatisticsGraphType == 'amount') {
                     Chart.register(ChartDataLabels);
-                    keywordStatisticsGraph = new Chart('keywordStatisticsGraph', {
-                        type: 'bar',
-                        data: keywordStatisticsData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Run'
-                                    }
-                                },
-                                y: {
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Amount'
-                                    },
-                                    grace: '5%'
-                                }
-                            },
-                            interaction: {
-                                mode: 'x'
-                            },
-                            plugins: {
-                                datalabels: {
-                                    color: '#000000',
-                                    align: 'center',
-                                    anchor: 'center',
-                                    formatter: function (value) {
-                                        if (value > 0) {
-                                            return value
-                                        } else {
-                                            value = '';
-                                            return value;
-                                        }
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Keyword Statistics (Bar)',
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('bar', keywordStatisticsData, 'Keyword Statistics (Bar)', 'Run', 'Amount')
+                    keywordStatisticsGraph = new Chart('keywordStatisticsGraph', config)
                 } else if (keywordStatisticsGraphType == 'percentages') {
                     Chart.register(ChartDataLabels);
-                    keywordStatisticsGraph = new Chart('keywordStatisticsGraph', {
-                        type: 'bar',
-                        data: keywordStatisticsData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    ticks: {
-                                        display: true,
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Run'
-                                    }
-                                },
-                                y: {
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Percentage'
-                                    },
-                                }
-                            },
-                            interaction: {
-                                mode: 'x'
-                            },
-                            plugins: {
-                                datalabels: {
-                                    color: '#000000',
-                                    align: 'center',
-                                    anchor: 'center',
-                                    formatter: function (value) {
-                                        if (value > 0) {
-                                            return value
-                                        } else {
-                                            value = '';
-                                            return value;
-                                        }
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Keyword Statistics (Bar)',
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('bar', keywordStatisticsData, 'Keyword Statistics (Bar)', 'Run', 'Percentage')
+                    keywordStatisticsGraph = new Chart('keywordStatisticsGraph', config);
                 }
             }
 
@@ -1920,58 +1333,9 @@
                             data: data[key],
                             stack: 'Stack 0'
                         })
-
                     }
-                    // create graph
-                    keywordTimesRunGraph = new Chart('keywordTimesRunGraph', {
-                        type: 'bar',
-                        data: keywordTimesRunData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Run'
-                                    }
-                                },
-                                y: {
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Times Run'
-                                    },
-                                    grace: '5%'
-                                }
-                            },
-                            interaction: {
-                                mode: 'x'
-                            },
-                            plugins: {
-                                datalabels: {
-                                    color: '#000000',
-                                    align: 'center',
-                                    anchor: 'center',
-                                    formatter: function (value) {
-                                        if (value > 0) {
-                                            return value
-                                        } else {
-                                            value = '';
-                                            return value;
-                                        }
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Times Run (Bar)'
-                                },
-                                tooltip: {
-                                    filter: tooltipItem => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('bar', keywordTimesRunData, 'Times Run (Bar)', 'Run', 'Duration')
+                    keywordTimesRunGraph = new Chart('keywordTimesRunGraph', config)
                 } else if (keywordTimesRunGraphType == 'line') {
                     var [labels, datasets, sets] = [[], [], {}]
                     for (const [key, value] of Object.entries(filteredKeywords)) {
@@ -1993,8 +1357,7 @@
                     for (const [key, value] of Object.entries(sets)) {
                         datasets.push({ label: key, fill: false, data: value })
                     }
-
-                    var config = get_graph_config('line', datasets, 'Times Run (Line)')
+                    var config = get_graph_config('line', { datasets: datasets }, 'Times Run (Line)', 'Date', 'Duration')
                     keywordTimesRunGraph = new Chart('keywordTimesRunGraph', config);
                 }
             }
@@ -2041,56 +1404,8 @@
                         })
 
                     }
-                    // create graph
-                    keywordTotalTimeGraph = new Chart('keywordTotalTimeGraph', {
-                        type: 'bar',
-                        data: keywordTotalTimeData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Run'
-                                    }
-                                },
-                                y: {
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Duration'
-                                    },
-                                    grace: '5%'
-                                }
-                            },
-                            interaction: {
-                                mode: 'x'
-                            },
-                            plugins: {
-                                datalabels: {
-                                    color: '#000000',
-                                    align: 'center',
-                                    anchor: 'center',
-                                    formatter: function (value) {
-                                        if (value > 0) {
-                                            return value
-                                        } else {
-                                            value = '';
-                                            return value;
-                                        }
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Total Duration (Bar)'
-                                },
-                                tooltip: {
-                                    filter: tooltipItem => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('bar', keywordTotalTimeData, 'Total Duration (Bar)', 'Run', 'Duration')
+                    keywordTotalTimeGraph = new Chart('keywordTotalTimeGraph', config)
                 } else if (keywordTotalTimeGraphType == 'line') {
                     var [labels, datasets, sets] = [[], [], {}]
                     for (const [key, value] of Object.entries(filteredKeywords)) {
@@ -2112,8 +1427,7 @@
                     for (const [key, value] of Object.entries(sets)) {
                         datasets.push({ label: key, fill: false, data: value })
                     }
-
-                    var config = get_graph_config('line', datasets, 'Total Duration (Line)')
+                    var config = get_graph_config('line', { datasets: datasets }, 'Total Duration (Line)', 'Date', 'Duration')
                     keywordTotalTimeGraph = new Chart('keywordTotalTimeGraph', config);
                 }
             }
@@ -2160,56 +1474,8 @@
                         })
 
                     }
-                    // create graph
-                    keywordAverageTimeGraph = new Chart('keywordAverageTimeGraph', {
-                        type: 'bar',
-                        data: keywordAverageTimeData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Run'
-                                    }
-                                },
-                                y: {
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Duration'
-                                    },
-                                    grace: '5%'
-                                }
-                            },
-                            interaction: {
-                                mode: 'x'
-                            },
-                            plugins: {
-                                datalabels: {
-                                    color: '#000000',
-                                    align: 'center',
-                                    anchor: 'center',
-                                    formatter: function (value) {
-                                        if (value > 0) {
-                                            return value
-                                        } else {
-                                            value = '';
-                                            return value;
-                                        }
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Average Duration (Bar)'
-                                },
-                                tooltip: {
-                                    filter: tooltipItem => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('bar', keywordAverageTimeData, 'Average Duration (Bar)', 'Run', 'Duration')
+                    keywordAverageTimeGraph = new Chart('keywordAverageTimeGraph', config)
                 } else if (keywordAverageTimeGraphType == 'line') {
                     var [labels, datasets, sets] = [[], [], {}]
                     for (const [key, value] of Object.entries(filteredKeywords)) {
@@ -2231,8 +1497,7 @@
                     for (const [key, value] of Object.entries(sets)) {
                         datasets.push({ label: key, fill: false, data: value })
                     }
-
-                    var config = get_graph_config('line', datasets, 'Average Duration (Line)')
+                    var config = get_graph_config('line', { datasets: datasets }, 'Average Duration (Line)', 'Date', 'Duration')
                     keywordAverageTimeGraph = new Chart('keywordAverageTimeGraph', config);
                 }
             }
@@ -2279,56 +1544,8 @@
                         })
 
                     }
-                    // create graph
-                    keywordMinTimeGraph = new Chart('keywordMinTimeGraph', {
-                        type: 'bar',
-                        data: keywordMinTimeData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Run'
-                                    }
-                                },
-                                y: {
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Duration'
-                                    },
-                                    grace: '5%'
-                                }
-                            },
-                            interaction: {
-                                mode: 'x'
-                            },
-                            plugins: {
-                                datalabels: {
-                                    color: '#000000',
-                                    align: 'center',
-                                    anchor: 'center',
-                                    formatter: function (value) {
-                                        if (value > 0) {
-                                            return value
-                                        } else {
-                                            value = '';
-                                            return value;
-                                        }
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Min Duration (Bar)'
-                                },
-                                tooltip: {
-                                    filter: tooltipItem => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('bar', keywordMinTimeData, 'Min Duration (Bar)', 'Run', 'Duration')
+                    keywordMinTimeGraph = new Chart('keywordMinTimeGraph', config)
                 } else if (keywordMinTimeGraphType == 'line') {
                     var [labels, datasets, sets] = [[], [], {}]
                     for (const [key, value] of Object.entries(filteredKeywords)) {
@@ -2350,8 +1567,7 @@
                     for (const [key, value] of Object.entries(sets)) {
                         datasets.push({ label: key, fill: false, data: value })
                     }
-
-                    var config = get_graph_config('line', datasets, 'Min Duration (Line)')
+                    var config = get_graph_config('line', { datasets: datasets }, 'Min Duration (Line)', 'Date', 'Duration')
                     keywordMinTimeGraph = new Chart('keywordMinTimeGraph', config);
                 }
             }
@@ -2398,56 +1614,8 @@
                         })
 
                     }
-                    // create graph
-                    keywordMaxTimeGraph = new Chart('keywordMaxTimeGraph', {
-                        type: 'bar',
-                        data: keywordMaxTimeData,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Run'
-                                    }
-                                },
-                                y: {
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Duration'
-                                    },
-                                    grace: '5%'
-                                }
-                            },
-                            interaction: {
-                                mode: 'x'
-                            },
-                            plugins: {
-                                datalabels: {
-                                    color: '#000000',
-                                    align: 'center',
-                                    anchor: 'center',
-                                    formatter: function (value) {
-                                        if (value > 0) {
-                                            return value
-                                        } else {
-                                            value = '';
-                                            return value;
-                                        }
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Max Duration (Bar)'
-                                },
-                                tooltip: {
-                                    filter: tooltipItem => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0
-                                }
-                            }
-                        }
-                    });
+                    var config = get_graph_config('bar', keywordMaxTimeData, 'Max Duration (Bar)', 'Run', 'Duration')
+                    keywordMaxTimeGraph = new Chart('keywordMaxTimeGraph', config)
                 } else if (keywordMaxTimeGraphType == 'line') {
                     var [labels, datasets, sets] = [[], [], {}]
                     for (const [key, value] of Object.entries(filteredKeywords)) {
@@ -2469,19 +1637,16 @@
                     for (const [key, value] of Object.entries(sets)) {
                         datasets.push({ label: key, fill: false, data: value })
                     }
-
-                    var config = get_graph_config('line', datasets, 'Max Duration (Line)')
+                    var config = get_graph_config('line', { datasets: datasets }, 'Max Duration (Line)', 'Date', 'Duration')
                     keywordMaxTimeGraph = new Chart('keywordMaxTimeGraph', config);
                 }
             }
 
-            function get_graph_config(graphType, graphData, graphTitle, xTitle = null, yTitle = null) {
+            function get_graph_config(graphType, graphData, graphTitle, xTitle, yTitle) {
                 if (graphType == 'line') {
                     return {
                         type: 'line',
-                        data: {
-                            datasets: graphData
-                        },
+                        data: graphData,
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
@@ -2505,22 +1670,71 @@
                                     },
                                     title: {
                                         display: true,
-                                        text: 'Date'
+                                        text: xTitle
                                     }
                                 },
                                 y: {
                                     beginAtZero: true,
                                     title: {
                                         display: true,
-                                        text: 'Duration'
+                                        text: yTitle
                                     },
                                     grace: '5%'
                                 }
                             }
                         }
                     }
+                } else if (graphType == 'bar') {
+                    return {
+                        type: 'bar',
+                        data: graphData,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: xTitle
+                                    }
+                                },
+                                y: {
+                                    stacked: true,
+                                    title: {
+                                        display: true,
+                                        text: yTitle
+                                    },
+                                    grace: '5%'
+                                }
+                            },
+                            interaction: {
+                                mode: 'x'
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: graphTitle,
+                                },
+                                tooltip: {
+                                    filter: tooltipItem => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0
+                                },
+                                datalabels: {
+                                    color: '#000000',
+                                    align: 'center',
+                                    anchor: 'center',
+                                    formatter: function (value) {
+                                        if (value > 0) {
+                                            return value
+                                        } else {
+                                            value = '';
+                                            return value;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-
             }
         </script>
 </body>
