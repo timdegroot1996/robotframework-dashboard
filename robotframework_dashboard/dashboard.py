@@ -25,7 +25,7 @@ class DashboardGenerator:
             print(f"  WARNING: There are no runs so the dashboard will be empty!")
 
         # write template
-        with codecs_open("robot_dashboard.html", "w", "utf-8") as dashboard_writer:
+        with codecs_open(name_dashboard, "w", "utf-8") as dashboard_writer:
             dashboard_writer.write(
                 template.render(
                     date=str(generation_datetime)[:-7],
