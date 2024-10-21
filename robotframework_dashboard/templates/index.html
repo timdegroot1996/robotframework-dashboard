@@ -50,7 +50,7 @@
             position: relative;
         }
 
-        .card{
+        .card {
             margin-bottom: 10px;
         }
     </style>
@@ -78,7 +78,6 @@
                         <p class="mt-auto" id="keywordCount"></p>
                     </div>
                 </div>
-
                 <!-- Filter row -->
                 <div class="row">
                     <div class="col-auto">
@@ -120,7 +119,6 @@
                         <h2 id="runTitle">Run Statistics</h2>
                     </div>
                 </div>
-
                 <!-- Run row  -->
                 <div class="row">
                     <div class="col canvas mb-5">
@@ -155,7 +153,6 @@
                         <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
                     </div>
                 </div>
-
                 <!-- Suite row -->
                 <div class="row">
                     <div class="col canvas mb-5">
@@ -202,7 +199,6 @@
                         <select class="form-select form-select-sm" id="testSelect"></select>
                     </div>
                 </div>
-
                 <!-- Test row -->
                 <div class="row">
                     <div class="col canvas mb-5">
@@ -227,7 +223,6 @@
                         <h2>Keyword Statistics</h2>
                     </div>
                 </div>
-
                 <!-- Keyword row -->
                 <div class="row">
                     <div class="col canvas">
@@ -301,19 +296,15 @@
                 Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
                 Chart.defaults.backgroundColor = 'rgba(255,255,0,0.1)';
                 Chart.defaults.elements.line.borderColor = 'rgba(255,255,0,0.4)';
-            } else { 
+            } else {
                 document.getElementsByTagName('html')[0].setAttribute('data-bs-theme', 'light')
             }
 
             // colors
             var passedBackgroundColor = '#97bd61'
-            var passedBorderColor = '#97bd61'
             var skippedBackgroundColor = '#fed84f'
-            var skippedBorderColor = '#fed84f'
             var failedBackgroundColor = '#ce3e01'
-            var failedBorderColor = '#ce3e01'
             var greyBackgroundColor = '#212529'
-            var greyBorderColor = '#212529'
 
             // prepare input data
             var runs = 'placeholder_runs'.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
@@ -327,10 +318,11 @@
             document.getElementById('suiteCount').innerText = 'Suites ' + suites.length
             document.getElementById('keywordCount').innerText = 'Keywords ' + keywords.length
 
-            // set filters and selects
+            // set initial filters and fill selects based on provided data
             set_lowest_highest_dates()
             add_runs_in_select()
             add_tags_in_select()
+
             // create graphs
             var runStatisticsGraph
             var runStatisticsGraphType = 'percentages'
@@ -356,15 +348,17 @@
             var keywordMinTimeGraphType = 'bar'
             var keywordMaxTimeGraph
             var keywordMaxTimeGraphType = 'bar'
+
             // filtered data vars
             var filteredRuns
             var filteredSuites
             var filteredTests
             var filteredKeywords
+
             // var to keep track of show only selected test stats
             var showOnlySelectedTestStatistic = false
 
-            //initialize graphs
+            //initialize all data and graphs
             update_data_and_all_graphs()
 
             // eventlisteners
@@ -375,68 +369,68 @@
             document.getElementById('toDate').addEventListener('change', update_data_and_all_graphs)
             document.getElementById('toTime').addEventListener('change', update_data_and_all_graphs)
 
-            document.getElementById('updateRunStatisticsGraphBarPercentages').addEventListener('click', (e) => { update_run_statistics_graph('percentages') })
-            document.getElementById('updateRunStatisticsGraphBarAmount').addEventListener('click', (e) => { update_run_statistics_graph('amount') })
-            document.getElementById('updateRunStatisticsGraphLine').addEventListener('click', (e) => { update_run_statistics_graph('line') })
+            document.getElementById('updateRunStatisticsGraphBarPercentages').addEventListener('click', (e) => { create_run_statistics_graph('percentages') })
+            document.getElementById('updateRunStatisticsGraphBarAmount').addEventListener('click', (e) => { create_run_statistics_graph('amount') })
+            document.getElementById('updateRunStatisticsGraphLine').addEventListener('click', (e) => { create_run_statistics_graph('line') })
 
-            document.getElementById('updateRunDurationGraphBar').addEventListener('click', (e) => { update_run_duration_graph('bar') })
-            document.getElementById('updateRunDurationGraphLine').addEventListener('click', (e) => { update_run_duration_graph('line') })
+            document.getElementById('updateRunDurationGraphBar').addEventListener('click', (e) => { create_run_duration_graph('bar') })
+            document.getElementById('updateRunDurationGraphLine').addEventListener('click', (e) => { create_run_duration_graph('line') })
 
-            document.getElementById('updateSuiteStatisticsGraphBarPercentages').addEventListener('click', (e) => { update_suite_statistics_graph('percentages') })
-            document.getElementById('updateSuiteStatisticsGraphBarAmount').addEventListener('click', (e) => { update_suite_statistics_graph('amount') })
-            document.getElementById('updateSuiteStatisticsGraphLine').addEventListener('click', (e) => { update_suite_statistics_graph('line') })
+            document.getElementById('updateSuiteStatisticsGraphBarPercentages').addEventListener('click', (e) => { create_suite_statistics_graph('percentages') })
+            document.getElementById('updateSuiteStatisticsGraphBarAmount').addEventListener('click', (e) => { create_suite_statistics_graph('amount') })
+            document.getElementById('updateSuiteStatisticsGraphLine').addEventListener('click', (e) => { create_suite_statistics_graph('line') })
 
-            document.getElementById('updateSuiteDurationGraphBar').addEventListener('click', (e) => { update_suite_duration_graph('bar') })
-            document.getElementById('updateSuiteDurationGraphLine').addEventListener('click', (e) => { update_suite_duration_graph('line') })
+            document.getElementById('updateSuiteDurationGraphBar').addEventListener('click', (e) => { create_suite_duration_graph('bar') })
+            document.getElementById('updateSuiteDurationGraphLine').addEventListener('click', (e) => { create_suite_duration_graph('line') })
 
-            document.getElementById('updateTestDurationGraphBar').addEventListener('click', (e) => { update_test_duration_graph('bar') })
-            document.getElementById('updateTestDurationGraphLine').addEventListener('click', (e) => { update_test_duration_graph('line') })
+            document.getElementById('updateTestDurationGraphBar').addEventListener('click', (e) => { create_test_duration_graph('bar') })
+            document.getElementById('updateTestDurationGraphLine').addEventListener('click', (e) => { create_test_duration_graph('line') })
 
-            document.getElementById('updateKeywordStatisticsGraphBarPercentages').addEventListener('click', (e) => { update_keyword_statistics_graph('percentages') })
-            document.getElementById('updateKeywordStatisticsGraphBarAmount').addEventListener('click', (e) => { update_keyword_statistics_graph('amount') })
-            document.getElementById('updateKeywordStatisticsGraphLine').addEventListener('click', (e) => { update_keyword_statistics_graph('line') })
+            document.getElementById('updateKeywordStatisticsGraphBarPercentages').addEventListener('click', (e) => { create_keyword_statistics_graph('percentages') })
+            document.getElementById('updateKeywordStatisticsGraphBarAmount').addEventListener('click', (e) => { create_keyword_statistics_graph('amount') })
+            document.getElementById('updateKeywordStatisticsGraphLine').addEventListener('click', (e) => { create_keyword_statistics_graph('line') })
 
-            document.getElementById('updateKeywordTimesRunGraphBar').addEventListener('click', (e) => { update_keyword_times_run_graph('bar') })
-            document.getElementById('updateKeywordTimesRunGraphLine').addEventListener('click', (e) => { update_keyword_times_run_graph('line') })
+            document.getElementById('updateKeywordTimesRunGraphBar').addEventListener('click', (e) => { create_keyword_times_run_graph('bar') })
+            document.getElementById('updateKeywordTimesRunGraphLine').addEventListener('click', (e) => { create_keyword_times_run_graph('line') })
 
-            document.getElementById('updateKeywordTotalTimeGraphBar').addEventListener('click', (e) => { update_keyword_total_time_graph('bar') })
-            document.getElementById('updateKeywordTotalTimeGraphLine').addEventListener('click', (e) => { update_keyword_total_time_graph('line') })
+            document.getElementById('updateKeywordTotalTimeGraphBar').addEventListener('click', (e) => { create_keyword_total_time_graph('bar') })
+            document.getElementById('updateKeywordTotalTimeGraphLine').addEventListener('click', (e) => { create_keyword_total_time_graph('line') })
 
-            document.getElementById('updateKeywordAverageTimeGraphBar').addEventListener('click', (e) => { update_keyword_average_time_graph('bar') })
-            document.getElementById('updateKeywordAverageTimeGraphLine').addEventListener('click', (e) => { update_keyword_average_time_graph('line') })
+            document.getElementById('updateKeywordAverageTimeGraphBar').addEventListener('click', (e) => { create_keyword_average_time_graph('bar') })
+            document.getElementById('updateKeywordAverageTimeGraphLine').addEventListener('click', (e) => { create_keyword_average_time_graph('line') })
 
-            document.getElementById('updateKeywordMinTimeGraphBar').addEventListener('click', (e) => { update_keyword_min_time_graph('bar') })
-            document.getElementById('updateKeywordMinTimeGraphLine').addEventListener('click', (e) => { update_keyword_min_time_graph('line') })
+            document.getElementById('updateKeywordMinTimeGraphBar').addEventListener('click', (e) => { create_keyword_min_time_graph('bar') })
+            document.getElementById('updateKeywordMinTimeGraphLine').addEventListener('click', (e) => { create_keyword_min_time_graph('line') })
 
-            document.getElementById('updateKeywordMaxTimeGraphBar').addEventListener('click', (e) => { update_keyword_max_time_graph('bar') })
-            document.getElementById('updateKeywordMaxTimeGraphLine').addEventListener('click', (e) => { update_keyword_max_time_graph('line') })
+            document.getElementById('updateKeywordMaxTimeGraphBar').addEventListener('click', (e) => { create_keyword_max_time_graph('bar') })
+            document.getElementById('updateKeywordMaxTimeGraphLine').addEventListener('click', (e) => { create_keyword_max_time_graph('line') })
 
 
             document.getElementById('resetFilters').addEventListener('click', reset_filters)
             document.getElementById('suiteSelectSuites').addEventListener('change', (e) => {
-                update_suite_duration_graph()
-                update_suite_statistics_graph()
+                create_suite_duration_graph()
+                create_suite_statistics_graph()
             })
             document.getElementById('showOnlySelectedTestStatistic').addEventListener('change', (e) => {
                 showOnlySelectedTestStatistic = !showOnlySelectedTestStatistic
-                update_test_status_graph()
+                create_test_status_graph()
             })
             document.getElementById('suiteSelectTests').addEventListener('change', (e) => {
-                update_test_status_graph()
-                update_test_duration_graph()
+                create_test_status_graph()
+                create_test_duration_graph()
                 add_tests_in_select()
             })
             document.getElementById('testSelect').addEventListener('change', (e) => {
-                if (showOnlySelectedTestStatistic) { update_test_status_graph() }
-                update_test_duration_graph()
+                if (showOnlySelectedTestStatistic) { create_test_status_graph() }
+                create_test_duration_graph()
             })
             document.getElementById('keywordSelect').addEventListener('change', (e) => {
-                update_keyword_statistics_graph()
-                update_keyword_times_run_graph()
-                update_keyword_total_time_graph()
-                update_keyword_average_time_graph()
-                update_keyword_min_time_graph()
-                update_keyword_max_time_graph()
+                create_keyword_statistics_graph()
+                create_keyword_times_run_graph()
+                create_keyword_total_time_graph()
+                create_keyword_average_time_graph()
+                create_keyword_min_time_graph()
+                create_keyword_max_time_graph()
             })
 
             function set_lowest_highest_dates() {
@@ -466,9 +460,9 @@
                 filteredRuns = filter_tags(filteredRuns)
                 filteredRuns = filter_dates(filteredRuns)
                 // filter suites and tests based on filtered runs
-                filteredSuites = filter_suites(filteredRuns)
-                filteredTests = filter_tests(filteredRuns)
-                filteredKeywords = filter_keywords(filteredRuns)
+                filteredSuites = filter_data('suites')
+                filteredTests = filter_data('tests')
+                filteredKeywords = filter_data('keywords')
                 // update tests select based on filtered runs
                 add_suites_in_selects()
                 add_tests_in_select()
@@ -478,112 +472,19 @@
             function update_all_graphs() {
                 // set titles with amount of filtered runs
                 document.getElementById('runTitle').innerText = `Run Statistics (${Object.keys(filteredRuns).length} runs)`
-
                 // destroy and create new graphs
-                update_run_statistics_graph()
-                update_run_duration_graph()
-                update_suite_statistics_graph()
-                update_suite_duration_graph()
-                update_test_status_graph()
-                update_test_duration_graph()
-                update_keyword_table()
-                update_keyword_statistics_graph()
-                update_keyword_times_run_graph()
-                update_keyword_total_time_graph()
-                update_keyword_average_time_graph()
-                update_keyword_min_time_graph()
-                update_keyword_max_time_graph()
-            }
-
-            function update_run_statistics_graph(type) {
-                if (typeof (type) === 'string') {
-                    runStatisticsGraphType = type
-                }
-                if (runStatisticsGraph) { runStatisticsGraph.destroy() }
                 create_run_statistics_graph()
-            }
-
-            function update_run_duration_graph(type) {
-                if (typeof (type) === 'string') {
-                    runDurationGraphType = type
-                }
-                if (runDurationGraph) { runDurationGraph.destroy() }
                 create_run_duration_graph()
-            }
-
-            function update_suite_statistics_graph(type) {
-                if (typeof (type) === 'string') {
-                    suiteStatisticsGraphType = type
-                }
-                if (suiteStatisticsGraph) { suiteStatisticsGraph.destroy() }
                 create_suite_statistics_graph()
-            }
-
-            function update_suite_duration_graph(type) {
-                if (typeof (type) === 'string') {
-                    suiteDurationGraphType = type
-                }
-                if (suiteDurationGraph) { suiteDurationGraph.destroy() }
                 create_suite_duration_graph()
-            }
-
-            function update_test_status_graph() {
-                if (testStatusGraph) { testStatusGraph.destroy() }
                 create_test_status_graph()
-            }
-
-            function update_test_duration_graph(type) {
-                if (typeof (type) === 'string') {
-                    testDurationGraphType = type
-                }
-                if (testDurationGraph) { testDurationGraph.destroy() }
                 create_test_duration_graph()
-            }
-
-            function update_keyword_table() {
-                if (keywordTable) { keywordTable.destroy() }
                 create_keyword_table()
-            }
-
-            function update_keyword_statistics_graph(type) {
-                if (typeof (type) === 'string') {
-                    keywordStatisticsGraphType = type
-                } if (keywordStatisticsGraph) { keywordStatisticsGraph.destroy() }
                 create_keyword_statistics_graph()
-            }
-
-            function update_keyword_times_run_graph(type) {
-                if (typeof (type) === 'string') {
-                    keywordTimesRunGraphType = type
-                } if (keywordTimesRunGraph) { keywordTimesRunGraph.destroy() }
                 create_keyword_times_run_graph()
-            }
-
-            function update_keyword_total_time_graph(type) {
-                if (typeof (type) === 'string') {
-                    keywordTotalTimeGraphType = type
-                } if (keywordTotalTimeGraph) { keywordTotalTimeGraph.destroy() }
                 create_keyword_total_time_graph()
-            }
-
-            function update_keyword_average_time_graph(type) {
-                if (typeof (type) === 'string') {
-                    keywordAverageTimeGraphType = type
-                } if (keywordAverageTimeGraph) { keywordAverageTimeGraph.destroy() }
                 create_keyword_average_time_graph()
-            }
-
-            function update_keyword_min_time_graph(type) {
-                if (typeof (type) === 'string') {
-                    keywordMinTimeGraphType = type
-                } if (keywordMinTimeGraph) { keywordMinTimeGraph.destroy() }
                 create_keyword_min_time_graph()
-            }
-
-            function update_keyword_max_time_graph(type) {
-                if (typeof (type) === 'string') {
-                    keywordMaxTimeGraphType = type
-                } if (keywordMaxTimeGraph) { keywordMaxTimeGraph.destroy() }
                 create_keyword_max_time_graph()
             }
 
@@ -625,7 +526,6 @@
                 var fromTime = document.getElementById('fromTime').value
                 var toDate = document.getElementById('toDate').value
                 var toTime = document.getElementById('toTime').value
-
                 var filteredRuns = {}
                 if (fromDate && fromTime && toDate && toTime) {
                     var fromDateTime = new Date(`${fromDate} ${fromTime}:00`)
@@ -651,46 +551,18 @@
                 return filteredRuns
             }
 
-            function filter_suites() {
+            function filter_data(dataType) {
                 var validRunStarts = []
                 for (const [key, value] of Object.entries(filteredRuns)) {
                     validRunStarts.push(value.run_start)
                 }
-                var filteredSuites = []
-                for (const [key, value] of Object.entries(suites)) {
+                var filteredData = []
+                for (const [key, value] of Object.entries(window[dataType])) {
                     if (validRunStarts.includes(value.run_start)) {
-                        filteredSuites.push(value)
+                        filteredData.push(value)
                     }
                 }
-                return filteredSuites
-            }
-
-            function filter_tests() {
-                var validRunStarts = []
-                for (const [key, value] of Object.entries(filteredRuns)) {
-                    validRunStarts.push(value.run_start)
-                }
-                var filteredTests = []
-                for (const [key, value] of Object.entries(tests)) {
-                    if (validRunStarts.includes(value.run_start)) {
-                        filteredTests.push(value)
-                    }
-                }
-                return filteredTests
-            }
-
-            function filter_keywords() {
-                var validRunStarts = []
-                for (const [key, value] of Object.entries(filteredRuns)) {
-                    validRunStarts.push(value.run_start)
-                }
-                var filteredKeywords = []
-                for (const [key, value] of Object.entries(keywords)) {
-                    if (validRunStarts.includes(value.run_start)) {
-                        filteredKeywords.push(value)
-                    }
-                }
-                return filteredKeywords
+                return filteredData
             }
 
             function reset_filters() {
@@ -778,297 +650,72 @@
                 }
             }
 
-            function create_run_statistics_graph() {
-                var [passed, failed, skipped, labels] = [[], [], [], []]
-                for (const [key, value] of Object.entries(filteredRuns)) {
-                    if (runStatisticsGraphType == 'percentages') {
-                        passed.push(Math.round(value.passed / value.total * 100 * 100) / 100)
-                        failed.push(Math.round(value.failed / value.total * 100 * 100) / 100)
-                        skipped.push(Math.round(value.skipped / value.total * 100 * 100) / 100)
-                        labels.push(value.run_start)
-                    } else {
-                        passed.push(value.passed)
-                        failed.push(value.failed)
-                        skipped.push(value.skipped)
-                        labels.push(value.run_start)
-                    }
+            function create_run_statistics_graph(type) {
+                if (typeof (type) === 'string') {
+                    runStatisticsGraphType = type
                 }
-
-                // required for both bar charts
-                if (runStatisticsGraphType != 'line') {
-                    var runStatisticsData = {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Failed',
-                                data: failed,
-                                backgroundColor: failedBackgroundColor,
-                                stack: 'Stack 0',
-                            },
-                            {
-                                label: 'Skipped',
-                                data: skipped,
-                                backgroundColor: skippedBackgroundColor,
-                                stack: 'Stack 0',
-                            },
-                            {
-                                label: 'Passed',
-                                data: passed,
-                                backgroundColor: passedBackgroundColor,
-                                stack: 'Stack 0',
-                            },
-                        ]
-                    };
-                } else {
-                    var runStatisticsData = {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Failed',
-                                data: failed,
-                                backgroundColor: failedBackgroundColor,
-                                borderColor: failedBackgroundColor,
-                            },
-                            {
-                                label: 'Skipped',
-                                data: skipped,
-                                backgroundColor: skippedBackgroundColor,
-                                borderColor: skippedBackgroundColor,
-                            },
-                            {
-                                label: 'Passed',
-                                data: passed,
-                                backgroundColor: passedBackgroundColor,
-                                borderColor: passedBackgroundColor,
-                            },
-                        ]
-                    }
-                }
+                if (runStatisticsGraph) { runStatisticsGraph.destroy() }
+                var graphData = get_statistics_graph_data('run', runStatisticsGraphType, filteredRuns)
                 if (runStatisticsGraphType == 'line') {
-                    var config = get_graph_config('line', runStatisticsData, 'Run Of Tests (Line)', 'Date', 'amount')
+                    var config = get_graph_config('line', graphData, 'Amount Of Tests (Line)', 'Date', 'amount', false)
                     runStatisticsGraph = new Chart('runStatisticsGraph', config);
                 } else if (runStatisticsGraphType == 'amount') {
                     Chart.register(ChartDataLabels);
-                    var config = get_graph_config('bar', runStatisticsData, 'Run Statistics (Bar)', 'Run', 'Amount Of Tests')
+                    var config = get_graph_config('bar', graphData, 'Run Statistics (Bar)', 'Run', 'Amount Of Tests')
                     runStatisticsGraph = new Chart('runStatisticsGraph', config)
                 } else if (runStatisticsGraphType == 'percentages') {
                     Chart.register(ChartDataLabels);
-                    var config = get_graph_config('bar', runStatisticsData, 'Run Statistics (Bar)', 'Run', 'Percentage')
+                    var config = get_graph_config('bar', graphData, 'Run Statistics (Bar)', 'Run', 'Percentage')
                     runStatisticsGraph = new Chart('runStatisticsGraph', config)
                 }
             }
 
-            function create_run_duration_graph() {
+            function create_run_duration_graph(type) {
+                if (typeof (type) === 'string') {
+                    runDurationGraphType = type
+                }
+                if (runDurationGraph) { runDurationGraph.destroy() }
+                var graphData = get_duration_graph_data('run', runDurationGraphType, 'elapsed_s', filteredRuns)
                 if (runDurationGraphType == 'bar') {
-                    var [labels, data] = [[], { 0: [] }]
-                    // prepare data for bar chart
-                    for (const [key, value] of Object.entries(filteredRuns)) {
-                        labels.push(value.run_start)
-                        var dataLength = data[0].length
-                        if (data[value.name]) {
-                            // add 0 to all not matching, and value.elapsed to matching
-                            data[value.name].push(Math.round(value.elapsed_s * 100) / 100)
-                        } else {
-                            // add longest amount of 0's to matched and 1 zero to not matching
-                            data[value.name] = []
-                            for (let step = 0; step < dataLength; step++) {
-                                data[value.name].push(0)
-                            }
-                            data[value.name].push(Math.round(value.elapsed_s * 100) / 100)
-                        }
-                        // add 0 to every other value
-                        for (d in data) {
-                            if (d != value.name) {
-                                data[d].push(0)
-                            }
-                        }
-                    }
-                    delete data[0]
-                    var runDurationData = {
-                        labels: labels,
-                        datasets: [],
-                    }
-                    for (key in data) {
-                        runDurationData['datasets'].push({
-                            label: key,
-                            data: data[key],
-                            stack: 'Stack 0'
-                        })
-
-                    }
-                    var config = get_graph_config('bar', runDurationData, 'Run Duration (Bar)', 'Run', 'Duration')
+                    var config = get_graph_config('bar', graphData, 'Run Duration (Bar)', 'Run', 'Duration')
                     runDurationGraph = new Chart('runDurationGraph', config)
                 } else if (runDurationGraphType == 'line') {
-                    var [labels, datasets, sets] = [[], [], {}]
-                    for (const [key, value] of Object.entries(filteredRuns)) {
-                        var full_name = value.full_name
-                        var run_start = new Date(value.run_start)
-                        var elapsed_s = Math.round(value.elapsed_s * 100) / 100
-                        if (labels.includes(full_name)) {
-                            var values = sets[full_name]
-                            values.push({ x: run_start, y: elapsed_s })
-                            sets[full_name] = values
-                        } else {
-                            labels.push(full_name)
-                            sets[full_name] = [{ x: run_start, y: elapsed_s }]
-                        }
-                    }
-                    for (const [key, value] of Object.entries(sets)) {
-                        datasets.push({ label: key, fill: false, data: value })
-                    }
-                    var config = get_graph_config('line', { datasets: datasets }, 'Run Duration (Line)', 'Date', 'Duration')
+                    var config = get_graph_config('line', graphData, 'Run Duration (Line)', 'Date', 'Duration')
                     runDurationGraph = new Chart('runDurationGraph', config);
                 }
             }
 
-            function create_suite_statistics_graph() {
-                var suiteSelectSuites = document.getElementById('suiteSelectSuites').value
-                var [passed, failed, skipped, labels] = [[], [], [], []]
-                for (const [key, value] of Object.entries(filteredSuites)) {
-                    if (value.name == suiteSelectSuites) {
-                        if (suiteStatisticsGraphType == 'percentages') {
-                            passed.push(Math.round(value.passed / value.total * 100 * 100) / 100)
-                            failed.push(Math.round(value.failed / value.total * 100 * 100) / 100)
-                            skipped.push(Math.round(value.skipped / value.total * 100 * 100) / 100)
-                            labels.push(value.run_start)
-                        } else {
-                            passed.push(value.passed)
-                            failed.push(value.failed)
-                            skipped.push(value.skipped)
-                            labels.push(value.run_start)
-                        }
-                    }
+            function create_suite_statistics_graph(type) {
+                if (typeof (type) === 'string') {
+                    suiteStatisticsGraphType = type
                 }
-
-                // required for both bar charts
-                if (suiteStatisticsGraphType != 'line') {
-                    var suiteStatisticsData = {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Failed',
-                                data: failed,
-                                backgroundColor: failedBackgroundColor,
-                                stack: 'Stack 0',
-                            },
-                            {
-                                label: 'Skipped',
-                                data: skipped,
-                                backgroundColor: skippedBackgroundColor,
-                                stack: 'Stack 0',
-                            },
-                            {
-                                label: 'Passed',
-                                data: passed,
-                                backgroundColor: passedBackgroundColor,
-                                stack: 'Stack 0',
-                            },
-                        ]
-                    };
-                } else {
-                    var suiteStatisticsData = {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Failed',
-                                data: failed,
-                                backgroundColor: failedBackgroundColor,
-                                borderColor: failedBackgroundColor,
-                            },
-                            {
-                                label: 'Skipped',
-                                data: skipped,
-                                backgroundColor: skippedBackgroundColor,
-                                borderColor: skippedBackgroundColor,
-                            },
-                            {
-                                label: 'Passed',
-                                data: passed,
-                                backgroundColor: passedBackgroundColor,
-                                borderColor: passedBackgroundColor,
-                            },
-                        ]
-                    };
-                }
+                if (suiteStatisticsGraph) { suiteStatisticsGraph.destroy() }
+                var graphData = get_statistics_graph_data('suite', suiteStatisticsGraphType, filteredSuites)
                 if (suiteStatisticsGraphType == 'line') {
-                    var config = get_graph_config('line', suiteStatisticsData, 'Amount Of Tests (Line)', 'Date', 'amount')
+                    var config = get_graph_config('line', graphData, 'Amount Of Tests (Line)', 'Date', 'amount', false)
                     suiteStatisticsGraph = new Chart('suiteStatisticsGraph', config);
                 } else if (suiteStatisticsGraphType == 'amount') {
                     Chart.register(ChartDataLabels);
-                    var config = get_graph_config('bar', suiteStatisticsData, 'Suite Statistics (Bar)', 'Run', 'Amount Of Tests')
+                    var config = get_graph_config('bar', graphData, 'Suite Statistics (Bar)', 'Run', 'Amount Of Tests')
                     suiteStatisticsGraph = new Chart('suiteStatisticsGraph', config)
                 } else if (suiteStatisticsGraphType == 'percentages') {
                     Chart.register(ChartDataLabels);
-                    var config = get_graph_config('bar', suiteStatisticsData, 'Suite Statistics (Bar)', 'Run', 'Percentage')
+                    var config = get_graph_config('bar', graphData, 'Suite Statistics (Bar)', 'Run', 'Percentage')
                     suiteStatisticsGraph = new Chart('suiteStatisticsGraph', config)
                 }
             }
 
-            function create_suite_duration_graph() {
-                var suiteSelectSuites = document.getElementById('suiteSelectSuites').value
+            function create_suite_duration_graph(type) {
+                if (typeof (type) === 'string') {
+                    suiteDurationGraphType = type
+                }
+                if (suiteDurationGraph) { suiteDurationGraph.destroy() }
+                var graphData = get_duration_graph_data('suite', suiteDurationGraphType, 'elapsed_s', filteredSuites)
                 if (suiteDurationGraphType == 'bar') {
-                    var [labels, data] = [[], { 0: [] }]
-                    // prepare data for bar chart
-                    for (const [key, value] of Object.entries(filteredSuites)) {
-                        if (value.name != suiteSelectSuites) {
-                            continue
-                        }
-                        labels.push(value.run_start)
-                        var dataLength = data[0].length
-                        if (data[value.name]) {
-                            // add 0 to all not matching, and value.elapsed to matching
-                            data[value.name].push(Math.round(value.elapsed_s * 100) / 100)
-                        } else {
-                            // add longest amount of 0's to matched and 1 zero to not matching
-                            data[value.name] = []
-                            for (let step = 0; step < dataLength; step++) {
-                                data[value.name].push(0)
-                            }
-                            data[value.name].push(Math.round(value.elapsed_s * 100) / 100)
-                        }
-                        // add 0 to every other value
-                        for (d in data) {
-                            if (d != value.name) {
-                                data[d].push(0)
-                            }
-                        }
-                    }
-                    delete data[0]
-                    var suiteDurationData = {
-                        labels: labels,
-                        datasets: [],
-                    }
-                    for (key in data) {
-                        suiteDurationData['datasets'].push({
-                            label: key,
-                            data: data[key],
-                            stack: 'Stack 0'
-                        })
-                    }
-                    var config = get_graph_config('bar', suiteDurationData, 'Suite Duration (Bar)', 'Run', 'Duration')
+                    var config = get_graph_config('bar', graphData, 'Suite Duration (Bar)', 'Run', 'Duration')
                     suiteDurationGraph = new Chart('suiteDurationGraph', config)
                 } else if (suiteDurationGraphType == 'line') {
-                    var [labels, datasets, sets] = [[], [], {}]
-                    for (const [key, value] of Object.entries(filteredSuites)) {
-                        if (value.name != suiteSelectSuites) {
-                            continue
-                        }
-                        var name = value.name
-                        var run_start = new Date(value.run_start)
-                        var elapsed_s = Math.round(value.elapsed_s * 100) / 100
-                        if (labels.includes(name)) {
-                            var values = sets[name]
-                            values.push({ x: run_start, y: elapsed_s })
-                            sets[name] = values
-                        } else {
-                            labels.push(name)
-                            sets[name] = [{ x: run_start, y: elapsed_s }]
-                        }
-                    }
-                    for (const [key, value] of Object.entries(sets)) {
-                        datasets.push({ label: key, fill: false, data: value })
-                    }
-                    var config = get_graph_config('line', { datasets: datasets }, 'Suite Duration (Line)', 'Date', 'Duration')
+                    var config = get_graph_config('line', graphData, 'Suite Duration (Line)', 'Date', 'Duration')
                     suiteDurationGraph = new Chart('suiteDurationGraph', config);
                 }
             }
@@ -1092,7 +739,6 @@
                         runStarts.push(value.run_start)
                     }
                 }
-
                 var datasets = []
                 var runAxis = 0
                 for (runStart of runStarts) {
@@ -1182,80 +828,17 @@
                 });
             }
 
-            function create_test_duration_graph() {
-                var suiteSelectTests = document.getElementById('suiteSelectTests').value
-                var testSelect = document.getElementById('testSelect').value
+            function create_test_duration_graph(type) {
+                if (typeof (type) === 'string') {
+                    testDurationGraphType = type
+                }
+                if (testDurationGraph) { testDurationGraph.destroy() }
+                var graphData = get_duration_graph_data('test', testDurationGraphType, 'elapsed_s', filteredTests)
                 if (testDurationGraphType == 'bar') {
-                    var [labels, data] = [[], { 0: [] }]
-                    // prepare data for bar chart
-                    for (const [key, value] of Object.entries(filteredTests)) {
-                        if (value.full_name.split('.').at(-2) != suiteSelectTests) {
-                            continue
-                        }
-                        if (testSelect != 'All' && value.name != testSelect) {
-                            continue
-                        }
-                        labels.push(value.run_start)
-                        var dataLength = data[0].length
-                        if (data[value.name]) {
-                            // add 0 to all not matching, and value.elapsed to matching
-                            data[value.name].push(Math.round(value.elapsed_s * 100) / 100)
-                        } else {
-                            // add longest amount of 0's to matched and 1 zero to not matching
-                            data[value.name] = []
-                            for (let step = 0; step < dataLength; step++) {
-                                data[value.name].push(0)
-                            }
-                            data[value.name].push(Math.round(value.elapsed_s * 100) / 100)
-                        }
-                        // add 0 to every other value
-                        for (d in data) {
-                            if (d != value.name) {
-                                data[d].push(0)
-                            }
-                        }
-                    }
-                    delete data[0]
-                    var testDurationData = {
-                        labels: labels,
-                        datasets: [],
-                    }
-                    for (key in data) {
-                        testDurationData['datasets'].push({
-                            label: key,
-                            data: data[key],
-                            stack: 'Stack 0'
-                        })
-
-                    }
-                    var config = get_graph_config('bar', testDurationData, 'Test Duration (Bar)', 'Run', 'Duration')
+                    var config = get_graph_config('bar', graphData, 'Test Duration (Bar)', 'Run', 'Duration')
                     testDurationGraph = new Chart('testDurationGraph', config)
                 } else if (testDurationGraphType == 'line') {
-                    var [labels, datasets, sets] = [[], [], {}]
-                    for (const [key, value] of Object.entries(filteredTests)) {
-                        if (value.full_name.split('.').at(-2) != suiteSelectTests) {
-                            continue
-                        }
-                        if (testSelect != 'All' && value.name != testSelect) {
-                            continue
-                        }
-                        var name = value.name
-                        var run_start = new Date(value.run_start)
-                        var elapsed_s = Math.round(value.elapsed_s * 100) / 100
-                        if (labels.includes(name)) {
-                            var values = sets[name]
-                            values.push({ x: run_start, y: elapsed_s })
-                            sets[name] = values
-                        } else {
-                            labels.push(name)
-                            sets[name] = [{ x: run_start, y: elapsed_s }]
-                        }
-                    }
-                    for (const [key, value] of Object.entries(sets)) {
-                        datasets.push({ label: key, fill: false, data: value })
-                    }
-
-                    var config = get_graph_config('line', { datasets: datasets }, 'Test Duration (Line)', 'Date', 'Duration')
+                    var config = get_graph_config('line', graphData, 'Test Duration (Line)', 'Date', 'Duration')
                     testDurationGraph = new Chart('testDurationGraph', config);
                 }
             }
@@ -1297,440 +880,105 @@
                 });
             }
 
-            function create_keyword_statistics_graph() {
-                var keywordSelect = document.getElementById('keywordSelect').value
-                var [passed, failed, skipped, labels] = [[], [], [], []]
-                for (const [key, value] of Object.entries(filteredKeywords)) {
-                    if (value.name == keywordSelect) {
-                        if (keywordStatisticsGraphType == 'percentages') {
-                            passed.push(Math.round(value.passed / (value.passed + value.failed + value.skipped) * 100 * 100) / 100)
-                            failed.push(Math.round(value.failed / (value.passed + value.failed + value.skipped) * 100 * 100) / 100)
-                            skipped.push(Math.round(value.skipped / (value.passed + value.failed + value.skipped) * 100 * 100) / 100)
-                            labels.push(value.run_start)
-                        }
-                        else {
-                            passed.push(value.passed)
-                            failed.push(value.failed)
-                            skipped.push(value.skipped)
-                            labels.push(value.run_start)
-                        }
-                    }
+            function create_keyword_statistics_graph(type) {
+                if (typeof (type) === 'string') {
+                    keywordStatisticsGraphType = type
                 }
-
-                // required for both bar charts
-                if (keywordStatisticsGraphType != 'line') {
-                    var keywordStatisticsData = {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Failed',
-                                data: failed,
-                                backgroundColor: failedBackgroundColor,
-                                stack: 'Stack 0',
-                            },
-                            {
-                                label: 'Skipped',
-                                data: skipped,
-                                backgroundColor: skippedBackgroundColor,
-                                stack: 'Stack 0',
-                            },
-                            {
-                                label: 'Passed',
-                                data: passed,
-                                backgroundColor: passedBackgroundColor,
-                                stack: 'Stack 0',
-                            },
-                        ]
-                    };
-                } else {
-                    var keywordStatisticsData = {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Failed',
-                                data: failed,
-                                backgroundColor: failedBackgroundColor,
-                                borderColor: failedBackgroundColor,
-                            },
-                            {
-                                label: 'Skipped',
-                                data: skipped,
-                                backgroundColor: skippedBackgroundColor,
-                                borderColor: skippedBackgroundColor,
-                            },
-                            {
-                                label: 'Passed',
-                                data: passed,
-                                backgroundColor: passedBackgroundColor,
-                                borderColor: passedBackgroundColor,
-                            },
-                        ]
-                    };
-                }
+                if (keywordStatisticsGraph) { keywordStatisticsGraph.destroy() }
+                var graphData = get_statistics_graph_data('keyword', keywordStatisticsGraphType, filteredKeywords)
                 if (keywordStatisticsGraphType == 'line') {
-                    var config = get_graph_config('line', keywordStatisticsData, 'Keyword Statistics (Line)', 'Date', 'Amount')
+                    var config = get_graph_config('line', graphData, 'Keyword Statistics (Line)', 'Date', 'Amount', false)
                     keywordStatisticsGraph = new Chart('keywordStatisticsGraph', config);
                 } else if (keywordStatisticsGraphType == 'amount') {
                     Chart.register(ChartDataLabels);
-                    var config = get_graph_config('bar', keywordStatisticsData, 'Keyword Statistics (Bar)', 'Run', 'Amount')
+                    var config = get_graph_config('bar', graphData, 'Keyword Statistics (Bar)', 'Run', 'Amount')
                     keywordStatisticsGraph = new Chart('keywordStatisticsGraph', config)
                 } else if (keywordStatisticsGraphType == 'percentages') {
                     Chart.register(ChartDataLabels);
-                    var config = get_graph_config('bar', keywordStatisticsData, 'Keyword Statistics (Bar)', 'Run', 'Percentage')
+                    var config = get_graph_config('bar', graphData, 'Keyword Statistics (Bar)', 'Run', 'Percentage')
                     keywordStatisticsGraph = new Chart('keywordStatisticsGraph', config);
                 }
             }
 
-            function create_keyword_times_run_graph() {
-                var keywordSelect = document.getElementById('keywordSelect').value
+            function create_keyword_times_run_graph(type) {
+                if (typeof (type) === 'string') {
+                    keywordTimesRunGraphType = type
+                }
+                if (keywordTimesRunGraph) { keywordTimesRunGraph.destroy() }
+                var graphData = get_duration_graph_data('keyword', keywordTimesRunGraphType, 'times_run', filteredKeywords)
                 if (keywordTimesRunGraphType == 'bar') {
-                    var [labels, data] = [[], { 0: [] }]
-                    // prepare data for bar chart
-                    for (const [key, value] of Object.entries(filteredKeywords)) {
-                        if (value.name != keywordSelect) {
-                            continue
-                        }
-                        labels.push(value.run_start)
-                        var dataLength = data[0].length
-                        if (data[value.name]) {
-                            // add 0 to all not matching, and value.elapsed to matching
-                            data[value.name].push(Math.round(value.times_run * 100) / 100)
-                        } else {
-                            // add longest amount of 0's to matched and 1 zero to not matching
-                            data[value.name] = []
-                            for (let step = 0; step < dataLength; step++) {
-                                data[value.name].push(0)
-                            }
-                            data[value.name].push(Math.round(value.times_run * 100) / 100)
-                        }
-                        // add 0 to every other value
-                        for (d in data) {
-                            if (d != value.name) {
-                                data[d].push(0)
-                            }
-                        }
-                    }
-                    delete data[0]
-                    var keywordTimesRunData = {
-                        labels: labels,
-                        datasets: [],
-                    }
-                    for (key in data) {
-                        keywordTimesRunData['datasets'].push({
-                            label: key,
-                            data: data[key],
-                            stack: 'Stack 0'
-                        })
-                    }
-                    var config = get_graph_config('bar', keywordTimesRunData, 'Times Run (Bar)', 'Run', 'Duration')
+                    var config = get_graph_config('bar', graphData, 'Times Run (Bar)', 'Run', 'Duration')
                     keywordTimesRunGraph = new Chart('keywordTimesRunGraph', config)
                 } else if (keywordTimesRunGraphType == 'line') {
-                    var [labels, datasets, sets] = [[], [], {}]
-                    for (const [key, value] of Object.entries(filteredKeywords)) {
-                        if (value.name != keywordSelect) {
-                            continue
-                        }
-                        var name = value.name
-                        var run_start = new Date(value.run_start)
-                        var times_run = Math.round(value.times_run * 100) / 100
-                        if (labels.includes(name)) {
-                            var values = sets[name]
-                            values.push({ x: run_start, y: times_run })
-                            sets[name] = values
-                        } else {
-                            labels.push(name)
-                            sets[name] = [{ x: run_start, y: times_run }]
-                        }
-                    }
-                    for (const [key, value] of Object.entries(sets)) {
-                        datasets.push({ label: key, fill: false, data: value })
-                    }
-                    var config = get_graph_config('line', { datasets: datasets }, 'Times Run (Line)', 'Date', 'Duration')
+                    var config = get_graph_config('line', graphData, 'Times Run (Line)', 'Date', 'Duration')
                     keywordTimesRunGraph = new Chart('keywordTimesRunGraph', config);
                 }
             }
 
-            function create_keyword_total_time_graph() {
-                var keywordSelect = document.getElementById('keywordSelect').value
+            function create_keyword_total_time_graph(type) {
+                if (typeof (type) === 'string') {
+                    keywordTotalTimeGraphType = type
+                }
+                if (keywordTotalTimeGraph) { keywordTotalTimeGraph.destroy() }
+                var graphData = get_duration_graph_data('keyword', keywordTotalTimeGraphType, 'total_time_s', filteredKeywords)
                 if (keywordTotalTimeGraphType == 'bar') {
-                    var [labels, data] = [[], { 0: [] }]
-                    // prepare data for bar chart
-                    for (const [key, value] of Object.entries(filteredKeywords)) {
-                        if (value.name != keywordSelect) {
-                            continue
-                        }
-                        labels.push(value.run_start)
-                        var dataLength = data[0].length
-                        if (data[value.name]) {
-                            // add 0 to all not matching, and value.elapsed to matching
-                            data[value.name].push(Math.round(value.total_time_s * 100) / 100)
-                        } else {
-                            // add longest amount of 0's to matched and 1 zero to not matching
-                            data[value.name] = []
-                            for (let step = 0; step < dataLength; step++) {
-                                data[value.name].push(0)
-                            }
-                            data[value.name].push(Math.round(value.total_time_s * 100) / 100)
-                        }
-                        // add 0 to every other value
-                        for (d in data) {
-                            if (d != value.name) {
-                                data[d].push(0)
-                            }
-                        }
-                    }
-                    delete data[0]
-                    var keywordTotalTimeData = {
-                        labels: labels,
-                        datasets: [],
-                    }
-                    for (key in data) {
-                        keywordTotalTimeData['datasets'].push({
-                            label: key,
-                            data: data[key],
-                            stack: 'Stack 0'
-                        })
-
-                    }
-                    var config = get_graph_config('bar', keywordTotalTimeData, 'Total Duration (Bar)', 'Run', 'Duration')
+                    var config = get_graph_config('bar', graphData, 'Total Duration (Bar)', 'Run', 'Duration')
                     keywordTotalTimeGraph = new Chart('keywordTotalTimeGraph', config)
                 } else if (keywordTotalTimeGraphType == 'line') {
-                    var [labels, datasets, sets] = [[], [], {}]
-                    for (const [key, value] of Object.entries(filteredKeywords)) {
-                        if (value.name != keywordSelect) {
-                            continue
-                        }
-                        var name = value.name
-                        var run_start = new Date(value.run_start)
-                        var total_time_s = Math.round(value.total_time_s * 100) / 100
-                        if (labels.includes(name)) {
-                            var values = sets[name]
-                            values.push({ x: run_start, y: total_time_s })
-                            sets[name] = values
-                        } else {
-                            labels.push(name)
-                            sets[name] = [{ x: run_start, y: total_time_s }]
-                        }
-                    }
-                    for (const [key, value] of Object.entries(sets)) {
-                        datasets.push({ label: key, fill: false, data: value })
-                    }
-                    var config = get_graph_config('line', { datasets: datasets }, 'Total Duration (Line)', 'Date', 'Duration')
+                    var config = get_graph_config('line', graphData, 'Total Duration (Line)', 'Date', 'Duration')
                     keywordTotalTimeGraph = new Chart('keywordTotalTimeGraph', config);
                 }
             }
 
-            function create_keyword_average_time_graph() {
-                var keywordSelect = document.getElementById('keywordSelect').value
+            function create_keyword_average_time_graph(type) {
+                if (typeof (type) === 'string') {
+                    keywordAverageTimeGraphType = type
+                }
+                if (keywordAverageTimeGraph) { keywordAverageTimeGraph.destroy() }
+                var graphData = get_duration_graph_data('keyword', keywordAverageTimeGraphType, 'average_time_s', filteredKeywords)
                 if (keywordAverageTimeGraphType == 'bar') {
-                    var [labels, data] = [[], { 0: [] }]
-                    // prepare data for bar chart
-                    for (const [key, value] of Object.entries(filteredKeywords)) {
-                        if (value.name != keywordSelect) {
-                            continue
-                        }
-                        labels.push(value.run_start)
-                        var dataLength = data[0].length
-                        if (data[value.name]) {
-                            // add 0 to all not matching, and value.elapsed to matching
-                            data[value.name].push(Math.round(value.average_time_s * 100) / 100)
-                        } else {
-                            // add longest amount of 0's to matched and 1 zero to not matching
-                            data[value.name] = []
-                            for (let step = 0; step < dataLength; step++) {
-                                data[value.name].push(0)
-                            }
-                            data[value.name].push(Math.round(value.average_time_s * 100) / 100)
-                        }
-                        // add 0 to every other value
-                        for (d in data) {
-                            if (d != value.name) {
-                                data[d].push(0)
-                            }
-                        }
-                    }
-                    delete data[0]
-                    var keywordAverageTimeData = {
-                        labels: labels,
-                        datasets: [],
-                    }
-                    for (key in data) {
-                        keywordAverageTimeData['datasets'].push({
-                            label: key,
-                            data: data[key],
-                            stack: 'Stack 0'
-                        })
-
-                    }
-                    var config = get_graph_config('bar', keywordAverageTimeData, 'Average Duration (Bar)', 'Run', 'Duration')
+                    var config = get_graph_config('bar', graphData, 'Average Duration (Bar)', 'Run', 'Duration')
                     keywordAverageTimeGraph = new Chart('keywordAverageTimeGraph', config)
                 } else if (keywordAverageTimeGraphType == 'line') {
-                    var [labels, datasets, sets] = [[], [], {}]
-                    for (const [key, value] of Object.entries(filteredKeywords)) {
-                        if (value.name != keywordSelect) {
-                            continue
-                        }
-                        var name = value.name
-                        var run_start = new Date(value.run_start)
-                        var average_time_s = Math.round(value.average_time_s * 100) / 100
-                        if (labels.includes(name)) {
-                            var values = sets[name]
-                            values.push({ x: run_start, y: average_time_s })
-                            sets[name] = values
-                        } else {
-                            labels.push(name)
-                            sets[name] = [{ x: run_start, y: average_time_s }]
-                        }
-                    }
-                    for (const [key, value] of Object.entries(sets)) {
-                        datasets.push({ label: key, fill: false, data: value })
-                    }
-                    var config = get_graph_config('line', { datasets: datasets }, 'Average Duration (Line)', 'Date', 'Duration')
+                    var config = get_graph_config('line', graphData, 'Average Duration (Line)', 'Date', 'Duration')
                     keywordAverageTimeGraph = new Chart('keywordAverageTimeGraph', config);
                 }
             }
 
-            function create_keyword_min_time_graph() {
-                var keywordSelect = document.getElementById('keywordSelect').value
+            function create_keyword_min_time_graph(type) {
+                if (typeof (type) === 'string') {
+                    keywordMinTimeGraphType = type
+                }
+                if (keywordMinTimeGraph) { keywordMinTimeGraph.destroy() }
+                var graphData = get_duration_graph_data('keyword', keywordMinTimeGraphType, 'min_time_s', filteredKeywords)
                 if (keywordMinTimeGraphType == 'bar') {
-                    var [labels, data] = [[], { 0: [] }]
-                    // prepare data for bar chart
-                    for (const [key, value] of Object.entries(filteredKeywords)) {
-                        if (value.name != keywordSelect) {
-                            continue
-                        }
-                        labels.push(value.run_start)
-                        var dataLength = data[0].length
-                        if (data[value.name]) {
-                            // add 0 to all not matching, and value.elapsed to matching
-                            data[value.name].push(Math.round(value.min_time_s * 100) / 100)
-                        } else {
-                            // add longest amount of 0's to matched and 1 zero to not matching
-                            data[value.name] = []
-                            for (let step = 0; step < dataLength; step++) {
-                                data[value.name].push(0)
-                            }
-                            data[value.name].push(Math.round(value.min_time_s * 100) / 100)
-                        }
-                        // add 0 to every other value
-                        for (d in data) {
-                            if (d != value.name) {
-                                data[d].push(0)
-                            }
-                        }
-                    }
-                    delete data[0]
-                    var keywordMinTimeData = {
-                        labels: labels,
-                        datasets: [],
-                    }
-                    for (key in data) {
-                        keywordMinTimeData['datasets'].push({
-                            label: key,
-                            data: data[key],
-                            stack: 'Stack 0'
-                        })
-
-                    }
-                    var config = get_graph_config('bar', keywordMinTimeData, 'Min Duration (Bar)', 'Run', 'Duration')
+                    var config = get_graph_config('bar', graphData, 'Min Duration (Bar)', 'Run', 'Duration')
                     keywordMinTimeGraph = new Chart('keywordMinTimeGraph', config)
                 } else if (keywordMinTimeGraphType == 'line') {
-                    var [labels, datasets, sets] = [[], [], {}]
-                    for (const [key, value] of Object.entries(filteredKeywords)) {
-                        if (value.name != keywordSelect) {
-                            continue
-                        }
-                        var name = value.name
-                        var run_start = new Date(value.run_start)
-                        var min_time_s = Math.round(value.min_time_s * 100) / 100
-                        if (labels.includes(name)) {
-                            var values = sets[name]
-                            values.push({ x: run_start, y: min_time_s })
-                            sets[name] = values
-                        } else {
-                            labels.push(name)
-                            sets[name] = [{ x: run_start, y: min_time_s }]
-                        }
-                    }
-                    for (const [key, value] of Object.entries(sets)) {
-                        datasets.push({ label: key, fill: false, data: value })
-                    }
-                    var config = get_graph_config('line', { datasets: datasets }, 'Min Duration (Line)', 'Date', 'Duration')
+                    var config = get_graph_config('line', graphData, 'Min Duration (Line)', 'Date', 'Duration')
                     keywordMinTimeGraph = new Chart('keywordMinTimeGraph', config);
                 }
             }
 
-            function create_keyword_max_time_graph() {
-                var keywordSelect = document.getElementById('keywordSelect').value
+            function create_keyword_max_time_graph(type) {
+                if (typeof (type) === 'string') {
+                    keywordMaxTimeGraphType = type
+                }
+                if (keywordMaxTimeGraph) { keywordMaxTimeGraph.destroy() }
+                var graphData = get_duration_graph_data('keyword', keywordMaxTimeGraphType, 'max_time_s', filteredKeywords)
                 if (keywordMaxTimeGraphType == 'bar') {
-                    var [labels, data] = [[], { 0: [] }]
-                    // prepare data for bar chart
-                    for (const [key, value] of Object.entries(filteredKeywords)) {
-                        if (value.name != keywordSelect) {
-                            continue
-                        }
-                        labels.push(value.run_start)
-                        var dataLength = data[0].length
-                        if (data[value.name]) {
-                            // add 0 to all not matching, and value.elapsed to matching
-                            data[value.name].push(Math.round(value.max_time_s * 100) / 100)
-                        } else {
-                            // add longest amount of 0's to matched and 1 zero to not matching
-                            data[value.name] = []
-                            for (let step = 0; step < dataLength; step++) {
-                                data[value.name].push(0)
-                            }
-                            data[value.name].push(Math.round(value.max_time_s * 100) / 100)
-                        }
-                        // add 0 to every other value
-                        for (d in data) {
-                            if (d != value.name) {
-                                data[d].push(0)
-                            }
-                        }
-                    }
-                    delete data[0]
-                    var keywordMaxTimeData = {
-                        labels: labels,
-                        datasets: [],
-                    }
-                    for (key in data) {
-                        keywordMaxTimeData['datasets'].push({
-                            label: key,
-                            data: data[key],
-                            stack: 'Stack 0'
-                        })
-
-                    }
-                    var config = get_graph_config('bar', keywordMaxTimeData, 'Max Duration (Bar)', 'Run', 'Duration')
+                    var config = get_graph_config('bar', graphData, 'Max Duration (Bar)', 'Run', 'Duration')
                     keywordMaxTimeGraph = new Chart('keywordMaxTimeGraph', config)
                 } else if (keywordMaxTimeGraphType == 'line') {
-                    var [labels, datasets, sets] = [[], [], {}]
-                    for (const [key, value] of Object.entries(filteredKeywords)) {
-                        if (value.name != keywordSelect) {
-                            continue
-                        }
-                        var name = value.name
-                        var run_start = new Date(value.run_start)
-                        var max_time_s = Math.round(value.max_time_s * 100) / 100
-                        if (labels.includes(name)) {
-                            var values = sets[name]
-                            values.push({ x: run_start, y: max_time_s })
-                            sets[name] = values
-                        } else {
-                            labels.push(name)
-                            sets[name] = [{ x: run_start, y: max_time_s }]
-                        }
-                    }
-                    for (const [key, value] of Object.entries(sets)) {
-                        datasets.push({ label: key, fill: false, data: value })
-                    }
-                    var config = get_graph_config('line', { datasets: datasets }, 'Max Duration (Line)', 'Date', 'Duration')
+                    var config = get_graph_config('line', graphData, 'Max Duration (Line)', 'Date', 'Duration')
                     keywordMaxTimeGraph = new Chart('keywordMaxTimeGraph', config);
                 }
             }
 
-            function get_graph_config(graphType, graphData, graphTitle, xTitle, yTitle) {
+            function get_graph_config(graphType, graphData, graphTitle, xTitle, yTitle, dataSets = true) {
+                if (dataSets && graphType == 'line') {
+                    graphData = { datasets: graphData }
+                }
                 if (graphType == 'line') {
                     return {
                         type: 'line',
@@ -1825,6 +1073,168 @@
                             }
                         }
                     }
+                }
+            }
+
+            function get_statistics_graph_data(dataType, graphType, filteredData) {
+                var keywordSelect = document.getElementById('keywordSelect').value
+                var suiteSelectSuites = document.getElementById('suiteSelectSuites').value
+                var [passed, failed, skipped, labels] = [[], [], [], []]
+                for (const [key, value] of Object.entries(filteredData)) {
+                    if (graphType == 'percentages') {
+                        if (dataType == 'suite' && value.name != suiteSelectSuites) {
+                            continue
+                        }
+                        if (dataType == 'keyword') {
+                            if (value.name != keywordSelect) {
+                                continue
+                            } else {
+                                passed.push(Math.round(value.passed / (value.passed + value.failed + value.skipped) * 100 * 100) / 100)
+                                failed.push(Math.round(value.failed / (value.passed + value.failed + value.skipped) * 100 * 100) / 100)
+                                skipped.push(Math.round(value.skipped / (value.passed + value.failed + value.skipped) * 100 * 100) / 100)
+                                labels.push(value.run_start)
+                            }
+                        } else {
+                            passed.push(Math.round(value.passed / value.total * 100 * 100) / 100)
+                            failed.push(Math.round(value.failed / value.total * 100 * 100) / 100)
+                            skipped.push(Math.round(value.skipped / value.total * 100 * 100) / 100)
+                            labels.push(value.run_start)
+                        }
+                    } else {
+                        if (dataType == 'suite' && value.name != suiteSelectSuites) {
+                            continue
+                        }
+                        if (dataType == 'keyword' && value.name != keywordSelect) {
+                            continue
+                        }
+                        passed.push(value.passed)
+                        failed.push(value.failed)
+                        skipped.push(value.skipped)
+                        labels.push(value.run_start)
+                    }
+                }
+                if (graphType != 'line') {
+                    var statisticsData = {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Failed',
+                                data: failed,
+                                backgroundColor: failedBackgroundColor,
+                                stack: 'Stack 0',
+                            },
+                            {
+                                label: 'Skipped',
+                                data: skipped,
+                                backgroundColor: skippedBackgroundColor,
+                                stack: 'Stack 0',
+                            },
+                            {
+                                label: 'Passed',
+                                data: passed,
+                                backgroundColor: passedBackgroundColor,
+                                stack: 'Stack 0',
+                            },
+                        ]
+                    };
+                } else {
+                    var statisticsData = {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Failed',
+                                data: failed,
+                                backgroundColor: failedBackgroundColor,
+                            },
+                            {
+                                label: 'Skipped',
+                                data: skipped,
+                                backgroundColor: skippedBackgroundColor,
+                            },
+                            {
+                                label: 'Passed',
+                                data: passed,
+                                backgroundColor: passedBackgroundColor,
+                            },
+                        ]
+                    }
+                }
+                return statisticsData
+            }
+
+            function get_duration_graph_data(dataType, graphType, objectDataAttribute, filteredData) {
+                // used for suite selection filter
+                var suiteSelectSuites = document.getElementById('suiteSelectSuites').value
+                // used for test selection filter
+                var suiteSelectTests = document.getElementById('suiteSelectTests').value
+                var testSelect = document.getElementById('testSelect').value
+                // used for keyword selection filter
+                var keywordSelect = document.getElementById('keywordSelect').value
+                if (graphType == 'bar') {
+                    var [labels, data] = [[], { 0: [] }]
+                    // prepare data for bar chart
+                    for (const [key, value] of Object.entries(filteredData)) {
+                        if (dataType == 'keyword' && value.name != keywordSelect) { continue }
+                        if (dataType == 'suite' && value.name != suiteSelectSuites) { continue }
+                        if (dataType == 'test' && value.full_name.split('.').at(-2) != suiteSelectTests) { continue }
+                        if (dataType == 'test' && testSelect != 'All' && value.name != testSelect) { continue }
+                        labels.push(value.run_start)
+                        var dataLength = data[0].length
+                        if (data[value.name]) {
+                            // add 0 to all not matching, and value.elapsed to matching
+                            data[value.name].push(Math.round(value[objectDataAttribute] * 100) / 100)
+                        } else {
+                            // add longest amount of 0's to matched and 1 zero to not matching
+                            data[value.name] = []
+                            for (let step = 0; step < dataLength; step++) {
+                                data[value.name].push(0)
+                            }
+                            data[value.name].push(Math.round(value[objectDataAttribute] * 100) / 100)
+                        }
+                        // add 0 to every other value
+                        for (d in data) {
+                            if (d != value.name) {
+                                data[d].push(0)
+                            }
+                        }
+                    }
+                    delete data[0]
+                    var graphData = {
+                        labels: labels,
+                        datasets: [],
+                    }
+                    for (key in data) {
+                        graphData['datasets'].push({
+                            label: key,
+                            data: data[key],
+                            stack: 'Stack 0'
+                        })
+
+                    }
+                    return graphData
+                } else if (graphType == 'line') {
+                    var [labels, datasets, sets] = [[], [], {}]
+                    for (const [key, value] of Object.entries(filteredData)) {
+                        if (dataType == 'keyword' && value.name != keywordSelect) { continue }
+                        if (dataType == 'suite' && value.name != suiteSelectSuites) { continue }
+                        if (dataType == 'test' && value.full_name.split('.').at(-2) != suiteSelectTests) { continue }
+                        if (dataType == 'test' && testSelect != 'All' && value.name != testSelect) { continue }
+                        var name = value.name
+                        var run_start = new Date(value.run_start)
+                        var rounded_value = Math.round(value[objectDataAttribute] * 100) / 100
+                        if (labels.includes(name)) {
+                            var values = sets[name]
+                            values.push({ x: run_start, y: rounded_value })
+                            sets[name] = values
+                        } else {
+                            labels.push(name)
+                            sets[name] = [{ x: run_start, y: rounded_value }]
+                        }
+                    }
+                    for (const [key, value] of Object.entries(sets)) {
+                        datasets.push({ label: key, fill: false, data: value })
+                    }
+                    return datasets
                 }
             }
         </script>
