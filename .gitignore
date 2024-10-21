@@ -11,3 +11,5 @@ playwright-log.txt
 *.robot
 *.pyc
 __pycache__
+dist
+robotframework_dashboard.egg-info
