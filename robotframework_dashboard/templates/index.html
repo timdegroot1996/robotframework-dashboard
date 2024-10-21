@@ -45,13 +45,19 @@
             text-align: center;
         }
 
-        .keywordTable_wrapper .keywordTable_info {
-            left: 300px;
-            position: relative;
-        }
-
         .card {
             margin-bottom: 10px;
+        }
+
+        .dt-container {
+            margin-top: 20px;
+        }
+
+        .stats {
+            float: right;
+            text-align: right;
+            font-size: 0.9em;
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -62,50 +68,42 @@
             <div class="card-body">
                 <!-- Title row -->
                 <div class="row">
-                    <div class="col-8">
-                        <h1>Robot Framework Dashboard - 'placeholder_generation_date'</h1>
+                    <div class="col-10">
+                        <div class="row">
+                            <h1>Robot Framework Dashboard - 'placeholder_generation_date'</h1>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <label class="form-label form-label-sm" for="runs">Runs</label>
+                                <select class="form-select form-select-sm" id="runs"></select>
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-label form-label-sm" for="tag">Tags</label>
+                                <select class="form-select form-select-sm" id="tag"></select>
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-label form-label-sm" for="fromDate">From Date</label>
+                                <input class="form-control form-control-sm" id="fromDate" type="date" />
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-label form-label-sm" for="fromTime">From Time</label>
+                                <input class="form-control form-control-sm" id="fromTime" type="time" />
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-label form-label-sm" for="toDate">To Date</label>
+                                <input class="form-control form-control-sm" id="toDate" type="date" />
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-label form-label-sm" for="toTime">To Time</label>
+                                <input class="form-control form-control-sm" id="toTime" type="time" />
+                            </div>
+                            <div class="col-auto d-flex">
+                                <button class="btn btn-outline-primary btn-sm mt-auto" id="resetFilters">Reset Filters</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-1 d-flex">
-                        <p class="mt-auto" id="runCount"></p>
-                    </div>
-                    <div class="col-1 d-flex">
-                        <p class="mt-auto" id="suiteCount"></p>
-                    </div>
-                    <div class="col-1 d-flex">
-                        <p class="mt-auto" id="testCount"></p>
-                    </div>
-                    <div class="col-1 d-flex">
-                        <p class="mt-auto" id="keywordCount"></p>
-                    </div>
-                </div>
-                <!-- Filter row -->
-                <div class="row">
-                    <div class="col-auto">
-                        <label class="form-label form-label-sm" for="runs">Runs</label>
-                        <select class="form-select form-select-sm" id="runs"></select>
-                    </div>
-                    <div class="col-auto">
-                        <label class="form-label form-label-sm" for="tag">Tags</label>
-                        <select class="form-select form-select-sm" id="tag"></select>
-                    </div>
-                    <div class="col-auto">
-                        <label class="form-label form-label-sm" for="fromDate">From Date</label>
-                        <input class="form-control form-control-sm" id="fromDate" type="date" />
-                    </div>
-                    <div class="col-auto">
-                        <label class="form-label form-label-sm" for="fromTime">From Time</label>
-                        <input class="form-control form-control-sm" id="fromTime" type="time" />
-                    </div>
-                    <div class="col-auto">
-                        <label class="form-label form-label-sm" for="toDate">To Date</label>
-                        <input class="form-control form-control-sm" id="toDate" type="date" />
-                    </div>
-                    <div class="col-auto">
-                        <label class="form-label form-label-sm" for="toTime">To Time</label>
-                        <input class="form-control form-control-sm" id="toTime" type="time" />
-                    </div>
-                    <div class="col-auto d-flex">
-                        <button class="btn btn-outline-primary btn-sm mt-auto" id="resetFilters">Reset Filters</button>
+                    <div class="col-2 stats">
+                        <span id="stats"></span>
                     </div>
                 </div>
             </div>
@@ -123,7 +121,7 @@
                 <div class="row">
                     <div class="col canvas mb-5">
                         <canvas id="runStatisticsGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateRunStatisticsGraphBarPercentages">Percentages</button>
                         <button class="btn btn-outline-primary btn-sm mt-3"
                             id="updateRunStatisticsGraphBarAmount">Amount</button>
@@ -132,10 +130,15 @@
                     </div>
                     <div class="col canvas mb-5">
                         <canvas id="runDurationGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateRunDurationGraphBar">Bar
+                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateRunDurationGraphBar">Bar
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateRunDurationGraphLine">Line
                             View</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-striped" id="runTable"></table>
                     </div>
                 </div>
             </div>
@@ -157,7 +160,7 @@
                 <div class="row">
                     <div class="col canvas mb-5">
                         <canvas id="suiteStatisticsGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateSuiteStatisticsGraphBarPercentages">Percentages</button>
                         <button class="btn btn-outline-primary btn-sm mt-3"
                             id="updateSuiteStatisticsGraphBarAmount">Amount</button>
@@ -166,10 +169,15 @@
                     </div>
                     <div class="col canvas mb-5">
                         <canvas id="suiteDurationGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateSuiteDurationGraphBar">Bar
+                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateSuiteDurationGraphBar">Bar
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateSuiteDurationGraphLine">Line
                             View</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-striped" id="suiteTable"></table>
                     </div>
                 </div>
             </div>
@@ -208,8 +216,13 @@
                         <canvas id="testDurationGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateTestDurationGraphBar">Bar
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateTestDurationGraphLine">Line
+                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateTestDurationGraphLine">Line
                             View</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-striped" id="testTable"></table>
                     </div>
                 </div>
             </div>
@@ -225,11 +238,6 @@
                 </div>
                 <!-- Keyword row -->
                 <div class="row">
-                    <div class="col canvas">
-                        <table class="table table-striped" id="keywordTable"></table>
-                    </div>
-                </div>
-                <div class="row">
                     <!-- Empty div is used for aligning -->
                     <div class="col-5"></div>
                     <div class="col-auto">
@@ -240,7 +248,7 @@
                 <div class="row">
                     <div class="col canvas mb-5">
                         <canvas id="keywordStatisticsGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateKeywordStatisticsGraphBarPercentages">Percentages</button>
                         <button class="btn btn-outline-primary btn-sm mt-3"
                             id="updateKeywordStatisticsGraphBarAmount">Amount</button>
@@ -249,7 +257,7 @@
                     </div>
                     <div class="col canvas mb-5">
                         <canvas id="keywordTimesRunGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTimesRunGraphBar">Bar
+                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordTimesRunGraphBar">Bar
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTimesRunGraphLine">Line
                             View</button>
@@ -258,14 +266,14 @@
                 <div class="row">
                     <div class="col canvas mb-5">
                         <canvas id="keywordTotalTimeGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTotalTimeGraphBar">Bar
+                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordTotalTimeGraphBar">Bar
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTotalTimeGraphLine">Line
                             View</button>
                     </div>
                     <div class="col canvas mb-5">
                         <canvas id="keywordAverageTimeGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordAverageTimeGraphBar">Bar
+                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordAverageTimeGraphBar">Bar
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordAverageTimeGraphLine">Line
                             View</button>
@@ -274,17 +282,22 @@
                 <div class="row">
                     <div class="col canvas mb-5">
                         <canvas id="keywordMinTimeGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMinTimeGraphBar">Bar
+                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordMinTimeGraphBar">Bar
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMinTimeGraphLine">Line
                             View</button>
                     </div>
                     <div class="col canvas mb-5">
                         <canvas id="keywordMaxTimeGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMaxTimeGraphBar">Bar
+                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordMaxTimeGraphBar">Bar
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMaxTimeGraphLine">Line
                             View</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-striped" id="keywordTable"></table>
                     </div>
                 </div>
             </div>
@@ -313,10 +326,7 @@
             var keywords = 'placeholder_keywords'.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
 
             // set default values
-            document.getElementById('runCount').innerText = 'Runs ' + runs.length
-            document.getElementById('testCount').innerText = 'Tests ' + tests.length
-            document.getElementById('suiteCount').innerText = 'Suites ' + suites.length
-            document.getElementById('keywordCount').innerText = 'Keywords ' + keywords.length
+            document.getElementById('stats').innerHTML = `<b>Database Summary</b><br>Runs: ${runs.length}<br>Suites: ${suites.length}<br>Tests: ${tests.length}<br>Keywords: ${keywords.length}`
 
             // set initial filters and fill selects based on provided data
             set_lowest_highest_dates()
@@ -328,14 +338,16 @@
             var runStatisticsGraphType = 'percentages'
             var runDurationGraph
             var runDurationGraphType = 'bar'
+            var runTable
             var suiteStatisticsGraph
             var suiteStatisticsGraphType = 'percentages'
             var suiteDurationGraph
-            var suiteDurationGraphType = 'line'
+            var suiteDurationGraphType = 'bar'
+            var suiteTable
             var testStatusGraph
             var testDurationGraph
             var testDurationGraphType = 'line'
-            var keywordTable
+            var testTable
             var keywordStatisticsGraph
             var keywordStatisticsGraphType = 'percentages'
             var keywordTimesRunGraph
@@ -348,6 +360,7 @@
             var keywordMinTimeGraphType = 'bar'
             var keywordMaxTimeGraph
             var keywordMaxTimeGraphType = 'bar'
+            var keywordTable
 
             // filtered data vars
             var filteredRuns
@@ -369,42 +382,150 @@
             document.getElementById('toDate').addEventListener('change', update_data_and_all_graphs)
             document.getElementById('toTime').addEventListener('change', update_data_and_all_graphs)
 
-            document.getElementById('updateRunStatisticsGraphBarPercentages').addEventListener('click', (e) => { create_run_statistics_graph('percentages') })
-            document.getElementById('updateRunStatisticsGraphBarAmount').addEventListener('click', (e) => { create_run_statistics_graph('amount') })
-            document.getElementById('updateRunStatisticsGraphLine').addEventListener('click', (e) => { create_run_statistics_graph('line') })
+            document.getElementById('updateRunStatisticsGraphBarPercentages').addEventListener('click', (e) => { 
+                create_run_statistics_graph('percentages')
+                document.getElementById("updateRunStatisticsGraphBarAmount").classList.remove("disabled");
+                document.getElementById("updateRunStatisticsGraphLine").classList.remove("disabled");
+                document.getElementById("updateRunStatisticsGraphBarPercentages").classList.add("disabled");
+            })
+            document.getElementById('updateRunStatisticsGraphBarAmount').addEventListener('click', (e) => { 
+                create_run_statistics_graph('amount')
+                document.getElementById("updateRunStatisticsGraphBarAmount").classList.add("disabled");
+                document.getElementById("updateRunStatisticsGraphLine").classList.remove("disabled");
+                document.getElementById("updateRunStatisticsGraphBarPercentages").classList.remove("disabled");
+            })
+            document.getElementById('updateRunStatisticsGraphLine').addEventListener('click', (e) => { 
+                create_run_statistics_graph('line')
+                document.getElementById("updateRunStatisticsGraphBarAmount").classList.remove("disabled");
+                document.getElementById("updateRunStatisticsGraphLine").classList.add("disabled");
+                document.getElementById("updateRunStatisticsGraphBarPercentages").classList.remove("disabled");
+            })
 
-            document.getElementById('updateRunDurationGraphBar').addEventListener('click', (e) => { create_run_duration_graph('bar') })
-            document.getElementById('updateRunDurationGraphLine').addEventListener('click', (e) => { create_run_duration_graph('line') })
+            document.getElementById('updateRunDurationGraphBar').addEventListener('click', (e) => { 
+                create_run_duration_graph('bar')
+                document.getElementById("updateRunDurationGraphBar").classList.add("disabled");
+                document.getElementById("updateRunDurationGraphLine").classList.remove("disabled");
+            })
+            document.getElementById('updateRunDurationGraphLine').addEventListener('click', (e) => { 
+                create_run_duration_graph('line')
+                document.getElementById("updateRunDurationGraphBar").classList.remove("disabled");
+                document.getElementById("updateRunDurationGraphLine").classList.add("disabled");
+            })
 
-            document.getElementById('updateSuiteStatisticsGraphBarPercentages').addEventListener('click', (e) => { create_suite_statistics_graph('percentages') })
-            document.getElementById('updateSuiteStatisticsGraphBarAmount').addEventListener('click', (e) => { create_suite_statistics_graph('amount') })
-            document.getElementById('updateSuiteStatisticsGraphLine').addEventListener('click', (e) => { create_suite_statistics_graph('line') })
+            document.getElementById('updateSuiteStatisticsGraphBarPercentages').addEventListener('click', (e) => { 
+                create_suite_statistics_graph('percentages')
+                document.getElementById("updateSuiteStatisticsGraphBarPercentages").classList.add("disabled");
+                document.getElementById("updateSuiteStatisticsGraphBarAmount").classList.remove("disabled");
+                document.getElementById("updateSuiteStatisticsGraphLine").classList.remove("disabled");
+            })
+            document.getElementById('updateSuiteStatisticsGraphBarAmount').addEventListener('click', (e) => { 
+                create_suite_statistics_graph('amount')
+                document.getElementById("updateSuiteStatisticsGraphBarPercentages").classList.remove("disabled");
+                document.getElementById("updateSuiteStatisticsGraphBarAmount").classList.add("disabled");
+                document.getElementById("updateSuiteStatisticsGraphLine").classList.remove("disabled");
+             })
+            document.getElementById('updateSuiteStatisticsGraphLine').addEventListener('click', (e) => { 
+                create_suite_statistics_graph('line')
+                document.getElementById("updateSuiteStatisticsGraphBarPercentages").classList.remove("disabled");
+                document.getElementById("updateSuiteStatisticsGraphBarAmount").classList.remove("disabled");
+                document.getElementById("updateSuiteStatisticsGraphLine").classList.add("disabled");
+             })
 
-            document.getElementById('updateSuiteDurationGraphBar').addEventListener('click', (e) => { create_suite_duration_graph('bar') })
-            document.getElementById('updateSuiteDurationGraphLine').addEventListener('click', (e) => { create_suite_duration_graph('line') })
+            document.getElementById('updateSuiteDurationGraphBar').addEventListener('click', (e) => { 
+                create_suite_duration_graph('bar') 
+                document.getElementById("updateSuiteDurationGraphBar").classList.add("disabled");
+                document.getElementById("updateSuiteDurationGraphLine").classList.remove("disabled");
+            })
+            document.getElementById('updateSuiteDurationGraphLine').addEventListener('click', (e) => { 
+                create_suite_duration_graph('line')
+                document.getElementById("updateSuiteDurationGraphBar").classList.remove("disabled");
+                document.getElementById("updateSuiteDurationGraphLine").classList.add("disabled");
+            })
 
-            document.getElementById('updateTestDurationGraphBar').addEventListener('click', (e) => { create_test_duration_graph('bar') })
-            document.getElementById('updateTestDurationGraphLine').addEventListener('click', (e) => { create_test_duration_graph('line') })
+            document.getElementById('updateTestDurationGraphBar').addEventListener('click', (e) => { 
+                create_test_duration_graph('bar') 
+                document.getElementById("updateTestDurationGraphBar").classList.add("disabled");
+                document.getElementById("updateTestDurationGraphLine").classList.remove("disabled");
+            })
+            document.getElementById('updateTestDurationGraphLine').addEventListener('click', (e) => { 
+                create_test_duration_graph('line') 
+                document.getElementById("updateTestDurationGraphBar").classList.remove("disabled");
+                document.getElementById("updateTestDurationGraphLine").classList.add("disabled");
+            })
 
-            document.getElementById('updateKeywordStatisticsGraphBarPercentages').addEventListener('click', (e) => { create_keyword_statistics_graph('percentages') })
-            document.getElementById('updateKeywordStatisticsGraphBarAmount').addEventListener('click', (e) => { create_keyword_statistics_graph('amount') })
-            document.getElementById('updateKeywordStatisticsGraphLine').addEventListener('click', (e) => { create_keyword_statistics_graph('line') })
+            document.getElementById('updateKeywordStatisticsGraphBarPercentages').addEventListener('click', (e) => { 
+                create_keyword_statistics_graph('percentages') 
+                document.getElementById("updateKeywordStatisticsGraphBarPercentages").classList.add("disabled");
+                document.getElementById("updateKeywordStatisticsGraphBarAmount").classList.remove("disabled");
+                document.getElementById("updateKeywordStatisticsGraphLine").classList.remove("disabled");
+            })
+            document.getElementById('updateKeywordStatisticsGraphBarAmount').addEventListener('click', (e) => { 
+                create_keyword_statistics_graph('amount')
+                document.getElementById("updateKeywordStatisticsGraphBarPercentages").classList.remove("disabled");
+                document.getElementById("updateKeywordStatisticsGraphBarAmount").classList.add("disabled");
+                document.getElementById("updateKeywordStatisticsGraphLine").classList.remove("disabled");
+             })
+            document.getElementById('updateKeywordStatisticsGraphLine').addEventListener('click', (e) => { 
+                create_keyword_statistics_graph('line')
+                document.getElementById("updateKeywordStatisticsGraphBarPercentages").classList.remove("disabled");
+                document.getElementById("updateKeywordStatisticsGraphBarAmount").classList.remove("disabled");
+                document.getElementById("updateKeywordStatisticsGraphLine").classList.add("disabled");
+             })
 
-            document.getElementById('updateKeywordTimesRunGraphBar').addEventListener('click', (e) => { create_keyword_times_run_graph('bar') })
-            document.getElementById('updateKeywordTimesRunGraphLine').addEventListener('click', (e) => { create_keyword_times_run_graph('line') })
+            document.getElementById('updateKeywordTimesRunGraphBar').addEventListener('click', (e) => { 
+                create_keyword_times_run_graph('bar') 
+                document.getElementById("updateKeywordTimesRunGraphBar").classList.add("disabled");
+                document.getElementById("updateKeywordTimesRunGraphLine").classList.remove("disabled");
+            })
+            document.getElementById('updateKeywordTimesRunGraphLine').addEventListener('click', (e) => { 
+                create_keyword_times_run_graph('line') 
+                document.getElementById("updateKeywordTimesRunGraphBar").classList.remove("disabled");
+                document.getElementById("updateKeywordTimesRunGraphLine").classList.add("disabled");
+            })
 
-            document.getElementById('updateKeywordTotalTimeGraphBar').addEventListener('click', (e) => { create_keyword_total_time_graph('bar') })
-            document.getElementById('updateKeywordTotalTimeGraphLine').addEventListener('click', (e) => { create_keyword_total_time_graph('line') })
+            document.getElementById('updateKeywordTotalTimeGraphBar').addEventListener('click', (e) => { 
+                create_keyword_total_time_graph('bar') 
+                document.getElementById("updateKeywordTotalTimeGraphBar").classList.add("disabled");
+                document.getElementById("updateKeywordTotalTimeGraphLine").classList.remove("disabled");
+            })
+            document.getElementById('updateKeywordTotalTimeGraphLine').addEventListener('click', (e) => { 
+                create_keyword_total_time_graph('line')
+                document.getElementById("updateKeywordTotalTimeGraphBar").classList.remove("disabled");
+                document.getElementById("updateKeywordTotalTimeGraphLine").classList.add("disabled");
+             })
 
-            document.getElementById('updateKeywordAverageTimeGraphBar').addEventListener('click', (e) => { create_keyword_average_time_graph('bar') })
-            document.getElementById('updateKeywordAverageTimeGraphLine').addEventListener('click', (e) => { create_keyword_average_time_graph('line') })
+            document.getElementById('updateKeywordAverageTimeGraphBar').addEventListener('click', (e) => { 
+                create_keyword_average_time_graph('bar') 
+                document.getElementById("updateKeywordAverageTimeGraphBar").classList.add("disabled");
+                document.getElementById("updateKeywordAverageTimeGraphLine").classList.remove("disabled");
+            })
+            document.getElementById('updateKeywordAverageTimeGraphLine').addEventListener('click', (e) => { 
+                create_keyword_average_time_graph('line') 
+                document.getElementById("updateKeywordAverageTimeGraphBar").classList.remove("disabled");
+                document.getElementById("updateKeywordAverageTimeGraphLine").classList.add("disabled");
+            })
 
-            document.getElementById('updateKeywordMinTimeGraphBar').addEventListener('click', (e) => { create_keyword_min_time_graph('bar') })
-            document.getElementById('updateKeywordMinTimeGraphLine').addEventListener('click', (e) => { create_keyword_min_time_graph('line') })
+            document.getElementById('updateKeywordMinTimeGraphBar').addEventListener('click', (e) => { 
+                create_keyword_min_time_graph('bar') 
+                document.getElementById("updateKeywordMinTimeGraphBar").classList.add("disabled");
+                document.getElementById("updateKeywordMinTimeGraphLine").classList.remove("disabled");
+            })
+            document.getElementById('updateKeywordMinTimeGraphLine').addEventListener('click', (e) => { 
+                create_keyword_min_time_graph('line') 
+                document.getElementById("updateKeywordMinTimeGraphBar").classList.remove("disabled");
+                document.getElementById("updateKeywordMinTimeGraphLine").classList.add("disabled");
+            })
 
-            document.getElementById('updateKeywordMaxTimeGraphBar').addEventListener('click', (e) => { create_keyword_max_time_graph('bar') })
-            document.getElementById('updateKeywordMaxTimeGraphLine').addEventListener('click', (e) => { create_keyword_max_time_graph('line') })
-
+            document.getElementById('updateKeywordMaxTimeGraphBar').addEventListener('click', (e) => { 
+                create_keyword_max_time_graph('bar') 
+                document.getElementById("updateKeywordMaxTimeGraphBar").classList.add("disabled");
+                document.getElementById("updateKeywordMaxTimeGraphLine").classList.remove("disabled");
+            })
+            document.getElementById('updateKeywordMaxTimeGraphLine').addEventListener('click', (e) => { 
+                create_keyword_max_time_graph('line')
+                document.getElementById("updateKeywordMaxTimeGraphBar").classList.remove("disabled");
+                document.getElementById("updateKeywordMaxTimeGraphLine").classList.add("disabled");
+             })
 
             document.getElementById('resetFilters').addEventListener('click', reset_filters)
             document.getElementById('suiteSelectSuites').addEventListener('change', (e) => {
@@ -475,17 +596,20 @@
                 // destroy and create new graphs
                 create_run_statistics_graph()
                 create_run_duration_graph()
+                create_run_table()
                 create_suite_statistics_graph()
                 create_suite_duration_graph()
+                create_suite_table()
                 create_test_status_graph()
                 create_test_duration_graph()
-                create_keyword_table()
+                create_test_table()
                 create_keyword_statistics_graph()
                 create_keyword_times_run_graph()
                 create_keyword_total_time_graph()
                 create_keyword_average_time_graph()
                 create_keyword_min_time_graph()
                 create_keyword_max_time_graph()
+                create_keyword_table()
             }
 
             function filter_runs(runs) {
@@ -685,6 +809,44 @@
                 }
             }
 
+            function create_run_table() {
+                if (runTable) { runTable.destroy() }
+                data = []
+                for (const [key, value] of Object.entries(filteredRuns)) {
+                    data.push([
+                        value.run_start,
+                        value.full_name,
+                        value.name,
+                        value.total,
+                        value.passed,
+                        value.failed,
+                        value.skipped,
+                        value.elapsed_s,
+                        value.start_time,
+                        value.tags
+                    ])
+                }
+                runTable = new DataTable('#runTable', {
+                    layout: {
+                        topStart: 'info',
+                        bottomStart: null,
+                    },
+                    columns: [
+                        { title: 'run' },
+                        { title: 'full_name' },
+                        { title: 'name' },
+                        { title: 'total' },
+                        { title: 'passed' },
+                        { title: 'failed' },
+                        { title: 'skipped' },
+                        { title: 'elapsed_s' },
+                        { title: 'start_time' },
+                        { title: 'tags' }
+                    ],
+                    data: data
+                });
+            }
+
             function create_suite_statistics_graph(type) {
                 if (typeof (type) === 'string') {
                     suiteStatisticsGraphType = type
@@ -718,6 +880,42 @@
                     var config = get_graph_config('line', graphData, 'Suite Duration (Line)', 'Date', 'Duration')
                     suiteDurationGraph = new Chart('suiteDurationGraph', config);
                 }
+            }
+
+            function create_suite_table() {
+                if (suiteTable) { suiteTable.destroy() }
+                data = []
+                for (suite of filteredSuites) {
+                    data.push([
+                        suite.run_start,
+                        suite.full_name,
+                        suite.name,
+                        suite.total,
+                        suite.passed,
+                        suite.failed,
+                        suite.skipped,
+                        suite.elapsed_s,
+                        suite.start_time
+                    ])
+                }
+                suiteTable = new DataTable('#suiteTable', {
+                    layout: {
+                        topStart: 'info',
+                        bottomStart: null,
+                    },
+                    columns: [
+                        { title: 'run' },
+                        { title: 'full_name' },
+                        { title: 'name' },
+                        { title: 'total' },
+                        { title: 'passed' },
+                        { title: 'failed' },
+                        { title: 'skipped' },
+                        { title: 'elapsed_s' },
+                        { title: 'start_time' }
+                    ],
+                    data: data
+                });
             }
 
             function create_test_status_graph() {
@@ -843,38 +1041,37 @@
                 }
             }
 
-            function create_keyword_table() {
+            function create_test_table() {
+                if (testTable) { testTable.destroy() }
                 data = []
-                for (keyword of filteredKeywords) {
+                for (test of filteredTests) {
                     data.push([
-                        keyword.run_start,
-                        keyword.name,
-                        keyword.passed,
-                        keyword.failed,
-                        keyword.skipped,
-                        keyword.times_run,
-                        keyword.total_time_s,
-                        keyword.average_time_s,
-                        keyword.min_time_s,
-                        keyword.max_time_s,
+                        test.run_start,
+                        test.full_name,
+                        test.name,
+                        test.passed,
+                        test.failed,
+                        test.skipped,
+                        test.elapsed_s,
+                        test.start_time,
+                        test.tags,
                     ])
                 }
-                keywordTable = new DataTable('#keywordTable', {
+                testTable = new DataTable('#testTable', {
                     layout: {
                         topStart: 'info',
                         bottomStart: null,
                     },
                     columns: [
                         { title: 'run' },
+                        { title: 'full_name' },
                         { title: 'name' },
                         { title: 'passed' },
                         { title: 'failed' },
                         { title: 'skipped' },
-                        { title: 'times_run' },
-                        { title: 'total_execution_time' },
-                        { title: 'average_execution_time' },
-                        { title: 'min_execution_time' },
-                        { title: 'max_execution_time' },
+                        { title: 'elapsed_s' },
+                        { title: 'start_time' },
+                        { title: 'tags' },
                     ],
                     data: data
                 });
@@ -973,6 +1170,44 @@
                     var config = get_graph_config('line', graphData, 'Max Duration (Line)', 'Date', 'Duration')
                     keywordMaxTimeGraph = new Chart('keywordMaxTimeGraph', config);
                 }
+            }
+
+            function create_keyword_table() {
+                if (keywordTable) { keywordTable.destroy() }
+                data = []
+                for (keyword of filteredKeywords) {
+                    data.push([
+                        keyword.run_start,
+                        keyword.name,
+                        keyword.passed,
+                        keyword.failed,
+                        keyword.skipped,
+                        keyword.times_run,
+                        keyword.total_time_s,
+                        keyword.average_time_s,
+                        keyword.min_time_s,
+                        keyword.max_time_s,
+                    ])
+                }
+                keywordTable = new DataTable('#keywordTable', {
+                    layout: {
+                        topStart: 'info',
+                        bottomStart: null,
+                    },
+                    columns: [
+                        { title: 'run' },
+                        { title: 'name' },
+                        { title: 'passed' },
+                        { title: 'failed' },
+                        { title: 'skipped' },
+                        { title: 'times_run' },
+                        { title: 'total_execution_time' },
+                        { title: 'average_execution_time' },
+                        { title: 'min_execution_time' },
+                        { title: 'max_execution_time' },
+                    ],
+                    data: data
+                });
             }
 
             function get_graph_config(graphType, graphData, graphTitle, xTitle, yTitle, dataSets = true) {
