@@ -1,4 +1,4 @@
-@REM pip install build wheel
+@REM pip install --upgrade pip setuptools build wheel
 pip install .
 rmdir /s /q .\dist\
 rmdir /s /q .\build\

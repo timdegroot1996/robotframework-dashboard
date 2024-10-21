@@ -8,8 +8,8 @@ readme = "README.md"
 packages = [{include = "robotframework_dashboard"}]
 
 [tool.poetry.dependencies]
-python = "^3.6"
-robotframework = "^6.0.0"
+python = "^=3.6"
+robotframework = "^=6.0.0"
 
 [build-system]
 requires = ["poetry-core"]
