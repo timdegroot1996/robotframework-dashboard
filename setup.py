@@ -19,8 +19,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        "robotframework",
-        "jinja2",
+        "robotframework>=6.0.0",
     ],
     entry_points={
         "console_scripts": [

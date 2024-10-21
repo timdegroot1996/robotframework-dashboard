@@ -63,7 +63,7 @@
                 <!-- Title row -->
                 <div class="row">
                     <div class="col-8">
-                        <h1>Robot Framework Dashboard {{ date }}</h1>
+                        <h1>Robot Framework Dashboard - 'placeholder_generation_date'</h1>
                     </div>
                     <div class="col-1 d-flex">
                         <p class="mt-auto" id="runCount"></p>
@@ -316,10 +316,10 @@
             var greyBorderColor = '#212529'
 
             // prepare input data
-            var runs = {{ runs }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-            var suites = {{ suites }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-            var tests = {{ tests }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-            var keywords = {{ keywords }}.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+            var runs = 'placeholder_runs'.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+            var suites = 'placeholder_suites'.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+            var tests = 'placeholder_tests'.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+            var keywords = 'placeholder_keywords'.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
 
             // set default values
             document.getElementById('runCount').innerText = 'Runs ' + runs.length

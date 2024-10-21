@@ -1,0 +1,11 @@
+[tool.poetry]
+name = "robotframework-dashboard"
+version = "0.1"
+description = ""
+authors = ["Tim de Groot <tim-degroot@live.nl>"]
+readme = "README.md"
+packages = [{include = "robotframework_dashboard"}]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+robotframework = "^6.0.0"

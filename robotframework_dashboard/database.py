@@ -36,7 +36,7 @@ class DatabaseProcessor:
     def insert_runs(self, runs: list[tuple], tags: list):
         full_runs = []
         for run in runs:
-            run += (','.join(tags),)
+            run += (",".join(tags),)
             full_runs.append(run)
         self.connection.executemany(INSERT_INTO_RUNS, full_runs)
         self.connection.commit()
@@ -89,7 +89,9 @@ class DatabaseProcessor:
     def list_runs(self):
         run_starts, run_names = self.get_runs()
         for index, run_start in enumerate(run_starts):
-            print(f"  Run {str(index).ljust(3, ' ')} | {run_start} | {run_names[index]}")
+            print(
+                f"  Run {str(index).ljust(3, ' ')} | {run_start} | {run_names[index]}"
+            )
         if len(run_starts) == 0:
             print(f"  WARNING: There are no runs so the dashboard will be empty!")
 

@@ -73,8 +73,8 @@ class ArgumentParser:
         if arguments.outputpath:
             outputs = []
             for output in arguments.outputpath:
-                path = output[0].split(':')[0]
-                tags = output[0].split(':')[1:]
+                path = output[0].split(":")[0]
+                tags = output[0].split(":")[1:]
                 outputs.append([path, tags])
         generate_dashboard = (
             True

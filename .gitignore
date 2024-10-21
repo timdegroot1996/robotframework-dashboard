@@ -1,5 +1,6 @@
 scripts
 results
+logs
 browser
 log*.html
 robot_dashboard*.html
