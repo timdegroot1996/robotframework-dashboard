@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "robotframework-dashboard"
+version = "0.1.0"
+description = "Output processor and dashboard generator for Robot Framework output files"
+authors = ["Tim de Groot <tim-degroot@live.nl>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "robotframework_dashboard"}]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+robotframework = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
