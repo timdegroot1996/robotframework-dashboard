@@ -919,12 +919,13 @@
             }
 
             function create_test_status_graph() {
+                if (testStatusGraph) { testStatusGraph.destroy() }
                 var suiteSelectTests = document.getElementById('suiteSelectTests').value
                 var testSelect = document.getElementById('testSelect').value
                 var labels = []
                 var runStarts = []
                 for (const [key, value] of Object.entries(filteredTests)) {
-                    if (value.full_name.split('.').at(-2) != suiteSelectTests) {
+                    if (!value.full_name.includes(`.${suiteSelectTests}.`)) {
                         continue
                     }
                     if (showOnlySelectedTestStatistic && testSelect != 'All' && value.name != testSelect) {
@@ -943,7 +944,7 @@
                     for (label of labels) {
                         var foundTests = filteredTests.filter(obj => {
                             // filter only tests in this suite, suite select check is required for duplicate test names over suites
-                            return (obj.name == label && obj.run_start == runStart && obj.full_name.split('.').at(-2) == suiteSelectTests)
+                            return (obj.name == label && obj.run_start == runStart && obj.full_name.includes(`.${suiteSelectTests}.`))
                         })
                         if (foundTests.length > 0) {
                             var value = foundTests[0]
@@ -1411,7 +1412,7 @@
                     for (const [key, value] of Object.entries(filteredData)) {
                         if (dataType == 'keyword' && value.name != keywordSelect) { continue }
                         if (dataType == 'suite' && value.name != suiteSelectSuites) { continue }
-                        if (dataType == 'test' && value.full_name.split('.').at(-2) != suiteSelectTests) { continue }
+                        if (dataType == 'test' && !value.full_name.includes(`.${suiteSelectTests}.`)) { continue }
                         if (dataType == 'test' && testSelect != 'All' && value.name != testSelect) { continue }
                         labels.push(value.run_start)
                         var dataLength = data[0].length
@@ -1452,7 +1453,7 @@
                     for (const [key, value] of Object.entries(filteredData)) {
                         if (dataType == 'keyword' && value.name != keywordSelect) { continue }
                         if (dataType == 'suite' && value.name != suiteSelectSuites) { continue }
-                        if (dataType == 'test' && value.full_name.split('.').at(-2) != suiteSelectTests) { continue }
+                        if (dataType == 'test' && !value.full_name.includes(`.${suiteSelectTests}.`)) { continue }
                         if (dataType == 'test' && testSelect != 'All' && value.name != testSelect) { continue }
                         var name = value.name
                         var run_start = new Date(value.run_start)
