@@ -1,890 +1,880 @@
 <html data-bs-theme="dark">
+    <head>
+        <!-- ChartJs import -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
-<head>
-    <!-- ChartJs import -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+        <!-- ChartJs Datalabel plugin -->
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
-    <!-- ChartJs Datalabel plugin -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+        <!-- ChartJs timeline plugin (helps create time axis) -->
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
-    <!-- ChartJs timeline plugin (helps create time axis) -->
-    <script
-        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+        <!-- DataTables and Bootstrap imports -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.js"></script>
 
-    <!-- DataTables and Bootstrap imports -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css"
-        rel="stylesheet" />
-    <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.js"></script>
+        <!-- Favicon -->
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA=="
+        />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon"
-        href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==" />
-
-    <style>
-        :root {
-            font-family: Helvetica, sans-serif;
-        }
-
-        @media (prefers-color-scheme: light) {
-            body {
-                background-color: #eee;
-            }
-        }
-
-        @media (prefers-color-scheme: dark) {
+        <style>
             :root {
-                color-scheme: dark;
+                font-family: Helvetica, sans-serif;
             }
-        }
 
-        .canvas {
-            width: 800px;
-            height: 540;
-            text-align: center;
-        }
+            @media (prefers-color-scheme: light) {
+                body {
+                    background-color: #eee;
+                }
+            }
 
-        .card {
-            margin-bottom: 10px;
-        }
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    color-scheme: dark;
+                }
+            }
 
-        .dt-container {
-            margin-top: 20px;
-        }
+            .canvas {
+                width: 800px;
+                height: 540;
+                text-align: center;
+            }
 
-        .stats {
-            float: right;
-            text-align: right;
-            font-size: 0.9em;
-            white-space: nowrap;
-        }
-    </style>
-</head>
+            .card {
+                margin-bottom: 10px;
+            }
 
-<body>
-    <div class="container-fluid mt-4">
-        <div class="card">
-            <div class="card-body">
-                <!-- Title row -->
-                <div class="row">
-                    <div class="col-10">
-                        <div class="row">
-                            <h1>Robot Framework Dashboard - 'placeholder_generation_date'</h1>
+            .dt-container {
+                margin-top: 20px;
+            }
+
+            .stats {
+                float: right;
+                text-align: right;
+                font-size: 0.9em;
+                white-space: nowrap;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container-fluid mt-4">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Title row -->
+                    <div class="row">
+                        <div class="col-10">
+                            <div class="row">
+                                <h1>Robot Framework Dashboard - "placeholder_generation_date"</h1>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label class="form-label form-label-sm" for="runs">Runs</label>
+                                    <select class="form-select form-select-sm" id="runs"></select>
+                                </div>
+                                <div class="col-auto">
+                                    <label class="form-label form-label-sm" for="tag">Tags</label>
+                                    <select class="form-select form-select-sm" id="tag"></select>
+                                </div>
+                                <div class="col-auto">
+                                    <label class="form-label form-label-sm" for="fromDate">From Date</label>
+                                    <input class="form-control form-control-sm" id="fromDate" type="date" />
+                                </div>
+                                <div class="col-auto">
+                                    <label class="form-label form-label-sm" for="fromTime">From Time</label>
+                                    <input class="form-control form-control-sm" id="fromTime" type="time" />
+                                </div>
+                                <div class="col-auto">
+                                    <label class="form-label form-label-sm" for="toDate">To Date</label>
+                                    <input class="form-control form-control-sm" id="toDate" type="date" />
+                                </div>
+                                <div class="col-auto">
+                                    <label class="form-label form-label-sm" for="toTime">To Time</label>
+                                    <input class="form-control form-control-sm" id="toTime" type="time" />
+                                </div>
+                                <div class="col-auto d-flex">
+                                    <button class="btn btn-outline-primary btn-sm mt-auto" id="resetFilters">Reset Filters</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="row">
-                            <div class="col-auto">
-                                <label class="form-label form-label-sm" for="runs">Runs</label>
-                                <select class="form-select form-select-sm" id="runs"></select>
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label form-label-sm" for="tag">Tags</label>
-                                <select class="form-select form-select-sm" id="tag"></select>
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label form-label-sm" for="fromDate">From Date</label>
-                                <input class="form-control form-control-sm" id="fromDate" type="date" />
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label form-label-sm" for="fromTime">From Time</label>
-                                <input class="form-control form-control-sm" id="fromTime" type="time" />
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label form-label-sm" for="toDate">To Date</label>
-                                <input class="form-control form-control-sm" id="toDate" type="date" />
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label form-label-sm" for="toTime">To Time</label>
-                                <input class="form-control form-control-sm" id="toTime" type="time" />
-                            </div>
-                            <div class="col-auto d-flex">
-                                <button class="btn btn-outline-primary btn-sm mt-auto" id="resetFilters">Reset Filters</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-2 stats">
-                        <span id="stats"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <!-- Run title row -->
-                <div class="row">
-                    <div class="col-5">
-                        <h2 id="runTitle">Run Statistics</h2>
-                    </div>
-                </div>
-                <!-- Run row  -->
-                <div class="row">
-                    <div class="col canvas mb-5">
-                        <canvas id="runStatisticsGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
-                            id="updateRunStatisticsGraphBarPercentages">Percentages</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
-                            id="updateRunStatisticsGraphBarAmount">Amount</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
-                            id="updateRunStatisticsGraphLine">Timeline</button>
-                    </div>
-                    <div class="col canvas mb-5">
-                        <canvas id="runDurationGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateRunDurationGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateRunDurationGraphLine">Line
-                            View</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <table class="table table-striped" id="runTable"></table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <!-- Suite title and filters row -->
-                <div class="row">
-                    <div class="col-5">
-                        <h2>Suite Statistics</h2>
-                    </div>
-                    <div class="col-auto">
-                        <label class="form-label form-label-sm" for="suiteSelectSuites">Select Suite</label>
-                        <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
-                    </div>
-                </div>
-                <!-- Suite row -->
-                <div class="row">
-                    <div class="col canvas mb-5">
-                        <canvas id="suiteStatisticsGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
-                            id="updateSuiteStatisticsGraphBarPercentages">Percentages</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
-                            id="updateSuiteStatisticsGraphBarAmount">Amount</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
-                            id="updateSuiteStatisticsGraphLine">Timeline</button>
-                    </div>
-                    <div class="col canvas mb-5">
-                        <canvas id="suiteDurationGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateSuiteDurationGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateSuiteDurationGraphLine">Line
-                            View</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <table class="table table-striped" id="suiteTable"></table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <!-- Test title and filters row -->
-                <div class="row">
-                    <div class="col-4">
-                        <h2>Test Statistics</h2>
-                    </div>
-                    <div class="col-auto d-flex">
-                        <div class="form-check form-switch mt-4">
-                            <input class="form-check-input" type="checkbox" role="switch"
-                                id="showOnlySelectedTestStatistic">
-                            <label class="form-check-label" for="showOnlySelectedTestStatistic">Show Only Selected Test
-                                Statistics</label>
+                        <div class="col-2 stats">
+                            <span id="stats"></span>
                         </div>
                     </div>
-                    <div class="col-auto">
-                        <label class="form-label form-label-sm" for="suiteSelectTests">Select Suite</label>
-                        <select class="form-select form-select-sm" id="suiteSelectTests"></select>
-                    </div>
-                    <div class="col-auto">
-                        <label class="form-label form-label-sm" for="suiteSelectTests">Select Test</label>
-                        <select class="form-select form-select-sm" id="testSelect"></select>
-                    </div>
                 </div>
-                <!-- Test row -->
-                <div class="row">
-                    <div class="col canvas mb-5">
-                        <canvas id="testStatusGraph"></canvas>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <!-- Run title row -->
+                    <div class="row">
+                        <div class="col-5">
+                            <h2 id="runTitle">Run Statistics</h2>
+                        </div>
                     </div>
-                    <div class="col canvas mb-5">
-                        <canvas id="testDurationGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateTestDurationGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateTestDurationGraphLine">Line
-                            View</button>
+                    <!-- Run row  -->
+                    <div class="row">
+                        <div class="col canvas mb-5">
+                            <canvas id="runStatisticsGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateRunStatisticsGraphBarPercentages">Percentages</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateRunStatisticsGraphBarAmount">Amount</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateRunStatisticsGraphLine">Timeline</button>
+                        </div>
+                        <div class="col canvas mb-5">
+                            <canvas id="runDurationGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateRunDurationGraphBar">Bar View</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateRunDurationGraphLine">Line View</button>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <table class="table table-striped" id="testTable"></table>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table table-striped" id="runTable"></table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card">
-            <div class="card-body">
-                <!-- Keyword title row -->
-                <div class="row">
-                    <div class="col-5">
-                        <h2>Keyword Statistics</h2>
+            <div class="card">
+                <div class="card-body">
+                    <!-- Suite title and filters row -->
+                    <div class="row">
+                        <div class="col-5">
+                            <h2>Suite Statistics</h2>
+                        </div>
+                        <div class="col-auto">
+                            <label class="form-label form-label-sm" for="suiteSelectSuites">Select Suite</label>
+                            <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
+                        </div>
+                    </div>
+                    <!-- Suite row -->
+                    <div class="row">
+                        <div class="col canvas mb-5">
+                            <canvas id="suiteStatisticsGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateSuiteStatisticsGraphBarPercentages">Percentages</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateSuiteStatisticsGraphBarAmount">Amount</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateSuiteStatisticsGraphLine">Timeline</button>
+                        </div>
+                        <div class="col canvas mb-5">
+                            <canvas id="suiteDurationGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateSuiteDurationGraphBar">Bar View</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateSuiteDurationGraphLine">Line View</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table table-striped" id="suiteTable"></table>
+                        </div>
                     </div>
                 </div>
-                <!-- Keyword row -->
-                <div class="row">
-                    <!-- Empty div is used for aligning -->
-                    <div class="col-5"></div>
-                    <div class="col-auto">
-                        <label class="form-label form-label-sm" for="keywordSelect">Select Keyword</label>
-                        <select class="form-select form-select-sm" id="keywordSelect"></select>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <!-- Test title and filters row -->
+                    <div class="row">
+                        <div class="col-4">
+                            <h2>Test Statistics</h2>
+                        </div>
+                        <div class="col-auto d-flex">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" role="switch" id="showOnlySelectedTestStatistic" />
+                                <label class="form-check-label" for="showOnlySelectedTestStatistic">Show Only Selected Test Statistics</label>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <label class="form-label form-label-sm" for="suiteSelectTests">Select Suite</label>
+                            <select class="form-select form-select-sm" id="suiteSelectTests"></select>
+                        </div>
+                        <div class="col-auto">
+                            <label class="form-label form-label-sm" for="suiteSelectTests">Select Test</label>
+                            <select class="form-select form-select-sm" id="testSelect"></select>
+                        </div>
+                    </div>
+                    <!-- Test row -->
+                    <div class="row">
+                        <div class="col canvas mb-5">
+                            <canvas id="testStatusGraph"></canvas>
+                        </div>
+                        <div class="col canvas mb-5">
+                            <canvas id="testDurationGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateTestDurationGraphBar">Bar View</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateTestDurationGraphLine">Line View</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table table-striped" id="testTable"></table>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col canvas mb-5">
-                        <canvas id="keywordStatisticsGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
-                            id="updateKeywordStatisticsGraphBarPercentages">Percentages</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
-                            id="updateKeywordStatisticsGraphBarAmount">Amount</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
-                            id="updateKeywordStatisticsGraphLine">Timeline</button>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <!-- Keyword title row -->
+                    <div class="row">
+                        <div class="col-5">
+                            <h2>Keyword Statistics</h2>
+                        </div>
                     </div>
-                    <div class="col canvas mb-5">
-                        <canvas id="keywordTimesRunGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordTimesRunGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTimesRunGraphLine">Line
-                            View</button>
+                    <!-- Keyword row -->
+                    <div class="row">
+                        <!-- Empty div is used for aligning -->
+                        <div class="col-5"></div>
+                        <div class="col-auto">
+                            <label class="form-label form-label-sm" for="keywordSelect">Select Keyword</label>
+                            <select class="form-select form-select-sm" id="keywordSelect"></select>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col canvas mb-5">
-                        <canvas id="keywordTotalTimeGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordTotalTimeGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTotalTimeGraphLine">Line
-                            View</button>
+                    <div class="row">
+                        <div class="col canvas mb-5">
+                            <canvas id="keywordStatisticsGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordStatisticsGraphBarPercentages">Percentages</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordStatisticsGraphBarAmount">Amount</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordStatisticsGraphLine">Timeline</button>
+                        </div>
+                        <div class="col canvas mb-5">
+                            <canvas id="keywordTimesRunGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordTimesRunGraphBar">Bar View</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTimesRunGraphLine">Line View</button>
+                        </div>
                     </div>
-                    <div class="col canvas mb-5">
-                        <canvas id="keywordAverageTimeGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordAverageTimeGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordAverageTimeGraphLine">Line
-                            View</button>
+                    <div class="row">
+                        <div class="col canvas mb-5">
+                            <canvas id="keywordTotalTimeGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordTotalTimeGraphBar">Bar View</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTotalTimeGraphLine">Line View</button>
+                        </div>
+                        <div class="col canvas mb-5">
+                            <canvas id="keywordAverageTimeGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordAverageTimeGraphBar">Bar View</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordAverageTimeGraphLine">Line View</button>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col canvas mb-5">
-                        <canvas id="keywordMinTimeGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordMinTimeGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMinTimeGraphLine">Line
-                            View</button>
+                    <div class="row">
+                        <div class="col canvas mb-5">
+                            <canvas id="keywordMinTimeGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordMinTimeGraphBar">Bar View</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMinTimeGraphLine">Line View</button>
+                        </div>
+                        <div class="col canvas mb-5">
+                            <canvas id="keywordMaxTimeGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordMaxTimeGraphBar">Bar View</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMaxTimeGraphLine">Line View</button>
+                        </div>
                     </div>
-                    <div class="col canvas mb-5">
-                        <canvas id="keywordMaxTimeGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateKeywordMaxTimeGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMaxTimeGraphLine">Line
-                            View</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <table class="table table-striped" id="keywordTable"></table>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table table-striped" id="keywordTable"></table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <script>
             // theme
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                Chart.defaults.color = '#e2e1d7';
-                Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
-                Chart.defaults.backgroundColor = 'rgba(255,255,0,0.1)';
-                Chart.defaults.elements.line.borderColor = 'rgba(255,255,0,0.4)';
+            if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                Chart.defaults.color = "#e2e1d7";
+                Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
+                Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
+                Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
             } else {
-                document.getElementsByTagName('html')[0].setAttribute('data-bs-theme', 'light')
+                document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "light");
             }
 
             // colors
-            var passedBackgroundColor = '#97bd61'
-            var skippedBackgroundColor = '#fed84f'
-            var failedBackgroundColor = '#ce3e01'
-            var greyBackgroundColor = '#212529'
+            var passedBackgroundColor = "#97bd61";
+            var skippedBackgroundColor = "#fed84f";
+            var failedBackgroundColor = "#ce3e01";
+            var greyBackgroundColor = "#212529";
 
             // prepare input data
-            var runs = 'placeholder_runs'.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-            var suites = 'placeholder_suites'.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-            var tests = 'placeholder_tests'.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-            var keywords = 'placeholder_keywords'.sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+            var runs = "placeholder_runs".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+            var suites = "placeholder_suites".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+            var tests = "placeholder_tests".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+            var keywords = "placeholder_keywords".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
 
             // set default values
-            document.getElementById('stats').innerHTML = `<b>Database Summary</b><br>Runs: ${runs.length}<br>Suites: ${suites.length}<br>Tests: ${tests.length}<br>Keywords: ${keywords.length}`
+            document.getElementById(
+                "stats"
+            ).innerHTML = `<b>Database Summary</b><br>Runs: ${runs.length}<br>Suites: ${suites.length}<br>Tests: ${tests.length}<br>Keywords: ${keywords.length}`;
 
             // set initial filters and fill selects based on provided data
-            set_lowest_highest_dates()
-            add_runs_in_select()
-            add_tags_in_select()
+            set_lowest_highest_dates();
+            add_runs_in_select();
+            add_tags_in_select();
 
             // create graphs
-            var runStatisticsGraph
-            var runStatisticsGraphType = 'percentages'
-            var runDurationGraph
-            var runDurationGraphType = 'bar'
-            var runTable
-            var suiteStatisticsGraph
-            var suiteStatisticsGraphType = 'percentages'
-            var suiteDurationGraph
-            var suiteDurationGraphType = 'bar'
-            var suiteTable
-            var testStatusGraph
-            var testDurationGraph
-            var testDurationGraphType = 'line'
-            var testTable
-            var keywordStatisticsGraph
-            var keywordStatisticsGraphType = 'percentages'
-            var keywordTimesRunGraph
-            var keywordTimesRunGraphType = 'bar'
-            var keywordTotalTimeGraph
-            var keywordTotalTimeGraphType = 'bar'
-            var keywordAverageTimeGraph
-            var keywordAverageTimeGraphType = 'bar'
-            var keywordMinTimeGraph
-            var keywordMinTimeGraphType = 'bar'
-            var keywordMaxTimeGraph
-            var keywordMaxTimeGraphType = 'bar'
-            var keywordTable
+            var runStatisticsGraph;
+            var runStatisticsGraphType = "percentages";
+            var runDurationGraph;
+            var runDurationGraphType = "bar";
+            var runTable;
+            var suiteStatisticsGraph;
+            var suiteStatisticsGraphType = "percentages";
+            var suiteDurationGraph;
+            var suiteDurationGraphType = "bar";
+            var suiteTable;
+            var testStatusGraph;
+            var testDurationGraph;
+            var testDurationGraphType = "line";
+            var testTable;
+            var keywordStatisticsGraph;
+            var keywordStatisticsGraphType = "percentages";
+            var keywordTimesRunGraph;
+            var keywordTimesRunGraphType = "bar";
+            var keywordTotalTimeGraph;
+            var keywordTotalTimeGraphType = "bar";
+            var keywordAverageTimeGraph;
+            var keywordAverageTimeGraphType = "bar";
+            var keywordMinTimeGraph;
+            var keywordMinTimeGraphType = "bar";
+            var keywordMaxTimeGraph;
+            var keywordMaxTimeGraphType = "bar";
+            var keywordTable;
 
             // filtered data vars
-            var filteredRuns
-            var filteredSuites
-            var filteredTests
-            var filteredKeywords
+            var filteredRuns;
+            var filteredSuites;
+            var filteredTests;
+            var filteredKeywords;
 
             // var to keep track of show only selected test stats
-            var showOnlySelectedTestStatistic = false
+            var showOnlySelectedTestStatistic = false;
 
             //initialize all data and graphs
-            update_data_and_all_graphs()
+            update_data_and_all_graphs();
 
             // eventlisteners
-            document.getElementById('runs').addEventListener('change', update_data_and_all_graphs)
-            document.getElementById('tag').addEventListener('change', update_data_and_all_graphs)
-            document.getElementById('fromDate').addEventListener('change', update_data_and_all_graphs)
-            document.getElementById('fromTime').addEventListener('change', update_data_and_all_graphs)
-            document.getElementById('toDate').addEventListener('change', update_data_and_all_graphs)
-            document.getElementById('toTime').addEventListener('change', update_data_and_all_graphs)
+            document.getElementById("runs").addEventListener("change", update_data_and_all_graphs);
+            document.getElementById("tag").addEventListener("change", update_data_and_all_graphs);
+            document.getElementById("fromDate").addEventListener("change", update_data_and_all_graphs);
+            document.getElementById("fromTime").addEventListener("change", update_data_and_all_graphs);
+            document.getElementById("toDate").addEventListener("change", update_data_and_all_graphs);
+            document.getElementById("toTime").addEventListener("change", update_data_and_all_graphs);
 
-            document.getElementById('updateRunStatisticsGraphBarPercentages').addEventListener('click', (e) => { 
-                create_run_statistics_graph('percentages')
+            document.getElementById("updateRunStatisticsGraphBarPercentages").addEventListener("click", (e) => {
+                create_run_statistics_graph("percentages");
                 document.getElementById("updateRunStatisticsGraphBarAmount").classList.remove("disabled");
                 document.getElementById("updateRunStatisticsGraphLine").classList.remove("disabled");
                 document.getElementById("updateRunStatisticsGraphBarPercentages").classList.add("disabled");
-            })
-            document.getElementById('updateRunStatisticsGraphBarAmount').addEventListener('click', (e) => { 
-                create_run_statistics_graph('amount')
+            });
+            document.getElementById("updateRunStatisticsGraphBarAmount").addEventListener("click", (e) => {
+                create_run_statistics_graph("amount");
                 document.getElementById("updateRunStatisticsGraphBarAmount").classList.add("disabled");
                 document.getElementById("updateRunStatisticsGraphLine").classList.remove("disabled");
                 document.getElementById("updateRunStatisticsGraphBarPercentages").classList.remove("disabled");
-            })
-            document.getElementById('updateRunStatisticsGraphLine').addEventListener('click', (e) => { 
-                create_run_statistics_graph('line')
+            });
+            document.getElementById("updateRunStatisticsGraphLine").addEventListener("click", (e) => {
+                create_run_statistics_graph("line");
                 document.getElementById("updateRunStatisticsGraphBarAmount").classList.remove("disabled");
                 document.getElementById("updateRunStatisticsGraphLine").classList.add("disabled");
                 document.getElementById("updateRunStatisticsGraphBarPercentages").classList.remove("disabled");
-            })
+            });
 
-            document.getElementById('updateRunDurationGraphBar').addEventListener('click', (e) => { 
-                create_run_duration_graph('bar')
+            document.getElementById("updateRunDurationGraphBar").addEventListener("click", (e) => {
+                create_run_duration_graph("bar");
                 document.getElementById("updateRunDurationGraphBar").classList.add("disabled");
                 document.getElementById("updateRunDurationGraphLine").classList.remove("disabled");
-            })
-            document.getElementById('updateRunDurationGraphLine').addEventListener('click', (e) => { 
-                create_run_duration_graph('line')
+            });
+            document.getElementById("updateRunDurationGraphLine").addEventListener("click", (e) => {
+                create_run_duration_graph("line");
                 document.getElementById("updateRunDurationGraphBar").classList.remove("disabled");
                 document.getElementById("updateRunDurationGraphLine").classList.add("disabled");
-            })
+            });
 
-            document.getElementById('updateSuiteStatisticsGraphBarPercentages').addEventListener('click', (e) => { 
-                create_suite_statistics_graph('percentages')
+            document.getElementById("updateSuiteStatisticsGraphBarPercentages").addEventListener("click", (e) => {
+                create_suite_statistics_graph("percentages");
                 document.getElementById("updateSuiteStatisticsGraphBarPercentages").classList.add("disabled");
                 document.getElementById("updateSuiteStatisticsGraphBarAmount").classList.remove("disabled");
                 document.getElementById("updateSuiteStatisticsGraphLine").classList.remove("disabled");
-            })
-            document.getElementById('updateSuiteStatisticsGraphBarAmount').addEventListener('click', (e) => { 
-                create_suite_statistics_graph('amount')
+            });
+            document.getElementById("updateSuiteStatisticsGraphBarAmount").addEventListener("click", (e) => {
+                create_suite_statistics_graph("amount");
                 document.getElementById("updateSuiteStatisticsGraphBarPercentages").classList.remove("disabled");
                 document.getElementById("updateSuiteStatisticsGraphBarAmount").classList.add("disabled");
                 document.getElementById("updateSuiteStatisticsGraphLine").classList.remove("disabled");
-             })
-            document.getElementById('updateSuiteStatisticsGraphLine').addEventListener('click', (e) => { 
-                create_suite_statistics_graph('line')
+            });
+            document.getElementById("updateSuiteStatisticsGraphLine").addEventListener("click", (e) => {
+                create_suite_statistics_graph("line");
                 document.getElementById("updateSuiteStatisticsGraphBarPercentages").classList.remove("disabled");
                 document.getElementById("updateSuiteStatisticsGraphBarAmount").classList.remove("disabled");
                 document.getElementById("updateSuiteStatisticsGraphLine").classList.add("disabled");
-             })
+            });
 
-            document.getElementById('updateSuiteDurationGraphBar').addEventListener('click', (e) => { 
-                create_suite_duration_graph('bar') 
+            document.getElementById("updateSuiteDurationGraphBar").addEventListener("click", (e) => {
+                create_suite_duration_graph("bar");
                 document.getElementById("updateSuiteDurationGraphBar").classList.add("disabled");
                 document.getElementById("updateSuiteDurationGraphLine").classList.remove("disabled");
-            })
-            document.getElementById('updateSuiteDurationGraphLine').addEventListener('click', (e) => { 
-                create_suite_duration_graph('line')
+            });
+            document.getElementById("updateSuiteDurationGraphLine").addEventListener("click", (e) => {
+                create_suite_duration_graph("line");
                 document.getElementById("updateSuiteDurationGraphBar").classList.remove("disabled");
                 document.getElementById("updateSuiteDurationGraphLine").classList.add("disabled");
-            })
+            });
 
-            document.getElementById('updateTestDurationGraphBar').addEventListener('click', (e) => { 
-                create_test_duration_graph('bar') 
+            document.getElementById("updateTestDurationGraphBar").addEventListener("click", (e) => {
+                create_test_duration_graph("bar");
                 document.getElementById("updateTestDurationGraphBar").classList.add("disabled");
                 document.getElementById("updateTestDurationGraphLine").classList.remove("disabled");
-            })
-            document.getElementById('updateTestDurationGraphLine').addEventListener('click', (e) => { 
-                create_test_duration_graph('line') 
+            });
+            document.getElementById("updateTestDurationGraphLine").addEventListener("click", (e) => {
+                create_test_duration_graph("line");
                 document.getElementById("updateTestDurationGraphBar").classList.remove("disabled");
                 document.getElementById("updateTestDurationGraphLine").classList.add("disabled");
-            })
+            });
 
-            document.getElementById('updateKeywordStatisticsGraphBarPercentages').addEventListener('click', (e) => { 
-                create_keyword_statistics_graph('percentages') 
+            document.getElementById("updateKeywordStatisticsGraphBarPercentages").addEventListener("click", (e) => {
+                create_keyword_statistics_graph("percentages");
                 document.getElementById("updateKeywordStatisticsGraphBarPercentages").classList.add("disabled");
                 document.getElementById("updateKeywordStatisticsGraphBarAmount").classList.remove("disabled");
                 document.getElementById("updateKeywordStatisticsGraphLine").classList.remove("disabled");
-            })
-            document.getElementById('updateKeywordStatisticsGraphBarAmount').addEventListener('click', (e) => { 
-                create_keyword_statistics_graph('amount')
+            });
+            document.getElementById("updateKeywordStatisticsGraphBarAmount").addEventListener("click", (e) => {
+                create_keyword_statistics_graph("amount");
                 document.getElementById("updateKeywordStatisticsGraphBarPercentages").classList.remove("disabled");
                 document.getElementById("updateKeywordStatisticsGraphBarAmount").classList.add("disabled");
                 document.getElementById("updateKeywordStatisticsGraphLine").classList.remove("disabled");
-             })
-            document.getElementById('updateKeywordStatisticsGraphLine').addEventListener('click', (e) => { 
-                create_keyword_statistics_graph('line')
+            });
+            document.getElementById("updateKeywordStatisticsGraphLine").addEventListener("click", (e) => {
+                create_keyword_statistics_graph("line");
                 document.getElementById("updateKeywordStatisticsGraphBarPercentages").classList.remove("disabled");
                 document.getElementById("updateKeywordStatisticsGraphBarAmount").classList.remove("disabled");
                 document.getElementById("updateKeywordStatisticsGraphLine").classList.add("disabled");
-             })
+            });
 
-            document.getElementById('updateKeywordTimesRunGraphBar').addEventListener('click', (e) => { 
-                create_keyword_times_run_graph('bar') 
+            document.getElementById("updateKeywordTimesRunGraphBar").addEventListener("click", (e) => {
+                create_keyword_times_run_graph("bar");
                 document.getElementById("updateKeywordTimesRunGraphBar").classList.add("disabled");
                 document.getElementById("updateKeywordTimesRunGraphLine").classList.remove("disabled");
-            })
-            document.getElementById('updateKeywordTimesRunGraphLine').addEventListener('click', (e) => { 
-                create_keyword_times_run_graph('line') 
+            });
+            document.getElementById("updateKeywordTimesRunGraphLine").addEventListener("click", (e) => {
+                create_keyword_times_run_graph("line");
                 document.getElementById("updateKeywordTimesRunGraphBar").classList.remove("disabled");
                 document.getElementById("updateKeywordTimesRunGraphLine").classList.add("disabled");
-            })
+            });
 
-            document.getElementById('updateKeywordTotalTimeGraphBar').addEventListener('click', (e) => { 
-                create_keyword_total_time_graph('bar') 
+            document.getElementById("updateKeywordTotalTimeGraphBar").addEventListener("click", (e) => {
+                create_keyword_total_time_graph("bar");
                 document.getElementById("updateKeywordTotalTimeGraphBar").classList.add("disabled");
                 document.getElementById("updateKeywordTotalTimeGraphLine").classList.remove("disabled");
-            })
-            document.getElementById('updateKeywordTotalTimeGraphLine').addEventListener('click', (e) => { 
-                create_keyword_total_time_graph('line')
+            });
+            document.getElementById("updateKeywordTotalTimeGraphLine").addEventListener("click", (e) => {
+                create_keyword_total_time_graph("line");
                 document.getElementById("updateKeywordTotalTimeGraphBar").classList.remove("disabled");
                 document.getElementById("updateKeywordTotalTimeGraphLine").classList.add("disabled");
-             })
+            });
 
-            document.getElementById('updateKeywordAverageTimeGraphBar').addEventListener('click', (e) => { 
-                create_keyword_average_time_graph('bar') 
+            document.getElementById("updateKeywordAverageTimeGraphBar").addEventListener("click", (e) => {
+                create_keyword_average_time_graph("bar");
                 document.getElementById("updateKeywordAverageTimeGraphBar").classList.add("disabled");
                 document.getElementById("updateKeywordAverageTimeGraphLine").classList.remove("disabled");
-            })
-            document.getElementById('updateKeywordAverageTimeGraphLine').addEventListener('click', (e) => { 
-                create_keyword_average_time_graph('line') 
+            });
+            document.getElementById("updateKeywordAverageTimeGraphLine").addEventListener("click", (e) => {
+                create_keyword_average_time_graph("line");
                 document.getElementById("updateKeywordAverageTimeGraphBar").classList.remove("disabled");
                 document.getElementById("updateKeywordAverageTimeGraphLine").classList.add("disabled");
-            })
+            });
 
-            document.getElementById('updateKeywordMinTimeGraphBar').addEventListener('click', (e) => { 
-                create_keyword_min_time_graph('bar') 
+            document.getElementById("updateKeywordMinTimeGraphBar").addEventListener("click", (e) => {
+                create_keyword_min_time_graph("bar");
                 document.getElementById("updateKeywordMinTimeGraphBar").classList.add("disabled");
                 document.getElementById("updateKeywordMinTimeGraphLine").classList.remove("disabled");
-            })
-            document.getElementById('updateKeywordMinTimeGraphLine').addEventListener('click', (e) => { 
-                create_keyword_min_time_graph('line') 
+            });
+            document.getElementById("updateKeywordMinTimeGraphLine").addEventListener("click", (e) => {
+                create_keyword_min_time_graph("line");
                 document.getElementById("updateKeywordMinTimeGraphBar").classList.remove("disabled");
                 document.getElementById("updateKeywordMinTimeGraphLine").classList.add("disabled");
-            })
+            });
 
-            document.getElementById('updateKeywordMaxTimeGraphBar').addEventListener('click', (e) => { 
-                create_keyword_max_time_graph('bar') 
+            document.getElementById("updateKeywordMaxTimeGraphBar").addEventListener("click", (e) => {
+                create_keyword_max_time_graph("bar");
                 document.getElementById("updateKeywordMaxTimeGraphBar").classList.add("disabled");
                 document.getElementById("updateKeywordMaxTimeGraphLine").classList.remove("disabled");
-            })
-            document.getElementById('updateKeywordMaxTimeGraphLine').addEventListener('click', (e) => { 
-                create_keyword_max_time_graph('line')
+            });
+            document.getElementById("updateKeywordMaxTimeGraphLine").addEventListener("click", (e) => {
+                create_keyword_max_time_graph("line");
                 document.getElementById("updateKeywordMaxTimeGraphBar").classList.remove("disabled");
                 document.getElementById("updateKeywordMaxTimeGraphLine").classList.add("disabled");
-             })
+            });
 
-            document.getElementById('resetFilters').addEventListener('click', reset_filters)
-            document.getElementById('suiteSelectSuites').addEventListener('change', (e) => {
-                create_suite_duration_graph()
-                create_suite_statistics_graph()
-            })
-            document.getElementById('showOnlySelectedTestStatistic').addEventListener('change', (e) => {
-                showOnlySelectedTestStatistic = !showOnlySelectedTestStatistic
-                create_test_status_graph()
-            })
-            document.getElementById('suiteSelectTests').addEventListener('change', (e) => {
-                create_test_status_graph()
-                create_test_duration_graph()
-                add_tests_in_select()
-            })
-            document.getElementById('testSelect').addEventListener('change', (e) => {
-                if (showOnlySelectedTestStatistic) { create_test_status_graph() }
-                create_test_duration_graph()
-            })
-            document.getElementById('keywordSelect').addEventListener('change', (e) => {
-                create_keyword_statistics_graph()
-                create_keyword_times_run_graph()
-                create_keyword_total_time_graph()
-                create_keyword_average_time_graph()
-                create_keyword_min_time_graph()
-                create_keyword_max_time_graph()
-            })
+            document.getElementById("resetFilters").addEventListener("click", reset_filters);
+            document.getElementById("suiteSelectSuites").addEventListener("change", (e) => {
+                create_suite_duration_graph();
+                create_suite_statistics_graph();
+            });
+            document.getElementById("showOnlySelectedTestStatistic").addEventListener("change", (e) => {
+                showOnlySelectedTestStatistic = !showOnlySelectedTestStatistic;
+                create_test_status_graph();
+            });
+            document.getElementById("suiteSelectTests").addEventListener("change", (e) => {
+                create_test_status_graph();
+                create_test_duration_graph();
+                add_tests_in_select();
+            });
+            document.getElementById("testSelect").addEventListener("change", (e) => {
+                if (showOnlySelectedTestStatistic) {
+                    create_test_status_graph();
+                }
+                create_test_duration_graph();
+            });
+            document.getElementById("keywordSelect").addEventListener("change", (e) => {
+                create_keyword_statistics_graph();
+                create_keyword_times_run_graph();
+                create_keyword_total_time_graph();
+                create_keyword_average_time_graph();
+                create_keyword_min_time_graph();
+                create_keyword_max_time_graph();
+            });
 
             function set_lowest_highest_dates() {
-                var dates = []
+                var dates = [];
                 for (run of runs) {
-                    dates.push(new Date(run.run_start))
+                    dates.push(new Date(run.run_start));
                 }
                 var lowest = new Date(Math.min.apply(null, dates));
                 var highest = new Date(Math.max.apply(null, dates));
-                var tzoffset = (new Date()).getTimezoneOffset() * 60000;
-                lowest = new Date((new Date(lowest - tzoffset)).getTime() + -1 * 60000) // this is to account for seconds in the initial filter value
-                highest = new Date((new Date(highest - tzoffset)).getTime() + 1 * 60000) // this is to account for seconds in the initial filter value
-                document.getElementById('fromDate').value = lowest.toISOString().split('T')[0]
-                document.getElementById('fromTime').value = (lowest.toISOString().split('T')[1]).substring(0, 5)
-                document.getElementById('toDate').value = highest.toISOString().split('T')[0]
-                document.getElementById('toTime').value = (highest.toISOString().split('T')[1]).substring(0, 5)
+                var tzoffset = new Date().getTimezoneOffset() * 60000;
+                lowest = new Date(new Date(lowest - tzoffset).getTime() + -1 * 60000); // this is to account for seconds in the initial filter value
+                highest = new Date(new Date(highest - tzoffset).getTime() + 1 * 60000); // this is to account for seconds in the initial filter value
+                document.getElementById("fromDate").value = lowest.toISOString().split("T")[0];
+                document.getElementById("fromTime").value = lowest.toISOString().split("T")[1].substring(0, 5);
+                document.getElementById("toDate").value = highest.toISOString().split("T")[0];
+                document.getElementById("toTime").value = highest.toISOString().split("T")[1].substring(0, 5);
             }
 
             function update_data_and_all_graphs() {
-                update_filtered_data()
-                update_all_graphs()
+                update_filtered_data();
+                update_all_graphs();
             }
 
             function update_filtered_data() {
                 // filter run data
-                filteredRuns = filter_runs(runs)
-                filteredRuns = filter_tags(filteredRuns)
-                filteredRuns = filter_dates(filteredRuns)
+                filteredRuns = filter_runs(runs);
+                filteredRuns = filter_tags(filteredRuns);
+                filteredRuns = filter_dates(filteredRuns);
                 // filter suites and tests based on filtered runs
-                filteredSuites = filter_data('suites')
-                filteredTests = filter_data('tests')
-                filteredKeywords = filter_data('keywords')
+                filteredSuites = filter_data("suites");
+                filteredTests = filter_data("tests");
+                filteredKeywords = filter_data("keywords");
                 // update tests select based on filtered runs
-                add_suites_in_selects()
-                add_tests_in_select()
-                add_keywords_in_select()
+                add_suites_in_selects();
+                add_tests_in_select();
+                add_keywords_in_select();
             }
 
             function update_all_graphs() {
                 // set titles with amount of filtered runs
-                document.getElementById('runTitle').innerText = `Run Statistics (${Object.keys(filteredRuns).length} runs)`
+                document.getElementById("runTitle").innerText = `Run Statistics (${Object.keys(filteredRuns).length} runs)`;
                 // destroy and create new graphs
-                create_run_statistics_graph()
-                create_run_duration_graph()
-                create_run_table()
-                create_suite_statistics_graph()
-                create_suite_duration_graph()
-                create_suite_table()
-                create_test_status_graph()
-                create_test_duration_graph()
-                create_test_table()
-                create_keyword_statistics_graph()
-                create_keyword_times_run_graph()
-                create_keyword_total_time_graph()
-                create_keyword_average_time_graph()
-                create_keyword_min_time_graph()
-                create_keyword_max_time_graph()
-                create_keyword_table()
+                create_run_statistics_graph();
+                create_run_duration_graph();
+                create_run_table();
+                create_suite_statistics_graph();
+                create_suite_duration_graph();
+                create_suite_table();
+                create_test_status_graph();
+                create_test_duration_graph();
+                create_test_table();
+                create_keyword_statistics_graph();
+                create_keyword_times_run_graph();
+                create_keyword_total_time_graph();
+                create_keyword_average_time_graph();
+                create_keyword_min_time_graph();
+                create_keyword_max_time_graph();
+                create_keyword_table();
             }
 
             function filter_runs(runs) {
-                var run = document.getElementById('runs').value
-                var filteredRuns = {}
+                var run = document.getElementById("runs").value;
+                var filteredRuns = [];
                 for (const [key, value] of Object.entries(runs)) {
-                    if (run != 'All' && value.name != run) {
-                        continue
+                    if (run != "All" && value.name != run) {
+                        continue;
                     } else {
-                        filteredRuns[key] = value
+                        filteredRuns.push(value);
                     }
                 }
-                return filteredRuns
+                return filteredRuns;
             }
 
             function filter_tags(runs) {
-                var tag = document.getElementById('tag').value
-                var filteredRuns = {}
-                for (const [key, value] of Object.entries(runs)) {
-                    if (tag != 'All') {
-                        var runTags = value.tags.split(',')
+                var tag = document.getElementById("tag").value;
+                var filteredRuns = [];
+                for (value of runs) {
+                    if (tag != "All") {
+                        var runTags = value.tags.split(",");
                         for (runTag of runTags) {
                             if (tag != runTag) {
-                                continue
+                                continue;
                             } else {
-                                filteredRuns[key] = value
+                                filteredRuns.push(value);
                             }
                         }
                     } else {
-                        filteredRuns = runs
+                        filteredRuns = runs;
                     }
                 }
-                return filteredRuns
+                return filteredRuns;
             }
 
             function filter_dates(runs) {
-                var fromDate = document.getElementById('fromDate').value
-                var fromTime = document.getElementById('fromTime').value
-                var toDate = document.getElementById('toDate').value
-                var toTime = document.getElementById('toTime').value
-                var filteredRuns = {}
+                var fromDate = document.getElementById("fromDate").value;
+                var fromTime = document.getElementById("fromTime").value;
+                var toDate = document.getElementById("toDate").value;
+                var toTime = document.getElementById("toTime").value;
+                var filteredRuns = [];
                 if (fromDate && fromTime && toDate && toTime) {
-                    var fromDateTime = new Date(`${fromDate} ${fromTime}:00`)
-                    var toDateTime = new Date(`${toDate} ${toTime}:00`)
+                    var fromDateTime = new Date(`${fromDate} ${fromTime}:00`);
+                    var toDateTime = new Date(`${toDate} ${toTime}:00`);
                     if (fromDateTime <= toDateTime) {
-                        for (const [key, value] of Object.entries(runs)) {
-                            var run_start = new Date(value.run_start)
+                        for (value of runs) {
+                            var run_start = new Date(value.run_start);
                             if (run_start < fromDateTime || run_start > toDateTime) {
-                                continue
+                                continue;
                             } else {
-                                filteredRuns[key] = value
+                                filteredRuns.push(value);
                             }
                         }
                     } else {
                         // you end up here if fromDate > toDate
-                        alert('Filter error: The selected from date + time is later than your selected to date + time. Date filter has not been applied!')
-                        filteredRuns = runs
+                        alert("Filter error: The selected from date + time is later than your selected to date + time. Date filter has not been applied!");
+                        filteredRuns = runs;
                     }
                 } else {
                     // no dates or not all value are provided
-                    filteredRuns = runs
+                    filteredRuns = runs;
                 }
-                return filteredRuns
+                return filteredRuns;
             }
 
             function filter_data(dataType) {
-                var validRunStarts = []
-                for (const [key, value] of Object.entries(filteredRuns)) {
-                    validRunStarts.push(value.run_start)
+                var validRunStarts = [];
+                for (value of filteredRuns) {
+                    validRunStarts.push(value.run_start);
                 }
-                var filteredData = []
-                for (const [key, value] of Object.entries(window[dataType])) {
+                var filteredData = [];
+                for (value of window[dataType]) {
                     if (validRunStarts.includes(value.run_start)) {
-                        filteredData.push(value)
+                        filteredData.push(value);
                     }
                 }
-                return filteredData
+                return filteredData;
             }
 
             function reset_filters() {
-                document.getElementById('runs').value = 'All'
-                document.getElementById('tag').value = 'All'
-                set_lowest_highest_dates(runs)
-                update_data_and_all_graphs()
+                document.getElementById("runs").value = "All";
+                document.getElementById("tag").value = "All";
+                set_lowest_highest_dates(runs);
+                update_data_and_all_graphs();
             }
 
             function add_runs_in_select() {
-                var runOptions = []
+                var runOptions = [];
                 for (run of runs) {
                     if (!runOptions.includes(run.name)) {
-                        runOptions.push(run.name)
+                        runOptions.push(run.name);
                     }
                 }
-                var runsSelect = document.getElementById('runs');
-                runsSelect.options[runsSelect.options.length] = new Option('All', 'All');
+                var runsSelect = document.getElementById("runs");
+                runsSelect.options[runsSelect.options.length] = new Option("All", "All");
                 for (runOption of runOptions) {
                     runsSelect.options[runsSelect.options.length] = new Option(runOption, runOption);
                 }
             }
 
             function add_tags_in_select() {
-                var tags = []
+                var tags = [];
                 for (run of runs) {
-                    var runTags = run.tags.split(',')
+                    var runTags = run.tags.split(",");
                     for (tag of runTags) {
-                        if (!tags.includes(tag) && tag != '') {
-                            tags.push(tag)
+                        if (!tags.includes(tag) && tag != "") {
+                            tags.push(tag);
                         }
                     }
                 }
-                var tagsSelect = document.getElementById('tag');
-                tagsSelect.options[tagsSelect.options.length] = new Option('All', 'All');
+                var tagsSelect = document.getElementById("tag");
+                tagsSelect.options[tagsSelect.options.length] = new Option("All", "All");
                 for (tag of tags) {
                     tagsSelect.options[tagsSelect.options.length] = new Option(tag, tag);
                 }
             }
 
             function add_suites_in_selects() {
-                document.getElementById('suiteSelectTests').innerHTML = ''
-                document.getElementById('suiteSelectSuites').innerHTML = ''
-                var suiteNames = []
+                document.getElementById("suiteSelectTests").innerHTML = "";
+                document.getElementById("suiteSelectSuites").innerHTML = "";
+                var suiteNames = [];
                 for (suite of filteredSuites) {
                     if (!suiteNames.includes(suite.name)) {
-                        suiteNames.push(suite.name)
+                        suiteNames.push(suite.name);
                     }
                 }
-                var suiteSelectTests = document.getElementById('suiteSelectTests')
-                var suiteSelectSuites = document.getElementById('suiteSelectSuites')
+                var suiteSelectTests = document.getElementById("suiteSelectTests");
+                var suiteSelectSuites = document.getElementById("suiteSelectSuites");
                 for (suiteName of suiteNames.sort()) {
-                    suiteSelectTests.options[suiteSelectTests.options.length] = new Option(suiteName, suiteName)
-                    suiteSelectSuites.options[suiteSelectSuites.options.length] = new Option(suiteName, suiteName)
+                    suiteSelectTests.options[suiteSelectTests.options.length] = new Option(suiteName, suiteName);
+                    suiteSelectSuites.options[suiteSelectSuites.options.length] = new Option(suiteName, suiteName);
                 }
             }
 
             function add_tests_in_select() {
-                document.getElementById('testSelect').innerHTML = ''
-                suiteSelect = document.getElementById('suiteSelectTests').value
-                var testNames = []
+                document.getElementById("testSelect").innerHTML = "";
+                suiteSelect = document.getElementById("suiteSelectTests").value;
+                var testNames = [];
                 for (test of filteredTests) {
-                    if (test.full_name.split('.').at(-2) == suiteSelect && !testNames.includes(test.name)) {
-                        testNames.push(test.name)
+                    if (test.full_name.includes(`.${suiteSelect}.`) && !testNames.includes(test.name)) {
+                        testNames.push(test.name);
                     }
                 }
-                var testSelect = document.getElementById('testSelect')
-                testSelect.options[testSelect.options.length] = new Option('All', 'All')
+                var testSelect = document.getElementById("testSelect");
+                testSelect.options[testSelect.options.length] = new Option("All", "All");
                 for (testName of testNames) {
-                    testSelect.options[testSelect.options.length] = new Option(testName, testName)
+                    testSelect.options[testSelect.options.length] = new Option(testName, testName);
                 }
             }
 
             function add_keywords_in_select() {
-                document.getElementById('keywordSelect').innerHTML = ''
-                var keywordNames = []
+                document.getElementById("keywordSelect").innerHTML = "";
+                var keywordNames = [];
                 for (keyword of filteredKeywords) {
                     if (!keywordNames.includes(keyword.name)) {
-                        keywordNames.push(keyword.name)
+                        keywordNames.push(keyword.name);
                     }
                 }
-                var keywordSelect = document.getElementById('keywordSelect')
+                var keywordSelect = document.getElementById("keywordSelect");
                 for (keywordName of keywordNames.sort()) {
-                    keywordSelect.options[keywordSelect.options.length] = new Option(keywordName, keywordName)
+                    keywordSelect.options[keywordSelect.options.length] = new Option(keywordName, keywordName);
                 }
             }
 
             function create_run_statistics_graph(type) {
-                if (typeof (type) === 'string') {
-                    runStatisticsGraphType = type
+                if (typeof type === "string") {
+                    runStatisticsGraphType = type;
                 }
-                if (runStatisticsGraph) { runStatisticsGraph.destroy() }
-                var graphData = get_statistics_graph_data('run', runStatisticsGraphType, filteredRuns)
-                if (runStatisticsGraphType == 'line') {
-                    var config = get_graph_config('line', graphData, 'Amount Of Tests (Line)', 'Date', 'amount', false)
-                    runStatisticsGraph = new Chart('runStatisticsGraph', config);
-                } else if (runStatisticsGraphType == 'amount') {
+                if (runStatisticsGraph) {
+                    runStatisticsGraph.destroy();
+                }
+                var graphData = get_statistics_graph_data("run", runStatisticsGraphType, filteredRuns);
+                if (runStatisticsGraphType == "line") {
+                    var config = get_graph_config("line", graphData, "Amount Of Tests (Line)", "Date", "amount", false);
+                    runStatisticsGraph = new Chart("runStatisticsGraph", config);
+                } else if (runStatisticsGraphType == "amount") {
                     Chart.register(ChartDataLabels);
-                    var config = get_graph_config('bar', graphData, 'Run Statistics (Bar)', 'Run', 'Amount Of Tests')
-                    runStatisticsGraph = new Chart('runStatisticsGraph', config)
-                } else if (runStatisticsGraphType == 'percentages') {
+                    var config = get_graph_config("bar", graphData, "Run Statistics (Bar)", "Run", "Amount Of Tests");
+                    runStatisticsGraph = new Chart("runStatisticsGraph", config);
+                } else if (runStatisticsGraphType == "percentages") {
                     Chart.register(ChartDataLabels);
-                    var config = get_graph_config('bar', graphData, 'Run Statistics (Bar)', 'Run', 'Percentage')
-                    runStatisticsGraph = new Chart('runStatisticsGraph', config)
+                    var config = get_graph_config("bar", graphData, "Run Statistics (Bar)", "Run", "Percentage");
+                    runStatisticsGraph = new Chart("runStatisticsGraph", config);
                 }
             }
 
             function create_run_duration_graph(type) {
-                if (typeof (type) === 'string') {
-                    runDurationGraphType = type
+                if (typeof type === "string") {
+                    runDurationGraphType = type;
                 }
-                if (runDurationGraph) { runDurationGraph.destroy() }
-                var graphData = get_duration_graph_data('run', runDurationGraphType, 'elapsed_s', filteredRuns)
-                if (runDurationGraphType == 'bar') {
-                    var config = get_graph_config('bar', graphData, 'Run Duration (Bar)', 'Run', 'Duration')
-                    runDurationGraph = new Chart('runDurationGraph', config)
-                } else if (runDurationGraphType == 'line') {
-                    var config = get_graph_config('line', graphData, 'Run Duration (Line)', 'Date', 'Duration')
-                    runDurationGraph = new Chart('runDurationGraph', config);
+                if (runDurationGraph) {
+                    runDurationGraph.destroy();
+                }
+                var graphData = get_duration_graph_data("run", runDurationGraphType, "elapsed_s", filteredRuns);
+                if (runDurationGraphType == "bar") {
+                    var config = get_graph_config("bar", graphData, "Run Duration (Bar)", "Run", "Duration");
+                    runDurationGraph = new Chart("runDurationGraph", config);
+                } else if (runDurationGraphType == "line") {
+                    var config = get_graph_config("line", graphData, "Run Duration (Line)", "Date", "Duration");
+                    runDurationGraph = new Chart("runDurationGraph", config);
                 }
             }
 
             function create_run_table() {
-                if (runTable) { runTable.destroy() }
-                data = []
-                for (const [key, value] of Object.entries(filteredRuns)) {
-                    data.push([
-                        value.run_start,
-                        value.full_name,
-                        value.name,
-                        value.total,
-                        value.passed,
-                        value.failed,
-                        value.skipped,
-                        value.elapsed_s,
-                        value.start_time,
-                        value.tags
-                    ])
+                if (runTable) {
+                    runTable.destroy();
                 }
-                runTable = new DataTable('#runTable', {
+                data = [];
+                for (run of filteredRuns) {
+                    data.push([
+                        run.run_start,
+                        run.full_name,
+                        run.name,
+                        run.total,
+                        run.passed,
+                        run.failed,
+                        run.skipped,
+                        run.elapsed_s,
+                        run.start_time,
+                        run.tags,
+                    ]);
+                }
+                runTable = new DataTable("#runTable", {
                     layout: {
-                        topStart: 'info',
+                        topStart: "info",
                         bottomStart: null,
                     },
                     columns: [
-                        { title: 'run' },
-                        { title: 'full_name' },
-                        { title: 'name' },
-                        { title: 'total' },
-                        { title: 'passed' },
-                        { title: 'failed' },
-                        { title: 'skipped' },
-                        { title: 'elapsed_s' },
-                        { title: 'start_time' },
-                        { title: 'tags' }
+                        { title: "run" },
+                        { title: "full_name" },
+                        { title: "name" },
+                        { title: "total" },
+                        { title: "passed" },
+                        { title: "failed" },
+                        { title: "skipped" },
+                        { title: "elapsed_s" },
+                        { title: "start_time" },
+                        { title: "tags" },
                     ],
-                    data: data
+                    data: data,
                 });
             }
 
             function create_suite_statistics_graph(type) {
-                if (typeof (type) === 'string') {
-                    suiteStatisticsGraphType = type
+                if (typeof type === "string") {
+                    suiteStatisticsGraphType = type;
                 }
-                if (suiteStatisticsGraph) { suiteStatisticsGraph.destroy() }
-                var graphData = get_statistics_graph_data('suite', suiteStatisticsGraphType, filteredSuites)
-                if (suiteStatisticsGraphType == 'line') {
-                    var config = get_graph_config('line', graphData, 'Amount Of Tests (Line)', 'Date', 'amount', false)
-                    suiteStatisticsGraph = new Chart('suiteStatisticsGraph', config);
-                } else if (suiteStatisticsGraphType == 'amount') {
+                if (suiteStatisticsGraph) {
+                    suiteStatisticsGraph.destroy();
+                }
+                var graphData = get_statistics_graph_data("suite", suiteStatisticsGraphType, filteredSuites);
+                if (suiteStatisticsGraphType == "line") {
+                    var config = get_graph_config("line", graphData, "Amount Of Tests (Line)", "Date", "amount", false);
+                    suiteStatisticsGraph = new Chart("suiteStatisticsGraph", config);
+                } else if (suiteStatisticsGraphType == "amount") {
                     Chart.register(ChartDataLabels);
-                    var config = get_graph_config('bar', graphData, 'Suite Statistics (Bar)', 'Run', 'Amount Of Tests')
-                    suiteStatisticsGraph = new Chart('suiteStatisticsGraph', config)
-                } else if (suiteStatisticsGraphType == 'percentages') {
+                    var config = get_graph_config("bar", graphData, "Suite Statistics (Bar)", "Run", "Amount Of Tests");
+                    suiteStatisticsGraph = new Chart("suiteStatisticsGraph", config);
+                } else if (suiteStatisticsGraphType == "percentages") {
                     Chart.register(ChartDataLabels);
-                    var config = get_graph_config('bar', graphData, 'Suite Statistics (Bar)', 'Run', 'Percentage')
-                    suiteStatisticsGraph = new Chart('suiteStatisticsGraph', config)
+                    var config = get_graph_config("bar", graphData, "Suite Statistics (Bar)", "Run", "Percentage");
+                    suiteStatisticsGraph = new Chart("suiteStatisticsGraph", config);
                 }
             }
 
             function create_suite_duration_graph(type) {
-                if (typeof (type) === 'string') {
-                    suiteDurationGraphType = type
+                if (typeof type === "string") {
+                    suiteDurationGraphType = type;
                 }
-                if (suiteDurationGraph) { suiteDurationGraph.destroy() }
-                var graphData = get_duration_graph_data('suite', suiteDurationGraphType, 'elapsed_s', filteredSuites)
-                if (suiteDurationGraphType == 'bar') {
-                    var config = get_graph_config('bar', graphData, 'Suite Duration (Bar)', 'Run', 'Duration')
-                    suiteDurationGraph = new Chart('suiteDurationGraph', config)
-                } else if (suiteDurationGraphType == 'line') {
-                    var config = get_graph_config('line', graphData, 'Suite Duration (Line)', 'Date', 'Duration')
-                    suiteDurationGraph = new Chart('suiteDurationGraph', config);
+                if (suiteDurationGraph) {
+                    suiteDurationGraph.destroy();
+                }
+                var graphData = get_duration_graph_data("suite", suiteDurationGraphType, "elapsed_s", filteredSuites);
+                if (suiteDurationGraphType == "bar") {
+                    var config = get_graph_config("bar", graphData, "Suite Duration (Bar)", "Run", "Duration");
+                    suiteDurationGraph = new Chart("suiteDurationGraph", config);
+                } else if (suiteDurationGraphType == "line") {
+                    var config = get_graph_config("line", graphData, "Suite Duration (Line)", "Date", "Duration");
+                    suiteDurationGraph = new Chart("suiteDurationGraph", config);
                 }
             }
 
             function create_suite_table() {
-                if (suiteTable) { suiteTable.destroy() }
-                data = []
+                if (suiteTable) {
+                    suiteTable.destroy();
+                }
+                data = [];
                 for (suite of filteredSuites) {
                     data.push([
                         suite.run_start,
@@ -895,94 +885,98 @@
                         suite.failed,
                         suite.skipped,
                         suite.elapsed_s,
-                        suite.start_time
-                    ])
+                        suite.start_time,
+                    ]);
                 }
-                suiteTable = new DataTable('#suiteTable', {
+                suiteTable = new DataTable("#suiteTable", {
                     layout: {
-                        topStart: 'info',
+                        topStart: "info",
                         bottomStart: null,
                     },
                     columns: [
-                        { title: 'run' },
-                        { title: 'full_name' },
-                        { title: 'name' },
-                        { title: 'total' },
-                        { title: 'passed' },
-                        { title: 'failed' },
-                        { title: 'skipped' },
-                        { title: 'elapsed_s' },
-                        { title: 'start_time' }
+                        { title: "run" },
+                        { title: "full_name" },
+                        { title: "name" },
+                        { title: "total" },
+                        { title: "passed" },
+                        { title: "failed" },
+                        { title: "skipped" },
+                        { title: "elapsed_s" },
+                        { title: "start_time" },
                     ],
-                    data: data
+                    data: data,
                 });
             }
 
             function create_test_status_graph() {
-                if (testStatusGraph) { testStatusGraph.destroy() }
-                var suiteSelectTests = document.getElementById('suiteSelectTests').value
-                var testSelect = document.getElementById('testSelect').value
-                var labels = []
-                var runStarts = []
-                for (const [key, value] of Object.entries(filteredTests)) {
-                    if (!value.full_name.includes(`.${suiteSelectTests}.`)) {
-                        continue
+                if (testStatusGraph) {
+                    testStatusGraph.destroy();
+                }
+                var suiteSelectTests = document.getElementById("suiteSelectTests").value;
+                var testSelect = document.getElementById("testSelect").value;
+                var labels = [];
+                var runStarts = [];
+                for (test of filteredTests) {
+                    if (!test.full_name.includes(`.${suiteSelectTests}.`)) {
+                        continue;
                     }
-                    if (showOnlySelectedTestStatistic && testSelect != 'All' && value.name != testSelect) {
-                        continue
+                    if (showOnlySelectedTestStatistic && testSelect != "All" && test.name != testSelect) {
+                        continue;
                     }
-                    if (!labels.includes(value.name)) {
-                        labels.push(value.name)
+                    if (!labels.includes(test.name)) {
+                        labels.push(test.name);
                     }
-                    if (!runStarts.includes(value.run_start)) {
-                        runStarts.push(value.run_start)
+                    if (!runStarts.includes(test.run_start)) {
+                        runStarts.push(test.run_start);
                     }
                 }
-                var datasets = []
-                var runAxis = 0
+                var datasets = [];
+                var runAxis = 0;
                 for (runStart of runStarts) {
                     for (label of labels) {
-                        var foundTests = filteredTests.filter(obj => {
-                            // filter only tests in this suite, suite select check is required for duplicate test names over suites
-                            return (obj.name == label && obj.run_start == runStart && obj.full_name.includes(`.${suiteSelectTests}.`))
-                        })
+                        var foundTests = [];
+                        for (test of filteredTests) {
+                            if (test.name == label && test.run_start == runStart && test.full_name.includes(`.${suiteSelectTests}.`)) {
+                                foundTests.push(test);
+                            }
+                        }
                         if (foundTests.length > 0) {
-                            var value = foundTests[0]
+                            var value = foundTests[0];
                             if (value.passed == 1) {
                                 datasets.push({
                                     label: label,
                                     data: [{ x: [runAxis, runAxis + 1], y: label }],
                                     backgroundColor: [passedBackgroundColor],
-                                    borderWidth: 1
-                                })
+                                    borderWidth: 1,
+                                });
                             } else if (value.failed == 1) {
                                 datasets.push({
                                     label: label,
                                     data: [{ x: [runAxis, runAxis + 1], y: label }],
                                     backgroundColor: [failedBackgroundColor],
-                                    borderWidth: 1
-                                })
+                                    borderWidth: 1,
+                                });
                             } else if (value.skipped == 1) {
                                 datasets.push({
                                     label: label,
                                     data: [{ x: [runAxis, runAxis + 1], y: label }],
                                     backgroundColor: [skippedBackgroundColor],
-                                    borderWidth: 1
-                                })
+                                    borderWidth: 1,
+                                });
                             }
                         } else {
                             datasets.push({
                                 label: label,
                                 data: [{ x: [runAxis, runAxis + 1], y: label }],
                                 backgroundColor: [greyBackgroundColor],
-                                borderWidth: 1
-                            })
+                                borderWidth: 1,
+                            });
                         }
                     }
-                    runAxis += 1
+                    runAxis += 1;
                 }
-                testStatusGraph = new Chart('testStatusGraph', {
-                    type: 'bar',
+                testStatusGraph = new Chart("testStatusGraph", {
+                    type: "bar",
                     data: {
                         labels: labels,
                         datasets: datasets,
@@ -990,7 +984,7 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        indexAxis: 'y',
+                        indexAxis: "y",
                         scales: {
                             y: {
                                 stacked: true,
@@ -999,15 +993,15 @@
                                 ticks: {
                                     minRotation: 20,
                                     callback: function (value, index, ticks) {
-                                        return runStarts[this.getLabelForValue(value)]
-                                    }
-                                }
-                            }
+                                        return runStarts[this.getLabelForValue(value)];
+                                    },
+                                },
+                            },
                         },
                         plugins: {
                             title: {
-                                text: 'Test Status (Bar)',
-                                display: true
+                                text: "Test Status (Bar)",
+                                display: true,
                             },
                             legend: {
                                 display: false,
@@ -1019,163 +1013,171 @@
                                 callbacks: {
                                     label: function (context) {
                                         return runStarts[context.raw.x[0]];
-                                    }
-                                }
+                                    },
+                                },
                             },
-                        }
-                    }
+                        },
+                    },
                 });
             }
 
             function create_test_duration_graph(type) {
-                if (typeof (type) === 'string') {
-                    testDurationGraphType = type
+                if (typeof type === "string") {
+                    testDurationGraphType = type;
                 }
-                if (testDurationGraph) { testDurationGraph.destroy() }
-                var graphData = get_duration_graph_data('test', testDurationGraphType, 'elapsed_s', filteredTests)
-                if (testDurationGraphType == 'bar') {
-                    var config = get_graph_config('bar', graphData, 'Test Duration (Bar)', 'Run', 'Duration')
-                    testDurationGraph = new Chart('testDurationGraph', config)
-                } else if (testDurationGraphType == 'line') {
-                    var config = get_graph_config('line', graphData, 'Test Duration (Line)', 'Date', 'Duration')
-                    testDurationGraph = new Chart('testDurationGraph', config);
+                if (testDurationGraph) {
+                    testDurationGraph.destroy();
+                }
+                var graphData = get_duration_graph_data("test", testDurationGraphType, "elapsed_s", filteredTests);
+                if (testDurationGraphType == "bar") {
+                    var config = get_graph_config("bar", graphData, "Test Duration (Bar)", "Run", "Duration");
+                    testDurationGraph = new Chart("testDurationGraph", config);
+                } else if (testDurationGraphType == "line") {
+                    var config = get_graph_config("line", graphData, "Test Duration (Line)", "Date", "Duration");
+                    testDurationGraph = new Chart("testDurationGraph", config);
                 }
             }
 
             function create_test_table() {
-                if (testTable) { testTable.destroy() }
-                data = []
-                for (test of filteredTests) {
-                    data.push([
-                        test.run_start,
-                        test.full_name,
-                        test.name,
-                        test.passed,
-                        test.failed,
-                        test.skipped,
-                        test.elapsed_s,
-                        test.start_time,
-                        test.tags,
-                    ])
+                if (testTable) {
+                    testTable.destroy();
                 }
-                testTable = new DataTable('#testTable', {
+                data = [];
+                for (test of filteredTests) {
+                    data.push([test.run_start, test.full_name, test.name, test.passed, test.failed, test.skipped, test.elapsed_s, test.start_time, test.tags]);
+                }
+                testTable = new DataTable("#testTable", {
                     layout: {
-                        topStart: 'info',
+                        topStart: "info",
                         bottomStart: null,
                     },
                     columns: [
-                        { title: 'run' },
-                        { title: 'full_name' },
-                        { title: 'name' },
-                        { title: 'passed' },
-                        { title: 'failed' },
-                        { title: 'skipped' },
-                        { title: 'elapsed_s' },
-                        { title: 'start_time' },
-                        { title: 'tags' },
+                        { title: "run" },
+                        { title: "full_name" },
+                        { title: "name" },
+                        { title: "passed" },
+                        { title: "failed" },
+                        { title: "skipped" },
+                        { title: "elapsed_s" },
+                        { title: "start_time" },
+                        { title: "tags" },
                     ],
-                    data: data
+                    data: data,
                 });
             }
 
             function create_keyword_statistics_graph(type) {
-                if (typeof (type) === 'string') {
-                    keywordStatisticsGraphType = type
+                if (typeof type === "string") {
+                    keywordStatisticsGraphType = type;
                 }
-                if (keywordStatisticsGraph) { keywordStatisticsGraph.destroy() }
-                var graphData = get_statistics_graph_data('keyword', keywordStatisticsGraphType, filteredKeywords)
-                if (keywordStatisticsGraphType == 'line') {
-                    var config = get_graph_config('line', graphData, 'Keyword Statistics (Line)', 'Date', 'Amount', false)
-                    keywordStatisticsGraph = new Chart('keywordStatisticsGraph', config);
-                } else if (keywordStatisticsGraphType == 'amount') {
+                if (keywordStatisticsGraph) {
+                    keywordStatisticsGraph.destroy();
+                }
+                var graphData = get_statistics_graph_data("keyword", keywordStatisticsGraphType, filteredKeywords);
+                if (keywordStatisticsGraphType == "line") {
+                    var config = get_graph_config("line", graphData, "Keyword Statistics (Line)", "Date", "Amount", false);
+                    keywordStatisticsGraph = new Chart("keywordStatisticsGraph", config);
+                } else if (keywordStatisticsGraphType == "amount") {
                     Chart.register(ChartDataLabels);
-                    var config = get_graph_config('bar', graphData, 'Keyword Statistics (Bar)', 'Run', 'Amount')
-                    keywordStatisticsGraph = new Chart('keywordStatisticsGraph', config)
-                } else if (keywordStatisticsGraphType == 'percentages') {
+                    var config = get_graph_config("bar", graphData, "Keyword Statistics (Bar)", "Run", "Amount");
+                    keywordStatisticsGraph = new Chart("keywordStatisticsGraph", config);
+                } else if (keywordStatisticsGraphType == "percentages") {
                     Chart.register(ChartDataLabels);
-                    var config = get_graph_config('bar', graphData, 'Keyword Statistics (Bar)', 'Run', 'Percentage')
-                    keywordStatisticsGraph = new Chart('keywordStatisticsGraph', config);
+                    var config = get_graph_config("bar", graphData, "Keyword Statistics (Bar)", "Run", "Percentage");
+                    keywordStatisticsGraph = new Chart("keywordStatisticsGraph", config);
                 }
             }
 
             function create_keyword_times_run_graph(type) {
-                if (typeof (type) === 'string') {
-                    keywordTimesRunGraphType = type
+                if (typeof type === "string") {
+                    keywordTimesRunGraphType = type;
                 }
-                if (keywordTimesRunGraph) { keywordTimesRunGraph.destroy() }
-                var graphData = get_duration_graph_data('keyword', keywordTimesRunGraphType, 'times_run', filteredKeywords)
-                if (keywordTimesRunGraphType == 'bar') {
-                    var config = get_graph_config('bar', graphData, 'Times Run (Bar)', 'Run', 'Duration')
-                    keywordTimesRunGraph = new Chart('keywordTimesRunGraph', config)
-                } else if (keywordTimesRunGraphType == 'line') {
-                    var config = get_graph_config('line', graphData, 'Times Run (Line)', 'Date', 'Duration')
-                    keywordTimesRunGraph = new Chart('keywordTimesRunGraph', config);
+                if (keywordTimesRunGraph) {
+                    keywordTimesRunGraph.destroy();
+                }
+                var graphData = get_duration_graph_data("keyword", keywordTimesRunGraphType, "times_run", filteredKeywords);
+                if (keywordTimesRunGraphType == "bar") {
+                    var config = get_graph_config("bar", graphData, "Times Run (Bar)", "Run", "Duration");
+                    keywordTimesRunGraph = new Chart("keywordTimesRunGraph", config);
+                } else if (keywordTimesRunGraphType == "line") {
+                    var config = get_graph_config("line", graphData, "Times Run (Line)", "Date", "Duration");
+                    keywordTimesRunGraph = new Chart("keywordTimesRunGraph", config);
                 }
             }
 
             function create_keyword_total_time_graph(type) {
-                if (typeof (type) === 'string') {
-                    keywordTotalTimeGraphType = type
+                if (typeof type === "string") {
+                    keywordTotalTimeGraphType = type;
                 }
-                if (keywordTotalTimeGraph) { keywordTotalTimeGraph.destroy() }
-                var graphData = get_duration_graph_data('keyword', keywordTotalTimeGraphType, 'total_time_s', filteredKeywords)
-                if (keywordTotalTimeGraphType == 'bar') {
-                    var config = get_graph_config('bar', graphData, 'Total Duration (Bar)', 'Run', 'Duration')
-                    keywordTotalTimeGraph = new Chart('keywordTotalTimeGraph', config)
-                } else if (keywordTotalTimeGraphType == 'line') {
-                    var config = get_graph_config('line', graphData, 'Total Duration (Line)', 'Date', 'Duration')
-                    keywordTotalTimeGraph = new Chart('keywordTotalTimeGraph', config);
+                if (keywordTotalTimeGraph) {
+                    keywordTotalTimeGraph.destroy();
+                }
+                var graphData = get_duration_graph_data("keyword", keywordTotalTimeGraphType, "total_time_s", filteredKeywords);
+                if (keywordTotalTimeGraphType == "bar") {
+                    var config = get_graph_config("bar", graphData, "Total Duration (Bar)", "Run", "Duration");
+                    keywordTotalTimeGraph = new Chart("keywordTotalTimeGraph", config);
+                } else if (keywordTotalTimeGraphType == "line") {
+                    var config = get_graph_config("line", graphData, "Total Duration (Line)", "Date", "Duration");
+                    keywordTotalTimeGraph = new Chart("keywordTotalTimeGraph", config);
                 }
             }
 
             function create_keyword_average_time_graph(type) {
-                if (typeof (type) === 'string') {
-                    keywordAverageTimeGraphType = type
+                if (typeof type === "string") {
+                    keywordAverageTimeGraphType = type;
                 }
-                if (keywordAverageTimeGraph) { keywordAverageTimeGraph.destroy() }
-                var graphData = get_duration_graph_data('keyword', keywordAverageTimeGraphType, 'average_time_s', filteredKeywords)
-                if (keywordAverageTimeGraphType == 'bar') {
-                    var config = get_graph_config('bar', graphData, 'Average Duration (Bar)', 'Run', 'Duration')
-                    keywordAverageTimeGraph = new Chart('keywordAverageTimeGraph', config)
-                } else if (keywordAverageTimeGraphType == 'line') {
-                    var config = get_graph_config('line', graphData, 'Average Duration (Line)', 'Date', 'Duration')
-                    keywordAverageTimeGraph = new Chart('keywordAverageTimeGraph', config);
+                if (keywordAverageTimeGraph) {
+                    keywordAverageTimeGraph.destroy();
+                }
+                var graphData = get_duration_graph_data("keyword", keywordAverageTimeGraphType, "average_time_s", filteredKeywords);
+                if (keywordAverageTimeGraphType == "bar") {
+                    var config = get_graph_config("bar", graphData, "Average Duration (Bar)", "Run", "Duration");
+                    keywordAverageTimeGraph = new Chart("keywordAverageTimeGraph", config);
+                } else if (keywordAverageTimeGraphType == "line") {
+                    var config = get_graph_config("line", graphData, "Average Duration (Line)", "Date", "Duration");
+                    keywordAverageTimeGraph = new Chart("keywordAverageTimeGraph", config);
                 }
             }
 
             function create_keyword_min_time_graph(type) {
-                if (typeof (type) === 'string') {
-                    keywordMinTimeGraphType = type
+                if (typeof type === "string") {
+                    keywordMinTimeGraphType = type;
                 }
-                if (keywordMinTimeGraph) { keywordMinTimeGraph.destroy() }
-                var graphData = get_duration_graph_data('keyword', keywordMinTimeGraphType, 'min_time_s', filteredKeywords)
-                if (keywordMinTimeGraphType == 'bar') {
-                    var config = get_graph_config('bar', graphData, 'Min Duration (Bar)', 'Run', 'Duration')
-                    keywordMinTimeGraph = new Chart('keywordMinTimeGraph', config)
-                } else if (keywordMinTimeGraphType == 'line') {
-                    var config = get_graph_config('line', graphData, 'Min Duration (Line)', 'Date', 'Duration')
-                    keywordMinTimeGraph = new Chart('keywordMinTimeGraph', config);
+                if (keywordMinTimeGraph) {
+                    keywordMinTimeGraph.destroy();
+                }
+                var graphData = get_duration_graph_data("keyword", keywordMinTimeGraphType, "min_time_s", filteredKeywords);
+                if (keywordMinTimeGraphType == "bar") {
+                    var config = get_graph_config("bar", graphData, "Min Duration (Bar)", "Run", "Duration");
+                    keywordMinTimeGraph = new Chart("keywordMinTimeGraph", config);
+                } else if (keywordMinTimeGraphType == "line") {
+                    var config = get_graph_config("line", graphData, "Min Duration (Line)", "Date", "Duration");
+                    keywordMinTimeGraph = new Chart("keywordMinTimeGraph", config);
                 }
             }
 
             function create_keyword_max_time_graph(type) {
-                if (typeof (type) === 'string') {
-                    keywordMaxTimeGraphType = type
+                if (typeof type === "string") {
+                    keywordMaxTimeGraphType = type;
                 }
-                if (keywordMaxTimeGraph) { keywordMaxTimeGraph.destroy() }
-                var graphData = get_duration_graph_data('keyword', keywordMaxTimeGraphType, 'max_time_s', filteredKeywords)
-                if (keywordMaxTimeGraphType == 'bar') {
-                    var config = get_graph_config('bar', graphData, 'Max Duration (Bar)', 'Run', 'Duration')
-                    keywordMaxTimeGraph = new Chart('keywordMaxTimeGraph', config)
-                } else if (keywordMaxTimeGraphType == 'line') {
-                    var config = get_graph_config('line', graphData, 'Max Duration (Line)', 'Date', 'Duration')
-                    keywordMaxTimeGraph = new Chart('keywordMaxTimeGraph', config);
+                if (keywordMaxTimeGraph) {
+                    keywordMaxTimeGraph.destroy();
+                }
+                var graphData = get_duration_graph_data("keyword", keywordMaxTimeGraphType, "max_time_s", filteredKeywords);
+                if (keywordMaxTimeGraphType == "bar") {
+                    var config = get_graph_config("bar", graphData, "Max Duration (Bar)", "Run", "Duration");
+                    keywordMaxTimeGraph = new Chart("keywordMaxTimeGraph", config);
+                } else if (keywordMaxTimeGraphType == "line") {
+                    var config = get_graph_config("line", graphData, "Max Duration (Line)", "Date", "Duration");
+                    keywordMaxTimeGraph = new Chart("keywordMaxTimeGraph", config);
                 }
             }
 
             function create_keyword_table() {
-                if (keywordTable) { keywordTable.destroy() }
-                data = []
+                if (keywordTable) {
+                    keywordTable.destroy();
+                }
+                data = [];
                 for (keyword of filteredKeywords) {
                     data.push([
                         keyword.run_start,
@@ -1188,36 +1190,36 @@
                         keyword.average_time_s,
                         keyword.min_time_s,
                         keyword.max_time_s,
-                    ])
+                    ]);
                 }
-                keywordTable = new DataTable('#keywordTable', {
+                keywordTable = new DataTable("#keywordTable", {
                     layout: {
-                        topStart: 'info',
+                        topStart: "info",
                         bottomStart: null,
                     },
                     columns: [
-                        { title: 'run' },
-                        { title: 'name' },
-                        { title: 'passed' },
-                        { title: 'failed' },
-                        { title: 'skipped' },
-                        { title: 'times_run' },
-                        { title: 'total_execution_time' },
-                        { title: 'average_execution_time' },
-                        { title: 'min_execution_time' },
-                        { title: 'max_execution_time' },
+                        { title: "run" },
+                        { title: "name" },
+                        { title: "passed" },
+                        { title: "failed" },
+                        { title: "skipped" },
+                        { title: "times_run" },
+                        { title: "total_execution_time" },
+                        { title: "average_execution_time" },
+                        { title: "min_execution_time" },
+                        { title: "max_execution_time" },
                     ],
-                    data: data
+                    data: data,
                 });
             }
 
             function get_graph_config(graphType, graphData, graphTitle, xTitle, yTitle, dataSets = true) {
-                if (dataSets && graphType == 'line') {
-                    graphData = { datasets: graphData }
+                if (dataSets && graphType == "line") {
+                    graphData = { datasets: graphData };
                 }
-                if (graphType == 'line') {
+                if (graphType == "line") {
                     return {
-                        type: 'line',
+                        type: "line",
                         data: graphData,
                         options: {
                             responsive: true,
@@ -1225,40 +1227,40 @@
                             plugins: {
                                 title: {
                                     text: graphTitle,
-                                    display: true
+                                    display: true,
                                 },
                                 datalabels: {
                                     display: false,
                                 },
                                 legend: {
                                     display: true,
-                                }
+                                },
                             },
                             scales: {
                                 x: {
-                                    type: 'time',
+                                    type: "time",
                                     time: {
-                                        tooltipFormat: 'dd.MM.yyyy - HH:mm:ss.SSS'
+                                        tooltipFormat: "dd.MM.yyyy - HH:mm:ss.SSS",
                                     },
                                     title: {
                                         display: true,
-                                        text: xTitle
-                                    }
+                                        text: xTitle,
+                                    },
                                 },
                                 y: {
                                     beginAtZero: true,
                                     title: {
                                         display: true,
-                                        text: yTitle
+                                        text: yTitle,
                                     },
-                                    grace: '5%'
-                                }
-                            }
-                        }
-                    }
-                } else if (graphType == 'bar') {
+                                    grace: "5%",
+                                },
+                            },
+                        },
+                    };
+                } else if (graphType == "bar") {
                     return {
-                        type: 'bar',
+                        type: "bar",
                         data: graphData,
                         options: {
                             responsive: true,
@@ -1267,23 +1269,23 @@
                                 x: {
                                     title: {
                                         display: true,
-                                        text: xTitle
+                                        text: xTitle,
                                     },
                                     ticks: {
-                                        minRotation: 20
-                                    }
+                                        minRotation: 20,
+                                    },
                                 },
                                 y: {
                                     stacked: true,
                                     title: {
                                         display: true,
-                                        text: yTitle
+                                        text: yTitle,
                                     },
-                                    grace: '5%'
-                                }
+                                    grace: "5%",
+                                },
                             },
                             interaction: {
-                                mode: 'x'
+                                mode: "x",
                             },
                             plugins: {
                                 title: {
@@ -1291,189 +1293,206 @@
                                     text: graphTitle,
                                 },
                                 tooltip: {
-                                    filter: tooltipItem => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0
+                                    filter: (tooltipItem) => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0,
                                 },
                                 datalabels: {
-                                    color: '#000000',
-                                    align: 'center',
-                                    anchor: 'center',
+                                    color: "#000000",
+                                    align: "center",
+                                    anchor: "center",
                                     formatter: function (value) {
                                         if (value > 0) {
-                                            return value
+                                            return value;
                                         } else {
-                                            value = '';
+                                            value = "";
                                             return value;
                                         }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                                    },
+                                },
+                            },
+                        },
+                    };
                 }
             }
 
             function get_statistics_graph_data(dataType, graphType, filteredData) {
-                var keywordSelect = document.getElementById('keywordSelect').value
-                var suiteSelectSuites = document.getElementById('suiteSelectSuites').value
-                var [passed, failed, skipped, labels] = [[], [], [], []]
-                for (const [key, value] of Object.entries(filteredData)) {
-                    if (graphType == 'percentages') {
-                        if (dataType == 'suite' && value.name != suiteSelectSuites) {
-                            continue
+                var keywordSelect = document.getElementById("keywordSelect").value;
+                var suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
+                var [passed, failed, skipped, labels] = [[], [], [], []];
+                for (value of filteredData) {
+                    if (graphType == "percentages") {
+                        if (dataType == "suite" && value.name != suiteSelectSuites) {
+                            continue;
                         }
-                        if (dataType == 'keyword') {
+                        if (dataType == "keyword") {
                             if (value.name != keywordSelect) {
-                                continue
+                                continue;
                             } else {
-                                passed.push(Math.round(value.passed / (value.passed + value.failed + value.skipped) * 100 * 100) / 100)
-                                failed.push(Math.round(value.failed / (value.passed + value.failed + value.skipped) * 100 * 100) / 100)
-                                skipped.push(Math.round(value.skipped / (value.passed + value.failed + value.skipped) * 100 * 100) / 100)
-                                labels.push(value.run_start)
+                                passed.push(Math.round((value.passed / (value.passed + value.failed + value.skipped)) * 100 * 100) / 100);
+                                failed.push(Math.round((value.failed / (value.passed + value.failed + value.skipped)) * 100 * 100) / 100);
+                                skipped.push(Math.round((value.skipped / (value.passed + value.failed + value.skipped)) * 100 * 100) / 100);
+                                labels.push(value.run_start);
                             }
                         } else {
-                            passed.push(Math.round(value.passed / value.total * 100 * 100) / 100)
-                            failed.push(Math.round(value.failed / value.total * 100 * 100) / 100)
-                            skipped.push(Math.round(value.skipped / value.total * 100 * 100) / 100)
-                            labels.push(value.run_start)
+                            passed.push(Math.round((value.passed / value.total) * 100 * 100) / 100);
+                            failed.push(Math.round((value.failed / value.total) * 100 * 100) / 100);
+                            skipped.push(Math.round((value.skipped / value.total) * 100 * 100) / 100);
+                            labels.push(value.run_start);
                         }
                     } else {
-                        if (dataType == 'suite' && value.name != suiteSelectSuites) {
-                            continue
+                        if (dataType == "suite" && value.name != suiteSelectSuites) {
+                            continue;
                         }
-                        if (dataType == 'keyword' && value.name != keywordSelect) {
-                            continue
+                        if (dataType == "keyword" && value.name != keywordSelect) {
+                            continue;
                         }
-                        passed.push(value.passed)
-                        failed.push(value.failed)
-                        skipped.push(value.skipped)
-                        labels.push(value.run_start)
+                        passed.push(value.passed);
+                        failed.push(value.failed);
+                        skipped.push(value.skipped);
+                        labels.push(value.run_start);
                     }
                 }
-                if (graphType != 'line') {
+                if (graphType != "line") {
                     var statisticsData = {
                         labels: labels,
                         datasets: [
                             {
-                                label: 'Failed',
+                                label: "Failed",
                                 data: failed,
                                 backgroundColor: failedBackgroundColor,
-                                stack: 'Stack 0',
+                                stack: "Stack 0",
                             },
                             {
-                                label: 'Skipped',
+                                label: "Skipped",
                                 data: skipped,
                                 backgroundColor: skippedBackgroundColor,
-                                stack: 'Stack 0',
+                                stack: "Stack 0",
                             },
                             {
-                                label: 'Passed',
+                                label: "Passed",
                                 data: passed,
                                 backgroundColor: passedBackgroundColor,
-                                stack: 'Stack 0',
+                                stack: "Stack 0",
                             },
-                        ]
+                        ],
                     };
                 } else {
                     var statisticsData = {
                         labels: labels,
                         datasets: [
                             {
-                                label: 'Failed',
+                                label: "Failed",
                                 data: failed,
                                 backgroundColor: failedBackgroundColor,
+                                borderColor: failedBackgroundColor
                             },
                             {
-                                label: 'Skipped',
+                                label: "Skipped",
                                 data: skipped,
                                 backgroundColor: skippedBackgroundColor,
+                                borderColor: skippedBackgroundColor
                             },
                             {
-                                label: 'Passed',
+                                label: "Passed",
                                 data: passed,
                                 backgroundColor: passedBackgroundColor,
+                                borderColor: passedBackgroundColor
                             },
-                        ]
-                    }
+                        ],
+                    };
                 }
-                return statisticsData
+                return statisticsData;
             }
 
             function get_duration_graph_data(dataType, graphType, objectDataAttribute, filteredData) {
                 // used for suite selection filter
-                var suiteSelectSuites = document.getElementById('suiteSelectSuites').value
+                var suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
                 // used for test selection filter
-                var suiteSelectTests = document.getElementById('suiteSelectTests').value
-                var testSelect = document.getElementById('testSelect').value
+                var suiteSelectTests = document.getElementById("suiteSelectTests").value;
+                var testSelect = document.getElementById("testSelect").value;
                 // used for keyword selection filter
-                var keywordSelect = document.getElementById('keywordSelect').value
-                if (graphType == 'bar') {
-                    var [labels, data] = [[], { 0: [] }]
+                var keywordSelect = document.getElementById("keywordSelect").value;
+                if (graphType == "bar") {
+                    var [labels, data] = [[], { 0: [] }];
                     // prepare data for bar chart
-                    for (const [key, value] of Object.entries(filteredData)) {
-                        if (dataType == 'keyword' && value.name != keywordSelect) { continue }
-                        if (dataType == 'suite' && value.name != suiteSelectSuites) { continue }
-                        if (dataType == 'test' && !value.full_name.includes(`.${suiteSelectTests}.`)) { continue }
-                        if (dataType == 'test' && testSelect != 'All' && value.name != testSelect) { continue }
-                        labels.push(value.run_start)
-                        var dataLength = data[0].length
+                    for (value of filteredData) {
+                        if (dataType == "keyword" && value.name != keywordSelect) {
+                            continue;
+                        }
+                        if (dataType == "suite" && value.name != suiteSelectSuites) {
+                            continue;
+                        }
+                        if (dataType == "test" && !value.full_name.includes(`.${suiteSelectTests}.`)) {
+                            continue;
+                        }
+                        if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
+                            continue;
+                        }
+                        labels.push(value.run_start);
+                        var dataLength = data[0].length;
                         if (data[value.name]) {
                             // add 0 to all not matching, and value.elapsed to matching
-                            data[value.name].push(Math.round(value[objectDataAttribute] * 100) / 100)
+                            data[value.name].push(Math.round(value[objectDataAttribute] * 100) / 100);
                         } else {
                             // add longest amount of 0's to matched and 1 zero to not matching
-                            data[value.name] = []
+                            data[value.name] = [];
                             for (let step = 0; step < dataLength; step++) {
-                                data[value.name].push(0)
+                                data[value.name].push(0);
                             }
-                            data[value.name].push(Math.round(value[objectDataAttribute] * 100) / 100)
+                            data[value.name].push(Math.round(value[objectDataAttribute] * 100) / 100);
                         }
                         // add 0 to every other value
                         for (d in data) {
                             if (d != value.name) {
-                                data[d].push(0)
+                                data[d].push(0);
                             }
                         }
                     }
-                    delete data[0]
+                    delete data[0];
                     var graphData = {
                         labels: labels,
                         datasets: [],
-                    }
+                    };
                     for (key in data) {
-                        graphData['datasets'].push({
+                        graphData["datasets"].push({
                             label: key,
                             data: data[key],
-                            stack: 'Stack 0'
-                        })
-
+                            stack: "Stack 0",
+                        });
                     }
-                    return graphData
-                } else if (graphType == 'line') {
-                    var [labels, datasets, sets] = [[], [], {}]
-                    for (const [key, value] of Object.entries(filteredData)) {
-                        if (dataType == 'keyword' && value.name != keywordSelect) { continue }
-                        if (dataType == 'suite' && value.name != suiteSelectSuites) { continue }
-                        if (dataType == 'test' && !value.full_name.includes(`.${suiteSelectTests}.`)) { continue }
-                        if (dataType == 'test' && testSelect != 'All' && value.name != testSelect) { continue }
-                        var name = value.name
-                        var run_start = new Date(value.run_start)
-                        var rounded_value = Math.round(value[objectDataAttribute] * 100) / 100
+                    return graphData;
+                } else if (graphType == "line") {
+                    var [labels, datasets, sets] = [[], [], {}];
+                    for (value of filteredData) {
+                        if (dataType == "keyword" && value.name != keywordSelect) {
+                            continue;
+                        }
+                        if (dataType == "suite" && value.name != suiteSelectSuites) {
+                            continue;
+                        }
+                        if (dataType == "test" && !value.full_name.includes(`.${suiteSelectTests}.`)) {
+                            continue;
+                        }
+                        if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
+                            continue;
+                        }
+                        var name = value.name;
+                        var run_start = new Date(value.run_start);
+                        var rounded_value = Math.round(value[objectDataAttribute] * 100) / 100;
                         if (labels.includes(name)) {
-                            var values = sets[name]
-                            values.push({ x: run_start, y: rounded_value })
-                            sets[name] = values
+                            var values = sets[name];
+                            values.push({ x: run_start, y: rounded_value });
+                            sets[name] = values;
                         } else {
-                            labels.push(name)
-                            sets[name] = [{ x: run_start, y: rounded_value }]
+                            labels.push(name);
+                            sets[name] = [{ x: run_start, y: rounded_value }];
                         }
                     }
                     for (const [key, value] of Object.entries(sets)) {
-                        datasets.push({ label: key, fill: false, data: value })
+                        datasets.push({ label: key, fill: false, data: value });
                     }
-                    return datasets
+                    return datasets;
                 }
             }
         </script>
-</body>
-
+    </body>
 </html>

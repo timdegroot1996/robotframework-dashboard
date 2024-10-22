@@ -13,19 +13,19 @@ class DashboardGenerator:
         with open(index_html, "r") as file:
             dashboard_data = file.read()
             dashboard_data = dashboard_data.replace(
-                "'placeholder_runs'", dumps(data["runs"])
+                '"placeholder_runs"', dumps(data["runs"])
             )
             dashboard_data = dashboard_data.replace(
-                "'placeholder_suites'", dumps(data["suites"])
+                '"placeholder_suites"', dumps(data["suites"])
             )
             dashboard_data = dashboard_data.replace(
-                "'placeholder_tests'", dumps(data["tests"])
+                '"placeholder_tests"', dumps(data["tests"])
             )
             dashboard_data = dashboard_data.replace(
-                "'placeholder_keywords'", dumps(data["keywords"])
+                '"placeholder_keywords"', dumps(data["keywords"])
             )
             dashboard_data = dashboard_data.replace(
-                "'placeholder_generation_date'", str(generation_datetime)[:-7]
+                '"placeholder_generation_date"', str(generation_datetime)[:-7]
             )
 
         # handle possible subdirectories
