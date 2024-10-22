@@ -191,7 +191,7 @@
                             <select class="form-select form-select-sm" id="suiteSelectTests"></select>
                         </div>
                         <div class="col-auto">
-                            <label class="form-label form-label-sm" for="suiteSelectTests">Select Test</label>
+                            <label class="form-label form-label-sm" for="testSelect">Select Test</label>
                             <select class="form-select form-select-sm" id="testSelect"></select>
                         </div>
                     </div>
@@ -513,9 +513,9 @@
                 create_test_status_graph();
             });
             document.getElementById("suiteSelectTests").addEventListener("change", (e) => {
+                add_tests_in_select();
                 create_test_status_graph();
                 create_test_duration_graph();
-                add_tests_in_select();
             });
             document.getElementById("testSelect").addEventListener("change", (e) => {
                 if (showOnlySelectedTestStatistic) {
@@ -727,7 +727,7 @@
                 suiteSelect = document.getElementById("suiteSelectTests").value;
                 var testNames = [];
                 for (test of filteredTests) {
-                    if (test.full_name.includes(`.${suiteSelect}.`) && !testNames.includes(test.name)) {
+                    if (test.full_name.includes(`.${suiteSelect}.${test.name}`) && !testNames.includes(test.name)) {
                         testNames.push(test.name);
                     }
                 }
@@ -917,7 +917,7 @@
                 var labels = [];
                 var runStarts = [];
                 for (test of filteredTests) {
-                    if (!test.full_name.includes(`.${suiteSelectTests}.`)) {
+                    if (!test.full_name.includes(`.${suiteSelectTests}.${test.name}`)) {
                         continue;
                     }
                     if (showOnlySelectedTestStatistic && testSelect != "All" && test.name != testSelect) {
@@ -936,7 +936,7 @@
                     for (label of labels) {
                         var foundTests = [];
                         for (test of filteredTests) {
-                            if (test.name == label && test.run_start == runStart && test.full_name.includes(`.${suiteSelectTests}.`)) {
+                            if (test.name == label && test.run_start == runStart) {
                                 foundTests.push(test);
                             }
                         }
@@ -1421,7 +1421,7 @@
                         if (dataType == "suite" && value.name != suiteSelectSuites) {
                             continue;
                         }
-                        if (dataType == "test" && !value.full_name.includes(`.${suiteSelectTests}.`)) {
+                        if (dataType == "test" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`)) {
                             continue;
                         }
                         if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
@@ -1469,7 +1469,7 @@
                         if (dataType == "suite" && value.name != suiteSelectSuites) {
                             continue;
                         }
-                        if (dataType == "test" && !value.full_name.includes(`.${suiteSelectTests}.`)) {
+                        if (dataType == "test" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`)) {
                             continue;
                         }
                         if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
