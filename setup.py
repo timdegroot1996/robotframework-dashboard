@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="robotframework-dashboard",
-    version="0.1.5",
+    version="0.2.0",
     description="Output processor and dashboard generator for Robot Framework output files",
     long_description="""# Robot Framework Dashboard
 
@@ -31,16 +31,20 @@ Currently available features:
 - Runs
   - Statistics: pass, fail, skip
   - Duration: total elapsed time
+  - Overview: table overview of runs
 - Suites
 - - Filter: suite
   - Statistics: pass, fail, skip
   - Duration: total elapsed time
+  - Most failed: top 10 failing suites
+  - Overview: table overview of suites
 - Tests
   - Filter: suite, test
   - Statistics: pass, fail, skip
   - Duration: total elapsed time
+  - Most failed: top 10 failing tests
+  - Overview: table overview of tests
 - Keywords
-  - Table overview of keywords
   - Filter: keywords
   - Keyword statistics: pass, fail, skip
   - Keyword times run
@@ -48,6 +52,7 @@ Currently available features:
   - Keyword average duration
   - Keyword min duration
   - Keyword max duration
+  - Overview: table overview of keywords
 
 ## Installation
 

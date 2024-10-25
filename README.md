@@ -25,16 +25,20 @@ Currently available features:
 - Runs
   - Statistics: pass, fail, skip
   - Duration: total elapsed time
+  - Overview: table overview of runs
 - Suites
 - - Filter: suite
   - Statistics: pass, fail, skip
   - Duration: total elapsed time
+  - Most failed: top 10 failing suites
+  - Overview: table overview of suites
 - Tests
   - Filter: suite, test
   - Statistics: pass, fail, skip
   - Duration: total elapsed time
+  - Most failed: top 10 failing tests
+  - Overview: table overview of tests
 - Keywords
-  - Table overview of keywords
   - Filter: keywords
   - Keyword statistics: pass, fail, skip
   - Keyword times run
@@ -42,6 +46,7 @@ Currently available features:
   - Keyword average duration
   - Keyword min duration
   - Keyword max duration
+  - Overview: table overview of keywords
 
 ## Installation
 
