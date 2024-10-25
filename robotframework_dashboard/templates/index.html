@@ -110,14 +110,24 @@
             </div>
 
             <div class="card">
-                <div class="card-body">
-                    <!-- Run title row -->
+                <div class="card-header">
                     <div class="row">
-                        <div class="col-5">
+                        <div class="col-auto mt-2">
+                            <div
+                                class="btn btn-sm btn-secondary"
+                                id="runDetailsButton"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#runDetails"
+                                aria-expanded="true"
+                                aria-controls="runDetails"
+                            ></div>
+                        </div>
+                        <div class="col-4">
                             <h2 id="runTitle">Run Statistics</h2>
                         </div>
                     </div>
-                    <!-- Run row  -->
+                </div>
+                <div class="card-body collapse show" id="runDetails">
                     <div class="row">
                         <div class="col canvas mb-5">
                             <canvas id="runStatisticsGraph"></canvas>
@@ -140,18 +150,32 @@
             </div>
 
             <div class="card">
-                <div class="card-body">
-                    <!-- Suite title and filters row -->
+                <div class="card-header">
                     <div class="row">
-                        <div class="col-5">
-                            <h2>Suite Statistics</h2>
+                        <div class="col-auto mt-2">
+                            <div
+                                class="btn btn-sm btn-secondary"
+                                id="suiteDetailsButton"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#suiteDetails"
+                                aria-expanded="true"
+                                aria-controls="suiteDetails"
+                            ></div>
+                        </div>
+                        <div class="col-4">
+                            <h2 id="suiteTitle">Suite Statistics</h2>
                         </div>
                         <div class="col-auto">
-                            <label class="form-label form-label-sm" for="suiteSelectSuites">Select Suite</label>
-                            <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
+                            <div class="btn-group">
+                                <label class="form-label mt-2" for="suiteSelectSuites">Suite</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
+                            </div>
                         </div>
                     </div>
-                    <!-- Suite row -->
+                </div>
+                <div class="card-body collapse show" id="suiteDetails">
                     <div class="row">
                         <div class="col canvas mb-5">
                             <canvas id="suiteStatisticsGraph"></canvas>
@@ -174,28 +198,48 @@
             </div>
 
             <div class="card">
-                <div class="card-body">
-                    <!-- Test title and filters row -->
+                <div class="card-header">
                     <div class="row">
-                        <div class="col-4">
-                            <h2>Test Statistics</h2>
+                        <div class="col-auto mt-2">
+                            <div
+                                class="btn btn-sm btn-secondary"
+                                id="testDetailsButton"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#testDetails"
+                                aria-expanded="true"
+                                aria-controls="testDetails"
+                            ></div>
                         </div>
-                        <div class="col-auto d-flex">
-                            <div class="form-check form-switch mt-4">
-                                <input class="form-check-input" type="checkbox" role="switch" id="showOnlySelectedTestStatistic" />
-                                <label class="form-check-label" for="showOnlySelectedTestStatistic">Show Only Selected Test Statistics</label>
+                        <div class="col-4">
+                            <h2 id="testTitle">Test Statistics</h2>
+                        </div>
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-label mt-2" for="suiteSelectTests">Suite</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="suiteSelectTests"></select>
                             </div>
                         </div>
                         <div class="col-auto">
-                            <label class="form-label form-label-sm" for="suiteSelectTests">Select Suite</label>
-                            <select class="form-select form-select-sm" id="suiteSelectTests"></select>
+                            <div class="btn-group">
+                                <label class="form-label mt-2" for="testSelect">Test</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="testSelect"></select>
+                            </div>
                         </div>
                         <div class="col-auto">
-                            <label class="form-label form-label-sm" for="testSelect">Select Test</label>
-                            <select class="form-select form-select-sm" id="testSelect"></select>
+                            <div class="btn-group">
+                                <label class="form-check-label mt-2" for="showOnlySelectedTestStatistic">Show Only Test</label>
+                            </div>
+                            <div class="btn-group form-switch">
+                                <input class="form-check-input mt-2" type="checkbox" role="switch" id="showOnlySelectedTestStatistic" />
+                            </div>
                         </div>
                     </div>
-                    <!-- Test row -->
+                </div>
+                <div class="card-body collapse show" id="testDetails">
                     <div class="row">
                         <div class="col canvas mb-5">
                             <canvas id="testStatusGraph"></canvas>
@@ -215,22 +259,32 @@
             </div>
 
             <div class="card">
-                <div class="card-body">
-                    <!-- Keyword title row -->
+                <div class="card-header">
                     <div class="row">
-                        <div class="col-5">
-                            <h2>Keyword Statistics</h2>
+                        <div class="col-auto mt-2">
+                            <div
+                                class="btn btn-sm btn-secondary"
+                                id="keywordDetailsButton"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#keywordDetails"
+                                aria-expanded="true"
+                                aria-controls="keywordDetails"
+                            ></div>
                         </div>
-                    </div>
-                    <!-- Keyword row -->
-                    <div class="row">
-                        <!-- Empty div is used for aligning -->
-                        <div class="col-5"></div>
+                        <div class="col-4">
+                            <h2 id="keywordTitle">Keyword Statistics</h2>
+                        </div>
                         <div class="col-auto">
-                            <label class="form-label form-label-sm" for="keywordSelect">Select Keyword</label>
-                            <select class="form-select form-select-sm" id="keywordSelect"></select>
+                            <div class="btn-group">
+                                <label class="form-label mt-2" for="keywordSelect">Keyword</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="keywordSelect"></select>
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div class="card-body collapse show" id="keywordDetails">
                     <div class="row">
                         <div class="col canvas mb-5">
                             <canvas id="keywordStatisticsGraph"></canvas>
@@ -276,7 +330,14 @@
                 </div>
             </div>
         </div>
+
         <script>
+            // collapse/expand buttons
+            var collapsed =
+                '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
+            var expanded =
+                '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
+
             // theme
             if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
                 Chart.defaults.color = "#e2e1d7";
@@ -349,6 +410,10 @@
 
             //initialize all data and graphs
             update_data_and_all_graphs();
+            update_collapse_button("runDetailsButton")
+            update_collapse_button("suiteDetailsButton")
+            update_collapse_button("testDetailsButton")
+            update_collapse_button("keywordDetailsButton")
 
             // eventlisteners
             document.getElementById("runs").addEventListener("change", update_data_and_all_graphs);
@@ -532,6 +597,19 @@
                 create_keyword_max_time_graph();
             });
 
+            document.getElementById("runDetailsButton").addEventListener("click", (e) => {update_collapse_button("runDetailsButton")})
+            document.getElementById("suiteDetailsButton").addEventListener("click", (e) => {update_collapse_button("suiteDetailsButton")})
+            document.getElementById("testDetailsButton").addEventListener("click", (e) => {update_collapse_button("testDetailsButton")})
+            document.getElementById("keywordDetailsButton").addEventListener("click", (e) => {update_collapse_button("keywordDetailsButton")})
+
+            function update_collapse_button(id) {
+                if (document.getElementById(id).className.includes("collapsed")) {
+                    document.getElementById(id).innerHTML = collapsed;
+                } else {
+                    document.getElementById(id).innerHTML = expanded;
+                }
+            }
+
             function set_lowest_highest_dates() {
                 var dates = [];
                 for (run of runs) {
@@ -566,12 +644,14 @@
                 add_suites_in_selects();
                 add_tests_in_select();
                 add_keywords_in_select();
+                // set titles with amount of filtered items
+                document.getElementById("runTitle").innerText = `Run Statistics (${Object.keys(filteredRuns).length})`;
+                document.getElementById("suiteTitle").innerText = `Suite Statistics (${Object.keys(filteredSuites).length})`;
+                document.getElementById("testTitle").innerText = `Test Statistics (${Object.keys(filteredTests).length})`;
+                document.getElementById("keywordTitle").innerText = `Keyword Statistics (${Object.keys(filteredKeywords).length})`;
             }
 
             function update_all_graphs() {
-                // set titles with amount of filtered runs
-                document.getElementById("runTitle").innerText = `Run Statistics (${Object.keys(filteredRuns).length} runs)`;
-                // destroy and create new graphs
                 create_run_statistics_graph();
                 create_run_duration_graph();
                 create_run_table();
@@ -1383,19 +1463,19 @@
                                 label: "Failed",
                                 data: failed,
                                 backgroundColor: failedBackgroundColor,
-                                borderColor: failedBackgroundColor
+                                borderColor: failedBackgroundColor,
                             },
                             {
                                 label: "Skipped",
                                 data: skipped,
                                 backgroundColor: skippedBackgroundColor,
-                                borderColor: skippedBackgroundColor
+                                borderColor: skippedBackgroundColor,
                             },
                             {
                                 label: "Passed",
                                 data: passed,
                                 backgroundColor: passedBackgroundColor,
-                                borderColor: passedBackgroundColor
+                                borderColor: passedBackgroundColor,
                             },
                         ],
                     };
