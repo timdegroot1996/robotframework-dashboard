@@ -198,6 +198,8 @@
                     <div class="row">
                         <div class="col canvas-wide mb-5">
                             <canvas id="suiteMostFailedGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateSuiteMostFailedGraphBar">Bar View</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateSuiteMostFailedGraphTimeline">Timeline View</button>
                         </div>
                     </div>
                     <div class="row">
@@ -264,6 +266,8 @@
                     <div class="row">
                         <div class="col canvas-wide mb-5">
                             <canvas id="testMostFailedGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateTestMostFailedGraphBar">Bar View</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3" id="updateTestMostFailedGraphTimeline">Timeline View</button>
                         </div>
                     </div>
                     <div class="row">
@@ -397,11 +401,13 @@
             var suiteDurationGraph;
             var suiteDurationGraphType = "bar";
             var suiteMostFailedGraph;
+            var suiteMostFailedGraphType = "bar";
             var suiteTable;
             var testStatusGraph;
             var testDurationGraph;
             var testDurationGraphType = "bar";
             var testMostFailedGraph;
+            var testMostFailedGraphType = "bar";
             var testTable;
             var keywordStatisticsGraph;
             var keywordStatisticsGraphType = "percentages";
@@ -501,6 +507,17 @@
                 document.getElementById("updateSuiteDurationGraphLine").classList.add("disabled");
             });
 
+            document.getElementById("updateSuiteMostFailedGraphBar").addEventListener("click", (e) => {
+                create_suite_most_failed_graph("bar");
+                document.getElementById("updateSuiteMostFailedGraphBar").classList.add("disabled");
+                document.getElementById("updateSuiteMostFailedGraphTimeline").classList.remove("disabled");
+            });
+            document.getElementById("updateSuiteMostFailedGraphTimeline").addEventListener("click", (e) => {
+                create_suite_most_failed_graph("timeline");
+                document.getElementById("updateSuiteMostFailedGraphBar").classList.remove("disabled");
+                document.getElementById("updateSuiteMostFailedGraphTimeline").classList.add("disabled");
+            });
+
             document.getElementById("updateTestDurationGraphBar").addEventListener("click", (e) => {
                 create_test_duration_graph("bar");
                 document.getElementById("updateTestDurationGraphBar").classList.add("disabled");
@@ -510,6 +527,17 @@
                 create_test_duration_graph("line");
                 document.getElementById("updateTestDurationGraphBar").classList.remove("disabled");
                 document.getElementById("updateTestDurationGraphLine").classList.add("disabled");
+            });
+
+            document.getElementById("updateTestMostFailedGraphBar").addEventListener("click", (e) => {
+                create_test_most_failed_graph("bar");
+                document.getElementById("updateTestMostFailedGraphBar").classList.add("disabled");
+                document.getElementById("updateTestMostFailedGraphTimeline").classList.remove("disabled");
+            });
+            document.getElementById("updateTestMostFailedGraphTimeline").addEventListener("click", (e) => {
+                create_test_most_failed_graph("timeline");
+                document.getElementById("updateTestMostFailedGraphBar").classList.remove("disabled");
+                document.getElementById("updateTestMostFailedGraphTimeline").classList.add("disabled");
             });
 
             document.getElementById("updateKeywordStatisticsGraphBarPercentages").addEventListener("click", (e) => {
@@ -978,24 +1006,48 @@
                 }
             }
 
-            function create_suite_most_failed_graph() {
+            function create_suite_most_failed_graph(type) {
+                if (typeof type === "string") {
+                    suiteMostFailedGraphType = type;
+                }
                 if (suiteMostFailedGraph) {
                     suiteMostFailedGraph.destroy();
                 }
-                var graphData = get_most_failed_data("suite", filteredSuites);
-                var barData = graphData[0];
+                var graphData = get_most_failed_data("suite", suiteMostFailedGraphType, filteredSuites);
+                var callbackData = graphData[0];
                 graphData = graphData[1];
-                var config = get_graph_config("bar", graphData, "Top 10 Most Failed Suites", "Suite Name", "Times Failed");
-                // overwrite legend and tooltip
-                config.options.plugins.legend = { display: false };
-                config.options.plugins.tooltip = {
-                    callbacks: {
-                        label: function (tooltipItem) {
-                            return barData[tooltipItem.label];
+                if (suiteMostFailedGraphType == "bar") {
+                    var config = get_graph_config("bar", graphData, "Top 10 Most Failed Suites", "Suite Name", "Times Failed");
+                    // overwrite legend and tooltip
+                    config.options.plugins.legend = { display: false };
+                    config.options.plugins.tooltip = {
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                return callbackData[tooltipItem.label];
+                            },
                         },
-                    },
-                };
-                suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
+                    };
+                    suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
+                } else if (suiteMostFailedGraphType == "timeline") {
+                    var config = get_graph_config("timeline", graphData, "Top 10 Most Failed Suites");
+                    // overwrite tooltip and x scale with callbacks
+                    config.options.plugins.tooltip = {
+                        callbacks: {
+                            label: function (context) {
+                                return callbackData[context.raw.x[0]];
+                            },
+                        },
+                    };
+                    config.options.scales.x = {
+                        ticks: {
+                            minRotation: 20,
+                            callback: function (value, index, ticks) {
+                                return callbackData[this.getLabelForValue(value)];
+                            },
+                        },
+                    };
+                    suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
+                }
             }
 
             function create_suite_table() {
@@ -1103,50 +1155,12 @@
                     }
                     runAxis += 1;
                 }
-                testStatusGraph = new Chart("testStatusGraph", {
-                    type: "bar",
-                    data: {
-                        labels: labels,
-                        datasets: datasets,
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        indexAxis: "y",
-                        scales: {
-                            y: {
-                                stacked: true,
-                            },
-                            x: {
-                                ticks: {
-                                    minRotation: 20,
-                                    callback: function (value, index, ticks) {
-                                        return runStarts[this.getLabelForValue(value)];
-                                    },
-                                },
-                            },
-                        },
-                        plugins: {
-                            title: {
-                                text: "Test Status (Bar)",
-                                display: true,
-                            },
-                            legend: {
-                                display: false,
-                            },
-                            datalabels: {
-                                display: false,
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        return runStarts[context.raw.x[0]];
-                                    },
-                                },
-                            },
-                        },
-                    },
-                });
+                var graphData = {
+                    labels: labels,
+                    datasets: datasets,
+                };
+                var config = get_graph_config("timeline", graphData, "Test Status (Bar)");
+                testStatusGraph = new Chart("testStatusGraph", config);
             }
 
             function create_test_duration_graph(type) {
@@ -1166,24 +1180,48 @@
                 }
             }
 
-            function create_test_most_failed_graph() {
+            function create_test_most_failed_graph(type) {
+                if (typeof type === "string") {
+                    testMostFailedGraphType = type;
+                }
                 if (testMostFailedGraph) {
                     testMostFailedGraph.destroy();
                 }
-                var graphData = get_most_failed_data("test", filteredTests);
-                var barData = graphData[0];
+                var graphData = get_most_failed_data("test", testMostFailedGraphType, filteredTests);
+                var callbackData = graphData[0];
                 graphData = graphData[1];
-                var config = get_graph_config("bar", graphData, "Top 10 Most Failed Tests", "Test Name", "Times Failed");
-                // overwrite legend and tooltip
-                config.options.plugins.legend = { display: false };
-                config.options.plugins.tooltip = {
-                    callbacks: {
-                        label: function (tooltipItem) {
-                            return barData[tooltipItem.label];
+                if (testMostFailedGraphType == "bar") {
+                    var config = get_graph_config("bar", graphData, "Top 10 Most Failed Tests", "Test Name", "Times Failed");
+                    // overwrite legend and tooltip
+                    config.options.plugins.legend = { display: false };
+                    config.options.plugins.tooltip = {
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                return callbackData[tooltipItem.label];
+                            },
                         },
-                    },
-                };
-                testMostFailedGraph = new Chart("testMostFailedGraph", config);
+                    };
+                    testMostFailedGraph = new Chart("testMostFailedGraph", config);
+                } else if (testMostFailedGraphType == "timeline") {
+                    var config = get_graph_config("timeline", graphData, "Top 10 Most Failed Tests");
+                    // overwrite tooltip and x scale with callbacks
+                    config.options.plugins.tooltip = {
+                        callbacks: {
+                            label: function (context) {
+                                return callbackData[context.raw.x[0]];
+                            },
+                        },
+                    };
+                    config.options.scales.x = {
+                        ticks: {
+                            minRotation: 20,
+                            callback: function (value, index, ticks) {
+                                return callbackData[this.getLabelForValue(value)];
+                            },
+                        },
+                    };
+                    testMostFailedGraph = new Chart("testMostFailedGraph", config);
+                }
             }
 
             function create_test_table() {
@@ -1459,6 +1497,34 @@
                             },
                         },
                     };
+                } else if (graphType == "timeline") {
+                    config = {
+                        type: "bar",
+                        data: graphData,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            indexAxis: "y",
+                            scales: {
+                                y: {
+                                    stacked: true,
+                                },
+                            },
+                            plugins: {
+                                title: {
+                                    text: graphTitle,
+                                    display: true,
+                                },
+                                legend: {
+                                    display: false,
+                                },
+                                datalabels: {
+                                    display: false,
+                                },
+                            },
+                        },
+                    };
+                    return config;
                 }
             }
 
@@ -1642,33 +1708,102 @@
                 }
             }
 
-            function get_most_failed_data(dataType, filteredData) {
-                var [data, labels, datasets, count] = [{}, [], [], 0];
-                for (suite of filteredData) {
-                    if (suite.failed > 0) {
-                        if (data[suite.name]) {
-                            data[suite.name].push(suite.run_start);
+            function get_most_failed_data(dataType, graphType, filteredData) {
+                var data = {};
+                for (value of filteredData) {
+                    if (value.failed > 0) {
+                        if (data[value.name]) {
+                            data[value.name].push(value.run_start);
                         } else {
-                            data[suite.name] = [suite.run_start];
+                            data[value.name] = [value.run_start];
                         }
                     }
                 }
-                data = Object.keys(data) // sorted failed suites based on amount of times it has failed
+                data = Object.keys(data) // sorted failed items based on amount of times it has failed
                     .sort((a, b) => data[b].length - data[a].length)
                     .reduce((acc, key) => ((acc[key] = data[key]), acc), {});
-                for (key in data) {
-                    if (count > 9) {
-                        break;
+                if (graphType == "bar") {
+                    var [datasets, labels, count] = [[], [], 0];
+                    for (key in data) {
+                        if (count > 9) {
+                            break;
+                        }
+                        labels.push(key);
+                        datasets.push(data[key].length);
+                        count += 1;
                     }
-                    labels.push(key);
-                    datasets.push(data[key].length);
-                    count += 1;
+                    var graphData = {
+                        labels: labels,
+                        datasets: [{ data: datasets, backgroundColor: failedBackgroundColor }],
+                    };
+                    return [data, graphData];
+                } else if (graphType == "timeline") {
+                    var labels = [];
+                    var runStarts = [];
+                    var count = 0;
+                    for (key in data) {
+                        if (count > 9) {
+                            break;
+                        }
+                        labels.push(key);
+                        for (runStart of data[key]) {
+                            if (!runStarts.includes(runStart)) {
+                                runStarts.push(runStart);
+                            }
+                        }
+                        count += 1;
+                    }
+                    var datasets = [];
+                    var runAxis = 0;
+                    for (runStart of runStarts) {
+                        for (label of labels) {
+                            var foundValues = [];
+                            for (value of filteredData) {
+                                if (value.name == label && value.run_start == runStart) {
+                                    foundValues.push(value);
+                                }
+                            }
+                            if (foundValues.length > 0) {
+                                var value = foundValues[0];
+                                if (value.failed > 0) {
+                                    datasets.push({
+                                        label: label,
+                                        data: [{ x: [runAxis, runAxis + 1], y: label }],
+                                        backgroundColor: [failedBackgroundColor],
+                                        borderWidth: 1,
+                                    });
+                                } else if (value.skipped > 0) {
+                                    datasets.push({
+                                        label: label,
+                                        data: [{ x: [runAxis, runAxis + 1], y: label }],
+                                        backgroundColor: [skippedBackgroundColor],
+                                        borderWidth: 1,
+                                    });
+                                } else if (value.passed > 0) {
+                                    datasets.push({
+                                        label: label,
+                                        data: [{ x: [runAxis, runAxis + 1], y: label }],
+                                        backgroundColor: [passedBackgroundColor],
+                                        borderWidth: 1,
+                                    });
+                                }
+                            } else {
+                                datasets.push({
+                                    label: label,
+                                    data: [{ x: [runAxis, runAxis + 1], y: label }],
+                                    backgroundColor: [greyBackgroundColor],
+                                    borderWidth: 1,
+                                });
+                            }
+                        }
+                        runAxis += 1;
+                    }
+                    var graphData = {
+                        labels: labels,
+                        datasets: datasets,
+                    };
+                    return [runStarts, graphData];
                 }
-                var graphData = {
-                    labels: labels,
-                    datasets: [{ data: datasets, backgroundColor: failedBackgroundColor }],
-                };
-                return [data, graphData];
             }
         </script>
     </body>
