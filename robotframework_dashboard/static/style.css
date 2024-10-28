@@ -1,0 +1,42 @@
+:root {
+    font-family: Helvetica, sans-serif;
+}
+
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: #eee;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+    }
+}
+
+.canvas {
+    width: 800px;
+    height: 540;
+    text-align: center;
+}
+
+.canvas-wide {
+    width: 1600px;
+    height: 540;
+    text-align: center;
+}
+
+.card {
+    margin-bottom: 10px;
+}
+
+.dt-container {
+    margin-top: 20px;
+}
+
+.stats {
+    float: right;
+    text-align: right;
+    font-size: 0.9em;
+    white-space: nowrap;
+}

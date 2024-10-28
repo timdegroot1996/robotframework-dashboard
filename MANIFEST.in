@@ -1,2 +1,3 @@
 recursive-include robotframework_dashboard/templates *
+recursive-include robotframework_dashboard/static *
 include MANIFEST.in
