@@ -863,7 +863,7 @@
                 suiteSelect = document.getElementById("suiteSelectTests").value;
                 var testNames = [];
                 for (test of filteredTests) {
-                    if (test.full_name.includes(`.${suiteSelect}.${test.name}`) && !testNames.includes(test.name)) {
+                    if (test.full_name.includes(`${suiteSelect}.${test.name}`) && !testNames.includes(test.name)) {
                         testNames.push(test.name);
                     }
                 }
@@ -1097,7 +1097,7 @@
                 var labels = [];
                 var runStarts = [];
                 for (test of filteredTests) {
-                    if (!test.full_name.includes(`.${suiteSelectTests}.${test.name}`)) {
+                    if (!test.full_name.includes(`${suiteSelectTests}.${test.name}`)) {
                         continue;
                     }
                     if (showOnlySelectedTestStatistic && testSelect != "All" && test.name != testSelect) {
@@ -1651,7 +1651,7 @@
                         if (dataType == "suite" && value.name != suiteSelectSuites) {
                             continue;
                         }
-                        if (dataType == "test" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`)) {
+                        if (dataType == "test" && !value.full_name.includes(`${suiteSelectTests}.${value.name}`)) {
                             continue;
                         }
                         if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
@@ -1699,7 +1699,7 @@
                         if (dataType == "suite" && value.name != suiteSelectSuites) {
                             continue;
                         }
-                        if (dataType == "test" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`)) {
+                        if (dataType == "test" && !value.full_name.includes(`${suiteSelectTests}.${value.name}`)) {
                             continue;
                         }
                         if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
