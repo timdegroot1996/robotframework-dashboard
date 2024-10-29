@@ -56,10 +56,10 @@ class OutputProcessor:
                     average_keyword_dict[name]["failed"],  # amount of fails
                     average_keyword_dict[name]["skipped"],  # amount of skips
                     len_elapsed_list,  # times used
-                    sum_elapsed_list,  # total usage time
-                    sum_elapsed_list / len_elapsed_list,  # average usage time
-                    min_elapsed_list,  # fastest usage time
-                    max_elapsed_list,  # slowest usage time
+                    round(sum_elapsed_list, 3),  # total usage time
+                    round(sum_elapsed_list / len_elapsed_list, 3),  # average usage time
+                    round(min_elapsed_list, 3),  # fastest usage time
+                    round(max_elapsed_list, 3),  # slowest usage time
                 )
             )
         return average_keyword_list
@@ -81,7 +81,7 @@ class RunProcessor(ResultVisitor):
                 stats.passed,
                 stats.failed,
                 stats.skipped,
-                suite.elapsed_time.total_seconds(),
+                round(suite.elapsed_time.total_seconds(), 3),
                 suite.start_time,
             )
         )
@@ -108,7 +108,7 @@ class SuiteProcessor(ResultVisitor):
                     stats.passed,
                     stats.failed,
                     stats.skipped,
-                    suite.elapsed_time.total_seconds(),
+                    round(suite.elapsed_time.total_seconds(), 3),
                     suite.start_time,
                 )
             )
@@ -128,7 +128,7 @@ class TestProcessor(ResultVisitor):
                 test.passed,
                 test.failed,
                 test.skipped,
-                test.elapsed_time.total_seconds(),
+                round(test.elapsed_time.total_seconds(), 3),
                 test.start_time,
                 ",".join(test.tags),
             )
@@ -148,7 +148,7 @@ class KeywordProcessor(ResultVisitor):
                 keyword.passed,
                 keyword.failed,
                 keyword.skipped,
-                keyword.elapsed_time.total_seconds(),
+                round(keyword.elapsed_time.total_seconds(), 3),
                 # keyword.message,
                 # keyword.start_time,
                 # ",".join(keyword.tags),
