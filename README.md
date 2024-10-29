@@ -109,7 +109,7 @@ Results:
 ```
 ==============================================================================
  1. Database preparation
-  created database connection: '.\robot_results.db'
+  created database connection: './robot_results.db'
 ==============================================================================
  2. Processing output XML(s)
   Processing output XML 'output1.xml'
@@ -128,7 +128,7 @@ Results:
   skipping step
 ==============================================================================
  5. Creating dashboard HTML
-  created dashboard '.\robot_dashboard_20241021-150726.html' in 0.01 seconds
+  created dashboard './robot_dashboard_20241021-150726.html' in 0.01 seconds
 ```
 
 ## Contributing
