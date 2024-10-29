@@ -130,7 +130,7 @@ class TestProcessor(ResultVisitor):
                 test.skipped,
                 round(test.elapsed_time.total_seconds(), 3),
                 test.start_time,
-                ",".join(test.tags),
+                test.message,
             )
         )
 
@@ -149,8 +149,5 @@ class KeywordProcessor(ResultVisitor):
                 keyword.failed,
                 keyword.skipped,
                 round(keyword.elapsed_time.total_seconds(), 3),
-                # keyword.message,
-                # keyword.start_time,
-                # ",".join(keyword.tags),
             )
         )
