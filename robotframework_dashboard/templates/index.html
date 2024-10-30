@@ -59,6 +59,23 @@
             font-size: 0.9em;
             white-space: nowrap;
         }
+
+        .fullscreen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            background: #212529;
+            z-index: 10;
+            padding-top: 31px;
+        }
+
+        .close {
+            position: absolute;
+            top: -5px;
+            right: 10px;
+        }
     </style>
 </head>
 
@@ -134,7 +151,7 @@
                     </div>
                 </div>
                 <div class="row collapse show" id="runStatisticsDurationCollapse">
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="runStatisticsCanvas">
                         <canvas id="runStatisticsGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateRunStatisticsGraphBarPercentages">Percentages</button>
@@ -142,18 +159,26 @@
                             id="updateRunStatisticsGraphBarAmount">Amount</button>
                         <button class="btn btn-outline-primary btn-sm mt-3"
                             id="updateRunStatisticsGraphLine">Timeline</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="runStatisticsFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="runStatisticsClose" hidden>Close</button>
                     </div>
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="runDurationCanvas">
                         <canvas id="runDurationGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateRunDurationGraphBar">Bar
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateRunDurationGraphLine">Line
                             View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="runDurationFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="runDurationClose" hidden>Close</button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="runTableButton" data-bs-toggle="collapse"
+                        <div class="btn btn-sm btn-secondary collapsed" id="runTableButton" data-bs-toggle="collapse"
                             data-bs-target="#runTableCollapse" aria-expanded="true" aria-controls="runTableCollapse">
                         </div>
                     </div>
@@ -161,8 +186,8 @@
                         <h4>Table</h4>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col collapse show" id="runTableCollapse">
+                <div class="row collapse" id="runTableCollapse">
+                    <div class="col">
                         <table class="table table-striped" id="runTable"></table>
                     </div>
                 </div>
@@ -201,7 +226,7 @@
                     </div>
                 </div>
                 <div class="row collapse show" id="suiteStatisticsDurationCollapse">
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="suiteStatisticsCanvas">
                         <canvas id="suiteStatisticsGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateSuiteStatisticsGraphBarPercentages">Percentages</button>
@@ -209,13 +234,21 @@
                             id="updateSuiteStatisticsGraphBarAmount">Amount</button>
                         <button class="btn btn-outline-primary btn-sm mt-3"
                             id="updateSuiteStatisticsGraphLine">Timeline</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="suiteStatisticsFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="suiteStatisticsClose" hidden>Close</button>
                     </div>
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="suiteDurationCanvas">
                         <canvas id="suiteDurationGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateSuiteDurationGraphBar">Bar View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateSuiteDurationGraphLine">Line
                             View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="suiteDurationFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="suiteDurationClose" hidden>Close</button>
                     </div>
                 </div>
                 <div class="row">
@@ -229,17 +262,21 @@
                     </div>
                 </div>
                 <div class="row collapse show" id="suiteMostFailedCollapse">
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="suiteMostFailedCanvas">
                         <canvas id="suiteMostFailedGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateSuiteMostFailedGraphBar">Bar View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3"
                             id="updateSuiteMostFailedGraphTimeline">Timeline View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="suiteMostFailedFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="suiteMostFailedClose" hidden>Close</button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="suiteTableButton" data-bs-toggle="collapse"
+                        <div class="btn btn-sm btn-secondary collapsed" id="suiteTableButton" data-bs-toggle="collapse"
                             data-bs-target="#suiteTableCollapse" aria-expanded="true"
                             aria-controls="suiteTableCollapse"></div>
                     </div>
@@ -247,7 +284,7 @@
                         <h4>Table</h4>
                     </div>
                 </div>
-                <div class="row collapse show" id="suiteTableCollapse">
+                <div class="row collapse" id="suiteTableCollapse">
                     <div class="col">
                         <table class="table table-striped" id="suiteTable"></table>
                     </div>
@@ -305,15 +342,23 @@
                     </div>
                 </div>
                 <div class="row collapse show" id="testStatisticsDurationCollapse">
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="testStatusCanvas">
                         <canvas id="testStatusGraph"></canvas>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="testStatusFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="testStatusClose" hidden>Close</button>
                     </div>
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="testDurationCanvas">
                         <canvas id="testDurationGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateTestDurationGraphBar">Bar
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateTestDurationGraphLine">Line
                             View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="testDurationFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="testDurationClose" hidden>Close</button>
                     </div>
                 </div>
                 <div class="row">
@@ -327,24 +372,32 @@
                     </div>
                 </div>
                 <div class="row collapse show" id="testMostFailedMessagesCollapse">
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="testMostFailedCanvas">
                         <canvas id="testMostFailedGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateTestMostFailedGraphBar">Bar View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3"
                             id="updateTestMostFailedGraphTimeline">Timeline View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="testMostFailedFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="testMostFailedClose" hidden>Close</button>
                     </div>
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="testMessagesCanvas">
                         <canvas id="testMessagesGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateTestMessagesGraphBar">Bar View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3"
                             id="updateTestMessagesGraphTimeline">Timeline View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="testMessagesFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="testMessagesClose" hidden>Close</button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="testTableButton" data-bs-toggle="collapse"
+                        <div class="btn btn-sm btn-secondary collapsed" id="testTableButton" data-bs-toggle="collapse"
                             data-bs-target="#testTableCollapse" aria-expanded="true" aria-controls="testTableCollapse">
                         </div>
                     </div>
@@ -352,7 +405,7 @@
                         <h4>Table</h4>
                     </div>
                 </div>
-                <div class="row collapse show" id="testTableCollapse">
+                <div class="row collapse" id="testTableCollapse">
                     <div class="col">
                         <table class="table table-striped" id="testTable"></table>
                     </div>
@@ -392,7 +445,7 @@
                     </div>
                 </div>
                 <div class="row collapse show" id="keywordStatisticsTimesRunCollapse">
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="keywordStatisticsCanvas">
                         <canvas id="keywordStatisticsGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateKeywordStatisticsGraphBarPercentages">Percentages</button>
@@ -400,13 +453,21 @@
                             id="updateKeywordStatisticsGraphBarAmount">Amount</button>
                         <button class="btn btn-outline-primary btn-sm mt-3"
                             id="updateKeywordStatisticsGraphLine">Timeline</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="keywordStatisticsFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="keywordStatisticsClose" hidden>Close</button>
                     </div>
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="keywordTimesRunCanvas">
                         <canvas id="keywordTimesRunGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateKeywordTimesRunGraphBar">Bar View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTimesRunGraphLine">Line
                             View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="keywordTimesRunFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="keywordTimesRunClose" hidden>Close</button>
                     </div>
                 </div>
                 <div class="row">
@@ -420,19 +481,27 @@
                     </div>
                 </div>
                 <div class="row collapse show" id="keywordTotalAverageCollapse">
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="keywordTotalTimeCanvas">
                         <canvas id="keywordTotalTimeGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateKeywordTotalTimeGraphBar">Bar View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTotalTimeGraphLine">Line
                             View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="keywordTotalTimeFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="keywordTotalTimeClose" hidden>Close</button>
                     </div>
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="keywordAverageTimeCanvas">
                         <canvas id="keywordAverageTimeGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateKeywordAverageTimeGraphBar">Bar View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordAverageTimeGraphLine">Line
                             View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="keywordAverageTimeFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="keywordAverageTimeClose" hidden>Close</button>
                     </div>
                 </div>
                 <div class="row">
@@ -446,24 +515,32 @@
                     </div>
                 </div>
                 <div class="row collapse show" id="keywordMinMaxCollapse">
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="keywordMinTimeCanvas">
                         <canvas id="keywordMinTimeGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateKeywordMinTimeGraphBar">Bar View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMinTimeGraphLine">Line
                             View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="keywordMinTimeFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="keywordMinTimeClose" hidden>Close</button>
                     </div>
-                    <div class="col canvas mb-5">
+                    <div class="col canvas mb-5" id="keywordMaxTimeCanvas">
                         <canvas id="keywordMaxTimeGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateKeywordMaxTimeGraphBar">Bar View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMaxTimeGraphLine">Line
                             View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="keywordMaxTimeFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            id="keywordMaxTimeClose" hidden>Close</button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="keywordTableButton" data-bs-toggle="collapse"
+                        <div class="btn btn-sm btn-secondary collapsed" id="keywordTableButton" data-bs-toggle="collapse"
                             data-bs-target="#keywordTableCollapse" aria-expanded="true"
                             aria-controls="keywordTableCollapse"></div>
                     </div>
@@ -471,7 +548,7 @@
                         <h4>Table</h4>
                     </div>
                 </div>
-                <div class="row collapse show" id="keywordTableCollapse">
+                <div class="row collapse" id="keywordTableCollapse">
                     <div class="col">
                         <table class="table table-striped" id="keywordTable"></table>
                     </div>
@@ -600,6 +677,22 @@
         var filters = ["runs", "tag", "fromDate", "fromTime", "toDate", "toTime"]
         for (let f of filters) {
             document.getElementById(f).addEventListener("change", update_data_and_all_graphs);
+        }
+
+        // eventlisteners for fullscreen buttons
+        var fullscreenButtons = ["runStatistics", "runDuration",
+        "suiteStatistics", "suiteDuration", "suiteMostFailed",
+        "testStatus", "testDuration", "testMostFailed", "testMessages",
+        "keywordStatistics", "keywordTimesRun", "keywordTotalTime", "keywordAverageTime", "keywordMinTime", "keywordMaxTime"]
+        for (let fullscreenButton of fullscreenButtons) {
+            document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", (e) => {
+                document.getElementById(`${fullscreenButton}Canvas`).classList.add("fullscreen");
+                document.getElementById(`${fullscreenButton}Close`).hidden = false
+            });
+            document.getElementById(`${fullscreenButton}Close`).addEventListener("click", (e) => {
+                document.getElementById(`${fullscreenButton}Canvas`).classList.remove("fullscreen");
+                document.getElementById(`${fullscreenButton}Close`).hidden = true
+            });
         }
 
         // eventlisteners for buttons to change graph views
@@ -811,9 +904,6 @@
         });
 
         function update_collapse_button(id) {
-            if (id.includes('Details')) {
-
-            }
             if (document.getElementById(id).className.includes("collapsed")) {
                 if (id.includes('Details')) {
                     document.getElementById(id).innerHTML = collapsed;
