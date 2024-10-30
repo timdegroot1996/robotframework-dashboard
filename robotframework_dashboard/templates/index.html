@@ -118,7 +118,7 @@
                             data-bs-target="#runDetails" aria-expanded="true" aria-controls="runDetails"></div>
                     </div>
                     <div class="col-4">
-                        <h2 id="runTitle">Run Statistics</h2>
+                        <h2 id="runTitle">Statistics</h2>
                     </div>
                 </div>
             </div>
@@ -130,7 +130,7 @@
                             aria-controls="runStatisticsDurationCollapse"></div>
                     </div>
                     <div class="col">
-                        <h4>Run Statistics & Duration</h4>
+                        <h4>Statistics & Duration</h4>
                     </div>
                 </div>
                 <div class="row collapse show" id="runStatisticsDurationCollapse">
@@ -158,7 +158,7 @@
                         </div>
                     </div>
                     <div class="col">
-                        <h4>Run Table</h4>
+                        <h4>Table</h4>
                     </div>
                 </div>
                 <div class="row">
@@ -197,7 +197,7 @@
                             aria-expanded="true" aria-controls="suiteStatisticsDurationCollapse"></div>
                     </div>
                     <div class="col">
-                        <h4>Suite Statistics & Duration</h4>
+                        <h4>Statistics & Duration</h4>
                     </div>
                 </div>
                 <div class="row collapse show" id="suiteStatisticsDurationCollapse">
@@ -225,7 +225,7 @@
                             aria-controls="suiteMostFailedCollapse"></div>
                     </div>
                     <div class="col">
-                        <h4>Suite Most Failed</h4>
+                        <h4>Most Failed</h4>
                     </div>
                 </div>
                 <div class="row collapse show" id="suiteMostFailedCollapse">
@@ -244,7 +244,7 @@
                             aria-controls="suiteTableCollapse"></div>
                     </div>
                     <div class="col">
-                        <h4>Suite Table</h4>
+                        <h4>Table</h4>
                     </div>
                 </div>
                 <div class="row collapse show" id="suiteTableCollapse">
@@ -301,7 +301,7 @@
                             aria-expanded="true" aria-controls="testStatisticsDurationCollapse"></div>
                     </div>
                     <div class="col">
-                        <h4>Test Statistics & Duration</h4>
+                        <h4>Statistics & Duration</h4>
                     </div>
                 </div>
                 <div class="row collapse show" id="testStatisticsDurationCollapse">
@@ -318,21 +318,28 @@
                 </div>
                 <div class="row">
                     <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="testMostFailedButton" data-bs-toggle="collapse"
-                            data-bs-target="#testMostFailedCollapse" aria-expanded="true"
-                            aria-controls="testMostFailedCollapse"></div>
+                        <div class="btn btn-sm btn-secondary" id="testMostFailedMessagesButton" data-bs-toggle="collapse"
+                            data-bs-target="#testMostFailedMessagesCollapse" aria-expanded="true"
+                            aria-controls="testMostFailedMessagesCollapse"></div>
                     </div>
                     <div class="col">
-                        <h4>Test Most Failed</h4>
+                        <h4>Most Failed & Messages</h4>
                     </div>
                 </div>
-                <div class="row collapse show" id="testMostFailedCollapse">
+                <div class="row collapse show" id="testMostFailedMessagesCollapse">
                     <div class="col canvas mb-5">
                         <canvas id="testMostFailedGraph"></canvas>
                         <button class="btn btn-outline-primary btn-sm mt-3 disabled"
                             id="updateTestMostFailedGraphBar">Bar View</button>
                         <button class="btn btn-outline-primary btn-sm mt-3"
                             id="updateTestMostFailedGraphTimeline">Timeline View</button>
+                    </div>
+                    <div class="col canvas mb-5">
+                        <canvas id="testMessagesGraph"></canvas>
+                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
+                            id="updateTestMessagesGraphBar">Bar View</button>
+                        <button class="btn btn-outline-primary btn-sm mt-3"
+                            id="updateTestMessagesGraphTimeline">Timeline View</button>
                     </div>
                 </div>
                 <div class="row">
@@ -342,7 +349,7 @@
                         </div>
                     </div>
                     <div class="col">
-                        <h4>Test Table</h4>
+                        <h4>Table</h4>
                     </div>
                 </div>
                 <div class="row collapse show" id="testTableCollapse">
@@ -381,7 +388,7 @@
                             aria-expanded="true" aria-controls="keywordStatisticsTimesRunCollapse"></div>
                     </div>
                     <div class="col">
-                        <h4>Keyword Statistics & Times Run</h4>
+                        <h4>Statistics & Times Run</h4>
                     </div>
                 </div>
                 <div class="row collapse show" id="keywordStatisticsTimesRunCollapse">
@@ -409,7 +416,7 @@
                             aria-controls="keywordTotalAverageCollapse"></div>
                     </div>
                     <div class="col">
-                        <h4>Keyword Total Duration & Average Duration</h4>
+                        <h4>Total Duration & Average Duration</h4>
                     </div>
                 </div>
                 <div class="row collapse show" id="keywordTotalAverageCollapse">
@@ -435,7 +442,7 @@
                             aria-controls="keywordMinMaxCollapse"></div>
                     </div>
                     <div class="col">
-                        <h4>Keyword Min Duration & Max Duration</h4>
+                        <h4>Min Duration & Max Duration</h4>
                     </div>
                 </div>
                 <div class="row collapse show" id="keywordMinMaxCollapse">
@@ -461,7 +468,7 @@
                             aria-controls="keywordTableCollapse"></div>
                     </div>
                     <div class="col">
-                        <h4>Keyword Table</h4>
+                        <h4>Table</h4>
                     </div>
                 </div>
                 <div class="row collapse show" id="keywordTableCollapse">
@@ -534,6 +541,8 @@
         var testDurationGraphType = "bar";
         var testMostFailedGraph;
         var testMostFailedGraphType = "bar";
+        var testMessagesGraph
+        var testMessagesGraphType = "bar";
         var testTable;
         var keywordStatisticsGraph;
         var keywordStatisticsGraphType = "percentages";
@@ -569,7 +578,7 @@
             "suiteTableButton",
             "testDetailsButton",
             "testStatisticsDurationButton",
-            "testMostFailedButton",
+            "testMostFailedMessagesButton",
             "testTableButton",
             "keywordDetailsButton",
             "keywordStatisticsTimesRunButton",
@@ -587,12 +596,13 @@
         //initialize all data and graphs
         update_data_and_all_graphs();
 
-        // eventlisteners
+        // eventlisteners for filters
         var filters = ["runs", "tag", "fromDate", "fromTime", "toDate", "toTime"]
         for (let f of filters) {
             document.getElementById(f).addEventListener("change", update_data_and_all_graphs);
         }
 
+        // eventlisteners for buttons to change graph views
         document.getElementById("updateRunStatisticsGraphBarPercentages").addEventListener("click", (e) => {
             create_run_statistics_graph("percentages");
             document.getElementById("updateRunStatisticsGraphBarAmount").classList.remove("disabled");
@@ -684,6 +694,17 @@
             create_test_most_failed_graph("timeline");
             document.getElementById("updateTestMostFailedGraphBar").classList.remove("disabled");
             document.getElementById("updateTestMostFailedGraphTimeline").classList.add("disabled");
+        });
+
+        document.getElementById("updateTestMessagesGraphBar").addEventListener("click", (e) => {
+            create_test_messages_graph("bar");
+            document.getElementById("updateTestMessagesGraphBar").classList.add("disabled");
+            document.getElementById("updateTestMessagesGraphTimeline").classList.remove("disabled");
+        });
+        document.getElementById("updateTestMessagesGraphTimeline").addEventListener("click", (e) => {
+            create_test_messages_graph("timeline");
+            document.getElementById("updateTestMessagesGraphBar").classList.remove("disabled");
+            document.getElementById("updateTestMessagesGraphTimeline").classList.add("disabled");
         });
 
         document.getElementById("updateKeywordStatisticsGraphBarPercentages").addEventListener("click", (e) => {
@@ -860,6 +881,7 @@
             create_test_status_graph();
             create_test_duration_graph();
             create_test_most_failed_graph();
+            create_test_messages_graph();
             create_test_table();
             create_keyword_statistics_graph();
             create_keyword_times_run_graph();
@@ -1384,6 +1406,50 @@
             }
         }
 
+        function create_test_messages_graph(type) {
+            if (typeof type === "string") {
+                testMessagesGraphType = type;
+            }
+            if (testMessagesGraph) {
+                testMessagesGraph.destroy();
+            }
+            var graphData = get_messages_data("test", testMessagesGraphType, filteredTests);
+            var callbackData = graphData[0];
+            graphData = graphData[1];
+            if (testMessagesGraphType == "bar") {
+                var config = get_graph_config("bar", graphData, "Top 10 Fail Messages", "Message", "Times");
+                // overwrite legend and tooltip
+                config.options.plugins.legend = { display: false };
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return callbackData[tooltipItem.label];
+                        },
+                    },
+                };
+                testMessagesGraph = new Chart("testMessagesGraph", config);
+            } else if (testMessagesGraphType == "timeline") {
+                var config = get_graph_config("timeline", graphData, "Top 10 Fail Messages");
+                // overwrite tooltip and x scale with callbacks
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (context) {
+                            return callbackData[context.raw.x[0]];
+                        },
+                    },
+                };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 20,
+                        callback: function (value, index, ticks) {
+                            return callbackData[this.getLabelForValue(value)];
+                        },
+                    },
+                };
+                testMessagesGraph = new Chart("testMessagesGraph", config);
+            }
+        }
+
         function create_test_table() {
             if (testTable) {
                 testTable.destroy();
@@ -1406,7 +1472,7 @@
                     { title: "skipped" },
                     { title: "elapsed_s" },
                     { title: "start_time" },
-                    { title: "tags" },
+                    { title: "message" },
                 ],
                 data: data,
             });
@@ -1947,6 +2013,88 @@
                                     borderWidth: 1,
                                 });
                             }
+                        } else {
+                            datasets.push({
+                                label: label,
+                                data: [{ x: [runAxis, runAxis + 1], y: label }],
+                                backgroundColor: [greyBackgroundColor],
+                                borderWidth: 1,
+                            });
+                        }
+                    }
+                    runAxis += 1;
+                }
+                var graphData = {
+                    labels: labels,
+                    datasets: datasets,
+                };
+                return [runStarts, graphData];
+            }
+        }
+
+        function get_messages_data(dataType, graphType, filteredData) {
+            var data = {};
+            for (value of filteredData) {
+                if (value.message) {
+                    if (data[value.message]) {
+                        data[value.message].push(value.run_start);
+                    } else {
+                        data[value.message] = [value.run_start];
+                    }
+                }
+            }
+            data = Object.keys(data) // sorted failed items based on amount of times it has failed
+                .sort((a, b) => data[b].length - data[a].length)
+                .reduce((acc, key) => ((acc[key] = data[key]), acc), {});
+            if (graphType == "bar") {
+                var [datasets, labels, count] = [[], [], 0];
+                for (key in data) {
+                    if (count > 9) {
+                        break;
+                    }
+                    labels.push(key);
+                    datasets.push(data[key].length);
+                    count += 1;
+                }
+                var graphData = {
+                    labels: labels,
+                    datasets: [{ data: datasets, backgroundColor: failedBackgroundColor }],
+                };
+                return [data, graphData];
+            } else if (graphType == "timeline") {
+                var labels = [];
+                var runStarts = [];
+                var count = 0;
+                for (key in data) {
+                    if (count > 9) {
+                        break;
+                    }
+                    labels.push(key);
+                    for (runStart of data[key]) {
+                        if (!runStarts.includes(runStart)) {
+                            runStarts.push(runStart);
+                        }
+                    }
+                    count += 1;
+                }
+                var datasets = [];
+                var runAxis = 0;
+                for (runStart of runStarts) {
+                    for (label of labels) {
+                        var foundValues = [];
+                        for (value of filteredData) {
+                            if (value.message == label && value.run_start == runStart) {
+                                foundValues.push(value);
+                            }
+                        }
+                        if (foundValues.length > 0) {
+                            var value = foundValues[0];
+                            datasets.push({
+                                label: label,
+                                data: [{ x: [runAxis, runAxis + 1], y: label }],
+                                backgroundColor: [failedBackgroundColor],
+                                borderWidth: 1,
+                            });
                         } else {
                             datasets.push({
                                 label: label,

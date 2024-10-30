@@ -130,7 +130,7 @@ class TestProcessor(ResultVisitor):
                 test.skipped,
                 round(test.elapsed_time.total_seconds(), 3),
                 test.start_time,
-                test.message,
+                test.message[:150],
             )
         )
 
