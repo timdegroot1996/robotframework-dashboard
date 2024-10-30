@@ -7,11 +7,29 @@ from pathlib import Path
 class OutputProcessor:
     def get_output_data(self, output_path: Path):
         output = ExecutionResult(output_path)
+        if hasattr(output, "generation_time"):
+            generation_time = output.generation_time
+        else:
+            with open(output_path, "r") as f:
+                for line in f:
+                    if "<robot" in line:
+                        generation_time = line.split('generated="', 1)[1].split('"', 1)[
+                            0
+                        ]
+                        if "T" in generation_time:
+                            generation_time = datetime.strptime(
+                                generation_time, "%Y-%m-%dT%H:%M:%S.%f"
+                            )
+                        else:
+                            generation_time = datetime.strptime(
+                                generation_time, "%Y%m%d %H:%M:%S.%f"
+                            )
+                        break
         run_list, suite_list, test_list, keyword_list = [], [], [], []
-        output.visit(RunProcessor(output.generation_time, run_list))
-        output.visit(SuiteProcessor(output.generation_time, suite_list))
-        output.visit(TestProcessor(output.generation_time, test_list))
-        output.visit(KeywordProcessor(output.generation_time, keyword_list))
+        output.visit(RunProcessor(generation_time, run_list))
+        output.visit(SuiteProcessor(generation_time, suite_list))
+        output.visit(TestProcessor(generation_time, test_list))
+        output.visit(KeywordProcessor(generation_time, keyword_list))
         average_keyword_list = self.calculate_keyword_averages(keyword_list)
         return {
             "runs": run_list,
@@ -72,17 +90,32 @@ class RunProcessor(ResultVisitor):
 
     def visit_suite(self, suite: TestSuite):
         stats = suite.statistics
+
+        # handling for older robot versions
+        if hasattr(suite, "full_name"):
+            full_name = suite.full_name
+        else:
+            full_name = suite.longname
+        if hasattr(suite, "elapsed_time"):
+            elapsed_time = round(suite.elapsed_time.total_seconds(), 3)
+        else:
+            elapsed_time = round(suite.elapsedtime / 1000, 3)
+        if hasattr(suite, "start_time"):
+            start_time = suite.start_time
+        else:
+            start_time = suite.starttime
+
         self.run_list.append(
             (
                 self.run_time,
-                suite.full_name,
+                full_name,
                 suite.name,
                 stats.total,
                 stats.passed,
                 stats.failed,
                 stats.skipped,
-                round(suite.elapsed_time.total_seconds(), 3),
-                suite.start_time,
+                elapsed_time,
+                start_time,
             )
         )
 
@@ -99,17 +132,32 @@ class SuiteProcessor(ResultVisitor):
                 stats = suite.statistics.all
             except:
                 stats = suite.statistics
+
+            # handling for older robot versions
+            if hasattr(suite, "full_name"):
+                full_name = suite.full_name
+            else:
+                full_name = suite.longname
+            if hasattr(suite, "elapsed_time"):
+                elapsed_time = round(suite.elapsed_time.total_seconds(), 3)
+            else:
+                elapsed_time = round(suite.elapsedtime / 1000, 3)
+            if hasattr(suite, "start_time"):
+                start_time = suite.start_time
+            else:
+                start_time = suite.starttime
+
             self.suite_list.append(
                 (
                     self.run_time,
-                    suite.longname,
+                    full_name,
                     suite.name,
                     stats.total,
                     stats.passed,
                     stats.failed,
                     stats.skipped,
-                    round(suite.elapsed_time.total_seconds(), 3),
-                    suite.start_time,
+                    elapsed_time,
+                    start_time,
                 )
             )
 
@@ -120,16 +168,30 @@ class TestProcessor(ResultVisitor):
         self.run_time = run_time
 
     def visit_test(self, test: TestCase):
+        # handling for older robot versions
+        if hasattr(test, "full_name"):
+            full_name = test.full_name
+        else:
+            full_name = test.longname
+        if hasattr(test, "elapsed_time"):
+            elapsed_time = round(test.elapsed_time.total_seconds(), 3)
+        else:
+            elapsed_time = round(test.elapsedtime / 1000, 3)
+        if hasattr(test, "start_time"):
+            start_time = test.start_time
+        else:
+            start_time = test.starttime
+
         self.test_list.append(
             (
                 self.run_time,
-                test.full_name,
+                full_name,
                 test.name,
                 test.passed,
                 test.failed,
                 test.skipped,
-                round(test.elapsed_time.total_seconds(), 3),
-                test.start_time,
+                elapsed_time,
+                start_time,
                 test.message[:150],
             )
         )
@@ -141,6 +203,12 @@ class KeywordProcessor(ResultVisitor):
         self.run_time = run_time
 
     def end_keyword(self, keyword: Keyword):
+        # handling for older robot versions
+        if hasattr(keyword, "elapsed_time"):
+            elapsed_time = round(keyword.elapsed_time.total_seconds(), 3)
+        else:
+            elapsed_time = round(keyword.elapsedtime / 1000, 3)
+
         self.keyword_list.append(
             (
                 self.run_time,
@@ -148,6 +216,6 @@ class KeywordProcessor(ResultVisitor):
                 keyword.passed,
                 keyword.failed,
                 keyword.skipped,
-                round(keyword.elapsed_time.total_seconds(), 3),
+                elapsed_time,
             )
         )
