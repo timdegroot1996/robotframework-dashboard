@@ -41,8 +41,16 @@
 
         .canvas {
             width: 800px;
-            height: 540;
+            height: 540px;
             text-align: center;
+        }
+
+        .canvas-vertical {
+            overflow-y: scroll;
+        }
+
+        #testStatusVertical {
+            height: 500px;
         }
 
         .card {
@@ -342,12 +350,14 @@
                     </div>
                 </div>
                 <div class="row collapse show" id="testStatisticsDurationCollapse">
-                    <div class="col canvas mb-5" id="testStatusCanvas">
-                        <canvas id="testStatusGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
-                            id="testStatusFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
-                            id="testStatusClose" hidden>Close</button>
+                    <div class="col canvas canvas-vertical mb-5" id="testStatusCanvas">
+                        <div id="testStatusVertical">
+                            <canvas id="testStatusGraph"></canvas>
+                            <button class="btn btn-outline-primary btn-sm mt-3"
+                                id="testStatusFullscreen">Fullscreen</button>
+                            <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                                id="testStatusClose" hidden>Close</button>
+                        </div>
                     </div>
                     <div class="col canvas mb-5" id="testDurationCanvas">
                         <canvas id="testDurationGraph"></canvas>
@@ -1433,6 +1443,12 @@
                 },
             };
             testStatusGraph = new Chart("testStatusGraph", config);
+
+            document.getElementById('testStatusVertical').style.height = `500px`
+            if (testStatusGraph.data.labels.length > 10) {
+                var newHeight = 500 + (testStatusGraph.data.labels.length - 10) * 20
+                document.getElementById('testStatusVertical').style.height = `${newHeight}px`
+            }
         }
 
         function create_test_duration_graph(type) {
