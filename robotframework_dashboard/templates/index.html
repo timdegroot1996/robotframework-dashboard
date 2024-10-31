@@ -1517,10 +1517,18 @@
                         },
                     },
                 };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 20,
+                        callback: function (value, index) {
+                            return this.getLabelForValue(value).slice(0, 40);
+                        },
+                    },
+                };
                 testMessagesGraph = new Chart("testMessagesGraph", config);
             } else if (testMessagesGraphType == "timeline") {
                 var config = get_graph_config("timeline", graphData, "Top 10 Fail Messages");
-                // overwrite tooltip and x scale with callbacks
+                // overwrite tooltip and x and y scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -1534,6 +1542,11 @@
                         callback: function (value, index, ticks) {
                             return callbackData[this.getLabelForValue(value)];
                         },
+                    },
+                };
+                config.options.scales.y.ticks = {
+                    callback: function (value, index, ticks) {
+                        return this.getLabelForValue(value).slice(0, 40);
                     },
                 };
                 testMessagesGraph = new Chart("testMessagesGraph", config);
