@@ -37,6 +37,7 @@ Currently available features:
   - Statistics: pass, fail, skip
   - Duration: total elapsed time
   - Most failed: top 10 failing tests
+  - Fail messages: top 10 fail messages
   - Overview: table overview of tests
 - Keywords
   - Filter: keywords
