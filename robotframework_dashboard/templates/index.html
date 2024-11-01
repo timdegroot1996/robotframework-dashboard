@@ -1356,7 +1356,7 @@
             var testSelect = document.getElementById("testSelect").value;
             var labels = [];
             var runStarts = [];
-            var foundTests = []
+            var datasets = [];
             for (test of filteredTests) {
                 if (!test.full_name.includes(`${suiteSelectTests}.${test.name}`)) {
                     continue;
@@ -1369,13 +1369,6 @@
                 }
                 if (!runStarts.includes(test.run_start)) {
                     runStarts.push(test.run_start);
-                }
-                foundTests.push(test)
-            }
-            var datasets = [];
-            for (test of foundTests) {
-                if (!labels.includes(test.name) || !runStarts.includes(test.run_start)) {
-                    continue
                 }
                 var runAxis = runStarts.indexOf(test.run_start)
                 if (test.passed == 1) {
