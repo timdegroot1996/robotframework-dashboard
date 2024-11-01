@@ -46,11 +46,7 @@
         }
 
         .canvas-vertical {
-            overflow-y: scroll;
-        }
-
-        #testStatusVertical {
-            height: 500px;
+            overflow-y: auto;
         }
 
         .card {
@@ -76,13 +72,7 @@
             top: 0;
             background: #212529;
             z-index: 10;
-            padding-top: 31px;
-        }
-
-        .close {
-            position: absolute;
-            top: -5px;
-            right: 10px;
+            padding: 11px 20px 70px 20px;
         }
     </style>
 </head>
@@ -160,28 +150,28 @@
                 </div>
                 <div class="row collapse show" id="runStatisticsDurationCollapse">
                     <div class="col canvas mb-5" id="runStatisticsCanvas">
-                        <canvas id="runStatisticsGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="updateRunStatisticsGraphBarPercentages">Percentages</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="updateRunStatisticsGraphBarAmount">Amount</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="updateRunStatisticsGraphLine">Timeline</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="runStatisticsFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="runStatisticsClose" hidden>Close</button>
+                        <canvas id="runStatisticsGraph"></canvas>
                     </div>
                     <div class="col canvas mb-5" id="runDurationCanvas">
-                        <canvas id="runDurationGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateRunDurationGraphBar">Bar
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="updateRunDurationGraphBar">Bar
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateRunDurationGraphLine">Line
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="updateRunDurationGraphLine">Line
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="runDurationFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="runDurationClose" hidden>Close</button>
+                        <canvas id="runDurationGraph"></canvas>
                     </div>
                 </div>
                 <div class="row">
@@ -235,28 +225,28 @@
                 </div>
                 <div class="row collapse show" id="suiteStatisticsDurationCollapse">
                     <div class="col canvas mb-5" id="suiteStatisticsCanvas">
-                        <canvas id="suiteStatisticsGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="updateSuiteStatisticsGraphBarPercentages">Percentages</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="updateSuiteStatisticsGraphBarAmount">Amount</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="updateSuiteStatisticsGraphLine">Timeline</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="suiteStatisticsFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="suiteStatisticsClose" hidden>Close</button>
+                        <canvas id="suiteStatisticsGraph"></canvas>
                     </div>
                     <div class="col canvas mb-5" id="suiteDurationCanvas">
-                        <canvas id="suiteDurationGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="updateSuiteDurationGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateSuiteDurationGraphLine">Line
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="updateSuiteDurationGraphLine">Line
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="suiteDurationFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="suiteDurationClose" hidden>Close</button>
+                        <canvas id="suiteDurationGraph"></canvas>
                     </div>
                 </div>
                 <div class="row">
@@ -271,15 +261,15 @@
                 </div>
                 <div class="row collapse show" id="suiteMostFailedCollapse">
                     <div class="col canvas mb-5" id="suiteMostFailedCanvas">
-                        <canvas id="suiteMostFailedGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="updateSuiteMostFailedGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="updateSuiteMostFailedGraphTimeline">Timeline View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="suiteMostFailedFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="suiteMostFailedClose" hidden>Close</button>
+                        <canvas id="suiteMostFailedGraph"></canvas>
                     </div>
                 </div>
                 <div class="row">
@@ -328,12 +318,12 @@
                     </div>
                     <div class="col-auto">
                         <div class="btn-group">
-                            <label class="form-check-label mt-2" for="showOnlySelectedTestStatistic">Show Only
+                            <label class="form-check-label mt-2" for="showOnlySelectedtestStatus">Show Only
                                 Test</label>
                         </div>
                         <div class="btn-group form-switch">
                             <input class="form-check-input mt-2" type="checkbox" role="switch"
-                                id="showOnlySelectedTestStatistic" />
+                                id="showOnlySelectedtestStatus" />
                         </div>
                     </div>
                 </div>
@@ -341,34 +331,34 @@
             <div class="card-body collapse show" id="testDetails">
                 <div class="row">
                     <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="testStatisticsDurationButton"
-                            data-bs-toggle="collapse" data-bs-target="#testStatisticsDurationCollapse"
-                            aria-expanded="true" aria-controls="testStatisticsDurationCollapse"></div>
+                        <div class="btn btn-sm btn-secondary" id="testStatusDurationButton"
+                            data-bs-toggle="collapse" data-bs-target="#testStatusDurationCollapse"
+                            aria-expanded="true" aria-controls="testStatusDurationCollapse"></div>
                     </div>
                     <div class="col">
                         <h4>Statistics & Duration</h4>
                     </div>
                 </div>
-                <div class="row collapse show" id="testStatisticsDurationCollapse">
-                    <div class="col canvas canvas-vertical mb-5" id="testStatusCanvas">
+                <div class="row collapse show" id="testStatusDurationCollapse">
+                    <div class="col canvas canvas-vertical" id="testStatusCanvas">
                         <div id="testStatusVertical">
-                            <canvas id="testStatusGraph"></canvas>
-                            <button class="btn btn-outline-primary btn-sm mt-3"
+                            <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                                 id="testStatusFullscreen">Fullscreen</button>
-                            <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                            <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                                 id="testStatusClose" hidden>Close</button>
+                            <canvas id="testStatusGraph"></canvas>
                         </div>
                     </div>
                     <div class="col canvas mb-5" id="testDurationCanvas">
-                        <canvas id="testDurationGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled" id="updateTestDurationGraphBar">Bar
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="updateTestDurationGraphBar">Bar
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateTestDurationGraphLine">Line
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="updateTestDurationGraphLine">Line
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="testDurationFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="testDurationClose" hidden>Close</button>
+                        <canvas id="testDurationGraph"></canvas>
                     </div>
                 </div>
                 <div class="row">
@@ -383,26 +373,26 @@
                 </div>
                 <div class="row collapse show" id="testMostFailedMessagesCollapse">
                     <div class="col canvas mb-5" id="testMostFailedCanvas">
-                        <canvas id="testMostFailedGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="updateTestMostFailedGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="updateTestMostFailedGraphTimeline">Timeline View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="testMostFailedFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="testMostFailedClose" hidden>Close</button>
+                        <canvas id="testMostFailedGraph"></canvas>
                     </div>
                     <div class="col canvas mb-5" id="testMessagesCanvas">
-                        <canvas id="testMessagesGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="updateTestMessagesGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="updateTestMessagesGraphTimeline">Timeline View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="testMessagesFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="testMessagesClose" hidden>Close</button>
+                        <canvas id="testMessagesGraph"></canvas>
                     </div>
                 </div>
                 <div class="row">
@@ -456,28 +446,28 @@
                 </div>
                 <div class="row collapse show" id="keywordStatisticsTimesRunCollapse">
                     <div class="col canvas mb-5" id="keywordStatisticsCanvas">
-                        <canvas id="keywordStatisticsGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="updateKeywordStatisticsGraphBarPercentages">Percentages</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="updateKeywordStatisticsGraphBarAmount">Amount</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="updateKeywordStatisticsGraphLine">Timeline</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="keywordStatisticsFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="keywordStatisticsClose" hidden>Close</button>
+                        <canvas id="keywordStatisticsGraph"></canvas>
                     </div>
                     <div class="col canvas mb-5" id="keywordTimesRunCanvas">
-                        <canvas id="keywordTimesRunGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="updateKeywordTimesRunGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTimesRunGraphLine">Line
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="updateKeywordTimesRunGraphLine">Line
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="keywordTimesRunFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="keywordTimesRunClose" hidden>Close</button>
+                        <canvas id="keywordTimesRunGraph"></canvas>
                     </div>
                 </div>
                 <div class="row">
@@ -492,26 +482,26 @@
                 </div>
                 <div class="row collapse show" id="keywordTotalAverageCollapse">
                     <div class="col canvas mb-5" id="keywordTotalTimeCanvas">
-                        <canvas id="keywordTotalTimeGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="updateKeywordTotalTimeGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordTotalTimeGraphLine">Line
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="updateKeywordTotalTimeGraphLine">Line
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="keywordTotalTimeFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="keywordTotalTimeClose" hidden>Close</button>
+                        <canvas id="keywordTotalTimeGraph"></canvas>
                     </div>
                     <div class="col canvas mb-5" id="keywordAverageTimeCanvas">
-                        <canvas id="keywordAverageTimeGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="updateKeywordAverageTimeGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordAverageTimeGraphLine">Line
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="updateKeywordAverageTimeGraphLine">Line
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="keywordAverageTimeFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="keywordAverageTimeClose" hidden>Close</button>
+                        <canvas id="keywordAverageTimeGraph"></canvas>
                     </div>
                 </div>
                 <div class="row">
@@ -526,26 +516,26 @@
                 </div>
                 <div class="row collapse show" id="keywordMinMaxCollapse">
                     <div class="col canvas mb-5" id="keywordMinTimeCanvas">
-                        <canvas id="keywordMinTimeGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="updateKeywordMinTimeGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMinTimeGraphLine">Line
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="updateKeywordMinTimeGraphLine">Line
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="keywordMinTimeFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="keywordMinTimeClose" hidden>Close</button>
+                        <canvas id="keywordMinTimeGraph"></canvas>
                     </div>
                     <div class="col canvas mb-5" id="keywordMaxTimeCanvas">
-                        <canvas id="keywordMaxTimeGraph"></canvas>
-                        <button class="btn btn-outline-primary btn-sm mt-3 disabled"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="updateKeywordMaxTimeGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3" id="updateKeywordMaxTimeGraphLine">Line
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="updateKeywordMaxTimeGraphLine">Line
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="keywordMaxTimeFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mt-3 close" 
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" 
                             id="keywordMaxTimeClose" hidden>Close</button>
+                        <canvas id="keywordMaxTimeGraph"></canvas>
                     </div>
                 </div>
                 <div class="row">
@@ -652,7 +642,7 @@
         var filteredKeywords;
 
         // var to keep track of show only selected test stats
-        var showOnlySelectedTestStatistic = false;
+        var showOnlySelectedtestStatus = false;
 
         // initialize all collapsables
         var collapsables = [
@@ -664,7 +654,7 @@
             "suiteMostFailedButton",
             "suiteTableButton",
             "testDetailsButton",
-            "testStatisticsDurationButton",
+            "testStatusDurationButton",
             "testMostFailedMessagesButton",
             "testTableButton",
             "keywordDetailsButton",
@@ -698,10 +688,14 @@
             document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", (e) => {
                 document.getElementById(`${fullscreenButton}Canvas`).classList.add("fullscreen");
                 document.getElementById(`${fullscreenButton}Close`).hidden = false
+                document.getElementById(`${fullscreenButton}Fullscreen`).hidden = true
+                document.body.style.overflow = 'hidden';
             });
             document.getElementById(`${fullscreenButton}Close`).addEventListener("click", (e) => {
                 document.getElementById(`${fullscreenButton}Canvas`).classList.remove("fullscreen");
                 document.getElementById(`${fullscreenButton}Close`).hidden = true
+                document.getElementById(`${fullscreenButton}Fullscreen`).hidden = false
+                document.body.style.overflow = 'auto';
             });
         }
 
@@ -889,8 +883,8 @@
             create_suite_duration_graph();
             create_suite_statistics_graph();
         });
-        document.getElementById("showOnlySelectedTestStatistic").addEventListener("change", (e) => {
-            showOnlySelectedTestStatistic = !showOnlySelectedTestStatistic;
+        document.getElementById("showOnlySelectedtestStatus").addEventListener("change", (e) => {
+            showOnlySelectedtestStatus = !showOnlySelectedtestStatus;
             create_test_status_graph();
         });
         document.getElementById("suiteSelectTests").addEventListener("change", (e) => {
@@ -899,7 +893,7 @@
             create_test_duration_graph();
         });
         document.getElementById("testSelect").addEventListener("change", (e) => {
-            if (showOnlySelectedTestStatistic) {
+            if (showOnlySelectedtestStatus) {
                 create_test_status_graph();
             }
             create_test_duration_graph();
@@ -1366,7 +1360,7 @@
                 if (!test.full_name.includes(`${suiteSelectTests}.${test.name}`)) {
                     continue;
                 }
-                if (showOnlySelectedTestStatistic && testSelect != "All" && test.name != testSelect) {
+                if (showOnlySelectedtestStatus && testSelect != "All" && test.name != testSelect) {
                     continue;
                 }
                 if (!labels.includes(test.name)) {
@@ -1443,12 +1437,7 @@
                 },
             };
             testStatusGraph = new Chart("testStatusGraph", config);
-
-            document.getElementById('testStatusVertical').style.height = `500px`
-            if (testStatusGraph.data.labels.length > 10) {
-                var newHeight = 500 + (testStatusGraph.data.labels.length - 10) * 20
-                document.getElementById('testStatusVertical').style.height = `${newHeight}px`
-            }
+            update_height('testStatusVertical')
         }
 
         function create_test_duration_graph(type) {
@@ -2230,6 +2219,18 @@
                     datasets: datasets,
                 };
                 return [runStarts, graphData];
+            }
+        }
+
+        function update_height(verticalId) {
+            var base = 490
+            if (document.querySelectorAll('.fullscreen').length > 0) {
+                base = window.innerHeight
+            }
+            document.getElementById(verticalId).style.height = `490px`
+            if (testStatusGraph.data.labels.length > 10) {
+                var newHeight = 490 + (testStatusGraph.data.labels.length - 10) * 25
+                document.getElementById(verticalId).style.height = `${newHeight}px`
             }
         }
     </script>
