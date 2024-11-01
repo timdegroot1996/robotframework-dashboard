@@ -2122,7 +2122,7 @@
         function get_messages_data(dataType, graphType, filteredData) {
             var data = {};
             for (value of filteredData) {
-                if (value.message) {
+                if (value.message && (value.failed == 1 || value.skipped == 1)) {
                     if (data[value.message]) {
                         data[value.message].push(value.run_start);
                     } else {
@@ -2164,6 +2164,7 @@
                     }
                     count += 1;
                 }
+                runStarts = runStarts.sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
                 var datasets = [];
                 var runAxis = 0;
                 for (runStart of runStarts) {
