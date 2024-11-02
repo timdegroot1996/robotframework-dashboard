@@ -1189,7 +1189,8 @@
                 };
                 config.options.scales.x = {
                     ticks: {
-                        minRotation: 20,
+                        minRotation: 45,
+                        maxRotation: 45,
                         callback: function (value, index, ticks) {
                             return callbackData[this.getLabelForValue(value)];
                         },
@@ -1298,7 +1299,8 @@
             };
             config.options.scales.x = {
                 ticks: {
-                    minRotation: 20,
+                    minRotation: 45,
+                    maxRotation: 45,
                     callback: function (value, index, ticks) {
                         return runStarts[this.getLabelForValue(value)];
                     },
@@ -1359,7 +1361,8 @@
                 };
                 config.options.scales.x = {
                     ticks: {
-                        minRotation: 20,
+                        minRotation: 45,
+                        maxRotation: 45,
                         callback: function (value, index, ticks) {
                             return callbackData[this.getLabelForValue(value)];
                         },
@@ -1392,7 +1395,8 @@
                 };
                 config.options.scales.x = {
                     ticks: {
-                        minRotation: 20,
+                        minRotation: 45,
+                        maxRotation: 45,
                         callback: function (value, index) {
                             return this.getLabelForValue(value).slice(0, 40);
                         },
@@ -1411,7 +1415,8 @@
                 };
                 config.options.scales.x = {
                     ticks: {
-                        minRotation: 20,
+                        minRotation: 45,
+                        maxRotation: 45,
                         callback: function (value, index, ticks) {
                             return callbackData[this.getLabelForValue(value)];
                         },
@@ -1610,6 +1615,7 @@
                     type: "line",
                     data: graphData,
                     options: {
+                        normalized: true,
                         animation: false,
                         responsive: true,
                         maintainAspectRatio: false,
@@ -1635,6 +1641,10 @@
                                     display: true,
                                     text: xTitle,
                                 },
+                                ticks: {
+                                    minRotation: 45,
+                                    maxRotation: 45,
+                                },
                             },
                             y: {
                                 beginAtZero: true,
@@ -1652,6 +1662,7 @@
                     type: "bar",
                     data: graphData,
                     options: {
+                        normalized: true,
                         animation: false,
                         responsive: true,
                         maintainAspectRatio: false,
@@ -1662,7 +1673,8 @@
                                     text: xTitle,
                                 },
                                 ticks: {
-                                    minRotation: 20,
+                                    minRotation: 45,
+                                    maxRotation: 45,
                                 },
                             },
                             y: {
@@ -1706,6 +1718,7 @@
                     type: "bar",
                     data: graphData,
                     options: {
+                        normalized: true,
                         animation: false,
                         responsive: true,
                         maintainAspectRatio: false,
