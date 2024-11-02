@@ -1068,7 +1068,7 @@
             }
             var graphData = get_duration_graph_data("run", runDurationGraphType, "elapsed_s", filteredRuns);
             if (runDurationGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Run Duration (Bar)", "Run", "Duration");
+                var config = get_graph_config("bar", graphData, "Run Duration (Bar) First 30 Bars Only", "Run", "Duration");
                 runDurationGraph = new Chart("runDurationGraph", config);
             } else if (runDurationGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Run Duration (Line)", "Date", "Duration");
@@ -1147,7 +1147,7 @@
             }
             var graphData = get_duration_graph_data("suite", suiteDurationGraphType, "elapsed_s", filteredSuites);
             if (suiteDurationGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Suite Duration (Bar)", "Run", "Duration");
+                var config = get_graph_config("bar", graphData, "Suite Duration (Bar) First 30 Bars Only", "Run", "Duration");
                 suiteDurationGraph = new Chart("suiteDurationGraph", config);
             } else if (suiteDurationGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Suite Duration (Line)", "Date", "Duration");
@@ -1319,7 +1319,7 @@
             }
             var graphData = get_duration_graph_data("test", testDurationGraphType, "elapsed_s", filteredTests);
             if (testDurationGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Test Duration (Bar)", "Run", "Duration");
+                var config = get_graph_config("bar", graphData, "Test Duration (Bar) First 30 Bars Only", "Run", "Duration");
                 testDurationGraph = new Chart("testDurationGraph", config);
             } else if (testDurationGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Test Duration (Line)", "Date", "Duration");
@@ -1490,7 +1490,7 @@
             }
             var graphData = get_duration_graph_data("keyword", keywordTimesRunGraphType, "times_run", filteredKeywords);
             if (keywordTimesRunGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Times Run (Bar)", "Run", "Duration");
+                var config = get_graph_config("bar", graphData, "Times Run (Bar) First 30 Bars Only", "Run", "Duration");
                 keywordTimesRunGraph = new Chart("keywordTimesRunGraph", config);
             } else if (keywordTimesRunGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Times Run (Line)", "Date", "Duration");
@@ -1507,7 +1507,7 @@
             }
             var graphData = get_duration_graph_data("keyword", keywordTotalTimeGraphType, "total_time_s", filteredKeywords);
             if (keywordTotalTimeGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Total Duration (Bar)", "Run", "Duration");
+                var config = get_graph_config("bar", graphData, "Total Duration (Bar) First 30 Bars Only", "Run", "Duration");
                 keywordTotalTimeGraph = new Chart("keywordTotalTimeGraph", config);
             } else if (keywordTotalTimeGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Total Duration (Line)", "Date", "Duration");
@@ -1524,7 +1524,7 @@
             }
             var graphData = get_duration_graph_data("keyword", keywordAverageTimeGraphType, "average_time_s", filteredKeywords);
             if (keywordAverageTimeGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Average Duration (Bar)", "Run", "Duration");
+                var config = get_graph_config("bar", graphData, "Average Duration (Bar) First 30 Bars Only", "Run", "Duration");
                 keywordAverageTimeGraph = new Chart("keywordAverageTimeGraph", config);
             } else if (keywordAverageTimeGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Average Duration (Line)", "Date", "Duration");
@@ -1541,7 +1541,7 @@
             }
             var graphData = get_duration_graph_data("keyword", keywordMinTimeGraphType, "min_time_s", filteredKeywords);
             if (keywordMinTimeGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Min Duration (Bar)", "Run", "Duration");
+                var config = get_graph_config("bar", graphData, "Min Duration (Bar) First 30 Bars Only", "Run", "Duration");
                 keywordMinTimeGraph = new Chart("keywordMinTimeGraph", config);
             } else if (keywordMinTimeGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Min Duration (Line)", "Date", "Duration");
@@ -1558,7 +1558,7 @@
             }
             var graphData = get_duration_graph_data("keyword", keywordMaxTimeGraphType, "max_time_s", filteredKeywords);
             if (keywordMaxTimeGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Max Duration (Bar)", "Run", "Duration");
+                var config = get_graph_config("bar", graphData, "Max Duration (Bar) First 30 Bars Only", "Run", "Duration");
                 keywordMaxTimeGraph = new Chart("keywordMaxTimeGraph", config);
             } else if (keywordMaxTimeGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Max Duration (Line)", "Date", "Duration");
@@ -1859,6 +1859,7 @@
                         continue;
                     }
                     labels.push(value.run_start);
+                    if (labels.length > 30) { break }
                     var dataLength = data[0].length;
                     if (data[value.name]) {
                         // add value.data to matching array
