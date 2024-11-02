@@ -559,13 +559,13 @@
 
     <script>
         // collapse/expand buttons
-        var collapsed =
+        const collapsed =
             '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
-        var collapsedSmall =
+        const collapsedSmall =
             '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><g><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
-        var expanded =
+        const expanded =
             '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
-        var expandedSmall =
+        const expandedSmall =
             '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
 
         // theme
@@ -579,10 +579,10 @@
         }
 
         // colors
-        var passedBackgroundColor = "#97bd61";
-        var skippedBackgroundColor = "#fed84f";
-        var failedBackgroundColor = "#ce3e01";
-        var greyBackgroundColor = "#212529";
+        const passedBackgroundColor = "#97bd61";
+        const skippedBackgroundColor = "#fed84f";
+        const failedBackgroundColor = "#ce3e01";
+        const greyBackgroundColor = "#212529";
 
         // prepare input data
         var runs = "placeholder_runs".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
@@ -645,7 +645,7 @@
         var showOnlySelectedtestStatus = false;
 
         // initialize all collapsables
-        var collapsables = [
+        const collapsables = [
             "runDetailsButton",
             "runStatisticsDurationButton",
             "runTableButton",
@@ -674,13 +674,13 @@
         update_data_and_all_graphs();
 
         // eventlisteners for filters
-        var filters = ["runs", "tag", "fromDate", "fromTime", "toDate", "toTime"]
+        const filters = ["runs", "tag", "fromDate", "fromTime", "toDate", "toTime"]
         for (let f of filters) {
             document.getElementById(f).addEventListener("change", update_data_and_all_graphs);
         }
 
         // eventlisteners for fullscreen buttons
-        var fullscreenButtons = ["runStatistics", "runDuration",
+        const fullscreenButtons = ["runStatistics", "runDuration",
             "suiteStatistics", "suiteDuration", "suiteMostFailed",
             "testStatus", "testDuration", "testMostFailed", "testMessages",
             "keywordStatistics", "keywordTimesRun", "keywordTotalTime", "keywordAverageTime", "keywordMinTime", "keywordMaxTime"]
@@ -700,183 +700,72 @@
         }
 
         // eventlisteners for buttons to change graph views
-        document.getElementById("runStatisticsGraphBarPercentages").addEventListener("click", (e) => {
-            create_run_statistics_graph("percentages");
-            document.getElementById("runStatisticsGraphBarAmount").classList.remove("disabled");
-            document.getElementById("runStatisticsGraphLine").classList.remove("disabled");
-            document.getElementById("runStatisticsGraphBarPercentages").classList.add("disabled");
-        });
-        document.getElementById("runStatisticsGraphBarAmount").addEventListener("click", (e) => {
-            create_run_statistics_graph("amount");
-            document.getElementById("runStatisticsGraphBarAmount").classList.add("disabled");
-            document.getElementById("runStatisticsGraphLine").classList.remove("disabled");
-            document.getElementById("runStatisticsGraphBarPercentages").classList.remove("disabled");
-        });
-        document.getElementById("runStatisticsGraphLine").addEventListener("click", (e) => {
-            create_run_statistics_graph("line");
-            document.getElementById("runStatisticsGraphBarAmount").classList.remove("disabled");
-            document.getElementById("runStatisticsGraphLine").classList.add("disabled");
-            document.getElementById("runStatisticsGraphBarPercentages").classList.remove("disabled");
-        });
-
-        document.getElementById("runDurationGraphBar").addEventListener("click", (e) => {
-            create_run_duration_graph("bar");
-            document.getElementById("runDurationGraphBar").classList.add("disabled");
-            document.getElementById("runDurationGraphLine").classList.remove("disabled");
-        });
-        document.getElementById("runDurationGraphLine").addEventListener("click", (e) => {
-            create_run_duration_graph("line");
-            document.getElementById("runDurationGraphBar").classList.remove("disabled");
-            document.getElementById("runDurationGraphLine").classList.add("disabled");
-        });
-
-        document.getElementById("suiteStatisticsGraphBarPercentages").addEventListener("click", (e) => {
-            create_suite_statistics_graph("percentages");
-            document.getElementById("suiteStatisticsGraphBarPercentages").classList.add("disabled");
-            document.getElementById("suiteStatisticsGraphBarAmount").classList.remove("disabled");
-            document.getElementById("suiteStatisticsGraphLine").classList.remove("disabled");
-        });
-        document.getElementById("suiteStatisticsGraphBarAmount").addEventListener("click", (e) => {
-            create_suite_statistics_graph("amount");
-            document.getElementById("suiteStatisticsGraphBarPercentages").classList.remove("disabled");
-            document.getElementById("suiteStatisticsGraphBarAmount").classList.add("disabled");
-            document.getElementById("suiteStatisticsGraphLine").classList.remove("disabled");
-        });
-        document.getElementById("suiteStatisticsGraphLine").addEventListener("click", (e) => {
-            create_suite_statistics_graph("line");
-            document.getElementById("suiteStatisticsGraphBarPercentages").classList.remove("disabled");
-            document.getElementById("suiteStatisticsGraphBarAmount").classList.remove("disabled");
-            document.getElementById("suiteStatisticsGraphLine").classList.add("disabled");
-        });
-
-        document.getElementById("suiteDurationGraphBar").addEventListener("click", (e) => {
-            create_suite_duration_graph("bar");
-            document.getElementById("suiteDurationGraphBar").classList.add("disabled");
-            document.getElementById("suiteDurationGraphLine").classList.remove("disabled");
-        });
-        document.getElementById("suiteDurationGraphLine").addEventListener("click", (e) => {
-            create_suite_duration_graph("line");
-            document.getElementById("suiteDurationGraphBar").classList.remove("disabled");
-            document.getElementById("suiteDurationGraphLine").classList.add("disabled");
-        });
-
-        document.getElementById("suiteMostFailedGraphBar").addEventListener("click", (e) => {
-            create_suite_most_failed_graph("bar");
-            document.getElementById("suiteMostFailedGraphBar").classList.add("disabled");
-            document.getElementById("suiteMostFailedGraphTimeline").classList.remove("disabled");
-        });
-        document.getElementById("suiteMostFailedGraphTimeline").addEventListener("click", (e) => {
-            create_suite_most_failed_graph("timeline");
-            document.getElementById("suiteMostFailedGraphBar").classList.remove("disabled");
-            document.getElementById("suiteMostFailedGraphTimeline").classList.add("disabled");
-        });
-
-        document.getElementById("testDurationGraphBar").addEventListener("click", (e) => {
-            create_test_duration_graph("bar");
-            document.getElementById("testDurationGraphBar").classList.add("disabled");
-            document.getElementById("testDurationGraphLine").classList.remove("disabled");
-        });
-        document.getElementById("testDurationGraphLine").addEventListener("click", (e) => {
-            create_test_duration_graph("line");
-            document.getElementById("testDurationGraphBar").classList.remove("disabled");
-            document.getElementById("testDurationGraphLine").classList.add("disabled");
-        });
-
-        document.getElementById("testMostFailedGraphBar").addEventListener("click", (e) => {
-            create_test_most_failed_graph("bar");
-            document.getElementById("testMostFailedGraphBar").classList.add("disabled");
-            document.getElementById("testMostFailedGraphTimeline").classList.remove("disabled");
-        });
-        document.getElementById("testMostFailedGraphTimeline").addEventListener("click", (e) => {
-            create_test_most_failed_graph("timeline");
-            document.getElementById("testMostFailedGraphBar").classList.remove("disabled");
-            document.getElementById("testMostFailedGraphTimeline").classList.add("disabled");
-        });
-
-        document.getElementById("testMessagesGraphBar").addEventListener("click", (e) => {
-            create_test_messages_graph("bar");
-            document.getElementById("testMessagesGraphBar").classList.add("disabled");
-            document.getElementById("testMessagesGraphTimeline").classList.remove("disabled");
-        });
-        document.getElementById("testMessagesGraphTimeline").addEventListener("click", (e) => {
-            create_test_messages_graph("timeline");
-            document.getElementById("testMessagesGraphBar").classList.remove("disabled");
-            document.getElementById("testMessagesGraphTimeline").classList.add("disabled");
-        });
-
-        document.getElementById("keywordStatisticsGraphBarPercentages").addEventListener("click", (e) => {
-            create_keyword_statistics_graph("percentages");
-            document.getElementById("keywordStatisticsGraphBarPercentages").classList.add("disabled");
-            document.getElementById("keywordStatisticsGraphBarAmount").classList.remove("disabled");
-            document.getElementById("keywordStatisticsGraphLine").classList.remove("disabled");
-        });
-        document.getElementById("keywordStatisticsGraphBarAmount").addEventListener("click", (e) => {
-            create_keyword_statistics_graph("amount");
-            document.getElementById("keywordStatisticsGraphBarPercentages").classList.remove("disabled");
-            document.getElementById("keywordStatisticsGraphBarAmount").classList.add("disabled");
-            document.getElementById("keywordStatisticsGraphLine").classList.remove("disabled");
-        });
-        document.getElementById("keywordStatisticsGraphLine").addEventListener("click", (e) => {
-            create_keyword_statistics_graph("line");
-            document.getElementById("keywordStatisticsGraphBarPercentages").classList.remove("disabled");
-            document.getElementById("keywordStatisticsGraphBarAmount").classList.remove("disabled");
-            document.getElementById("keywordStatisticsGraphLine").classList.add("disabled");
-        });
-
-        document.getElementById("keywordTimesRunGraphBar").addEventListener("click", (e) => {
-            create_keyword_times_run_graph("bar");
-            document.getElementById("keywordTimesRunGraphBar").classList.add("disabled");
-            document.getElementById("keywordTimesRunGraphLine").classList.remove("disabled");
-        });
-        document.getElementById("keywordTimesRunGraphLine").addEventListener("click", (e) => {
-            create_keyword_times_run_graph("line");
-            document.getElementById("keywordTimesRunGraphBar").classList.remove("disabled");
-            document.getElementById("keywordTimesRunGraphLine").classList.add("disabled");
-        });
-
-        document.getElementById("keywordTotalTimeGraphBar").addEventListener("click", (e) => {
-            create_keyword_total_time_graph("bar");
-            document.getElementById("keywordTotalTimeGraphBar").classList.add("disabled");
-            document.getElementById("keywordTotalTimeGraphLine").classList.remove("disabled");
-        });
-        document.getElementById("keywordTotalTimeGraphLine").addEventListener("click", (e) => {
-            create_keyword_total_time_graph("line");
-            document.getElementById("keywordTotalTimeGraphBar").classList.remove("disabled");
-            document.getElementById("keywordTotalTimeGraphLine").classList.add("disabled");
-        });
-
-        document.getElementById("keywordAverageTimeGraphBar").addEventListener("click", (e) => {
-            create_keyword_average_time_graph("bar");
-            document.getElementById("keywordAverageTimeGraphBar").classList.add("disabled");
-            document.getElementById("keywordAverageTimeGraphLine").classList.remove("disabled");
-        });
-        document.getElementById("keywordAverageTimeGraphLine").addEventListener("click", (e) => {
-            create_keyword_average_time_graph("line");
-            document.getElementById("keywordAverageTimeGraphBar").classList.remove("disabled");
-            document.getElementById("keywordAverageTimeGraphLine").classList.add("disabled");
-        });
-
-        document.getElementById("keywordMinTimeGraphBar").addEventListener("click", (e) => {
-            create_keyword_min_time_graph("bar");
-            document.getElementById("keywordMinTimeGraphBar").classList.add("disabled");
-            document.getElementById("keywordMinTimeGraphLine").classList.remove("disabled");
-        });
-        document.getElementById("keywordMinTimeGraphLine").addEventListener("click", (e) => {
-            create_keyword_min_time_graph("line");
-            document.getElementById("keywordMinTimeGraphBar").classList.remove("disabled");
-            document.getElementById("keywordMinTimeGraphLine").classList.add("disabled");
-        });
-
-        document.getElementById("keywordMaxTimeGraphBar").addEventListener("click", (e) => {
-            create_keyword_max_time_graph("bar");
-            document.getElementById("keywordMaxTimeGraphBar").classList.add("disabled");
-            document.getElementById("keywordMaxTimeGraphLine").classList.remove("disabled");
-        });
-        document.getElementById("keywordMaxTimeGraphLine").addEventListener("click", (e) => {
-            create_keyword_max_time_graph("line");
-            document.getElementById("keywordMaxTimeGraphBar").classList.remove("disabled");
-            document.getElementById("keywordMaxTimeGraphLine").classList.add("disabled");
-        });
+        const graphChangeButtons = {
+            'run_statistics': 'Percentages,Line,Amount',
+            'run_duration': 'Bar,Line',
+            'suite_statistics': 'Percentages,Line,Amount',
+            'suite_duration': 'Bar,Line',
+            'suite_most_failed': 'Bar,Timeline',
+            'test_duration': 'Bar,Line',
+            'test_most_failed': 'Bar,Timeline',
+            'test_messages': 'Bar,Timeline',
+            'keyword_statistics': 'Percentages,Line,Amount',
+            'keyword_times_run': 'Bar,Line',
+            'keyword_total_time': 'Bar,Line',
+            'keyword_average_time': 'Bar,Line',
+            'keyword_min_time': 'Bar,Line',
+            'keyword_max_time': 'Bar,Line',
+        }
+        function underscoreToCamelcase(string) {
+            return string.replace(/(\_\w)/g, function (m) {
+                return m[1].toUpperCase();
+            });
+        }
+        for (let graphChangeButton in graphChangeButtons) {
+            let camelButtonName = underscoreToCamelcase(graphChangeButton)
+            if (graphChangeButtons[graphChangeButton] == 'Percentages,Line,Amount') {
+                document.getElementById(`${camelButtonName}GraphBarPercentages`).addEventListener("click", (e) => {
+                    window[`create_${graphChangeButton}_graph`]("percentages");
+                    document.getElementById(`${camelButtonName}GraphBarAmount`).classList.remove("disabled");
+                    document.getElementById(`${camelButtonName}GraphLine`).classList.remove("disabled");
+                    document.getElementById(`${camelButtonName}GraphBarPercentages`).classList.add("disabled");
+                });
+                document.getElementById(`${camelButtonName}GraphBarAmount`).addEventListener("click", (e) => {
+                    window[`create_${graphChangeButton}_graph`]("amount");
+                    document.getElementById(`${camelButtonName}GraphBarAmount`).classList.add("disabled");
+                    document.getElementById(`${camelButtonName}GraphLine`).classList.remove("disabled");
+                    document.getElementById(`${camelButtonName}GraphBarPercentages`).classList.remove("disabled");
+                });
+                document.getElementById(`${camelButtonName}GraphLine`).addEventListener("click", (e) => {
+                    window[`create_${graphChangeButton}_graph`]("line");
+                    document.getElementById(`${camelButtonName}GraphBarAmount`).classList.remove("disabled");
+                    document.getElementById(`${camelButtonName}GraphLine`).classList.add("disabled");
+                    document.getElementById(`${camelButtonName}GraphBarPercentages`).classList.remove("disabled");
+                });
+            } else if (graphChangeButtons[graphChangeButton] == 'Bar,Line') {
+                document.getElementById(`${camelButtonName}GraphBar`).addEventListener("click", (e) => {
+                    window[`create_${graphChangeButton}_graph`]("bar");
+                    document.getElementById(`${camelButtonName}GraphBar`).classList.add("disabled");
+                    document.getElementById(`${camelButtonName}GraphLine`).classList.remove("disabled");
+                });
+                document.getElementById(`${camelButtonName}GraphLine`).addEventListener("click", (e) => {
+                    window[`create_${graphChangeButton}_graph`]("line");
+                    document.getElementById(`${camelButtonName}GraphBar`).classList.remove("disabled");
+                    document.getElementById(`${camelButtonName}GraphLine`).classList.add("disabled");
+                });
+            } else if (graphChangeButtons[graphChangeButton] == 'Bar,Timeline') {
+                document.getElementById(`${camelButtonName}GraphBar`).addEventListener("click", (e) => {
+                    window[`create_${graphChangeButton}_graph`]("bar");
+                    document.getElementById(`${camelButtonName}GraphBar`).classList.add("disabled");
+                    document.getElementById(`${camelButtonName}GraphTimeline`).classList.remove("disabled");
+                });
+                document.getElementById(`${camelButtonName}GraphTimeline`).addEventListener("click", (e) => {
+                    window[`create_${graphChangeButton}_graph`]("timeline");
+                    document.getElementById(`${camelButtonName}GraphBar`).classList.remove("disabled");
+                    document.getElementById(`${camelButtonName}GraphTimeline`).classList.add("disabled");
+                });
+            }
+        }
 
         document.getElementById("resetFilters").addEventListener("click", reset_filters);
         document.getElementById("suiteSelectSuites").addEventListener("change", (e) => {
@@ -953,15 +842,15 @@
             filteredSuites = filter_data("suites");
             filteredTests = filter_data("tests");
             filteredKeywords = filter_data("keywords");
-            // update tests select based on filtered runs
-            add_suites_in_selects();
-            add_tests_in_select();
-            add_keywords_in_select();
             // set titles with amount of filtered items
             document.getElementById("runTitle").innerText = `Run Statistics (${Object.keys(filteredRuns).length})`;
             document.getElementById("suiteTitle").innerText = `Suite Statistics (${Object.keys(filteredSuites).length})`;
             document.getElementById("testTitle").innerText = `Test Statistics (${Object.keys(filteredTests).length})`;
             document.getElementById("keywordTitle").innerText = `Keyword Statistics (${Object.keys(filteredKeywords).length})`;
+            // update tests select based on filtered runs
+            add_suites_in_selects();
+            add_tests_in_select();
+            add_keywords_in_select();
         }
 
         function update_all_graphs() {
@@ -989,7 +878,7 @@
         function filter_runs(runs) {
             var run = document.getElementById("runs").value;
             var filteredRuns = [];
-            for (const [key, value] of Object.entries(runs)) {
+            for (var [key, value] of Object.entries(runs)) {
                 if (run != "All" && value.name != run) {
                     continue;
                 } else {
@@ -2011,7 +1900,7 @@
                         sets[name] = [{ x: run_start, y: rounded_value }];
                     }
                 }
-                for (const [key, value] of Object.entries(sets)) {
+                for (var [key, value] of Object.entries(sets)) {
                     datasets.push({ label: key, fill: false, data: value });
                 }
                 return datasets;
@@ -2178,7 +2067,6 @@
         }
 
         function update_height(verticalId, graph) {
-            console.log('updating height')
             document.getElementById(verticalId).style.height = `489px`
             if (graph.data.labels.length > 10) {
                 var newHeight = 489 + (graph.data.labels.length - 10) * 25
