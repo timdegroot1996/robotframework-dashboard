@@ -30,6 +30,13 @@ class ArgumentParser:
             default=None,
         )
         parser.add_argument(
+            "-f",
+            "--outputfolderpath",
+            help="`path` Specifies a path to a directory in which it will \
+                look in all folders and subfolders for *output*.xml files to be processed into the database",
+            default=None,
+        )
+        parser.add_argument(
             "-r",
             "--removeruns",
             help="`string` Specifies 1 or more indexes or run_start datetimes to remove from the database. \
@@ -76,6 +83,11 @@ class ArgumentParser:
                 path = output[0].split(":")[0]
                 tags = output[0].split(":")[1:]
                 outputs.append([path, tags])
+        outputfolderpath = None
+        if arguments.outputfolderpath:
+            path = arguments.outputfolderpath.split(":")[0]
+            tags = arguments.outputfolderpath.split(":")[1:]
+            outputfolderpath = [path, tags]
         generate_dashboard = (
             True
             if arguments.generatedashboard == True
@@ -96,6 +108,7 @@ class ArgumentParser:
             dashboard_name = arguments.namedashboard
         return (
             outputs,
+            outputfolderpath,
             arguments.databasepath,
             generate_dashboard,
             dashboard_name,

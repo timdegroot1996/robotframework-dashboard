@@ -86,6 +86,12 @@ robotdashboard
 ```
 robotdashboard -o output1.xml:tag1 -o reports/output2.xml:tag1:tag2
 ```
+- Add all \*output\*.xml in an entire folder tree to the database and provide all these runs with tags
+```
+robotdashboard -f ./reports
+robotdashboard -f ../../some_folder/sub_folder/logs
+robotdashboard -f ./nightly_runs:tag1:tag2:tag3
+```
 - Do not list runs and/or do not create the dashboard HTML
 ```
 robotdashboard -l false -g false

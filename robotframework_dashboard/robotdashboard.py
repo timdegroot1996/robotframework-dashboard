@@ -2,13 +2,15 @@ from .arguments import ArgumentParser
 from .processors import OutputProcessor
 from .database import DatabaseProcessor
 from .dashboard import DashboardGenerator
-from os.path import basename
+from os.path import basename, exists, join
+from os import walk
 from time import time
 
 
 def main():
     (
         outputs,
+        output_folder_path,
         database_path,
         generate_dashboard,
         dashboard_name,
@@ -43,7 +45,25 @@ def main():
                 )
             except Exception as error:
                 print(f"  ERROR: Could not process output XML '{basename(output_path)}', error: {error}")
-
+    elif output_folder_path:
+        print(f" 2. Processing output XML(s)")
+        if exists(output_folder_path[0]):
+            try:
+                for subdir, dirs, files in walk(output_folder_path[0]):
+                    for file in files:
+                        if 'output' in file and '.xml' in file:
+                            start = time()
+                            print(f"  Processing output XML '{join(subdir, file)}'")
+                            output_data = OutputProcessor().get_output_data(join(subdir, file))
+                            database.insert_output_data(output_data, output_folder_path[1])
+                            end = time()
+                            print(
+                                f"  Processed output XML '{join(subdir, file)}' in {round(end-start, 2)} seconds"
+                            )
+            except Exception as error:
+                print(f"  ERROR: Could not process output folder '{output_folder_path}', error: {error}")
+        else:
+            print(f"  ERROR: Could not process output folder '{output_folder_path}', error: the path does not exist!")
     else:
         print(f" 2. Processing output XML(s)\n  skipping step")
 
