@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="robotframework-dashboard",
-    version="0.4.0",
+    version="0.4.1",
     description="Output processor and dashboard generator for Robot Framework output files",
     long_description="""# Robot Framework Dashboard
 
@@ -96,7 +96,7 @@ robotdashboard -o output1.xml:tag1 -o reports/output2.xml:tag1:tag2
 ```
 robotdashboard -f ./reports
 robotdashboard -f ../../some_folder/sub_folder/logs
-robotdashboard -f ./nightly_runs:tag1:tag2:tag3
+robotdashboard -f C:/nightly_runs:tag1:tag2:tag3
 ```
 - Do not list runs and/or do not create the dashboard HTML
 ```

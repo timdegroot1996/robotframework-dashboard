@@ -1,5 +1,6 @@
 import argparse
 from datetime import datetime
+from re import split
 from .version import __version__
 
 
@@ -80,13 +81,23 @@ class ArgumentParser:
         if arguments.outputpath:
             outputs = []
             for output in arguments.outputpath:
-                path = output[0].split(":")[0]
-                tags = output[0].split(":")[1:]
+                splitted = split(r":(?!(\/|\\))", output[0])
+                while None in splitted:
+                    splitted.remove(
+                        None
+                    )  # None values are found by re.split because of the 2 conditions
+                path = splitted[0]
+                tags = splitted[1:]
                 outputs.append([path, tags])
         outputfolderpath = None
         if arguments.outputfolderpath:
-            path = arguments.outputfolderpath.split(":")[0]
-            tags = arguments.outputfolderpath.split(":")[1:]
+            splitted = split(r":(?!(\/|\\))", arguments.outputfolderpath)
+            while None in splitted:
+                splitted.remove(
+                    None
+                )  # None values are found by re.split because of the 2 conditions
+            path = splitted[0]
+            tags = splitted[1:]
             outputfolderpath = [path, tags]
         generate_dashboard = (
             True
