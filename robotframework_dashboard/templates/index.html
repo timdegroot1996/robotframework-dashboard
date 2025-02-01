@@ -93,8 +93,8 @@
                                 <select class="form-select form-select-sm" id="runs"></select>
                             </div>
                             <div class="col-auto">
-                                <label class="form-label form-label-sm" for="tag">Tags</label>
-                                <select class="form-select form-select-sm" id="tag"></select>
+                                <label class="form-label form-label-sm" for="runTag">Run Tags</label>
+                                <select class="form-select form-select-sm" id="runTag"></select>
                             </div>
                             <div class="col-auto">
                                 <label class="form-label form-label-sm" for="fromDate">From Date</label>
@@ -306,6 +306,14 @@
                         </div>
                         <div class="btn-group">
                             <select class="form-select form-select-sm" id="suiteSelectTests"></select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="btn-group">
+                            <label class="form-label mt-2" for="testTagsSelect">Test Tags</label>
+                        </div>
+                        <div class="btn-group">
+                            <select class="form-select form-select-sm" id="testTagsSelect"></select>
                         </div>
                     </div>
                     <div class="col-auto">
@@ -558,7 +566,7 @@
     </div>
 
     <script>
-        // collapse/expand buttons
+        // collapse/expand buttons icons/svgs
         const collapsed =
             '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
         const collapsedSmall =
@@ -568,7 +576,7 @@
         const expandedSmall =
             '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
 
-        // theme
+        // theme function based on browser/machine color scheme
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
             Chart.defaults.color = "#e2e1d7";
             Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
@@ -598,7 +606,7 @@
         // set initial filters and fill selects based on provided data
         set_lowest_highest_dates();
         add_runs_in_select();
-        add_tags_in_select();
+        add_runtags_in_select();
 
         // create graphs
         var runStatisticsGraph;
@@ -644,7 +652,7 @@
         // var to keep track of show only selected test stats
         var showOnlySelectedtestStatus = false;
 
-        // initialize all collapsables
+        // initialize all collapsables by adding the eventlisteners to the buttonIds
         const collapsables = [
             "runDetailsButton",
             "runStatisticsDurationButton",
@@ -669,12 +677,28 @@
                 update_collapse_button(collapsable);
             });
         }
+        // function that handles the setting of the correct icon when expanding/collapsing sections
+        function update_collapse_button(id) {
+            if (document.getElementById(id).className.includes("collapsed")) {
+                if (id.includes('Details')) {
+                    document.getElementById(id).innerHTML = collapsed;
+                } else {
+                    document.getElementById(id).innerHTML = collapsedSmall;
+                }
+            } else {
+                if (id.includes('Details')) {
+                    document.getElementById(id).innerHTML = expanded;
+                } else {
+                    document.getElementById(id).innerHTML = expandedSmall;
+                }
+            }
+        }
 
-        //initialize all data and graphs
+        //initialize all data and graphs on load of the dashboard.html
         update_data_and_all_graphs();
 
         // eventlisteners for filters
-        const filters = ["runs", "tag", "fromDate", "fromTime", "toDate", "toTime"]
+        const filters = ["runs", "runTag", "fromDate", "fromTime", "toDate", "toTime"]
         for (let f of filters) {
             document.getElementById(f).addEventListener("change", update_data_and_all_graphs);
         }
@@ -767,7 +791,9 @@
             }
         }
 
+        // eventlistener for reset filter button
         document.getElementById("resetFilters").addEventListener("click", reset_filters);
+        // eventlistener for all selection boxes and their respective graphs that should be updated
         document.getElementById("suiteSelectSuites").addEventListener("change", (e) => {
             create_suite_duration_graph();
             create_suite_statistics_graph();
@@ -777,6 +803,12 @@
             create_test_status_graph();
         });
         document.getElementById("suiteSelectTests").addEventListener("change", (e) => {
+            add_testtags_in_select();
+            add_tests_in_select();
+            create_test_status_graph();
+            create_test_duration_graph();
+        });
+        document.getElementById("testTagsSelect").addEventListener("change", (e) => {
             add_tests_in_select();
             create_test_status_graph();
             create_test_duration_graph();
@@ -796,22 +828,7 @@
             create_keyword_max_time_graph();
         });
 
-        function update_collapse_button(id) {
-            if (document.getElementById(id).className.includes("collapsed")) {
-                if (id.includes('Details')) {
-                    document.getElementById(id).innerHTML = collapsed;
-                } else {
-                    document.getElementById(id).innerHTML = collapsedSmall;
-                }
-            } else {
-                if (id.includes('Details')) {
-                    document.getElementById(id).innerHTML = expanded;
-                } else {
-                    document.getElementById(id).innerHTML = expandedSmall;
-                }
-            }
-        }
-
+        // function that initializes the from date/time and to date/time selection boxes in the filters
         function set_lowest_highest_dates() {
             var dates = [];
             for (run of runs) {
@@ -828,15 +845,17 @@
             document.getElementById("toTime").value = highest.toISOString().split("T")[1].substring(0, 5);
         }
 
+        // generic function to update all graph data, function is called when updating filters and when the page loads
         function update_data_and_all_graphs() {
             update_filtered_data();
             update_all_graphs();
         }
 
+        // function updates the data in the graphs whenever filters are updated
         function update_filtered_data() {
             // filter run data
             filteredRuns = filter_runs(runs);
-            filteredRuns = filter_tags(filteredRuns);
+            filteredRuns = filter_runtags(filteredRuns);
             filteredRuns = filter_dates(filteredRuns);
             // filter suites and tests based on filtered runs
             filteredSuites = filter_data("suites");
@@ -849,10 +868,12 @@
             document.getElementById("keywordTitle").innerText = `Keyword Statistics (${Object.keys(filteredKeywords).length})`;
             // update tests select based on filtered runs
             add_suites_in_selects();
+            add_testtags_in_select();
             add_tests_in_select();
             add_keywords_in_select();
         }
 
+        // function that updates all graphs based on the new filtered data
         function update_all_graphs() {
             create_run_statistics_graph();
             create_run_duration_graph();
@@ -875,6 +896,7 @@
             create_keyword_table();
         }
 
+        // function to filter run data based on the runs (aka run name) filter
         function filter_runs(runs) {
             var run = document.getElementById("runs").value;
             var filteredRuns = [];
@@ -888,8 +910,9 @@
             return filteredRuns;
         }
 
-        function filter_tags(runs) {
-            var tag = document.getElementById("tag").value;
+        // function to filter run data based on the run tags filter
+        function filter_runtags(runs) {
+            var tag = document.getElementById("runTag").value;
             var filteredRuns = [];
             for (value of runs) {
                 if (tag != "All") {
@@ -908,6 +931,7 @@
             return filteredRuns;
         }
 
+        // function to filter the run data based on the selected date range
         function filter_dates(runs) {
             var fromDate = document.getElementById("fromDate").value;
             var fromTime = document.getElementById("fromTime").value;
@@ -938,6 +962,7 @@
             return filteredRuns;
         }
 
+        // function to filter suites/tests/keywords based on the already filtered runs
         function filter_data(dataType) {
             var validRunStarts = [];
             for (value of filteredRuns) {
@@ -952,13 +977,15 @@
             return filteredData;
         }
 
+        // function to reset the filters at the top and update the graphs
         function reset_filters() {
             document.getElementById("runs").value = "All";
-            document.getElementById("tag").value = "All";
+            document.getElementById("runTag").value = "All";
             set_lowest_highest_dates(runs);
             update_data_and_all_graphs();
         }
 
+        // function to update the available runs to select in the filters
         function add_runs_in_select() {
             var runOptions = [];
             for (run of runs) {
@@ -973,7 +1000,8 @@
             }
         }
 
-        function add_tags_in_select() {
+        // function to update the available runtags to select in the filters
+        function add_runtags_in_select() {
             var tags = [];
             for (run of runs) {
                 var runTags = run.tags.split(",");
@@ -983,13 +1011,15 @@
                     }
                 }
             }
-            var tagsSelect = document.getElementById("tag");
+            var tagsSelect = document.getElementById("runTag");
             tagsSelect.options[tagsSelect.options.length] = new Option("All", "All");
             for (tag of tags) {
                 tagsSelect.options[tagsSelect.options.length] = new Option(tag, tag);
             }
         }
 
+        // function to update the available suites to select in the filters
+        // applies to the suite filter on the suite statistics level and the test statistics level
         function add_suites_in_selects() {
             document.getElementById("suiteSelectTests").innerHTML = "";
             document.getElementById("suiteSelectSuites").innerHTML = "";
@@ -1007,13 +1037,19 @@
             }
         }
 
+        // function to update the available tests to select in the filters
+        // applies to the test filter on the test statistics level
         function add_tests_in_select() {
             document.getElementById("testSelect").innerHTML = "";
             suiteSelect = document.getElementById("suiteSelectTests").value;
+            testTagsSelect = document.getElementById("testTagsSelect").value;
             var testNames = [];
             for (test of filteredTests) {
                 if (test.full_name.includes(`${suiteSelect}.${test.name}`) && !testNames.includes(test.name)) {
-                    testNames.push(test.name);
+                    var tags = test.tags.replace(/\[|\]/g, '').split(',')
+                    if (tags.includes(testTagsSelect) || testTagsSelect == "All") {
+                        testNames.push(test.name);
+                    }
                 }
             }
             var testSelect = document.getElementById("testSelect");
@@ -1023,6 +1059,31 @@
             }
         }
 
+        // function to update the available testtags to select in the filters
+        // applies to the testtag filter on the test statistics level
+        function add_testtags_in_select() {
+            document.getElementById("testTagsSelect").innerHTML = "";
+            suiteSelect = document.getElementById("suiteSelectTests").value;
+            var testTags = [];
+            for (test of filteredTests) {
+                if (test.full_name.includes(`${suiteSelect}.${test.name}`)) {
+                    var tags = test.tags.replace(/\[|\]/g, '').split(',')
+                    for (tag of tags) {
+                        if (!testTags.includes(tag)) {
+                            testTags.push(tag)
+                        }
+                    }
+                }
+            }
+            var testTagsSelect = document.getElementById("testTagsSelect");
+            testTagsSelect.options[testTagsSelect.options.length] = new Option("All", "All");
+            for (tag of testTags) {
+                testTagsSelect.options[testTagsSelect.options.length] = new Option(tag, tag);
+            }
+        }
+
+        // function to update the available keywords to select in the filters
+        // applies to the keyword filter on the keyword statistics level
         function add_keywords_in_select() {
             document.getElementById("keywordSelect").innerHTML = "";
             var keywordNames = [];
@@ -1037,6 +1098,7 @@
             }
         }
 
+        // function to create run statistics graph in the run section
         function create_run_statistics_graph(type) {
             if (typeof type === "string") {
                 runStatisticsGraphType = type;
@@ -1059,6 +1121,7 @@
             }
         }
 
+        // function to create run duration graph in the run section
         function create_run_duration_graph(type) {
             if (typeof type === "string") {
                 runDurationGraphType = type;
@@ -1076,6 +1139,7 @@
             }
         }
 
+        // function to create run table in the run section
         function create_run_table() {
             if (runTable) {
                 runTable.destroy();
@@ -1116,6 +1180,7 @@
             });
         }
 
+        // function to create suite statistics graph in the suite section
         function create_suite_statistics_graph(type) {
             if (typeof type === "string") {
                 suiteStatisticsGraphType = type;
@@ -1138,6 +1203,7 @@
             }
         }
 
+        // function to create suite duration graph in the suite section
         function create_suite_duration_graph(type) {
             if (typeof type === "string") {
                 suiteDurationGraphType = type;
@@ -1155,6 +1221,7 @@
             }
         }
 
+        // function to create suite most failed graph in the suite section
         function create_suite_most_failed_graph(type) {
             if (typeof type === "string") {
                 suiteMostFailedGraphType = type;
@@ -1200,6 +1267,7 @@
             }
         }
 
+        // function to create suite table in the suite section
         function create_suite_table() {
             if (suiteTable) {
                 suiteTable.destroy();
@@ -1238,12 +1306,14 @@
             });
         }
 
+        // function to create test status graph in the test section
         function create_test_status_graph() {
             if (testStatusGraph) {
                 testStatusGraph.destroy();
             }
             var suiteSelectTests = document.getElementById("suiteSelectTests").value;
             var testSelect = document.getElementById("testSelect").value;
+            var testTagsSelect = document.getElementById("testTagsSelect").value;
             var labels = [];
             var runStarts = [];
             var datasets = [];
@@ -1253,6 +1323,9 @@
                 }
                 if (showOnlySelectedtestStatus && testSelect != "All" && test.name != testSelect) {
                     continue;
+                }
+                if (testTagsSelect != "All" && !test.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
+                    continue
                 }
                 if (!labels.includes(test.name)) {
                     labels.push(test.name);
@@ -1310,6 +1383,7 @@
             update_height('testStatusVertical', testStatusGraph)
         }
 
+        // function to create test duration graph in the test section
         function create_test_duration_graph(type) {
             if (typeof type === "string") {
                 testDurationGraphType = type;
@@ -1327,6 +1401,7 @@
             }
         }
 
+        // function to create test most failed graph in the test section
         function create_test_most_failed_graph(type) {
             if (typeof type === "string") {
                 testMostFailedGraphType = type;
@@ -1372,6 +1447,7 @@
             }
         }
 
+        // function to create test messages graph in the test section
         function create_test_messages_graph(type) {
             if (typeof type === "string") {
                 testMessagesGraphType = type;
@@ -1431,13 +1507,14 @@
             }
         }
 
+        // function to create test table in the test section
         function create_test_table() {
             if (testTable) {
                 testTable.destroy();
             }
             data = [];
             for (test of filteredTests) {
-                data.push([test.run_start, test.full_name, test.name, test.passed, test.failed, test.skipped, test.elapsed_s, test.start_time, test.message]);
+                data.push([test.run_start, test.full_name, test.name, test.passed, test.failed, test.skipped, test.elapsed_s, test.start_time, test.message, test.tags]);
             }
             testTable = new DataTable("#testTable", {
                 layout: {
@@ -1454,11 +1531,13 @@
                     { title: "elapsed_s" },
                     { title: "start_time" },
                     { title: "message" },
+                    { title: "tags" },
                 ],
                 data: data,
             });
         }
 
+        // function to keyword statistics graph in the keyword section
         function create_keyword_statistics_graph(type) {
             if (typeof type === "string") {
                 keywordStatisticsGraphType = type;
@@ -1481,6 +1560,7 @@
             }
         }
 
+        // function to keyword times run graph in the keyword section
         function create_keyword_times_run_graph(type) {
             if (typeof type === "string") {
                 keywordTimesRunGraphType = type;
@@ -1498,6 +1578,7 @@
             }
         }
 
+        // function to keyword total time graph in the keyword section
         function create_keyword_total_time_graph(type) {
             if (typeof type === "string") {
                 keywordTotalTimeGraphType = type;
@@ -1515,6 +1596,7 @@
             }
         }
 
+        // function to keyword average time graph in the keyword section
         function create_keyword_average_time_graph(type) {
             if (typeof type === "string") {
                 keywordAverageTimeGraphType = type;
@@ -1532,6 +1614,7 @@
             }
         }
 
+        // function to keyword min time graph in the keyword section
         function create_keyword_min_time_graph(type) {
             if (typeof type === "string") {
                 keywordMinTimeGraphType = type;
@@ -1549,6 +1632,7 @@
             }
         }
 
+        // function to keyword max time graph in the keyword section
         function create_keyword_max_time_graph(type) {
             if (typeof type === "string") {
                 keywordMaxTimeGraphType = type;
@@ -1566,6 +1650,7 @@
             }
         }
 
+        // function to keyword table in the keyword section
         function create_keyword_table() {
             if (keywordTable) {
                 keywordTable.destroy();
@@ -1606,6 +1691,7 @@
             });
         }
 
+        // function to retrieve the required graph config for chartjs, based on the different type of graphs
         function get_graph_config(graphType, graphData, graphTitle, xTitle, yTitle, dataSets = true) {
             if (dataSets && graphType == "line") {
                 graphData = { datasets: graphData };
@@ -1745,6 +1831,7 @@
             }
         }
 
+        // function to prepare the data in the correct format for statistics graphs
         function get_statistics_graph_data(dataType, graphType, filteredData) {
             var keywordSelect = document.getElementById("keywordSelect").value;
             var suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
@@ -1834,12 +1921,14 @@
             return statisticsData;
         }
 
+        // function to prepare the data in the correct format for duration graphs
         function get_duration_graph_data(dataType, graphType, objectDataAttribute, filteredData) {
             // used for suite selection filter
             var suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
             // used for test selection filter
             var suiteSelectTests = document.getElementById("suiteSelectTests").value;
             var testSelect = document.getElementById("testSelect").value;
+            var testTagsSelect = document.getElementById("testTagsSelect").value;
             // used for keyword selection filter
             var keywordSelect = document.getElementById("keywordSelect").value;
             if (graphType == "bar") {
@@ -1857,6 +1946,9 @@
                     }
                     if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
                         continue;
+                    }
+                    if (dataType == "test" && testTagsSelect != "All" && !value.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
+                        continue
                     }
                     labels.push(value.run_start);
                     if (labels.length > 30) { break }
@@ -1905,6 +1997,9 @@
                     if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
                         continue;
                     }
+                    if (dataType == "test" && testTagsSelect != "All" && !value.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
+                        continue
+                    }
                     var name = value.name;
                     var run_start = new Date(value.run_start);
                     var rounded_value = Math.round(value[objectDataAttribute] * 100) / 100;
@@ -1924,6 +2019,7 @@
             }
         }
 
+        // function to prepare the data in the correct format for most failed graphs
         function get_most_failed_data(dataType, graphType, filteredData) {
             var data = {};
             for (value of filteredData) {
@@ -2000,6 +2096,7 @@
             }
         }
 
+        // function to prepare the data in the correct format for messages graphs
         function get_messages_data(dataType, graphType, filteredData) {
             var data = {};
             for (value of filteredData) {
@@ -2083,6 +2180,7 @@
             }
         }
 
+        // function to update the height of the test statistics graph and enable scrolling
         function update_height(verticalId, graph) {
             document.getElementById(verticalId).style.height = `489px`
             if (graph.data.labels.length > 10) {

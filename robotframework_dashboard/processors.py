@@ -193,6 +193,7 @@ class TestProcessor(ResultVisitor):
                 elapsed_time,
                 start_time,
                 test.message[:150],
+                str(test.tags).replace(' ', ''),
             )
         )
 
