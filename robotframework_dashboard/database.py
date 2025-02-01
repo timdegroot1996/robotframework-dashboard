@@ -33,7 +33,7 @@ class DatabaseProcessor:
                 f"   ERROR: you are probably trying to add the same output again, {e}"
             )
 
-    def insert_runs(self, runs: list[tuple], tags: list):
+    def insert_runs(self, runs: list, tags: list):
         full_runs = []
         for run in runs:
             run += (",".join(tags),)
@@ -41,15 +41,15 @@ class DatabaseProcessor:
         self.connection.executemany(INSERT_INTO_RUNS, full_runs)
         self.connection.commit()
 
-    def insert_suites(self, suites: list[tuple]):
+    def insert_suites(self, suites: list):
         self.connection.executemany(INSERT_INTO_SUITES, suites)
         self.connection.commit()
 
-    def insert_tests(self, tests: list[tuple]):
+    def insert_tests(self, tests: list):
         self.connection.executemany(INSERT_INTO_TESTS, tests)
         self.connection.commit()
 
-    def insert_keywords(self, keywords: list[tuple]):
+    def insert_keywords(self, keywords: list):
         self.connection.executemany(INSERT_INTO_KEYWORDS, keywords)
         self.connection.commit()
 
