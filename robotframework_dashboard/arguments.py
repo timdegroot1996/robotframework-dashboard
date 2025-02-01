@@ -112,7 +112,7 @@ class ArgumentParser:
         )
         generation_datetime = datetime.now()
         if arguments.namedashboard == "":
-            dashboard_name = f".\\robot_dashboard_{generation_datetime.strftime('%Y%m%d-%H%M%S')}.html"
+            dashboard_name = f"robot_dashboard_{generation_datetime.strftime('%Y%m%d-%H%M%S')}.html"
         elif not arguments.namedashboard.endswith(".html"):
             dashboard_name = f"{arguments.namedashboard}.html"
         else:

@@ -119,10 +119,10 @@ robotdashboard -o output1.xml -o output2.xml -o output3.xml
 ```
 Results:
 ```
-==============================================================================
+======================================================================================
  1. Database preparation
   created database connection: './robot_results.db'
-==============================================================================
+======================================================================================
  2. Processing output XML(s)
   Processing output XML 'output1.xml'
   Processed output XML 'output1.xml' in 0.04 seconds
@@ -130,17 +130,17 @@ Results:
   Processed output XML 'output2.xml' in 0.05 seconds
   Processing output XML 'output3.xml'
   Processed output XML 'output3.xml' in 0.05 seconds
-==============================================================================
+======================================================================================
  3. Listing all available runs in the database
   Run 0   | 2024-10-17 15:05:04.563559 | RobotFramework-Project1
   Run 1   | 2024-10-18 16:43:12.772757 | Robotframework-Project2
   Run 2   | 2024-10-21 10:54:25.663094 | Robotframework-Project1
-==============================================================================
+======================================================================================
  4. Removing runs from the database
   skipping step
-==============================================================================
+======================================================================================
  5. Creating dashboard HTML
-  created dashboard './robot_dashboard_20241021-150726.html' in 0.01 seconds
+  created dashboard 'robot_dashboard_20241021-150726.html' in 0.01 seconds
 ```
 
 ## Contributing

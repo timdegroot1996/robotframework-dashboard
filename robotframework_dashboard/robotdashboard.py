@@ -2,12 +2,26 @@ from .arguments import ArgumentParser
 from .processors import OutputProcessor
 from .database import DatabaseProcessor
 from .dashboard import DashboardGenerator
-from os.path import basename, exists, join
+from os.path import basename, exists, join, abspath
 from os import walk
 from time import time
 
 
 def main():
+    print(
+        "======================================================================================"
+    )
+    print(
+""" ____   ___  ____   ___ _____ ____    _    ____  _   _ ____   ___    _    ____  ____  
+|  _ \ / _ \| __ ) / _ |_   _|  _ \  / \  / ___|| | | | __ ) / _ \  / \  |  _ \|  _ \ 
+| |_) | | | |  _ \| | | || | | | | |/ _ \ \___ \| |_| |  _ \| | | |/ _ \ | |_) | | | |
+|  _ <| |_| | |_) | |_| || | | |_| / ___ \ ___) |  _  | |_) | |_| / ___ \|  _ <| |_| |
+|_| \_\\\\___/|____/ \___/ |_| |____/_/   \_|____/|_| |_|____/ \___/_/   \_|_| \_|____/ 
+"""
+    )
+    print(
+        "======================================================================================"
+    )
     (
         outputs,
         output_folder_path,
@@ -18,16 +32,13 @@ def main():
         list_runs,
         remove_runs,
     ) = ArgumentParser().parse_arguments()
-    print(
-        "=============================================================================="
-    )
     print(f" 1. Database preparation")
     database = DatabaseProcessor(database_path)
     database.create_database()
     print(f"  created database connection: '{database_path}'")
 
     print(
-        "=============================================================================="
+        "======================================================================================"
     )
     if outputs or output_folder_path:
         print(f" 2. Processing output XML(s)")
@@ -78,7 +89,7 @@ def main():
         print(f" 2. Processing output XML(s)\n  skipping step")
 
     print(
-        "=============================================================================="
+        "======================================================================================"
     )
     if list_runs:
         print(f" 3. Listing all available runs in the database")
@@ -87,7 +98,7 @@ def main():
         print(f" 3. Listing all available runs in the database\n  skipping step")
 
     print(
-        "=============================================================================="
+        "======================================================================================"
     )
     if remove_runs != None:
         print(f" 4. Removing runs from the database")
@@ -96,7 +107,7 @@ def main():
         print(f" 4. Removing runs from the database\n  skipping step")
 
     print(
-        "=============================================================================="
+        "======================================================================================"
     )
     if generate_dashboard:
         start = time()
@@ -107,7 +118,7 @@ def main():
         )
         end = time()
         print(
-            f"  created dashboard '{dashboard_name}' in {round(end-start, 2)} seconds"
+            f"  created dashboard '{abspath(dashboard_name)}' in {round(end-start, 2)} seconds"
         )
     else:
         print(" 5. Creating dashboard HTML\n  skipping step")
