@@ -1,0 +1,841 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.2 (Python 3.13.1 on win32)" generated="2025-02-01T20:44:04.094016" rpa="false" schemaversion="5">
+<suite id="s1" name="Robotframework-Dashboard" source="D:\CodeProjects\robotframework-dashboard">
+<suite id="s1-s1" name="Scripts" source="D:\CodeProjects\robotframework-dashboard\scripts">
+<suite id="s1-s1-s1" name="Demo1" source="D:\CodeProjects\robotframework-dashboard\scripts\demo1.robot">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:04.270775" level="INFO">Suite Setup 1</msg>
+<arg>message=Suite Setup 1</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:04.270539" elapsed="0.000311"/>
+</kw>
+<test id="s1-s1-s1-t1" name="Test 1" line="20">
+<kw name="Log" owner="BuiltIn">
+<msg time="2025-02-01T20:44:04.271853" level="INFO">a</msg>
+<arg>a</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:04.271579" elapsed="0.000330"/>
+</kw>
+<msg time="2025-02-01T20:44:04.290924" level="INFO">Starting Browser process C:\Users\Tim\AppData\Local\Programs\Python\Python313\Lib\site-packages\Browser\wrapper\index.js using port 58665</msg>
+<msg time="2025-02-01T20:44:04.291044" level="INFO">Node startup parameters: ['node', 'C:\\Users\\Tim\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\Browser\\wrapper\\index.js', '58665']</msg>
+<tag>a</tag>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:04.270989" elapsed="0.001153"/>
+</test>
+<test id="s1-s1-s1-t2" name="Validate google" line="26">
+<kw name="Open Google" type="SETUP">
+<kw name="New Browser" owner="Browser">
+<msg time="2025-02-01T20:44:05.387587" level="INFO">{"browser": "chromium", "headless": false, "chromiumSandbox": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "tracesDir": "D:\\CodeProjects\\robotframework-dashboard\\results\\browser\\traces\\temp\\b479c823-d45a-48e9-8cce-b4df8b785cf0"}</msg>
+<msg time="2025-02-01T20:44:05.588844" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"chromiumSandbox":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"tracesDir":"D:\\CodeProjects\\robotframework-dashboard\\results\\browser\\traces\\temp\\b479c823-d45a-48e9-8cce-b4df8b785cf0"}</msg>
+<arg>browser=${BROWSER}</arg>
+<arg>headless=${HEADLESS}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new playwright Browser with specified options.</doc>
+<status status="PASS" start="2025-02-01T20:44:05.386931" elapsed="0.202164"/>
+</kw>
+<kw name="New Context" owner="Browser">
+<msg time="2025-02-01T20:44:05.590773" level="INFO">{
+  "acceptDownloads": true,
+  "bypassCSP": false,
+  "forcedColors": "none",
+  "ignoreHTTPSErrors": false,
+  "javaScriptEnabled": true,
+  "offline": false,
+  "reducedMotion": "no-preference",
+  "serviceWorkers": "allow",
+  "viewport": {
+    "height": 720,
+    "width": 1280
+  }
+}</msg>
+<msg time="2025-02-01T20:44:05.606757" level="INFO">Successfully created context. </msg>
+<msg time="2025-02-01T20:44:05.606844" level="INFO">{'acceptDownloads': True, 'bypassCSP': False, 'forcedColors': 'none', 'ignoreHTTPSErrors': False, 'javaScriptEnabled': True, 'offline': False, 'reducedMotion': 'no-preference', 'serviceWorkers': 'allow', 'viewport': {'height': 720, 'width': 1280}}</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new BrowserContext with specified options.</doc>
+<status status="PASS" start="2025-02-01T20:44:05.589372" elapsed="0.017546"/>
+</kw>
+<kw name="New Page" owner="Browser">
+<msg time="2025-02-01T20:44:05.792122" level="INFO">Successfully initialized new page object and opened url: about:blank</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Open a new Page.</doc>
+<status status="PASS" start="2025-02-01T20:44:05.607126" elapsed="0.185228"/>
+</kw>
+<kw name="Go To" owner="Browser">
+<msg time="2025-02-01T20:44:06.242361" level="INFO">Successfully opened URL https://www.google.com</msg>
+<arg>url=${URL}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Navigates to the given ``url``.</doc>
+<status status="PASS" start="2025-02-01T20:44:05.792547" elapsed="0.450030"/>
+</kw>
+<status status="PASS" start="2025-02-01T20:44:05.386591" elapsed="0.856115"/>
+</kw>
+<kw name="Validate Google">
+<kw name="Wait For Elements State" owner="Browser">
+<msg time="2025-02-01T20:44:06.272170" level="INFO">Waited for Element with selector //*[@id='CXQnmb'] at state visible</msg>
+<arg>selector=${L_GOOGLE_COOKIES}</arg>
+<tag>PageContent</tag>
+<tag>Wait</tag>
+<doc>Waits for the element found by ``selector`` to satisfy state option.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.243485" elapsed="0.028856"/>
+</kw>
+<status status="PASS" start="2025-02-01T20:44:06.243058" elapsed="0.029399"/>
+</kw>
+<kw name="Close Google" type="TEARDOWN">
+<kw name="Close Page" owner="Browser">
+<msg time="2025-02-01T20:44:06.278638" level="INFO">Switching browser to CURRENT</msg>
+<msg time="2025-02-01T20:44:06.281563" level="INFO">Returned active browser id. CURRENT</msg>
+<msg time="2025-02-01T20:44:06.282148" level="INFO">Switching browser to browser=b6ce7434-d133-4710-9bc1-467ffa6f5f74</msg>
+<msg time="2025-02-01T20:44:06.284261" level="INFO">Successfully changed active browser: browser=b6ce7434-d133-4710-9bc1-467ffa6f5f74</msg>
+<msg time="2025-02-01T20:44:06.284359" level="INFO">Switching context to CURRENT in CURRENT</msg>
+<msg time="2025-02-01T20:44:06.286594" level="INFO">Returned active context id: CURRENT</msg>
+<msg time="2025-02-01T20:44:06.286662" level="INFO">Switching context to context=fa6137f7-e6b6-45e8-8c70-24403d86b9da in CURRENT</msg>
+<msg time="2025-02-01T20:44:06.291312" level="INFO">Successfully changed active context: context=fa6137f7-e6b6-45e8-8c70-24403d86b9da</msg>
+<msg time="2025-02-01T20:44:06.303425" level="INFO">Successfully closed Page with runBeforeUnload false</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes the ``page`` in ``context`` in ``browser``.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.273210" elapsed="0.030428"/>
+</kw>
+<kw name="Close Context" owner="Browser">
+<msg time="2025-02-01T20:44:06.307381" level="INFO">Switching browser to CURRENT</msg>
+<msg time="2025-02-01T20:44:06.310185" level="INFO">Returned active browser id. CURRENT</msg>
+<msg time="2025-02-01T20:44:06.312606" level="INFO">Switching context to CURRENT in CURRENT</msg>
+<msg time="2025-02-01T20:44:06.314326" level="INFO">Returned active context id: CURRENT</msg>
+<msg time="2025-02-01T20:44:06.314852" level="INFO">Switching context to context=fa6137f7-e6b6-45e8-8c70-24403d86b9da in CURRENT</msg>
+<msg time="2025-02-01T20:44:06.317800" level="INFO">Successfully changed active context: context=fa6137f7-e6b6-45e8-8c70-24403d86b9da</msg>
+<msg time="2025-02-01T20:44:06.344516" level="INFO">Successfully closed Context</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes a Context.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.303820" elapsed="0.040903"/>
+</kw>
+<kw name="Close Browser" owner="Browser">
+<msg time="2025-02-01T20:44:06.453325" level="INFO">Closed browser</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.344921" elapsed="0.108564"/>
+</kw>
+<status status="PASS" start="2025-02-01T20:44:06.272816" elapsed="0.180771"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:05.384649" elapsed="1.069117"/>
+</test>
+<test id="s1-s1-s1-t3" name="Validate google fail" line="31">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.477258" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.477030" elapsed="0.000279"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.477759" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.477479" elapsed="0.000346">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.478166" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.478022" elapsed="0.000183"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.475328" elapsed="0.002974">hoi</status>
+</test>
+<test id="s1-s1-s1-t4" name="Validate google Pass Execution" line="34">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.501117" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.500831" elapsed="0.000338"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.501540" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.501382" elapsed="0.000224">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.501958" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.501816" elapsed="0.000181"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.499096" elapsed="0.002999">hoi</status>
+</test>
+<test id="s1-s1-s1-t5" name="Validate google Pass Execution 1" line="37">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.527451" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.527115" elapsed="0.000412"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.528242" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.527965" elapsed="0.000346">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.528684" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.528536" elapsed="0.000189"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.524183" elapsed="0.004643">hoi</status>
+</test>
+<test id="s1-s1-s1-t6" name="Validate google Pass Execution 2" line="40">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.557842" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.557576" elapsed="0.000318"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.558236" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.558091" elapsed="0.000201">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.558632" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.558488" elapsed="0.000182"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.555148" elapsed="0.003631">hoi</status>
+</test>
+<test id="s1-s1-s1-t7" name="Validate google Pass Execution 3" line="43">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.582628" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.582394" elapsed="0.000284"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.583034" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.582879" elapsed="0.000214">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.583437" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.583287" elapsed="0.000188"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.580738" elapsed="0.002873">hoi</status>
+</test>
+<test id="s1-s1-s1-t8" name="Validate google Pass Execution 4" line="46">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.608769" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.608483" elapsed="0.000340"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.609218" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.609050" elapsed="0.000227">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.609858" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.609620" elapsed="0.000285"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.606622" elapsed="0.003407">hoi</status>
+</test>
+<test id="s1-s1-s1-t9" name="Validate google Pass Execution 5" line="49">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.635542" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.635284" elapsed="0.000311"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.635998" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.635847" elapsed="0.000208">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.636398" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.636257" elapsed="0.000181"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.632910" elapsed="0.003631">hoi</status>
+</test>
+<test id="s1-s1-s1-t10" name="Validate google Pass Execution 6" line="52">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.661835" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.661612" elapsed="0.000273"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.662196" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.662051" elapsed="0.000197">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.662572" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.662434" elapsed="0.000176"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.659613" elapsed="0.003259">hoi</status>
+</test>
+<test id="s1-s1-s1-t11" name="Validate google Pass Execution 7" line="55">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.686652" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.686407" elapsed="0.000295"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.687045" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.686901" elapsed="0.000198">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.687427" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.687286" elapsed="0.000179"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.683971" elapsed="0.003590">hoi</status>
+</test>
+<test id="s1-s1-s1-t12" name="Validate google Pass Execution 8" line="58">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.712256" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.712024" elapsed="0.000283"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.712643" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.712499" elapsed="0.000212">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.713356" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.713102" elapsed="0.000301"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.709902" elapsed="0.003651">hoi</status>
+</test>
+<test id="s1-s1-s1-t13" name="Validate google Pass Execution 9" line="61">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.737059" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.736769" elapsed="0.000339"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.737424" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.737279" elapsed="0.000200">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.737835" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.737673" elapsed="0.000200"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.735057" elapsed="0.002958">hoi</status>
+</test>
+<test id="s1-s1-s1-t14" name="Validate google Pass Execution 10" line="64">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.762020" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.761812" elapsed="0.000255"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.762385" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.762242" elapsed="0.000197">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.762778" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.762630" elapsed="0.000186"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.759838" elapsed="0.003118">hoi</status>
+</test>
+<test id="s1-s1-s1-t15" name="Validate google Pass Execution 11" line="67">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.786730" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.786473" elapsed="0.000312"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.787094" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.786951" elapsed="0.000197">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.787476" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.787337" elapsed="0.000177"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.784707" elapsed="0.002901">hoi</status>
+</test>
+<test id="s1-s1-s1-t16" name="Validate google Pass Execution 12" line="70">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.811004" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.810757" elapsed="0.000301"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.811453" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.811295" elapsed="0.000215">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.811896" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.811745" elapsed="0.000190"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.808471" elapsed="0.003563">hoi</status>
+</test>
+<test id="s1-s1-s1-t17" name="Validate google Pass Execution 13" line="73">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.837678" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.837331" elapsed="0.000431"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.838299" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.838079" elapsed="0.000313">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.838905" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.838708" elapsed="0.000249"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.834427" elapsed="0.004670">hoi</status>
+</test>
+<test id="s1-s1-s1-t18" name="Validate google Pass Execution 14" line="76">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.867563" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.867310" elapsed="0.000368"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.868302" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.868036" elapsed="0.000332">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.868766" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.868607" elapsed="0.000201"/>
+</kw>
+<tag>abc</tag>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.864572" elapsed="0.004356">hoi</status>
+</test>
+<test id="s1-s1-s1-t19" name="Validate google Pass Execution 15" line="80">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.894412" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.894156" elapsed="0.000315"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.894916" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.894763" elapsed="0.000210">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.895420" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.895195" elapsed="0.000266"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.891892" elapsed="0.003681">hoi</status>
+</test>
+<test id="s1-s1-s1-t20" name="Validate google Pass Execution 16" line="83">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.921155" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.920929" elapsed="0.000276"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.921552" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.921381" elapsed="0.000242">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.921973" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.921830" elapsed="0.000181"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.919254" elapsed="0.002866">hoi</status>
+</test>
+<test id="s1-s1-s1-t21" name="Validate google Pass Execution 17" line="86">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.947166" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.946903" elapsed="0.000317"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.947597" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.947440" elapsed="0.000213">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.948009" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.947868" elapsed="0.000179"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.944693" elapsed="0.003460">hoi</status>
+</test>
+<test id="s1-s1-s1-t22" name="Validate google Pass Execution 18" line="89">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:06.977452" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.977208" elapsed="0.000297"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:06.977887" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.977712" elapsed="0.000231">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:06.978278" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:06.978139" elapsed="0.000177"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:06.974394" elapsed="0.004024">hoi</status>
+</test>
+<test id="s1-s1-s1-t23" name="Validate google Pass Execution 19" line="92">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:07.004201" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.003955" elapsed="0.000302"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:07.004659" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.004496" elapsed="0.000289">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:07.005497" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.005192" elapsed="0.000361"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:07.001887" elapsed="0.003882">hoi</status>
+</test>
+<test id="s1-s1-s1-t24" name="Validate google Pass Execution 20" line="95">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:07.031080" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.030757" elapsed="0.000408"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:07.031583" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.031427" elapsed="0.000213">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:07.032000" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.031858" elapsed="0.000185"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:07.028505" elapsed="0.003648">hoi</status>
+</test>
+<test id="s1-s1-s1-t25" name="Validate google Pass Execution 21" line="98">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:07.056354" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.056102" elapsed="0.000305"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:07.056923" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.056701" elapsed="0.000284">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:07.057456" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.057310" elapsed="0.000187"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:07.053989" elapsed="0.003607">hoi</status>
+</test>
+<test id="s1-s1-s1-t26" name="Validate google Pass Execution 22" line="101">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:07.082533" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.082318" elapsed="0.000262"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:07.082952" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.082751" elapsed="0.000255">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:07.083325" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.083187" elapsed="0.000175"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:07.080052" elapsed="0.003399">hoi</status>
+</test>
+<test id="s1-s1-s1-t27" name="Validate google Pass Execution 23" line="104">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:07.106695" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.106286" elapsed="0.000467"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:07.107313" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.107071" elapsed="0.000304">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:07.107858" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.107669" elapsed="0.000231"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:07.104222" elapsed="0.003793">hoi</status>
+</test>
+<test id="s1-s1-s1-t28" name="Validate google Pass Execution 24" line="107">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:07.131912" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.131695" elapsed="0.000265"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:07.132288" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.132148" elapsed="0.000193">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:07.132702" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.132548" elapsed="0.000194"/>
+</kw>
+<tag>appeltaart</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:07.129631" elapsed="0.003223">hoi</status>
+</test>
+<test id="s1-s1-s1-t29" name="Validate google Pass Execution 25" line="110">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:07.157218" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.156974" elapsed="0.000293"/>
+</kw>
+<kw name="Pass Execution" owner="BuiltIn">
+<msg time="2025-02-01T20:44:07.157573" level="INFO">Execution passed with message:
+hoi</msg>
+<arg>message=hoi</arg>
+<doc>Skips rest of the current test, setup, or teardown with PASS status.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.157433" elapsed="0.000194">hoi</status>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:07.157962" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.157824" elapsed="0.000176"/>
+</kw>
+<tag>abc</tag>
+<tag>appeltaart</tag>
+<tag>cool-tag</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2025-02-01T20:44:07.155087" elapsed="0.003008">hoi</status>
+</test>
+<test id="s1-s1-s1-t30" name="Do some stupid shit" line="114">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2025-02-01T20:44:07.181283" level="INFO">setup</msg>
+<arg>setup</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.181056" elapsed="0.000275"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2025-02-01T20:44:08.182432" level="INFO">Slept 1 second.</msg>
+<arg>1s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="PASS" start="2025-02-01T20:44:07.181493" elapsed="1.001054"/>
+</kw>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:08.183261" level="INFO">teardown</msg>
+<arg>teardown</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:08.182980" elapsed="0.000326"/>
+</kw>
+<tag>abc</tag>
+<tag>appeltaart</tag>
+<tag>cool-tag</tag>
+<tag>demo1</tag>
+<tag>JDJJDJDJ_JAJA_DF</tag>
+<tag>slakdfjaskf</tag>
+<status status="PASS" start="2025-02-01T20:44:07.179583" elapsed="1.003843"/>
+</test>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2025-02-01T20:44:08.204108" level="INFO">Suite Teardown 1</msg>
+<arg>message=Suite Teardown 1</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2025-02-01T20:44:08.203821" elapsed="0.000334"/>
+</kw>
+<status status="PASS" start="2025-02-01T20:44:04.123685" elapsed="4.080527"/>
+</suite>
+<status status="PASS" start="2025-02-01T20:44:04.122422" elapsed="4.102653"/>
+</suite>
+<status status="PASS" start="2025-02-01T20:44:04.095318" elapsed="4.130498"/>
+</suite>
+<statistics>
+<total>
+<stat pass="30" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="1" fail="0" skip="0">a</stat>
+<stat pass="3" fail="0" skip="0">abc</stat>
+<stat pass="30" fail="0" skip="0">appeltaart</stat>
+<stat pass="2" fail="0" skip="0">cool-tag</stat>
+<stat pass="30" fail="0" skip="0">demo1</stat>
+<stat pass="1" fail="0" skip="0">JDJJDJDJ_JAJA_DF</stat>
+<stat pass="1" fail="0" skip="0">slakdfjaskf</stat>
+</tag>
+<suite>
+<stat name="Robotframework-Dashboard" id="s1" pass="30" fail="0" skip="0">Robotframework-Dashboard</stat>
+<stat name="Scripts" id="s1-s1" pass="30" fail="0" skip="0">Robotframework-Dashboard.Scripts</stat>
+<stat name="Demo1" id="s1-s1-s1" pass="30" fail="0" skip="0">Robotframework-Dashboard.Scripts.Demo1</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

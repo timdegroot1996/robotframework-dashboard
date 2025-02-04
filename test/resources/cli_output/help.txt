@@ -1,0 +1,42 @@
+======================================================================================
+ ____   ___  ____   ___ _____ ____    _    ____  _   _ ____   ___    _    ____  ____  
+|  _ \ / _ \| __ ) / _ |_   _|  _ \  / \  / ___|| | | | __ ) / _ \  / \  |  _ \|  _ \ 
+| |_) | | | |  _ \| | | || | | | | |/ _ \ \___ \| |_| |  _ \| | | |/ _ \ | |_) | | | |
+|  _ <| |_| | |_) | |_| || | | |_| / ___ \ ___) |  _  | |_) | |_| / ___ \|  _ <| |_| |
+|_| \_\\___/|____/ \___/ |_| |____/_/   \_|____/|_| |_|____/ \___/_/   \_|_| \_|____/ 
+
+======================================================================================
+usage: robotdashboard [[]-v[]] [[]-h[]] [[]-o [[]OUTPUTPATH ...[]][]] [[]-f OUTPUTFOLDERPATH[]]
+                      [[]-r [[]REMOVERUNS ...[]][]] [[]-d DATABASEPATH[]]
+                      [[]-n NAMEDASHBOARD[]] [[]-l LISTRUNS[]] [[]-g GENERATEDASHBOARD[]]
+
+options:
+  -v, --version         Display application version information.
+  -h, --help            Provide additional information.
+  -o, --outputpath [[]OUTPUTPATH ...[]]
+                        `path` Specifies 1 or more paths to output.xml.
+                        Specify every XML separately with -o if you are
+                        providing more than one.
+  -f, --outputfolderpath OUTPUTFOLDERPATH
+                        `path` Specifies a path to a directory in which it
+                        will look in all folders and subfolders for
+                        *output*.xml files to be processed into the database
+  -r, --removeruns [[]REMOVERUNS ...[]]
+                        `string` Specifies 1 or more indexes or run_start
+                        datetimes to remove from the database. Specify every
+                        run separately with -r if you are providing more than
+                        one. Examples: -r 0 -r 1 -r 10 or --removeRuns
+                        '2024-07-30 15:27:20.184407' -r 20
+  -d, --databasepath DATABASEPATH
+                        `path` Specifies the path to the database you want to
+                        store the results in.
+  -n, --namedashboard NAMEDASHBOARD
+                        `path` Specifies a custom HTML dashboard name.
+  -l, --listruns LISTRUNS
+                        `boolean` Specifies if the runs should be listed.
+                        Default is True, override if you only require the
+                        database.
+  -g, --generatedashboard GENERATEDASHBOARD
+                        `boolean` Specifies if you want to generate the HTML
+                        dashboard. Default is True, override if you only
+                        require the database.

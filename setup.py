@@ -134,7 +134,7 @@ Results:
 
 ======================================================================================
  1. Database preparation
-  created database connection: './robot_results.db'
+  created database connection: 'robot_results.db'
 ======================================================================================
  2. Processing output XML(s)
   Processing output XML 'output1.xml'

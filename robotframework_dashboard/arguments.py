@@ -52,7 +52,7 @@ class ArgumentParser:
             "--databasepath",
             help="`path` Specifies the path to the database you want to \
                             store the results in.",
-            default=".\\robot_results.db",
+            default="robot_results.db",
         )
         parser.add_argument(
             "-n",

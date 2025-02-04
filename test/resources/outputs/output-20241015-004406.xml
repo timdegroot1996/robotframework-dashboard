@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.1 (Python 3.10.5 on win32)" generated="2024-10-15T00:44:06.053103" rpa="false" schemaversion="5">
+<suite id="s1" name="Robotframework-Dashboard" source="D:\CodeProjects\robotframework-dashboard">
+<suite id="s1-s1" name="Scripts" source="D:\CodeProjects\robotframework-dashboard\scripts">
+<suite id="s1-s1-s1" name="Demo1" source="D:\CodeProjects\robotframework-dashboard\scripts\demo1.robot">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2024-10-15T00:44:12.207249" level="INFO">Suite Setup 1</msg>
+<arg>message=Suite Setup 1</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2024-10-15T00:44:12.207249" elapsed="0.000000"/>
+</kw>
+<test id="s1-s1-s1-t1" name="Test 1" line="20">
+<kw name="Log" owner="BuiltIn">
+<msg time="2024-10-15T00:44:12.210246" level="INFO">a</msg>
+<arg>a</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2024-10-15T00:44:12.210246" elapsed="0.000000"/>
+</kw>
+<tag>a</tag>
+<tag>demo1</tag>
+<status status="PASS" start="2024-10-15T00:44:12.207249" elapsed="0.002997"/>
+</test>
+<test id="s1-s1-s1-t2" name="Validate google" line="27">
+<kw name="Open Google" type="SETUP">
+<kw name="New Browser" owner="Browser">
+<msg time="2024-10-15T00:44:12.239245" level="INFO">{"browser": "chromium", "headless": false, "chromiumSandbox": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "tracesDir": "D:\\CodeProjects\\robotframework-dashboard\\results\\browser\\traces\\a74b71f9-3107-4c50-b957-e7b153fed00e"}</msg>
+<msg time="2024-10-15T00:44:12.938929" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"chromiumSandbox":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"tracesDir":"D:\\CodeProjects\\robotframework-dashboard\\results\\browser\\traces\\a74b71f9-3107-4c50-b957-e7b153fed00e"}</msg>
+<arg>browser=${BROWSER}</arg>
+<arg>headless=${HEADLESS}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new playwright Browser with specified options.</doc>
+<status status="PASS" start="2024-10-15T00:44:12.238248" elapsed="0.701221"/>
+</kw>
+<kw name="New Context" owner="Browser">
+<msg time="2024-10-15T00:44:12.940552" level="INFO">{
+  "acceptDownloads": true,
+  "bypassCSP": false,
+  "forcedColors": "none",
+  "ignoreHTTPSErrors": false,
+  "javaScriptEnabled": true,
+  "offline": false,
+  "reducedMotion": "no-preference",
+  "serviceWorkers": "allow",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  }
+}</msg>
+<msg time="2024-10-15T00:44:12.960035" level="INFO">Successfully created context. </msg>
+<msg time="2024-10-15T00:44:12.960035" level="INFO">{'acceptDownloads': True, 'bypassCSP': False, 'forcedColors': 'none', 'ignoreHTTPSErrors': False, 'javaScriptEnabled': True, 'offline': False, 'reducedMotion': 'no-preference', 'serviceWorkers': 'allow', 'viewport': {'width': 1280, 'height': 720}}</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new BrowserContext with specified options.</doc>
+<status status="PASS" start="2024-10-15T00:44:12.940004" elapsed="0.020031"/>
+</kw>
+<kw name="New Page" owner="Browser">
+<msg time="2024-10-15T00:44:13.145737" level="INFO">Successfully initialized new page object and opened url: about:blank</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Open a new Page.</doc>
+<status status="PASS" start="2024-10-15T00:44:12.960606" elapsed="0.186133"/>
+</kw>
+<kw name="Go To" owner="Browser">
+<msg time="2024-10-15T00:44:13.705736" level="INFO">Successfully opened URL https://www.google.com</msg>
+<arg>url=${URL}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Navigates to the given ``url``.</doc>
+<status status="PASS" start="2024-10-15T00:44:13.146739" elapsed="0.560001"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:12.238248" elapsed="1.468492"/>
+</kw>
+<kw name="Validate Google">
+<kw name="Wait For Elements State" owner="Browser">
+<msg time="2024-10-15T00:44:13.734737" level="INFO">Waited for Element with selector //*[@id='CXQnmb'] at state visible</msg>
+<arg>selector=${L_GOOGLE_COOKIES}</arg>
+<tag>PageContent</tag>
+<tag>Wait</tag>
+<doc>Waits for the element found by ``selector`` to satisfy state option.</doc>
+<status status="PASS" start="2024-10-15T00:44:13.707737" elapsed="0.027000"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:13.706740" elapsed="0.028996"/>
+</kw>
+<kw name="Close Google" type="TEARDOWN">
+<kw name="Close Page" owner="Browser">
+<msg time="2024-10-15T00:44:13.740735" level="INFO">Switching browser to CURRENT</msg>
+<msg time="2024-10-15T00:44:13.742739" level="INFO">Returned active browser id. CURRENT</msg>
+<msg time="2024-10-15T00:44:13.742739" level="INFO">Switching browser to browser=9460ee4a-88e9-4668-8a40-df0e0afaf494</msg>
+<msg time="2024-10-15T00:44:13.744739" level="INFO">Successfully changed active browser: browser=9460ee4a-88e9-4668-8a40-df0e0afaf494</msg>
+<msg time="2024-10-15T00:44:13.745738" level="INFO">Switching context to CURRENT in CURRENT</msg>
+<msg time="2024-10-15T00:44:13.747738" level="INFO">Returned active context id: CURRENT</msg>
+<msg time="2024-10-15T00:44:13.747738" level="INFO">Switching context to context=04a84d98-b669-4d63-a2ea-9202d41f586e in CURRENT</msg>
+<msg time="2024-10-15T00:44:13.753737" level="INFO">Successfully changed active context: context=04a84d98-b669-4d63-a2ea-9202d41f586e</msg>
+<msg time="2024-10-15T00:44:13.764738" level="INFO">Successfully closed Page with runBeforeUnload false</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes the ``page`` in ``context`` in ``browser``.</doc>
+<status status="PASS" start="2024-10-15T00:44:13.735736" elapsed="0.029002"/>
+</kw>
+<kw name="Close Context" owner="Browser">
+<msg time="2024-10-15T00:44:13.767737" level="INFO">Switching browser to CURRENT</msg>
+<msg time="2024-10-15T00:44:13.769738" level="INFO">Returned active browser id. CURRENT</msg>
+<msg time="2024-10-15T00:44:13.769738" level="INFO">Switching browser to browser=9460ee4a-88e9-4668-8a40-df0e0afaf494</msg>
+<msg time="2024-10-15T00:44:13.771740" level="INFO">Successfully changed active browser: browser=9460ee4a-88e9-4668-8a40-df0e0afaf494</msg>
+<msg time="2024-10-15T00:44:13.772738" level="INFO">Switching context to CURRENT in CURRENT</msg>
+<msg time="2024-10-15T00:44:13.773736" level="INFO">Returned active context id: CURRENT</msg>
+<msg time="2024-10-15T00:44:13.774739" level="INFO">Switching context to context=04a84d98-b669-4d63-a2ea-9202d41f586e in CURRENT</msg>
+<msg time="2024-10-15T00:44:13.777735" level="INFO">Successfully changed active context: context=04a84d98-b669-4d63-a2ea-9202d41f586e</msg>
+<msg time="2024-10-15T00:44:13.799737" level="INFO">Successfully closed Context</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes a Context.</doc>
+<status status="PASS" start="2024-10-15T00:44:13.764738" elapsed="0.034999"/>
+</kw>
+<kw name="Close Browser" owner="Browser">
+<msg time="2024-10-15T00:44:13.920738" level="INFO">Closed browser</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2024-10-15T00:44:13.799737" elapsed="0.121001"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:13.735736" elapsed="0.185002"/>
+</kw>
+<tag>demo1</tag>
+<status status="PASS" start="2024-10-15T00:44:12.235247" elapsed="1.685491"/>
+</test>
+<test id="s1-s1-s1-t3" name="Validate google fail" line="30">
+<kw name="Open Google" type="SETUP">
+<kw name="New Browser" owner="Browser">
+<msg time="2024-10-15T00:44:13.945736" level="INFO">{"browser": "chromium", "headless": false, "chromiumSandbox": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "tracesDir": "D:\\CodeProjects\\robotframework-dashboard\\results\\browser\\traces\\15b91dea-6db5-47ba-b522-e4f51b0e9c07"}</msg>
+<msg time="2024-10-15T00:44:14.204737" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"chromiumSandbox":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"tracesDir":"D:\\CodeProjects\\robotframework-dashboard\\results\\browser\\traces\\15b91dea-6db5-47ba-b522-e4f51b0e9c07"}</msg>
+<arg>browser=${BROWSER}</arg>
+<arg>headless=${HEADLESS}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new playwright Browser with specified options.</doc>
+<status status="PASS" start="2024-10-15T00:44:13.944736" elapsed="0.260001"/>
+</kw>
+<kw name="New Context" owner="Browser">
+<msg time="2024-10-15T00:44:14.206738" level="INFO">{
+  "acceptDownloads": true,
+  "bypassCSP": false,
+  "forcedColors": "none",
+  "ignoreHTTPSErrors": false,
+  "javaScriptEnabled": true,
+  "offline": false,
+  "reducedMotion": "no-preference",
+  "serviceWorkers": "allow",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  }
+}</msg>
+<msg time="2024-10-15T00:44:14.217739" level="INFO">Successfully created context. </msg>
+<msg time="2024-10-15T00:44:14.217739" level="INFO">{'acceptDownloads': True, 'bypassCSP': False, 'forcedColors': 'none', 'ignoreHTTPSErrors': False, 'javaScriptEnabled': True, 'offline': False, 'reducedMotion': 'no-preference', 'serviceWorkers': 'allow', 'viewport': {'width': 1280, 'height': 720}}</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new BrowserContext with specified options.</doc>
+<status status="PASS" start="2024-10-15T00:44:14.205739" elapsed="0.012000"/>
+</kw>
+<kw name="New Page" owner="Browser">
+<msg time="2024-10-15T00:44:14.364738" level="INFO">Successfully initialized new page object and opened url: about:blank</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Open a new Page.</doc>
+<status status="PASS" start="2024-10-15T00:44:14.218736" elapsed="0.146002"/>
+</kw>
+<kw name="Go To" owner="Browser">
+<msg time="2024-10-15T00:44:14.919735" level="INFO">Successfully opened URL https://www.google.com</msg>
+<arg>url=${URL}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Navigates to the given ``url``.</doc>
+<status status="PASS" start="2024-10-15T00:44:14.364738" elapsed="0.554997"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:13.944736" elapsed="0.974999"/>
+</kw>
+<kw name="Fail" owner="BuiltIn">
+<msg time="2024-10-15T00:44:14.920739" level="FAIL">AssertionError</msg>
+<doc>Fails the test with the given message and optionally alters its tags.</doc>
+<status status="FAIL" start="2024-10-15T00:44:14.920739" elapsed="0.000000">AssertionError</status>
+</kw>
+<kw name="Close Google" type="TEARDOWN">
+<kw name="Close Page" owner="Browser">
+<msg time="2024-10-15T00:44:14.927735" level="INFO">Switching browser to CURRENT</msg>
+<msg time="2024-10-15T00:44:14.929735" level="INFO">Returned active browser id. CURRENT</msg>
+<msg time="2024-10-15T00:44:14.930737" level="INFO">Switching browser to browser=8b29b25f-674c-4b6e-8e38-41d558353ac8</msg>
+<msg time="2024-10-15T00:44:14.931739" level="INFO">Successfully changed active browser: browser=8b29b25f-674c-4b6e-8e38-41d558353ac8</msg>
+<msg time="2024-10-15T00:44:14.931739" level="INFO">Switching context to CURRENT in CURRENT</msg>
+<msg time="2024-10-15T00:44:14.935739" level="INFO">Returned active context id: CURRENT</msg>
+<msg time="2024-10-15T00:44:14.935739" level="INFO">Switching context to context=af9c11d4-91ba-481e-be15-d497d290fb5c in CURRENT</msg>
+<msg time="2024-10-15T00:44:14.941736" level="INFO">Successfully changed active context: context=af9c11d4-91ba-481e-be15-d497d290fb5c</msg>
+<msg time="2024-10-15T00:44:14.950737" level="INFO">Successfully closed Page with runBeforeUnload false</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes the ``page`` in ``context`` in ``browser``.</doc>
+<status status="PASS" start="2024-10-15T00:44:14.921738" elapsed="0.028999"/>
+</kw>
+<kw name="Close Context" owner="Browser">
+<msg time="2024-10-15T00:44:14.953740" level="INFO">Switching browser to CURRENT</msg>
+<msg time="2024-10-15T00:44:14.955736" level="INFO">Returned active browser id. CURRENT</msg>
+<msg time="2024-10-15T00:44:14.956738" level="INFO">Switching browser to browser=8b29b25f-674c-4b6e-8e38-41d558353ac8</msg>
+<msg time="2024-10-15T00:44:14.958738" level="INFO">Successfully changed active browser: browser=8b29b25f-674c-4b6e-8e38-41d558353ac8</msg>
+<msg time="2024-10-15T00:44:14.958738" level="INFO">Switching context to CURRENT in CURRENT</msg>
+<msg time="2024-10-15T00:44:14.960737" level="INFO">Returned active context id: CURRENT</msg>
+<msg time="2024-10-15T00:44:14.960737" level="INFO">Switching context to context=af9c11d4-91ba-481e-be15-d497d290fb5c in CURRENT</msg>
+<msg time="2024-10-15T00:44:14.964737" level="INFO">Successfully changed active context: context=af9c11d4-91ba-481e-be15-d497d290fb5c</msg>
+<msg time="2024-10-15T00:44:14.986737" level="INFO">Successfully closed Context</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes a Context.</doc>
+<status status="PASS" start="2024-10-15T00:44:14.951737" elapsed="0.035000"/>
+</kw>
+<kw name="Close Browser" owner="Browser">
+<msg time="2024-10-15T00:44:15.103614" level="INFO">Closed browser</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2024-10-15T00:44:14.986737" elapsed="0.116877"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:14.921738" elapsed="0.181876"/>
+</kw>
+<tag>demo1</tag>
+<status status="FAIL" start="2024-10-15T00:44:13.942739" elapsed="1.161417">AssertionError</status>
+</test>
+<test id="s1-s1-s1-t4" name="Validate google skip" line="33">
+<kw name="Open Google" type="SETUP">
+<kw name="New Browser" owner="Browser">
+<msg time="2024-10-15T00:44:15.129887" level="INFO">{"browser": "chromium", "headless": false, "chromiumSandbox": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "tracesDir": "D:\\CodeProjects\\robotframework-dashboard\\results\\browser\\traces\\fb8943fd-5a71-45ed-9ec1-852b553b42db"}</msg>
+<msg time="2024-10-15T00:44:15.386036" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"chromiumSandbox":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"tracesDir":"D:\\CodeProjects\\robotframework-dashboard\\results\\browser\\traces\\fb8943fd-5a71-45ed-9ec1-852b553b42db"}</msg>
+<arg>browser=${BROWSER}</arg>
+<arg>headless=${HEADLESS}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new playwright Browser with specified options.</doc>
+<status status="PASS" start="2024-10-15T00:44:15.129358" elapsed="0.256678"/>
+</kw>
+<kw name="New Context" owner="Browser">
+<msg time="2024-10-15T00:44:15.387036" level="INFO">{
+  "acceptDownloads": true,
+  "bypassCSP": false,
+  "forcedColors": "none",
+  "ignoreHTTPSErrors": false,
+  "javaScriptEnabled": true,
+  "offline": false,
+  "reducedMotion": "no-preference",
+  "serviceWorkers": "allow",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  }
+}</msg>
+<msg time="2024-10-15T00:44:15.397035" level="INFO">Successfully created context. </msg>
+<msg time="2024-10-15T00:44:15.397035" level="INFO">{'acceptDownloads': True, 'bypassCSP': False, 'forcedColors': 'none', 'ignoreHTTPSErrors': False, 'javaScriptEnabled': True, 'offline': False, 'reducedMotion': 'no-preference', 'serviceWorkers': 'allow', 'viewport': {'width': 1280, 'height': 720}}</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new BrowserContext with specified options.</doc>
+<status status="PASS" start="2024-10-15T00:44:15.387036" elapsed="0.010999"/>
+</kw>
+<kw name="New Page" owner="Browser">
+<msg time="2024-10-15T00:44:15.547034" level="INFO">Successfully initialized new page object and opened url: about:blank</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Open a new Page.</doc>
+<status status="PASS" start="2024-10-15T00:44:15.398035" elapsed="0.148999"/>
+</kw>
+<kw name="Go To" owner="Browser">
+<msg time="2024-10-15T00:44:16.092033" level="INFO">Successfully opened URL https://www.google.com</msg>
+<arg>url=${URL}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Navigates to the given ``url``.</doc>
+<status status="PASS" start="2024-10-15T00:44:15.547034" elapsed="0.545999"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:15.128819" elapsed="0.964214"/>
+</kw>
+<kw name="Skip" owner="BuiltIn">
+<msg time="2024-10-15T00:44:16.093033" level="SKIP">Skipped with Skip keyword.</msg>
+<doc>Skips the rest of the current test.</doc>
+<status status="SKIP" start="2024-10-15T00:44:16.093033" elapsed="0.000000">Skipped with Skip keyword.</status>
+</kw>
+<kw name="Close Google" type="TEARDOWN">
+<kw name="Close Page" owner="Browser">
+<msg time="2024-10-15T00:44:16.102033" level="INFO">Switching browser to CURRENT</msg>
+<msg time="2024-10-15T00:44:16.104035" level="INFO">Returned active browser id. CURRENT</msg>
+<msg time="2024-10-15T00:44:16.104035" level="INFO">Switching browser to browser=59cb881b-d105-4c2f-8e5b-e837a96d7050</msg>
+<msg time="2024-10-15T00:44:16.106036" level="INFO">Successfully changed active browser: browser=59cb881b-d105-4c2f-8e5b-e837a96d7050</msg>
+<msg time="2024-10-15T00:44:16.106036" level="INFO">Switching context to CURRENT in CURRENT</msg>
+<msg time="2024-10-15T00:44:16.109037" level="INFO">Returned active context id: CURRENT</msg>
+<msg time="2024-10-15T00:44:16.109037" level="INFO">Switching context to context=3508991a-9ced-42fe-af38-04e999f6b68a in CURRENT</msg>
+<msg time="2024-10-15T00:44:16.115037" level="INFO">Successfully changed active context: context=3508991a-9ced-42fe-af38-04e999f6b68a</msg>
+<msg time="2024-10-15T00:44:16.124036" level="INFO">Successfully closed Page with runBeforeUnload false</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes the ``page`` in ``context`` in ``browser``.</doc>
+<status status="PASS" start="2024-10-15T00:44:16.094037" elapsed="0.029999"/>
+</kw>
+<kw name="Close Context" owner="Browser">
+<msg time="2024-10-15T00:44:16.126035" level="INFO">Switching browser to CURRENT</msg>
+<msg time="2024-10-15T00:44:16.128035" level="INFO">Returned active browser id. CURRENT</msg>
+<msg time="2024-10-15T00:44:16.128035" level="INFO">Switching browser to browser=59cb881b-d105-4c2f-8e5b-e837a96d7050</msg>
+<msg time="2024-10-15T00:44:16.129037" level="INFO">Successfully changed active browser: browser=59cb881b-d105-4c2f-8e5b-e837a96d7050</msg>
+<msg time="2024-10-15T00:44:16.129037" level="INFO">Switching context to CURRENT in CURRENT</msg>
+<msg time="2024-10-15T00:44:16.131037" level="INFO">Returned active context id: CURRENT</msg>
+<msg time="2024-10-15T00:44:16.132034" level="INFO">Switching context to context=3508991a-9ced-42fe-af38-04e999f6b68a in CURRENT</msg>
+<msg time="2024-10-15T00:44:16.135034" level="INFO">Successfully changed active context: context=3508991a-9ced-42fe-af38-04e999f6b68a</msg>
+<msg time="2024-10-15T00:44:16.158036" level="INFO">Successfully closed Context</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes a Context.</doc>
+<status status="PASS" start="2024-10-15T00:44:16.124036" elapsed="0.034000"/>
+</kw>
+<kw name="Close Browser" owner="Browser">
+<msg time="2024-10-15T00:44:16.280035" level="INFO">Closed browser</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2024-10-15T00:44:16.158036" elapsed="0.121999"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:16.094037" elapsed="0.185998"/>
+</kw>
+<tag>demo1</tag>
+<status status="SKIP" start="2024-10-15T00:44:15.126660" elapsed="1.154373">Skipped with Skip keyword.</status>
+</test>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2024-10-15T00:44:16.303034" level="INFO">Suite Teardown 1</msg>
+<arg>message=Suite Teardown 1</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2024-10-15T00:44:16.302034" elapsed="0.001000"/>
+</kw>
+<status status="FAIL" start="2024-10-15T00:44:06.078104" elapsed="10.224930"/>
+</suite>
+<suite id="s1-s1-s2" name="Demo2" source="D:\CodeProjects\robotframework-dashboard\scripts\demo2.robot">
+<kw name="Log" owner="BuiltIn" type="SETUP">
+<msg time="2024-10-15T00:44:16.330035" level="INFO">Suite Setup 2</msg>
+<arg>message=Suite Setup 2</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2024-10-15T00:44:16.329034" elapsed="0.001001"/>
+</kw>
+<test id="s1-s1-s2-t1" name="Validate google once" line="20">
+<kw name="Open Google" type="SETUP">
+<kw name="New Browser" owner="Browser">
+<msg time="2024-10-15T00:44:16.332037" level="INFO">{"browser": "chromium", "headless": false, "chromiumSandbox": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "tracesDir": "D:\\CodeProjects\\robotframework-dashboard\\results\\browser\\traces\\0b937ca7-6684-4eec-afa0-3d5bb10c6d44"}</msg>
+<msg time="2024-10-15T00:44:16.568036" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"chromiumSandbox":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"tracesDir":"D:\\CodeProjects\\robotframework-dashboard\\results\\browser\\traces\\0b937ca7-6684-4eec-afa0-3d5bb10c6d44"}</msg>
+<arg>browser=${BROWSER}</arg>
+<arg>headless=${HEADLESS}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new playwright Browser with specified options.</doc>
+<status status="PASS" start="2024-10-15T00:44:16.332037" elapsed="0.237001"/>
+</kw>
+<kw name="New Context" owner="Browser">
+<msg time="2024-10-15T00:44:16.570037" level="INFO">{
+  "acceptDownloads": true,
+  "bypassCSP": false,
+  "forcedColors": "none",
+  "ignoreHTTPSErrors": false,
+  "javaScriptEnabled": true,
+  "offline": false,
+  "reducedMotion": "no-preference",
+  "serviceWorkers": "allow",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  }
+}</msg>
+<msg time="2024-10-15T00:44:16.580034" level="INFO">Successfully created context. </msg>
+<msg time="2024-10-15T00:44:16.580034" level="INFO">{'acceptDownloads': True, 'bypassCSP': False, 'forcedColors': 'none', 'ignoreHTTPSErrors': False, 'javaScriptEnabled': True, 'offline': False, 'reducedMotion': 'no-preference', 'serviceWorkers': 'allow', 'viewport': {'width': 1280, 'height': 720}}</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new BrowserContext with specified options.</doc>
+<status status="PASS" start="2024-10-15T00:44:16.569038" elapsed="0.010996"/>
+</kw>
+<kw name="New Page" owner="Browser">
+<msg time="2024-10-15T00:44:16.732035" level="INFO">Successfully initialized new page object and opened url: about:blank</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Open a new Page.</doc>
+<status status="PASS" start="2024-10-15T00:44:16.580034" elapsed="0.153006"/>
+</kw>
+<kw name="Go To" owner="Browser">
+<msg time="2024-10-15T00:44:17.277291" level="INFO">Successfully opened URL https://www.google.com</msg>
+<arg>url=${URL}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Navigates to the given ``url``.</doc>
+<status status="PASS" start="2024-10-15T00:44:16.733040" elapsed="0.544251"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:16.331033" elapsed="0.946258"/>
+</kw>
+<kw name="Validate Google">
+<kw name="Wait For Elements State" owner="Browser">
+<msg time="2024-10-15T00:44:17.304470" level="INFO">Waited for Element with selector //*[@id='CXQnmb'] at state visible</msg>
+<arg>selector=${L_GOOGLE_COOKIES}</arg>
+<tag>PageContent</tag>
+<tag>Wait</tag>
+<doc>Waits for the element found by ``selector`` to satisfy state option.</doc>
+<status status="PASS" start="2024-10-15T00:44:17.278695" elapsed="0.026314"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:17.277291" elapsed="0.027718"/>
+</kw>
+<kw name="Close Google" type="TEARDOWN">
+<kw name="Close Page" owner="Browser">
+<msg time="2024-10-15T00:44:17.309257" level="INFO">Switching browser to CURRENT</msg>
+<msg time="2024-10-15T00:44:17.310862" level="INFO">Returned active browser id. CURRENT</msg>
+<msg time="2024-10-15T00:44:17.311392" level="INFO">Switching browser to browser=3e19d6b3-02af-4315-bf32-4fea273041b2</msg>
+<msg time="2024-10-15T00:44:17.314090" level="INFO">Successfully changed active browser: browser=3e19d6b3-02af-4315-bf32-4fea273041b2</msg>
+<msg time="2024-10-15T00:44:17.314090" level="INFO">Switching context to CURRENT in CURRENT</msg>
+<msg time="2024-10-15T00:44:17.316286" level="INFO">Returned active context id: CURRENT</msg>
+<msg time="2024-10-15T00:44:17.316806" level="INFO">Switching context to context=e5bdf996-2f71-4615-9eb6-dda9a89a2904 in CURRENT</msg>
+<msg time="2024-10-15T00:44:17.322795" level="INFO">Successfully changed active context: context=e5bdf996-2f71-4615-9eb6-dda9a89a2904</msg>
+<msg time="2024-10-15T00:44:17.332453" level="INFO">Successfully closed Page with runBeforeUnload false</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes the ``page`` in ``context`` in ``browser``.</doc>
+<status status="PASS" start="2024-10-15T00:44:17.306070" elapsed="0.026918"/>
+</kw>
+<kw name="Close Context" owner="Browser">
+<msg time="2024-10-15T00:44:17.335125" level="INFO">Switching browser to CURRENT</msg>
+<msg time="2024-10-15T00:44:17.336756" level="INFO">Returned active browser id. CURRENT</msg>
+<msg time="2024-10-15T00:44:17.337284" level="INFO">Switching browser to browser=3e19d6b3-02af-4315-bf32-4fea273041b2</msg>
+<msg time="2024-10-15T00:44:17.339474" level="INFO">Successfully changed active browser: browser=3e19d6b3-02af-4315-bf32-4fea273041b2</msg>
+<msg time="2024-10-15T00:44:17.339474" level="INFO">Switching context to CURRENT in CURRENT</msg>
+<msg time="2024-10-15T00:44:17.341086" level="INFO">Returned active context id: CURRENT</msg>
+<msg time="2024-10-15T00:44:17.341624" level="INFO">Switching context to context=e5bdf996-2f71-4615-9eb6-dda9a89a2904 in CURRENT</msg>
+<msg time="2024-10-15T00:44:17.345397" level="INFO">Successfully changed active context: context=e5bdf996-2f71-4615-9eb6-dda9a89a2904</msg>
+<msg time="2024-10-15T00:44:17.373243" level="INFO">Successfully closed Context</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes a Context.</doc>
+<status status="PASS" start="2024-10-15T00:44:17.332988" elapsed="0.040806"/>
+</kw>
+<kw name="Close Browser" owner="Browser">
+<msg time="2024-10-15T00:44:17.467115" level="INFO">Closed browser</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2024-10-15T00:44:17.374316" elapsed="0.092799"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:17.305544" elapsed="0.161571"/>
+</kw>
+<tag>demo2</tag>
+<status status="PASS" start="2024-10-15T00:44:16.330035" elapsed="1.137080"/>
+</test>
+<test id="s1-s1-s2-t2" name="Validate google twice" line="23">
+<kw name="Open Google" type="SETUP">
+<kw name="New Browser" owner="Browser">
+<msg time="2024-10-15T00:44:17.491113" level="INFO">{"browser": "chromium", "headless": false, "chromiumSandbox": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "tracesDir": "D:\\CodeProjects\\robotframework-dashboard\\results\\browser\\traces\\5cade7c7-0064-4dbb-951c-607743314a5f"}</msg>
+<msg time="2024-10-15T00:44:17.742115" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"chromiumSandbox":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"tracesDir":"D:\\CodeProjects\\robotframework-dashboard\\results\\browser\\traces\\5cade7c7-0064-4dbb-951c-607743314a5f"}</msg>
+<arg>browser=${BROWSER}</arg>
+<arg>headless=${HEADLESS}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new playwright Browser with specified options.</doc>
+<status status="PASS" start="2024-10-15T00:44:17.491113" elapsed="0.251002"/>
+</kw>
+<kw name="New Context" owner="Browser">
+<msg time="2024-10-15T00:44:17.743115" level="INFO">{
+  "acceptDownloads": true,
+  "bypassCSP": false,
+  "forcedColors": "none",
+  "ignoreHTTPSErrors": false,
+  "javaScriptEnabled": true,
+  "offline": false,
+  "reducedMotion": "no-preference",
+  "serviceWorkers": "allow",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  }
+}</msg>
+<msg time="2024-10-15T00:44:17.752115" level="INFO">Successfully created context. </msg>
+<msg time="2024-10-15T00:44:17.752115" level="INFO">{'acceptDownloads': True, 'bypassCSP': False, 'forcedColors': 'none', 'ignoreHTTPSErrors': False, 'javaScriptEnabled': True, 'offline': False, 'reducedMotion': 'no-preference', 'serviceWorkers': 'allow', 'viewport': {'width': 1280, 'height': 720}}</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new BrowserContext with specified options.</doc>
+<status status="PASS" start="2024-10-15T00:44:17.742115" elapsed="0.010000"/>
+</kw>
+<kw name="New Page" owner="Browser">
+<msg time="2024-10-15T00:44:17.904116" level="INFO">Successfully initialized new page object and opened url: about:blank</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Open a new Page.</doc>
+<status status="PASS" start="2024-10-15T00:44:17.752115" elapsed="0.153001"/>
+</kw>
+<kw name="Go To" owner="Browser">
+<msg time="2024-10-15T00:44:18.459116" level="INFO">Successfully opened URL https://www.google.com</msg>
+<arg>url=${URL}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Navigates to the given ``url``.</doc>
+<status status="PASS" start="2024-10-15T00:44:17.905116" elapsed="0.554000"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:17.490114" elapsed="0.969002"/>
+</kw>
+<kw name="Validate Google">
+<kw name="Wait For Elements State" owner="Browser">
+<msg time="2024-10-15T00:44:18.481114" level="INFO">Waited for Element with selector //*[@id='CXQnmb'] at state visible</msg>
+<arg>selector=${L_GOOGLE_COOKIES}</arg>
+<tag>PageContent</tag>
+<tag>Wait</tag>
+<doc>Waits for the element found by ``selector`` to satisfy state option.</doc>
+<status status="PASS" start="2024-10-15T00:44:18.460114" elapsed="0.021000"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:18.460114" elapsed="0.021000"/>
+</kw>
+<kw name="Close Google" type="TEARDOWN">
+<kw name="Close Page" owner="Browser">
+<msg time="2024-10-15T00:44:18.485114" level="INFO">Switching browser to CURRENT</msg>
+<msg time="2024-10-15T00:44:18.487113" level="INFO">Returned active browser id. CURRENT</msg>
+<msg time="2024-10-15T00:44:18.488116" level="INFO">Switching browser to browser=4d2ac958-8192-4d2f-8a91-208d8e1a43a5</msg>
+<msg time="2024-10-15T00:44:18.490117" level="INFO">Successfully changed active browser: browser=4d2ac958-8192-4d2f-8a91-208d8e1a43a5</msg>
+<msg time="2024-10-15T00:44:18.490117" level="INFO">Switching context to CURRENT in CURRENT</msg>
+<msg time="2024-10-15T00:44:18.493115" level="INFO">Returned active context id: CURRENT</msg>
+<msg time="2024-10-15T00:44:18.493115" level="INFO">Switching context to context=fc76c110-3631-4da3-b03f-c3c00a51212c in CURRENT</msg>
+<msg time="2024-10-15T00:44:18.498114" level="INFO">Successfully changed active context: context=fc76c110-3631-4da3-b03f-c3c00a51212c</msg>
+<msg time="2024-10-15T00:44:18.507115" level="INFO">Successfully closed Page with runBeforeUnload false</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes the ``page`` in ``context`` in ``browser``.</doc>
+<status status="PASS" start="2024-10-15T00:44:18.482112" elapsed="0.026005"/>
+</kw>
+<kw name="Close Context" owner="Browser">
+<msg time="2024-10-15T00:44:18.511115" level="INFO">Switching browser to CURRENT</msg>
+<msg time="2024-10-15T00:44:18.512115" level="INFO">Returned active browser id. CURRENT</msg>
+<msg time="2024-10-15T00:44:18.512115" level="INFO">Switching browser to browser=4d2ac958-8192-4d2f-8a91-208d8e1a43a5</msg>
+<msg time="2024-10-15T00:44:18.514113" level="INFO">Successfully changed active browser: browser=4d2ac958-8192-4d2f-8a91-208d8e1a43a5</msg>
+<msg time="2024-10-15T00:44:18.514113" level="INFO">Switching context to CURRENT in CURRENT</msg>
+<msg time="2024-10-15T00:44:18.516115" level="INFO">Returned active context id: CURRENT</msg>
+<msg time="2024-10-15T00:44:18.517115" level="INFO">Switching context to context=fc76c110-3631-4da3-b03f-c3c00a51212c in CURRENT</msg>
+<msg time="2024-10-15T00:44:18.521115" level="INFO">Successfully changed active context: context=fc76c110-3631-4da3-b03f-c3c00a51212c</msg>
+<msg time="2024-10-15T00:44:18.546113" level="INFO">Successfully closed Context</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes a Context.</doc>
+<status status="PASS" start="2024-10-15T00:44:18.508117" elapsed="0.039002"/>
+</kw>
+<kw name="Close Browser" owner="Browser">
+<msg time="2024-10-15T00:44:18.641115" level="INFO">Closed browser</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2024-10-15T00:44:18.547119" elapsed="0.093996"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:18.482112" elapsed="0.159003"/>
+</kw>
+<tag>demo2</tag>
+<status status="PASS" start="2024-10-15T00:44:17.489113" elapsed="1.152002"/>
+</test>
+<kw name="Log" owner="BuiltIn" type="TEARDOWN">
+<msg time="2024-10-15T00:44:18.662113" level="INFO">Suite Teardown 2</msg>
+<arg>message=Suite Teardown 2</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2024-10-15T00:44:18.662113" elapsed="0.001001"/>
+</kw>
+<status status="PASS" start="2024-10-15T00:44:16.324036" elapsed="2.339078"/>
+</suite>
+<status status="FAIL" start="2024-10-15T00:44:06.077102" elapsed="12.607013"/>
+</suite>
+<status status="FAIL" start="2024-10-15T00:44:06.054101" elapsed="12.631014"/>
+</suite>
+<statistics>
+<total>
+<stat pass="4" fail="1" skip="1">All Tests</stat>
+</total>
+<tag>
+<stat pass="1" fail="0" skip="0">a</stat>
+<stat pass="2" fail="1" skip="1">demo1</stat>
+<stat pass="2" fail="0" skip="0">demo2</stat>
+</tag>
+<suite>
+<stat pass="4" fail="1" skip="1" id="s1" name="Robotframework-Dashboard">Robotframework-Dashboard</stat>
+<stat pass="4" fail="1" skip="1" id="s1-s1" name="Scripts">Robotframework-Dashboard.Scripts</stat>
+<stat pass="2" fail="1" skip="1" id="s1-s1-s1" name="Demo1">Robotframework-Dashboard.Scripts.Demo1</stat>
+<stat pass="2" fail="0" skip="0" id="s1-s1-s2" name="Demo2">Robotframework-Dashboard.Scripts.Demo2</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

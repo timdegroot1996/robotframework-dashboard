@@ -1,14 +1,6 @@
 scripts
 results
 logs
-browser
-log*.html
-robot_dashboard*.html
-report*.html
-*.xml
-*.db
-playwright-log.txt
-*.robot
 *.pyc
 __pycache__
 dist
