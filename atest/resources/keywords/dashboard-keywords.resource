@@ -18,7 +18,7 @@ Open Dashboard
 Close Dashboard
     Close Page
 
-Validate Image
+Validate Screenshot
     [Arguments]    ${screenshot}    ${reference}
     Compare Images    reference_image=${CURDIR}/../dashboard_output/${reference}.png
     ...    test_image=${CURDIR}/../../../results/browser/screenshot/${screenshot}.png

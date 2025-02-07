@@ -3,3 +3,5 @@ robotframework-browser
 robotframework-databaselibrary
 robotframework-dashboard
 robotframework-imagecompare
+robotframowork-robocop
+robotframowork-tidy

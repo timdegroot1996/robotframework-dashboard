@@ -13,4 +13,4 @@ Test Teardown    Run Keywords    Close Dashboard    Remove Database And Dashboar
 *** Test Cases ***
 Validate Dashboard Run Statistics
     Take Screenshot    filename=run_statistics    selector=id=runStatisticsCanvas
-    Validate Image    screenshot=run_statistics    reference=run_statistics
+    Validate Screenshot    screenshot=run_statistics    reference=run_statistics
