@@ -1,0 +1,5 @@
+robotframework
+robotframework-browser
+robotframework-databaselibrary
+robotframework-dashboard
+robotframework-imagecompare

@@ -1,12 +1,15 @@
 *** Settings ***
 Documentation    This testsuite covers the Command Line Interface of robotdashboard
 
-Resource    ../resources/keywords/keywords.resource
+Resource    ../resources/keywords/cli-keywords.resource
+Resource    ../resources/keywords/general-keywords.resource
 
 Test Teardown    Remove Database And Dashboard
 
+
 *** Variables ***
 ${OUTPUTS_FOLDER}    ${CURDIR}/../resources/outputs
+
 
 *** Test Cases ***
 Validate robotdashboard h
@@ -37,9 +40,9 @@ Validate robotdashboard r
     Validate CLI    command=robotdashboard --outputfolderpath ${OUTPUTS_FOLDER}
     Validate CLI    command=robotdashboard -r -1 -r 0 -r 1 -r "2024-10-15 00:44:06.053103"    expected=removerun
 
-Validate robotdashboard removerun 
+Validate robotdashboard removerun
     Validate CLI    command=robotdashboard --outputfolderpath ${OUTPUTS_FOLDER}
-    Validate CLI    command=robotdashboard --removerun -1 --removerun 0 --removerun 1 --removerun "2024-10-15 00:44:06.053103"    
+    Validate CLI    command=robotdashboard --removerun -1 --removerun 0 --removerun 1 --removerun "2024-10-15 00:44:06.053103"
     ...    expected=removerun
 
 Validate robotdashboard d
