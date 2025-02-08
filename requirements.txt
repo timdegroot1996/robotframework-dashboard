@@ -4,6 +4,7 @@ build
 wheel
 twine
 robotframework
+robotframework-pabot
 robotframework-browser
 robotframework-databaselibrary
 robotframework-dashboard
