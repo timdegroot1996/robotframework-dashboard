@@ -489,27 +489,27 @@
                     </div>
                 </div>
                 <div class="row collapse show" id="keywordTotalAverageCollapse">
-                    <div class="col canvas mb-5" id="keywordTotalTimeCanvas">
+                    <div class="col canvas mb-5" id="keywordTotalDurationCanvas">
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="keywordTotalTimeGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalTimeGraphLine">Line
+                            id="keywordTotalDurationGraphBar">Bar View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalDurationGraphLine">Line
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordTotalTimeFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalTimeClose"
+                            id="keywordTotalDurationFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalDurationClose"
                             hidden>Close</button>
-                        <canvas id="keywordTotalTimeGraph"></canvas>
+                        <canvas id="keywordTotalDurationGraph"></canvas>
                     </div>
-                    <div class="col canvas mb-5" id="keywordAverageTimeCanvas">
+                    <div class="col canvas mb-5" id="keywordAverageDurationCanvas">
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="keywordAverageTimeGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageTimeGraphLine">Line
+                            id="keywordAverageDurationGraphBar">Bar View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageDurationGraphLine">Line
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordAverageTimeFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageTimeClose"
+                            id="keywordAverageDurationFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageDurationClose"
                             hidden>Close</button>
-                        <canvas id="keywordAverageTimeGraph"></canvas>
+                        <canvas id="keywordAverageDurationGraph"></canvas>
                     </div>
                 </div>
                 <div class="row">
@@ -523,27 +523,27 @@
                     </div>
                 </div>
                 <div class="row collapse show" id="keywordMinMaxCollapse">
-                    <div class="col canvas mb-5" id="keywordMinTimeCanvas">
+                    <div class="col canvas mb-5" id="keywordMinDurationCanvas">
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="keywordMinTimeGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMinTimeGraphLine">Line
+                            id="keywordMinDurationGraphBar">Bar View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMinDurationGraphLine">Line
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordMinTimeFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMinTimeClose"
+                            id="keywordMinDurationFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMinDurationClose"
                             hidden>Close</button>
-                        <canvas id="keywordMinTimeGraph"></canvas>
+                        <canvas id="keywordMinDurationGraph"></canvas>
                     </div>
-                    <div class="col canvas mb-5" id="keywordMaxTimeCanvas">
+                    <div class="col canvas mb-5" id="keywordMaxDurationCanvas">
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="keywordMaxTimeGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMaxTimeGraphLine">Line
+                            id="keywordMaxDurationGraphBar">Bar View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMaxDurationGraphLine">Line
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordMaxTimeFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMaxTimeClose"
+                            id="keywordMaxDurationFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMaxDurationClose"
                             hidden>Close</button>
-                        <canvas id="keywordMaxTimeGraph"></canvas>
+                        <canvas id="keywordMaxDurationGraph"></canvas>
                     </div>
                 </div>
                 <div class="row">
@@ -633,14 +633,14 @@
         var keywordStatisticsGraphType = "percentages";
         var keywordTimesRunGraph;
         var keywordTimesRunGraphType = "bar";
-        var keywordTotalTimeGraph;
-        var keywordTotalTimeGraphType = "bar";
-        var keywordAverageTimeGraph;
-        var keywordAverageTimeGraphType = "bar";
-        var keywordMinTimeGraph;
-        var keywordMinTimeGraphType = "bar";
-        var keywordMaxTimeGraph;
-        var keywordMaxTimeGraphType = "bar";
+        var keywordTotalDurationGraph;
+        var keywordTotalDurationGraphType = "bar";
+        var keywordAverageDurationGraph;
+        var keywordAverageDurationGraphType = "bar";
+        var keywordMinDurationGraph;
+        var keywordMinDurationGraphType = "bar";
+        var keywordMaxDurationGraph;
+        var keywordMaxDurationGraphType = "bar";
         var keywordTable;
 
         // filtered data vars
@@ -707,7 +707,7 @@
         const fullscreenButtons = ["runStatistics", "runDuration",
             "suiteStatistics", "suiteDuration", "suiteMostFailed",
             "testStatus", "testDuration", "testMostFailed", "testMessages",
-            "keywordStatistics", "keywordTimesRun", "keywordTotalTime", "keywordAverageTime", "keywordMinTime", "keywordMaxTime"]
+            "keywordStatistics", "keywordTimesRun", "keywordTotalDuration", "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration"]
         for (let fullscreenButton of fullscreenButtons) {
             document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", (e) => {
                 document.getElementById(`${fullscreenButton}Canvas`).classList.add("fullscreen");
@@ -735,10 +735,10 @@
             'test_messages': 'Bar,Timeline',
             'keyword_statistics': 'Percentages,Line,Amount',
             'keyword_times_run': 'Bar,Line',
-            'keyword_total_time': 'Bar,Line',
-            'keyword_average_time': 'Bar,Line',
-            'keyword_min_time': 'Bar,Line',
-            'keyword_max_time': 'Bar,Line',
+            'keyword_total_duration': 'Bar,Line',
+            'keyword_average_duration': 'Bar,Line',
+            'keyword_min_duration': 'Bar,Line',
+            'keyword_max_duration': 'Bar,Line',
         }
         function underscoreToCamelcase(string) {
             return string.replace(/(\_\w)/g, function (m) {
@@ -822,10 +822,10 @@
         document.getElementById("keywordSelect").addEventListener("change", (e) => {
             create_keyword_statistics_graph();
             create_keyword_times_run_graph();
-            create_keyword_total_time_graph();
-            create_keyword_average_time_graph();
-            create_keyword_min_time_graph();
-            create_keyword_max_time_graph();
+            create_keyword_total_duration_graph();
+            create_keyword_average_duration_graph();
+            create_keyword_min_duration_graph();
+            create_keyword_max_duration_graph();
         });
 
         // function that initializes the from date/time and to date/time selection boxes in the filters
@@ -889,10 +889,10 @@
             create_test_table();
             create_keyword_statistics_graph();
             create_keyword_times_run_graph();
-            create_keyword_total_time_graph();
-            create_keyword_average_time_graph();
-            create_keyword_min_time_graph();
-            create_keyword_max_time_graph();
+            create_keyword_total_duration_graph();
+            create_keyword_average_duration_graph();
+            create_keyword_min_duration_graph();
+            create_keyword_max_duration_graph();
             create_keyword_table();
         }
 
@@ -1579,74 +1579,74 @@
         }
 
         // function to keyword total time graph in the keyword section
-        function create_keyword_total_time_graph(type) {
+        function create_keyword_total_duration_graph(type) {
             if (typeof type === "string") {
-                keywordTotalTimeGraphType = type;
+                keywordTotalDurationGraphType = type;
             }
-            if (keywordTotalTimeGraph) {
-                keywordTotalTimeGraph.destroy();
+            if (keywordTotalDurationGraph) {
+                keywordTotalDurationGraph.destroy();
             }
-            var graphData = get_duration_graph_data("keyword", keywordTotalTimeGraphType, "total_time_s", filteredKeywords);
-            if (keywordTotalTimeGraphType == "bar") {
+            var graphData = get_duration_graph_data("keyword", keywordTotalDurationGraphType, "total_time_s", filteredKeywords);
+            if (keywordTotalDurationGraphType == "bar") {
                 var config = get_graph_config("bar", graphData, "Total Duration (Bar) First 30 Bars Only", "Run", "Duration");
-                keywordTotalTimeGraph = new Chart("keywordTotalTimeGraph", config);
-            } else if (keywordTotalTimeGraphType == "line") {
+                keywordTotalDurationGraph = new Chart("keywordTotalDurationGraph", config);
+            } else if (keywordTotalDurationGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Total Duration (Line)", "Date", "Duration");
-                keywordTotalTimeGraph = new Chart("keywordTotalTimeGraph", config);
+                keywordTotalDurationGraph = new Chart("keywordTotalDurationGraph", config);
             }
         }
 
         // function to keyword average time graph in the keyword section
-        function create_keyword_average_time_graph(type) {
+        function create_keyword_average_duration_graph(type) {
             if (typeof type === "string") {
-                keywordAverageTimeGraphType = type;
+                keywordAverageDurationGraphType = type;
             }
-            if (keywordAverageTimeGraph) {
-                keywordAverageTimeGraph.destroy();
+            if (keywordAverageDurationGraph) {
+                keywordAverageDurationGraph.destroy();
             }
-            var graphData = get_duration_graph_data("keyword", keywordAverageTimeGraphType, "average_time_s", filteredKeywords);
-            if (keywordAverageTimeGraphType == "bar") {
+            var graphData = get_duration_graph_data("keyword", keywordAverageDurationGraphType, "average_time_s", filteredKeywords);
+            if (keywordAverageDurationGraphType == "bar") {
                 var config = get_graph_config("bar", graphData, "Average Duration (Bar) First 30 Bars Only", "Run", "Duration");
-                keywordAverageTimeGraph = new Chart("keywordAverageTimeGraph", config);
-            } else if (keywordAverageTimeGraphType == "line") {
+                keywordAverageDurationGraph = new Chart("keywordAverageDurationGraph", config);
+            } else if (keywordAverageDurationGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Average Duration (Line)", "Date", "Duration");
-                keywordAverageTimeGraph = new Chart("keywordAverageTimeGraph", config);
+                keywordAverageDurationGraph = new Chart("keywordAverageDurationGraph", config);
             }
         }
 
         // function to keyword min time graph in the keyword section
-        function create_keyword_min_time_graph(type) {
+        function create_keyword_min_duration_graph(type) {
             if (typeof type === "string") {
-                keywordMinTimeGraphType = type;
+                keywordMinDurationGraphType = type;
             }
-            if (keywordMinTimeGraph) {
-                keywordMinTimeGraph.destroy();
+            if (keywordMinDurationGraph) {
+                keywordMinDurationGraph.destroy();
             }
-            var graphData = get_duration_graph_data("keyword", keywordMinTimeGraphType, "min_time_s", filteredKeywords);
-            if (keywordMinTimeGraphType == "bar") {
+            var graphData = get_duration_graph_data("keyword", keywordMinDurationGraphType, "min_time_s", filteredKeywords);
+            if (keywordMinDurationGraphType == "bar") {
                 var config = get_graph_config("bar", graphData, "Min Duration (Bar) First 30 Bars Only", "Run", "Duration");
-                keywordMinTimeGraph = new Chart("keywordMinTimeGraph", config);
-            } else if (keywordMinTimeGraphType == "line") {
+                keywordMinDurationGraph = new Chart("keywordMinDurationGraph", config);
+            } else if (keywordMinDurationGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Min Duration (Line)", "Date", "Duration");
-                keywordMinTimeGraph = new Chart("keywordMinTimeGraph", config);
+                keywordMinDurationGraph = new Chart("keywordMinDurationGraph", config);
             }
         }
 
         // function to keyword max time graph in the keyword section
-        function create_keyword_max_time_graph(type) {
+        function create_keyword_max_duration_graph(type) {
             if (typeof type === "string") {
-                keywordMaxTimeGraphType = type;
+                keywordMaxDurationGraphType = type;
             }
-            if (keywordMaxTimeGraph) {
-                keywordMaxTimeGraph.destroy();
+            if (keywordMaxDurationGraph) {
+                keywordMaxDurationGraph.destroy();
             }
-            var graphData = get_duration_graph_data("keyword", keywordMaxTimeGraphType, "max_time_s", filteredKeywords);
-            if (keywordMaxTimeGraphType == "bar") {
+            var graphData = get_duration_graph_data("keyword", keywordMaxDurationGraphType, "max_time_s", filteredKeywords);
+            if (keywordMaxDurationGraphType == "bar") {
                 var config = get_graph_config("bar", graphData, "Max Duration (Bar) First 30 Bars Only", "Run", "Duration");
-                keywordMaxTimeGraph = new Chart("keywordMaxTimeGraph", config);
-            } else if (keywordMaxTimeGraphType == "line") {
+                keywordMaxDurationGraph = new Chart("keywordMaxDurationGraph", config);
+            } else if (keywordMaxDurationGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Max Duration (Line)", "Date", "Duration");
-                keywordMaxTimeGraph = new Chart("keywordMaxTimeGraph", config);
+                keywordMaxDurationGraph = new Chart("keywordMaxDurationGraph", config);
             }
         }
 
