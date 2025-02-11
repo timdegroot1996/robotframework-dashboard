@@ -8,6 +8,6 @@ robotframework-pabot
 robotframework-browser
 robotframework-databaselibrary
 robotframework-dashboard
-robotframework-imagecompare
+robotframework-doctestlibrary
 robotframework-robocop
 robotframework-tidy

@@ -10,42 +10,42 @@
   created database connection: 'robot_results.db'
 ======================================================================================
  2. Processing output XML(s)
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241013-223319.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241013-223319.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241013-223332.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241013-223332.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241013-231715.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241013-231715.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241013-231720.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241013-231720.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241014-223213.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241014-223213.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241014-223259.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241014-223259.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241014-224331.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241014-224331.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241014-224341.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241014-224341.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241015-004406.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241015-004406.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241015-011036.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20241015-011036.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-182652.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-182652.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-182835.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-182835.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-182932.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-182932.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-201710.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-201710.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-201749.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-201749.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-201846.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-201846.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-204404.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-204404.xml' in * seconds
-  Processing output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-214437.xml'
-  Processed output XML 'D:\CodeProjects\robotframework-dashboard\atest\testsuites/../resources/outputs\output-20250201-214437.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20241013-223319.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20241013-223319.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20241013-223332.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20241013-223332.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20241013-231715.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20241013-231715.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20241013-231720.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20241013-231720.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20241014-223213.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20241014-223213.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20241014-223259.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20241014-223259.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20241014-224331.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20241014-224331.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20241014-224341.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20241014-224341.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20241015-004406.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20241015-004406.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20241015-011036.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20241015-011036.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-182652.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-182652.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-182835.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-182835.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-182932.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-182932.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-201710.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-201710.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-201749.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-201749.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-201846.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-201846.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-204404.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-204404.xml' in * seconds
+  Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-214437.xml'
+  Processed output XML '*:\*\atest\testsuites/../resources/outputs\output-20250201-214437.xml' in * seconds
 ======================================================================================
  3. Listing all available runs in the database
   Run 0   | 2024-10-13 22:33:19.671820 | Robotframework-Dashboard
@@ -71,4 +71,4 @@
   skipping step
 ======================================================================================
  5. Creating dashboard HTML
-  created dashboard 'D:\CodeProjects\robotframework-dashboard\robot_dashboard_*-*.html' in * seconds
+  created dashboard '*:\*\robot_dashboard_*-*.html' in * seconds

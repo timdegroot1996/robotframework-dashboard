@@ -28,7 +28,8 @@ Validate robotdashboard o
     Validate CLI    command=robotdashboard -o ${OUTPUTS_FOLDER}/output-20241013-223319.xml:tag1   expected=outputpath
 
 Validate robotdashboard outputpath
-    Validate CLI    command=robotdashboard --outputpath ${OUTPUTS_FOLDER}/output-20241013-223319.xml   expected=outputpath
+    Validate CLI    command=robotdashboard --outputpath ${OUTPUTS_FOLDER}/output-20241013-223319.xml
+    ...       expected=outputpath
 
 Validate robotdashboard f
     Validate CLI    command=robotdashboard -f ${OUTPUTS_FOLDER}    expected=outputfolderpath
@@ -42,7 +43,8 @@ Validate robotdashboard r
 
 Validate robotdashboard removerun
     Validate CLI    command=robotdashboard --outputfolderpath ${OUTPUTS_FOLDER}
-    Validate CLI    command=robotdashboard --removerun -1 --removerun 0 --removerun 1 --removerun "2024-10-15 00:44:06.053103"
+    Validate CLI
+    ...    command=robotdashboard --removerun -1 --removerun 0 --removerun 1 --removerun "2024-10-15 00:44:06.053103"
     ...    expected=removerun
 
 Validate robotdashboard d

@@ -39,4 +39,4 @@
   Removed run from the database: 2024-10-15 00:44:06.053103
 ======================================================================================
  5. Creating dashboard HTML
-  created dashboard 'D:\CodeProjects\robotframework-dashboard\robot_dashboard_*-*.html' in * seconds
+  created dashboard '*:\*\robot_dashboard_*-*.html' in * seconds

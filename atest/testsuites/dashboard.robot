@@ -11,64 +11,64 @@ Test Teardown    Run Keywords    Close Dashboard    Remove Database And Dashboar
 
 
 *** Test Cases ***
-Validate Dashboard Run Statistics
+Validate dashboard runStatistics
     Validate Graph    canvas=runStatisticsCanvas    graphId=runStatisticsGraphBarPercentages
     Validate Graph    canvas=runStatisticsCanvas    graphId=runStatisticsGraphBarAmount    button=${true}
     Validate Graph    canvas=runStatisticsCanvas    graphId=runStatisticsGraphLine    button=${true}
 
-Validate Dashboard Run Duration
+Validate dashboard runDuration
     Validate Graph    canvas=runDurationCanvas    graphId=runDurationGraphBar
     Validate Graph    canvas=runDurationCanvas    graphId=runDurationGraphLine    button=${true}
 
-Validate Dashboard Suite Statistics
+Validate dashboard suiteStatistics
     Validate Graph    canvas=suiteStatisticsCanvas    graphId=suiteStatisticsGraphBarPercentages
     Validate Graph    canvas=suiteStatisticsCanvas    graphId=suiteStatisticsGraphBarAmount    button=${true}
     Validate Graph    canvas=suiteStatisticsCanvas    graphId=suiteStatisticsGraphLine    button=${true}
 
-Validate Dashboard Suite Duration
+Validate dashboard suiteDuration
     Validate Graph    canvas=suiteDurationCanvas    graphId=suiteDurationGraphBar
     Validate Graph    canvas=suiteDurationCanvas    graphId=suiteDurationGraphLine    button=${true}
 
-Validate Dashboard Suite Most Failed
+Validate dashboard suiteMostFailed
     Validate Graph    canvas=suiteMostFailedCanvas    graphId=suiteMostFailedGraphBar
     Validate Graph    canvas=suiteMostFailedCanvas    graphId=suiteMostFailedGraphTimeline    button=${true}
 
-Validate Dashboard Test Statistics
+Validate dashboard testStatistics
     Validate Graph    canvas=testStatusCanvas    graphId=testStatusGraph
 
-Validate Dashboard Test Duration
+Validate dashboard testDuration
     Validate Graph    canvas=testDurationCanvas    graphId=testDurationGraphBar
     Validate Graph    canvas=testDurationCanvas    graphId=testDurationGraphLine    button=${true}
 
-Validate Dashboard Test Most Failed
+Validate dashboard testMostFailed
     Validate Graph    canvas=testMostFailedCanvas    graphId=testMostFailedGraphBar
     Validate Graph    canvas=testMostFailedCanvas    graphId=testMostFailedGraphTimeline    button=${true}
 
-Validate Dashboard Test Top 10 Fail Messages
+Validate dashboard testMessages
     Validate Graph    canvas=testMessagesCanvas    graphId=testMessagesGraphBar
     Validate Graph    canvas=testMessagesCanvas    graphId=testMessagesGraphTimeline    button=${true}
 
-Validate Dashboard Keyword Statistics
+Validate dashboard keywordStatistics
     Validate Graph    canvas=keywordStatisticsCanvas    graphId=keywordStatisticsGraphBarPercentages
     Validate Graph    canvas=keywordStatisticsCanvas    graphId=keywordStatisticsGraphBarAmount    button=${true}
     Validate Graph    canvas=keywordStatisticsCanvas    graphId=keywordStatisticsGraphLine    button=${true}
 
-Validate Dashboard Keyword Times Run
+Validate dashboard keywordTimesRun
     Validate Graph    canvas=keywordTimesRunCanvas    graphId=keywordTimesRunGraphBar
     Validate Graph    canvas=keywordTimesRunCanvas    graphId=keywordTimesRunGraphLine    button=${true}
 
-Validate Dashboard Keyword Total Duration
+Validate dashboard keywordTotalDuration
     Validate Graph    canvas=keywordTotalDurationCanvas    graphId=keywordTotalDurationGraphBar
     Validate Graph    canvas=keywordTotalDurationCanvas    graphId=keywordTotalDurationGraphLine    button=${true}
 
-Validate Dashboard Keyword Average Duration
+Validate dashboard keywordAverageDuration
     Validate Graph    canvas=keywordAverageDurationCanvas    graphId=keywordAverageDurationGraphBar
     Validate Graph    canvas=keywordAverageDurationCanvas    graphId=keywordAverageDurationGraphLine    button=${true}
 
-Validate Dashboard Keyword Min Duration
+Validate dashboard minDuration
     Validate Graph    canvas=keywordMinDurationCanvas    graphId=keywordMinDurationGraphBar
     Validate Graph    canvas=keywordMinDurationCanvas    graphId=keywordMinDurationGraphLine    button=${true}
 
-Validate Dashboard Keyword Max Duration
+Validate dashboard maxDuration
     Validate Graph    canvas=keywordMaxDurationCanvas    graphId=keywordMaxDurationGraphBar
     Validate Graph    canvas=keywordMaxDurationCanvas    graphId=keywordMaxDurationGraphLine    button=${true}

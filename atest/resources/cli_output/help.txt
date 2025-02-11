@@ -34,9 +34,9 @@ options:
                         `path` Specifies a custom HTML dashboard name.
   -l* --listruns LISTRUNS
                         `boolean` Specifies if the runs should be listed.
-                        Default is True* override if you only require the
+                        Default is True, override if you only require the
                         database.
   -g* --generatedashboard GENERATEDASHBOARD
                         `boolean` Specifies if you want to generate the HTML
-                        dashboard. Default is True* override if you only
+                        dashboard. Default is True, override if you only
                         require the database.
