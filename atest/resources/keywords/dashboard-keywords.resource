@@ -25,13 +25,17 @@ Validate Screenshot
     IF    'suite' in $reference    VAR    ${folder}    suite
     IF    'test' in $reference    VAR    ${folder}    test
     IF    'keyword' in $reference    VAR    ${folder}    keyword
+    IF    'filter' in $reference    VAR    ${folder}    filter
     VAR    ${reference}    ${CURDIR}/../dashboard_output/${folder}/${reference}.png
     VAR    ${screenshot}    ${CURDIR}/../../../results/browser/screenshot/${screenshot}.png
     Compare Images    reference_image=${reference}    test_image=${screenshot}    threshold=0.01
 
 Validate Graph
     [Arguments]    ${canvas}    ${graphId}    ${button}=${False}
-    IF    ${button}    Click    selector=id=${graphId}
+    IF    ${button}
+        Click    selector=id=${graphId}
+        Sleep    time_=200ms
+    END
     Take Screenshot    filename=${graphId}    selector=id=${canvas}
     Validate Screenshot    screenshot=${graphId}    reference=${graphId}
     ${fullscreenButton}    Replace String    string=${canvas}    search_for=Canvas    replace_with=Fullscreen
@@ -41,3 +45,22 @@ Validate Graph
     ${closeButton}    Replace String    string=${canvas}    search_for=Canvas    replace_with=Close
     Click    selector=id=${closeButton}
     Validate Screenshot    screenshot=${graphId}    reference=${graphId}
+
+Validate Table
+    [Arguments]    ${tableId}
+    Click    selector=id=${tableId}Button
+    Sleep    time_=200ms
+    Take Screenshot    filename=${tableId}    selector=id=${tableId}
+    Validate Screenshot    screenshot=${tableId}    reference=${tableId}
+
+Validate Run Filter
+    [Arguments]    ${option}
+    Select Options By    id=runs    value    ${option}
+    Take Screenshot    filename=filterRuns${option}    fullPage=${True}
+    Validate Screenshot    screenshot=filterRuns${option}    reference=filterRuns${option}
+
+Validate Run Tag Filter
+    [Arguments]    ${option}
+    Select Options By    id=runTag    value    ${option}
+    Take Screenshot    filename=filterRunTags${option}    fullPage=${True}
+    Validate Screenshot    screenshot=filterRunTags${option}    reference=filterRunTags${option}
