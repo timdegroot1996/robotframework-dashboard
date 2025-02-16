@@ -18,6 +18,8 @@ The Robot Framework Dashboard is a tool for [Robot Framework](https://robotframe
 
 If you need help, have suggestions or want to discuss anything, feel free to contact through the [Slack Channel](https://robotframework.slack.com/archives/C07SPR6N9AB).
 
+![Example Dashboard Screenshot](./img/dashboard.png)
+
 <a name="Installation"></a>
 ## Installation
 
@@ -128,7 +130,10 @@ robotdashboard -r -1 -r "2024-10-17 15:05:04.563559"
 
 <a name="Examples"></a>
 ## Examples
-#### Example Command Line Output
+Here are some examples of generated files/output:
+- [Full Dashboard](./example/robot_dashboard.html) -> Download and open in a browser to use it!
+- [Database](./example/robot_results.db) -> Download and use any tool to check the tables or use it as a base for using the "robotdashboard" command line interface
+- Example Command Line Output:
 This is an example after running robotdashboard for the first time. 3 outputs are added, stored and processed in the dashboard HTML.
 
 Input:
@@ -167,12 +172,6 @@ Results:
  5. Creating dashboard HTML
   created dashboard 'robot_dashboard_20241021-150726.html' in 0.01 seconds
 ```
-#### Example Dashboard HTML
-
-
-#### Example Database
-
-
 <a name="Contributing"></a>
 ## Contributing
 Contributions are welcome! If you encounter any issues, have suggestions for improvements, or would like to add new features, feel free to open an issue or submit a pull request.
