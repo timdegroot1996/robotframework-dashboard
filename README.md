@@ -169,13 +169,8 @@ Results:
 ```
 #### Example Dashboard HTML
 
-![Alt text](relative%20path/to/img.jpg?raw=true "Title")
 
 #### Example Database
-
-#### Example Outputs
-
-
 
 
 <a name="Contributing"></a>
