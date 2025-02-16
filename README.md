@@ -133,7 +133,8 @@ robotdashboard -r -1 -r "2024-10-17 15:05:04.563559"
 Here are some examples of generated files/output:
 - [Full Dashboard](./example/robot_dashboard.html) -> Download and open in a browser to use it!
 - [Database](./example/robot_results.db) -> Download and use any tool to check the tables or use it as a base for using the "robotdashboard" command line interface
-- Example Command Line Output:
+- Example Command Line Output (below)
+  
 This is an example after running robotdashboard for the first time. 3 outputs are added, stored and processed in the dashboard HTML.
 
 Input:
