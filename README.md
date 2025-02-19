@@ -127,6 +127,14 @@ robotdashboard -d result_data/robot_result_database.db
 robotdashboard -r 0
 robotdashboard -r -1 -r "2024-10-17 15:05:04.563559"
 ```
+- Add a custom dashboard html title
+```
+robotdashboard -t "My Cool Title"
+```
+- Show milliseconds in the graphs in the dashboard html (setting excludemilliseconds to False as it defaults to True)
+```
+robotdashboard -e False
+```
 
 <a name="Examples"></a>
 ## Examples
