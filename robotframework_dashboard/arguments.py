@@ -57,8 +57,20 @@ class ArgumentParser:
         parser.add_argument(
             "-n",
             "--namedashboard",
-            help="`path` Specifies a custom HTML dashboard name.",
+            help="`path` Specifies a custom HTML dashboard file name.",
             default="",
+        )
+        parser.add_argument(
+            "-t",
+            "--dashboardtitle",
+            help="`string` Specifies a custom dashboard html report title.",
+            default="",
+        )
+        parser.add_argument(
+            "-e",
+            "--excludemilliseconds",
+            help="`boolean` Default is True, specifies if the dashboard html shows milliseconds in the graphs. The database will always contain milliseconds.",
+            default=True,
         )
         parser.add_argument(
             "-l",
@@ -110,6 +122,11 @@ class ArgumentParser:
             if arguments.listruns == True or arguments.listruns.lower() == "true"
             else False
         )
+        exclude_milliseconds = (
+           True
+           if arguments.excludemilliseconds == True or arguments.excludemilliseconds.lower() == "true"
+           else False 
+        )
         generation_datetime = datetime.now()
         if arguments.namedashboard == "":
             dashboard_name = f"robot_dashboard_{generation_datetime.strftime('%Y%m%d-%H%M%S')}.html"
@@ -126,4 +143,6 @@ class ArgumentParser:
             generation_datetime,
             list_runs,
             arguments.removeruns,
+            arguments.dashboardtitle,
+            exclude_milliseconds,
         )

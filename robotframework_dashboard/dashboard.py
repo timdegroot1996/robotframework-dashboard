@@ -6,8 +6,19 @@ from json import dumps
 
 class DashboardGenerator:
     def generate_dashboard(
-        self, name_dashboard: str, data: dict, generation_datetime: datetime
+        self, name_dashboard: str, data: dict, generation_datetime: datetime, dashboard_title: str, exclude_milliseconds: bool
     ):
+        # update the dashboard data to exclude milliseconds if needed
+        if exclude_milliseconds:
+            for index, run in enumerate(data["runs"]):
+                data["runs"][index]["run_start"] = data["runs"][index]["run_start"].split('.')[0]
+            for index, suite in enumerate(data["suites"]):
+                data["suites"][index]["run_start"] = data["suites"][index]["run_start"].split('.')[0]
+            for index, test in enumerate(data["tests"]):
+                data["tests"][index]["run_start"] = data["tests"][index]["run_start"].split('.')[0]
+            for index, keyword in enumerate(data["keywords"]):
+                data["keywords"][index]["run_start"] = data["keywords"][index]["run_start"].split('.')[0]
+
         # load template
         index_html = join(dirname(abspath(__file__)), "templates", "index.html")
         with open(index_html, "r") as file:
@@ -24,8 +35,11 @@ class DashboardGenerator:
             dashboard_data = dashboard_data.replace(
                 '"placeholder_keywords"', dumps(data["keywords"])
             )
-            dashboard_data = dashboard_data.replace(
-                '"placeholder_generation_date"', str(generation_datetime)[:-7]
+            if dashboard_title != '':
+                dashboard_data = dashboard_data.replace('"placeholder_dashboard_title"', dashboard_title)
+            else:
+                dashboard_data = dashboard_data.replace(
+                '"placeholder_dashboard_title"', f'Robot Framework Dashboard - {str(generation_datetime)[:-7]}'
             )
 
         # handle possible subdirectories

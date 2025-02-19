@@ -31,6 +31,8 @@ def main():
         generation_datetime,
         list_runs,
         remove_runs,
+        dashboard_title,
+        exclude_milliseconds,
     ) = ArgumentParser().parse_arguments()
     print(f" 1. Database preparation")
     database = DatabaseProcessor(database_path)
@@ -114,7 +116,7 @@ def main():
         print(f" 5. Creating dashboard HTML")
         dashboard_data = database.get_data()
         DashboardGenerator().generate_dashboard(
-            dashboard_name, dashboard_data, generation_datetime
+            dashboard_name, dashboard_data, generation_datetime, dashboard_title, exclude_milliseconds
         )
         end = time()
         print(
