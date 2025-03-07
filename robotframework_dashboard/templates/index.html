@@ -504,7 +504,8 @@
                     <div class="col canvas mb-5" id="keywordAverageDurationCanvas">
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="keywordAverageDurationGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageDurationGraphLine">Line
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                            id="keywordAverageDurationGraphLine">Line
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="keywordAverageDurationFullscreen">Fullscreen</button>
@@ -1032,10 +1033,15 @@
             }
             var suiteSelectTests = document.getElementById("suiteSelectTests");
             var suiteSelectSuites = document.getElementById("suiteSelectSuites");
+            suiteSelectTests.options[suiteSelectTests.options.length] = new Option("All", "All");
+            suiteSelectSuites.options[suiteSelectSuites.options.length] = new Option("All", "All");
             for (suiteName of suiteNames.sort()) {
                 suiteSelectTests.options[suiteSelectTests.options.length] = new Option(suiteName, suiteName);
                 suiteSelectSuites.options[suiteSelectSuites.options.length] = new Option(suiteName, suiteName);
             }
+            document.getElementById("suiteSelectTests").selectedIndex = 1
+            document.getElementById("suiteSelectSuites").selectedIndex = 1
+            // console.log(document.getElementById("suiteSelectTests").options)
         }
 
         // function to update the available tests to select in the filters
@@ -1050,6 +1056,10 @@
                     var tags = test.tags.replace(/\[|\]/g, '').split(',')
                     if (tags.includes(testTagsSelect) || testTagsSelect == "All") {
                         testNames.push(test.name);
+                    }
+                } else if (suiteSelect == 'All') {
+                    if (!testNames.includes(test.name)) {
+                        testNames.push(test.name)
                     }
                 }
             }
@@ -1067,7 +1077,7 @@
             suiteSelect = document.getElementById("suiteSelectTests").value;
             var testTags = [];
             for (test of filteredTests) {
-                if (test.full_name.includes(`${suiteSelect}.${test.name}`)) {
+                if (test.full_name.includes(`${suiteSelect}.${test.name}`) || suiteSelect == 'All') {
                     var tags = test.tags.replace(/\[|\]/g, '').split(',')
                     for (tag of tags) {
                         if (!testTags.includes(tag)) {
@@ -1319,7 +1329,7 @@
             var runStarts = [];
             var datasets = [];
             for (test of filteredTests) {
-                if (!test.full_name.includes(`${suiteSelectTests}.${test.name}`)) {
+                if (suiteSelectTests != "All" && !test.full_name.includes(`${suiteSelectTests}.${test.name}`)) {
                     continue;
                 }
                 if (showOnlySelectedtestStatus && testSelect != "All" && test.name != testSelect) {
@@ -1839,7 +1849,7 @@
             var [passed, failed, skipped, labels] = [[], [], [], []];
             for (value of filteredData) {
                 if (graphType == "percentages") {
-                    if (dataType == "suite" && value.name != suiteSelectSuites) {
+                    if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
                         continue;
                     }
                     if (dataType == "keyword") {
@@ -1858,7 +1868,7 @@
                         labels.push(value.run_start);
                     }
                 } else {
-                    if (dataType == "suite" && value.name != suiteSelectSuites) {
+                    if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
                         continue;
                     }
                     if (dataType == "keyword" && value.name != keywordSelect) {
@@ -1939,10 +1949,10 @@
                     if (dataType == "keyword" && value.name != keywordSelect) {
                         continue;
                     }
-                    if (dataType == "suite" && value.name != suiteSelectSuites) {
+                    if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
                         continue;
                     }
-                    if (dataType == "test" && !value.full_name.includes(`${suiteSelectTests}.${value.name}`)) {
+                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`${suiteSelectTests}.${value.name}`)) {
                         continue;
                     }
                     if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
@@ -1989,10 +1999,10 @@
                     if (dataType == "keyword" && value.name != keywordSelect) {
                         continue;
                     }
-                    if (dataType == "suite" && value.name != suiteSelectSuites) {
+                    if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
                         continue;
                     }
-                    if (dataType == "test" && !value.full_name.includes(`${suiteSelectTests}.${value.name}`)) {
+                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`${suiteSelectTests}.${value.name}`)) {
                         continue;
                     }
                     if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
