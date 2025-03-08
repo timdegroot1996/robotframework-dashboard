@@ -10,7 +10,7 @@ usage: robotdashboard [[]-v[]] [[]-h[]] [[]-o [[]OUTPUTPATH ...[]][]] [[]-f OUTP
                       [[]-r [[]REMOVERUNS ...[]][]] [[]-d DATABASEPATH[]]
                       [[]-n NAMEDASHBOARD[]] [[]-t DASHBOARDTITLE[]]
                       [[]-e EXCLUDEMILLISECONDS[]] [[]-l LISTRUNS[]]
-                      [[]-g GENERATEDASHBOARD[]]
+                      [[]-g GENERATEDASHBOARD[]] [[]-c DATABASECLASS[]]
 
 options:
   -v, --version         Display application version information.
@@ -49,3 +49,12 @@ options:
                         `boolean` Specifies if you want to generate the HTML
                         dashboard. Default is True, override if you only
                         require the database.
+  -c DATABASECLASS, --databaseclass DATABASECLASS
+                        `path` Specifies the path to your implementation of
+                        the databaseclass. If nothing is provided default
+                        Sqlite3 implementation is used. Use this when you want
+                        to use a custom implementation or you have your own
+                        database type. See
+                        https://github.com/timdegroot1996/robotframework-
+                        dashboard?tab=readme-ov-file#Custom-Database-Class for
+                        additional information!

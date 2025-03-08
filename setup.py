@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="robotframework-dashboard",
-    version="0.4.6",
+    version="0.5.0",
     description="Output processor and dashboard generator for Robot Framework output files",
     long_description="""# Robot Framework Dashboard
 
@@ -14,6 +14,7 @@ setup(
 - Version Details
 - Usage
 - Examples
+- Custom Database Class
 - Contributing
 - License
 
@@ -133,11 +134,16 @@ robotdashboard -t "My Cool Title"
 ```
 robotdashboard -e False
 ```
+- Make use of a custom DatabaseProcessor class see also the Custom Database Class section for examples and more details of the requirements.
+```
+robotdashboard -c ./path/to/custom_class.py
+robotdashboard --databaseclass mysql.py
+```
 
 ## Examples
 Here are some examples of generated files/output:
-- [Full Dashboard](./example/robot_dashboard.html) -> Download and open in a browser to use it!
-- [Database](./example/robot_results.db) -> Download and use any tool to check the tables or use it as a base for using the "robotdashboard" command line interface
+- See robot_dashboard.html in the Example Folder in GitHub  -> Download and open in a browser to use it!
+- See robot_results.db in the Example Folder in GitHub -> Download and use any tool to check the tables or use it as a base for using the "robotdashboard" command line interface
 - Example Command Line Output (below)
   
 This is an example after running robotdashboard for the first time. 3 outputs are added, stored and processed in the dashboard HTML.
@@ -150,7 +156,7 @@ Results:
 ```
 ======================================================================================
  ____   ___  ____   ___ _____ ____    _    ____  _   _ ____   ___    _    ____  ____  
-|  _ \ / _ \| __ ) / _ |_   _|  _ \  / \  / ___|| | | | __ ) / _ \  / \  |  _ \|  _ \
+|  _ \ / _ \| __ ) / _ |_   _|  _ \  / \  / ___|| | | | __ ) / _ \  / \  |  _ \|  _ \\
 | |_) | | | |  _ \| | | || | | | | |/ _ \ \___ \| |_| |  _ \| | | |/ _ \ | |_) | | | |
 |  _ <| |_| | |_) | |_| || | | |_| / ___ \ ___) |  _  | |_) | |_| / ___ \|  _ <| |_| |
 |_| \_\\___/|____/ \___/ |_| |____/_/   \_|____/|_| |_|____/ \___/_/   \_|_| \_|____/
@@ -178,6 +184,31 @@ Results:
  5. Creating dashboard HTML
   created dashboard 'robot_dashboard_20241021-150726.html' in 0.01 seconds
 ```
+
+## Custom Database Class
+See the python files in the Example Folder in GitHub for some examples of custom database class implementations.
+
+### Available examples
+Currently available database type examples:
+- template.py (completely empty only requirements are filled)
+- mysql.py (for a mysql database connection)
+- ...
+
+If you have made an implementation that is not yet an example please feel free to add it through a pull request or submit it in an issue. This way you can help other people implement their own solutions!!
+
+### Custom Class Requirements
+- File: The filename can be anything as long as it is a **python file**
+- Class: The you should name the **class DatabaseProcessor**
+- Methods: 
+    - **\_\_init\_\_(self, database_path: Path):**, should handle the connection to the database and possible creation of the tables if necessary
+    - **close_database(self):**, should close the database connection
+    - **insert_output_data(self, output_data: dict, tags: list):**, should be able to handle the output_data dict and the run tags that are provided. Look at the example implementations for the content of output_data and tags.
+    - **get_data(self):**, should retrieve all data (runs/suites/tests/keywords) from all tables in the form of a dictionary containing the 4 data types. In which each data type is a list of dicts with entries. Example:
+    {'runs': [{"run_start": "2024-10-13 22:33:19", "full_name": "Robotframework-Dashboard", "name": "Robotframework-Dashboard", "total": 6, "passed": 4, "failed": 1, "skipped": 1, "elapsed_s": "6.313", "start_time": "2024-10-13 22:33:19.673821", "tags": ""}, {"run_start"...}]}
+    - **list_runs(self):**, should print out the runs in the database with useful identiefiers. This function can be empty as long as it exists. It is purely for the command line overview.
+    - **remove_runs(self, remove_runs):**, should be able to handle either indexes to be removed, or run_starts that are provided which can then be used to delete the data in the database.
+- Do not use relative imports! This will not work on runtime!
+
 ## Contributing
 Contributions are welcome! If you encounter any issues, have suggestions for improvements, or would like to add new features, feel free to open an issue or submit a pull request.
 

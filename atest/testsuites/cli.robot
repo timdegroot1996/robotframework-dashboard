@@ -70,3 +70,21 @@ Validate robotdashboard g
 
 Validate robotdashboard generatedashboard
     Validate CLI    command=robotdashboard --generatedashboard false    expected=generatedashboard
+
+Validate robotdahboard t
+    Validate CLI    command=robotdashboard -t some-cool-title    expected=dashboardtitle
+
+Validate robotdahboard dashboardtitle
+    Validate CLI    command=robotdashboard --dashboardtitle "Another very interesting title 91239192"    expected=dashboardtitle
+
+Validate robotdahboard e
+    Validate CLI    command=robotdashboard -e false    expected=excludemilliseconds
+
+Validate robotdahboard excludemilliseconds
+    Validate CLI    command=robotdashboard --excludemilliseconds false    expected=excludemilliseconds
+
+Validate robotdahboard c
+    Validate CLI    command=robotdashboard -c example/mysql.py    expected=databaseclass
+
+Validate robotdahboard --databaseclass
+    Validate CLI    command=robotdashboard --databaseclass ./example/mysql.py    expected=databaseclass

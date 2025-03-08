@@ -5,3 +5,5 @@ logs
 __pycache__
 dist
 robotframework_dashboard.egg-info
+robot_results.db
+robotdashboard.html

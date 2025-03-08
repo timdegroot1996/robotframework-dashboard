@@ -33,10 +33,19 @@ def main():
         remove_runs,
         dashboard_title,
         exclude_milliseconds,
-    ) = ArgumentParser().parse_arguments()
+        database_class,
+    ) = ArgumentParser().get_arguments()
     print(f" 1. Database preparation")
-    database = DatabaseProcessor(database_path)
-    database.create_database()
+    if not database_class:
+        database = DatabaseProcessor(database_path)
+    else:
+        print(f"  using provided databaseclass: {database_class}")
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('DatabaseProcessor', database_class)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        database = module.DatabaseProcessor(database_path)
+
     print(f"  created database connection: '{database_path}'")
 
     print(

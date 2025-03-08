@@ -1,11 +1,25 @@
 import argparse
 from datetime import datetime
 from re import split
+from os import getcwd
+from os.path import join, exists
 from .version import __version__
 
 
 class ArgumentParser:
-    def parse_arguments(self):
+    def get_arguments(self):
+        try:
+            arguments = self._parse_arguments()
+            arguments = self._process_arguments(arguments)
+        except Exception as error:
+            print(
+                f" ERROR: There was an issue during the parsing of the provided arguments"
+            )
+            print(error)
+            exit(0)
+        return arguments
+
+    def _parse_arguments(self):
         parser = argparse.ArgumentParser(add_help=False)
         parser.add_argument(
             "-v",
@@ -69,13 +83,15 @@ class ArgumentParser:
         parser.add_argument(
             "-e",
             "--excludemilliseconds",
-            help="`boolean` Default is True, specifies if the dashboard html shows milliseconds in the graphs. The database will always contain milliseconds.",
+            help="`boolean` Default is True, specifies if the dashboard html shows \
+                milliseconds in the graphs. The database will always contain milliseconds.",
             default=True,
         )
         parser.add_argument(
             "-l",
             "--listruns",
-            help="`boolean` Specifies if the runs should be listed. Default is True, override if you only require the database.",
+            help="`boolean` Specifies if the runs should be listed. \
+                Default is True, override if you only require the database.",
             default=True,
         )
         parser.add_argument(
@@ -85,10 +101,24 @@ class ArgumentParser:
                             dashboard. Default is True, override if you only require the database.",
             default=True,
         )
-        arguments = parser.parse_args()
+        parser.add_argument(
+            "-c",
+            "--databaseclass",
+            help="`path` Specifies the path to your implementation of the databaseclass. \
+                If nothing is provided default Sqlite3 implementation is used. Use this when you \
+                want to use a custom implementation or you have your own database type.\
+                See https://github.com/timdegroot1996/robotframework-dashboard?tab=readme-ov-file#Custom-Database-Class for additional information!",
+            default=None,
+        )
+        return parser.parse_args()
+
+    def _process_arguments(self, arguments):
+        # handles the version execution
         if arguments.version:
             print(__version__)
             exit(0)
+
+        # handles possible tags on all provided --outputpath
         outputs = None
         if arguments.outputpath:
             outputs = []
@@ -101,6 +131,8 @@ class ArgumentParser:
                 path = splitted[0]
                 tags = splitted[1:]
                 outputs.append([path, tags])
+
+        # handles possible tags on all provided --outputfolderpath
         outputfolderpath = None
         if arguments.outputfolderpath:
             splitted = split(r":(?!(\/|\\))", arguments.outputfolderpath)
@@ -111,29 +143,55 @@ class ArgumentParser:
             path = splitted[0]
             tags = splitted[1:]
             outputfolderpath = [path, tags]
+
+        # handles the boolean handling of --generatedashboard
         generate_dashboard = (
             True
             if arguments.generatedashboard == True
             or arguments.generatedashboard.lower() == "true"
             else False
         )
+
+        # handles the boolean handling of --listruns
         list_runs = (
             True
             if arguments.listruns == True or arguments.listruns.lower() == "true"
             else False
         )
+
+        # handles the boolean handling of --excludemilliseconds
         exclude_milliseconds = (
-           True
-           if arguments.excludemilliseconds == True or arguments.excludemilliseconds.lower() == "true"
-           else False 
+            True
+            if arguments.excludemilliseconds == True
+            or arguments.excludemilliseconds.lower() == "true"
+            else False
         )
+
+        # generates the datetime used in the file dashboard name and the html title
         generation_datetime = datetime.now()
+
+        # handles the custom dashboard name
         if arguments.namedashboard == "":
-            dashboard_name = f"robot_dashboard_{generation_datetime.strftime('%Y%m%d-%H%M%S')}.html"
+            dashboard_name = (
+                f"robot_dashboard_{generation_datetime.strftime('%Y%m%d-%H%M%S')}.html"
+            )
         elif not arguments.namedashboard.endswith(".html"):
             dashboard_name = f"{arguments.namedashboard}.html"
         else:
             dashboard_name = arguments.namedashboard
+
+        # handles the databaseclass implementation and provides the complete path to the module
+        database_class = None
+        if arguments.databaseclass:
+            database_class = join(getcwd(), arguments.databaseclass).replace(
+                "\\.\\", "\\"
+            )
+            if not exists(database_class):
+                raise Exception(
+                    f"  ERROR: the provided database class did not exist in the expected path: {database_class}"
+                )
+
+        # return all provided arguments
         return (
             outputs,
             outputfolderpath,
@@ -145,4 +203,5 @@ class ArgumentParser:
             arguments.removeruns,
             arguments.dashboardtitle,
             exclude_milliseconds,
+            database_class,
         )
