@@ -4,16 +4,14 @@ from uvicorn import run
 
 
 class ApiServer:
-    def __init__(
-        self,
-    ):
+    def __init__(self):
         self.app = FastAPI()
         self.robotdashboard: RobotDashboard
 
         @self.app.get("/")
         async def hello_world():
             return {"Hello": "World"}
-        
+
         @self.app.get("/run")
         async def run_robotdashboard():
             # 1. Database preparation

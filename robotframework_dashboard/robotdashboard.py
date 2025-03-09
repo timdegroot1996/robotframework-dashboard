@@ -10,7 +10,7 @@ from datetime import datetime
 
 class RobotDashboard:
     """Class that provides all functionality that robotdashboard has to offer
-    Is used in the 'normal' usage when just using the command line tool and in the 'server'
+    Is used in the 'normal' mode when just using the cli directly and in the 'server' mode continuously
     """
 
     def __init__(
