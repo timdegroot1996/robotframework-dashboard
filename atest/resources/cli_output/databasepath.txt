@@ -7,7 +7,7 @@
 
 ======================================================================================
  1. Database preparation
-  created database connection: 'robot_dashboard.db'
+  created database: 'robot_dashboard.db'
 ======================================================================================
  2. Processing output XML(s)
   skipping step

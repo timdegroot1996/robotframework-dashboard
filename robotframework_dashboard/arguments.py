@@ -6,8 +6,20 @@ from os.path import join, exists
 from .version import __version__
 
 
+class dotdict(dict):
+    """dot.notation access to dictionary attributes"""
+
+    __getattr__ = dict.get
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+
+
 class ArgumentParser:
+    """Parse the input arguments that can be provided to robotdashboard
+    Only get_arguments is called, all other functions are helper functions"""
+
     def get_arguments(self):
+        """The function that handles the complete parsing process"""
         try:
             arguments = self._parse_arguments()
             arguments = self._process_arguments(arguments)
@@ -20,7 +32,14 @@ class ArgumentParser:
         return arguments
 
     def _parse_arguments(self):
+        """Parses the actual arguments"""
         parser = argparse.ArgumentParser(add_help=False)
+        parser.add_argument(
+            "server",
+            help="Provide the server argument like 'robotdashboard server' to start a server. Additional documentation in... ",
+            nargs="?",
+            default=None,
+        )
         parser.add_argument(
             "-v",
             "--version",
@@ -113,7 +132,7 @@ class ArgumentParser:
         return parser.parse_args()
 
     def _process_arguments(self, arguments):
-        # handles the version execution
+        """handles the version execution"""
         if arguments.version:
             print(__version__)
             exit(0)
@@ -191,17 +210,22 @@ class ArgumentParser:
                     f"  ERROR: the provided database class did not exist in the expected path: {database_class}"
                 )
 
+        # handles the server argument
+        start_server = True if arguments.server != None else False
+
         # return all provided arguments
-        return (
-            outputs,
-            outputfolderpath,
-            arguments.databasepath,
-            generate_dashboard,
-            dashboard_name,
-            generation_datetime,
-            list_runs,
-            arguments.removeruns,
-            arguments.dashboardtitle,
-            exclude_milliseconds,
-            database_class,
-        )
+        provided_args = {
+            "outputs": outputs,
+            "output_folder_path": outputfolderpath,
+            "database_path": arguments.databasepath,
+            "generate_dashboard": generate_dashboard,
+            "dashboard_name": dashboard_name,
+            "generation_datetime": generation_datetime,
+            "list_runs": list_runs,
+            "remove_runs": arguments.removeruns,
+            "dashboard_title": arguments.dashboardtitle,
+            "exclude_milliseconds": exclude_milliseconds,
+            "database_class": database_class,
+            "start_server": start_server,
+        }
+        return dotdict(provided_args)

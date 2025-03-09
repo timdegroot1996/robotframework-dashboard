@@ -7,7 +7,7 @@
 
 ======================================================================================
  1. Database preparation
-  created database connection: 'robot_results.db'
+  created database: 'robot_results.db'
 ======================================================================================
  2. Processing output XML(s)
   Processing output XML '*:\*\atest\testsuites/../resources/outputs\output-20241013-223319.xml'

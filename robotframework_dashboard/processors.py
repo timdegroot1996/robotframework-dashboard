@@ -5,7 +5,10 @@ from pathlib import Path
 
 
 class OutputProcessor:
+    """This class creates an output processor that collects all the relevant data for the database"""
+
     def get_output_data(self, output_path: Path):
+        """This is the main function that is actually called by robotdashboard"""
         output = ExecutionResult(output_path)
         if hasattr(output, "generation_time"):
             generation_time = output.generation_time
@@ -39,6 +42,7 @@ class OutputProcessor:
         }
 
     def calculate_keyword_averages(self, keyword_list: list):
+        """Helper function to calculate keyword statistics"""
         average_keyword_dict = {}
         average_keyword_list = []
         for keyword in keyword_list:
@@ -84,6 +88,8 @@ class OutputProcessor:
 
 
 class RunProcessor(ResultVisitor):
+    """Processer to get the run data"""
+
     def __init__(self, run_time: datetime, run_list: list):
         self.run_list = run_list
         self.run_time = run_time
@@ -121,6 +127,7 @@ class RunProcessor(ResultVisitor):
 
 
 class SuiteProcessor(ResultVisitor):
+    """Processer to get the suite data"""
 
     def __init__(self, run_time: datetime, suite_list: list):
         self.suite_list = suite_list
@@ -163,6 +170,8 @@ class SuiteProcessor(ResultVisitor):
 
 
 class TestProcessor(ResultVisitor):
+    """Processer to get the test data"""
+
     def __init__(self, run_time: datetime, test_list: list):
         self.test_list = test_list
         self.run_time = run_time
@@ -193,12 +202,14 @@ class TestProcessor(ResultVisitor):
                 elapsed_time,
                 start_time,
                 test.message[:150],
-                str(test.tags).replace(' ', ''),
+                str(test.tags).replace(" ", ""),
             )
         )
 
 
 class KeywordProcessor(ResultVisitor):
+    """Processer to get the keyword data"""
+
     def __init__(self, run_time: datetime, keyword_list: list):
         self.keyword_list = keyword_list
         self.run_time = run_time

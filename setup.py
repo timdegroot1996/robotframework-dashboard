@@ -237,7 +237,7 @@ Note: This project is not officially affiliated with or endorsed by robotframewo
     ],
     entry_points={
         "console_scripts": [
-            "robotdashboard=robotframework_dashboard.robotdashboard:main",
+            "robotdashboard=robotframework_dashboard.main:main",
         ]
     },
 )

@@ -86,5 +86,5 @@ Validate robotdahboard excludemilliseconds
 Validate robotdahboard c
     Validate CLI    command=robotdashboard -c example/mysql.py    expected=databaseclass
 
-Validate robotdahboard --databaseclass
+Validate robotdahboard databaseclass
     Validate CLI    command=robotdashboard --databaseclass ./example/mysql.py    expected=databaseclass

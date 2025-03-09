@@ -8,7 +8,7 @@
 ======================================================================================
  1. Database preparation
   using provided databaseclass: *mysql.py
-  created database connection: 'robot_results.db'
+  created database: 'robot_results.db'
 ======================================================================================
  2. Processing output XML(s)
   skipping step

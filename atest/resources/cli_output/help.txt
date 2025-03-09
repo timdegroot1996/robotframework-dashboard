@@ -11,6 +11,12 @@ usage: robotdashboard [[]-v[]] [[]-h[]] [[]-o [[]OUTPUTPATH ...[]][]] [[]-f OUTP
                       [[]-n NAMEDASHBOARD[]] [[]-t DASHBOARDTITLE[]]
                       [[]-e EXCLUDEMILLISECONDS[]] [[]-l LISTRUNS[]]
                       [[]-g GENERATEDASHBOARD[]] [[]-c DATABASECLASS[]]
+                      [[]server[]]
+
+positional arguments:
+  server                Provide the server argument like 'robotdashboard
+                        server' to start a server. Additional documentation
+                        in...
 
 options:
   -v, --version         Display application version information.
