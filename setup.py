@@ -191,6 +191,7 @@ See the python files in the Example Folder in GitHub for some examples of custom
 ### Available examples
 Currently available database type examples:
 - template.py (completely empty only requirements are filled)
+- sqlite3.py (for a sqlite3 database connection, this configuration is used by default in robotdashboard)
 - mysql.py (for a mysql database connection)
 - ...
 

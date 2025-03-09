@@ -195,6 +195,7 @@ See the [Example Folder](./example) for some examples of custom database class i
 ### Available examples
 Currently available database type examples:
 - [template.py](./example/template.py) (only requirements are in the template file)
+- [sqlite3.py](./example/sqlite3.py) (for a sqlite3 database connection, this configuration is used by default in robotdashboard)
 - [mysql.py](./example/mysql.py) (for a mysql database connection)
 - ...
 
