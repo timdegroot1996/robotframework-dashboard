@@ -39,7 +39,7 @@ def main():
         server.run()
     else:
         # 1. Database preparation
-        robotdashboard.initialize_database(get_database=False)
+        robotdashboard.initialize_database(get_database=False, supress=False)
         # 2. Processing output XML(s)
         robotdashboard.process_outputs()
         # 3. Listing all available runs in the database

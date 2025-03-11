@@ -10,13 +10,7 @@ usage: robotdashboard [[]-v[]] [[]-h[]] [[]-o [[]OUTPUTPATH ...[]][]] [[]-f OUTP
                       [[]-r [[]REMOVERUNS ...[]][]] [[]-d DATABASEPATH[]]
                       [[]-n NAMEDASHBOARD[]] [[]-t DASHBOARDTITLE[]]
                       [[]-e EXCLUDEMILLISECONDS[]] [[]-l LISTRUNS[]]
-                      [[]-g GENERATEDASHBOARD[]] [[]-c DATABASECLASS[]]
-                      [[]server[]]
-
-positional arguments:
-  server                Provide the server argument like 'robotdashboard
-                        server' to start a server. Additional documentation
-                        in...
+                      [[]-g GENERATEDASHBOARD[]] [[]-c DATABASECLASS[]] [[]-s SERVER[]]
 
 options:
   -v, --version         Display application version information.
@@ -64,3 +58,8 @@ options:
                         https://github.com/timdegroot1996/robotframework-
                         dashboard?tab=readme-ov-file#Custom-Database-Class for
                         additional information!
+  -s SERVER, --server SERVER
+                        Provide the server argument like 'robotdashboard
+                        --server default' or 'robotdashboard --server
+                        yourhost:yourport' to start a server. Additional
+                        documentation in...
