@@ -21,14 +21,11 @@ def main():
     )
     arguments = ArgumentParser().get_arguments()
     robotdashboard = RobotDashboard(
-        arguments.outputs,
-        arguments.output_folder_path,
         arguments.database_path,
         arguments.generate_dashboard,
         arguments.dashboard_name,
         arguments.generation_datetime,
         arguments.list_runs,
-        arguments.remove_runs,
         arguments.dashboard_title,
         arguments.exclude_milliseconds,
         arguments.database_class,
@@ -41,10 +38,10 @@ def main():
         # 1. Database preparation
         robotdashboard.initialize_database(get_database=False, supress=False)
         # 2. Processing output XML(s)
-        robotdashboard.process_outputs()
+        robotdashboard.process_outputs(outputs=arguments.outputs, output_folder_path=arguments.output_folder_path)
         # 3. Listing all available runs in the database
         robotdashboard.print_runs()
         # 4. Removing runs from the database
-        robotdashboard.remove_outputs()
+        robotdashboard.remove_outputs(remove_runs=arguments.remove_runs)
         # 5. Creating dashboard HTML
         robotdashboard.create_dashboard()
