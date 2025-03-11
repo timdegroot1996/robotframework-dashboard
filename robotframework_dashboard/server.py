@@ -45,13 +45,7 @@ class ApiServer:
     def set_robotdashboard(self, robotdashboard: RobotDashboard):
         """Function to initialize the RobotDashboard class"""
         self.robotdashboard = robotdashboard
-        self.robotdashboard.dashboard_name = "robot_dashboard.html"
-        self.robotdashboard.dashboard_title = "Robot Framework Dashboard"
         self.robotdashboard.server = True
-        self.robotdashboard.supress = True
-        # make sure the database and the dashboard html exist
-        self.robotdashboard.initialize_database(get_database=False)
-        self.robotdashboard.create_dashboard()
 
     def run(self):
         """Function to start up the FastAPI server through uvicorn"""
