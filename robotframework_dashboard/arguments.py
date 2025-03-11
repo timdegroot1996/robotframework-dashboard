@@ -35,12 +35,6 @@ class ArgumentParser:
         """Parses the actual arguments"""
         parser = argparse.ArgumentParser(add_help=False)
         parser.add_argument(
-            "server",
-            help="Provide the server argument like 'robotdashboard server' to start a server. Additional documentation in... ",
-            nargs="?",
-            default=None,
-        )
-        parser.add_argument(
             "-v",
             "--version",
             action="store_true",
@@ -129,6 +123,13 @@ class ArgumentParser:
                 See https://github.com/timdegroot1996/robotframework-dashboard?tab=readme-ov-file#Custom-Database-Class for additional information!",
             default=None,
         )
+        parser.add_argument(
+            "-s",
+            "--server",
+            help="Provide the server argument like 'robotdashboard --server default' or 'robotdashboard --server yourhost:yourport' \
+                to start a server. Additional documentation in... ",
+            default=None,
+        )
         return parser.parse_args()
 
     def _process_arguments(self, arguments):
@@ -211,7 +212,15 @@ class ArgumentParser:
                 )
 
         # handles the server argument
-        start_server = True if arguments.server != None else False
+        server_host = "127.0.0.1"
+        server_port = 1234
+        if arguments.server != None:
+            start_server = True
+            if arguments.server != "default":
+                server_host, server_port = arguments.server.split(":")
+                server_port = int(server_port)
+        else:
+            start_server = False
 
         # return all provided arguments
         provided_args = {
@@ -227,5 +236,7 @@ class ArgumentParser:
             "exclude_milliseconds": exclude_milliseconds,
             "database_class": database_class,
             "start_server": start_server,
+            "server_host": server_host,
+            "server_port": server_port,
         }
         return dotdict(provided_args)

@@ -14,6 +14,7 @@ class DashboardGenerator:
         generation_datetime: datetime,
         dashboard_title: str,
         exclude_milliseconds: bool,
+        server: bool,
     ):
         """Function that generates the dashboard"""
         # update the dashboard data to exclude milliseconds if needed
@@ -36,7 +37,7 @@ class DashboardGenerator:
                 ].split(".")[0]
 
         # load template
-        index_html = join(dirname(abspath(__file__)), "templates", "index.html")
+        index_html = join(dirname(abspath(__file__)), "templates", "dashboard.html")
         with open(index_html, "r") as file:
             dashboard_data = file.read()
             dashboard_data = dashboard_data.replace(
@@ -59,6 +60,14 @@ class DashboardGenerator:
                 dashboard_data = dashboard_data.replace(
                     '"placeholder_dashboard_title"',
                     f"Robot Framework Dashboard - {str(generation_datetime)[:-7]}",
+                )
+            if server:
+                dashboard_data = dashboard_data.replace(
+                    'hidden="placeholder_server_admin_page"', ""
+                )
+            else:
+                dashboard_data = dashboard_data.replace(
+                    'hidden="placeholder_server_admin_page"', "hidden"
                 )
 
         # handle possible subdirectories

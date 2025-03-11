@@ -34,12 +34,12 @@ def main():
         arguments.database_class,
     )
     if arguments.start_server:
-        server = ApiServer()
+        server = ApiServer(arguments.server_host, arguments.server_port)
         server.set_robotdashboard(robotdashboard)
         server.run()
     else:
         # 1. Database preparation
-        robotdashboard.initialize_database(supress=False, get_database=False)
+        robotdashboard.initialize_database(get_database=False)
         # 2. Processing output XML(s)
         robotdashboard.process_outputs()
         # 3. Listing all available runs in the database

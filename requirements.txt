@@ -11,3 +11,4 @@ robotframework-dashboard
 robotframework-doctestlibrary
 robotframework-robocop
 robotframework-tidy
+fastapi
