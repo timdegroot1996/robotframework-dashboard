@@ -43,6 +43,9 @@ class RobotDashboard:
         self.supress = False
 
     def initialize_database(self, get_database=True) -> DatabaseProcessor:
+        """Function that initializes the database if it does not exist
+        Also makes a connection that is returned by default and used internally in the RobotDashboard class functions
+        """
         if not self.supress:
             print(f" 1. Database preparation")
         if not self.database_class:
@@ -72,6 +75,7 @@ class RobotDashboard:
             database.close_database()
 
     def process_outputs(self):
+        """Function that processes the outputs and output_folder_path that were set when instantiating the RobotDashboard class"""
         database = self.initialize_database()
         if self.outputs or self.output_folder_path:
             if not self.supress:
@@ -135,6 +139,7 @@ class RobotDashboard:
         database.close_database()
 
     def print_runs(self):
+        """Function that prints the runs currently in the database to the console"""
         if self.list_runs:
             if not self.supress:
                 print(f" 3. Listing all available runs in the database")
@@ -153,12 +158,14 @@ class RobotDashboard:
             )
 
     def get_runs(self):
+        """Function that gets the runs and corresponding names from the database"""
         database = self.initialize_database()
         runs, names = database._get_runs()
         database.close_database()
         return runs, names
 
     def remove_outputs(self):
+        """Function that removes the remove_runs that were set when instantiating the RobotDashboard class"""
         if self.remove_runs != None:
             if not self.supress:
                 print(f" 4. Removing runs from the database")
@@ -174,6 +181,7 @@ class RobotDashboard:
             )
 
     def create_dashboard(self):
+        """Function that creates the dashboard HTML"""
         if self.generate_dashboard:
             start = time()
             if not self.supress:
