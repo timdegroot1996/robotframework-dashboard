@@ -217,7 +217,7 @@ class ApiServer:
                     )
                 if add_output.output_data != None:
                     input = "temp_output.xml"
-                    file = open("temp_output.xml", "w")
+                    file = open("temp_output.xml", "w", encoding="utf-8")
                     file.write(add_output.output_data)
                     file.close()
                     output_path = abspath("temp_output.xml")
