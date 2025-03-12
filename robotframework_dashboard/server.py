@@ -174,7 +174,6 @@ class ApiServer:
                     file.write(add_output.output_data)
                     file.close()
                     output_path = abspath("temp_output.xml")
-                    print(output_path)
                     outputs = [[output_path, add_output.output_tags]]
                     console = self.robotdashboard.process_outputs(outputs=outputs)
                     remove("temp_output.xml")
