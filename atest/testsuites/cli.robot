@@ -13,6 +13,7 @@ ${OUTPUTS_FOLDER}    ${CURDIR}/../resources/outputs
 
 *** Test Cases ***
 Validate robotdashboard h
+    [Tags]    test
     Validate CLI    command=robotdashboard -h    expected=help
 
 Validate robotdashboard help

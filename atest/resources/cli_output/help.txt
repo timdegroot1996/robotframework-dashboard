@@ -61,5 +61,7 @@ options:
   -s SERVER, --server SERVER
                         Provide the server argument like 'robotdashboard
                         --server default' or 'robotdashboard --server
-                        yourhost:yourport' to start a server. Additional
-                        documentation in...
+                        yourhost:yourport' to start a server. See
+                        http://github.com/timdegroot1996/robotframework-
+                        dashboard?tab=readme-ov-file#Dashboard-Server for
+                        additional information!

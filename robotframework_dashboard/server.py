@@ -1,6 +1,7 @@
 from .robotdashboard import RobotDashboard
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
 from fastapi.responses import HTMLResponse
+from typing import Annotated
 from pydantic import BaseModel
 from uvicorn import run
 from os.path import join, abspath, dirname
@@ -43,6 +44,10 @@ class GetOutput(BaseModel):
                     "run": "2024-10-14 22:32:59.580309",
                     "name": "RobotFramework-Dashboard",
                 },
+                {
+                    "run": "2024-10-15 12:00:45.347634",
+                    "name": "RobotFramework-Dashboard",
+                },
             ]
         }
     }
@@ -60,7 +65,7 @@ class AddOutput(BaseModel):
             "examples": [
                 {
                     "output_path": "C:\\users\\docs\\output.xml",
-                    "output_tags": "tag1:cool-tag2:production_tag",
+                    "output_tags": "['tag1', 'cool-tag2', 'production_tag']",
                 },
                 {
                     "output_data": """<?xml version="1.0" encoding="UTF-8"?>
@@ -68,15 +73,16 @@ class AddOutput(BaseModel):
 <suite id="s1" name="Scripts" source="C:\docs">
 <suite id="s1-s1" name="Google" source="C:\docs\google.robot">
 <test id="s1-s1-t1" name="Test 01" line="6">... etc""",
-                    "output_tags": "",
+                    "output_tags": "[]",
                 },
                 {
                     "output_path": "C:\\users\\docs\\prod-outputs",
-                    "output_tags": "production-run",
-                }
+                    "output_tags": "['production-run']",
+                },
             ]
         }
     }
+
 
 class RemoveOutputs(BaseModel):
     """The model that has to be provided when trying to delete outputs from the database"""
@@ -85,9 +91,18 @@ class RemoveOutputs(BaseModel):
     model_config = {
         "json_schema_extra": {
             "examples": [
+                {"runs": ["0", "-1", "5", "10"]},
+                {"runs": ["2024-10-14 12:32:59.123456", "2024-10-14 22:32:59.580309"]},
                 {
-                    "runs": ["0", "-1", "2024-10-14 22:32:59.580309", "6"]
-                }
+                    "runs": [
+                        "0",
+                        "-1",
+                        "2024-10-14 22:32:59.580309",
+                        "6",
+                        "2024-10-14 12:32:59.123456",
+                        "2024-10-15 11:10:10.580309",
+                    ]
+                },
             ]
         }
     }
@@ -103,14 +118,14 @@ class ApiServer:
         self.server_host = server_host
         self.server_port = server_port
 
-        @self.app.get("/", response_class=HTMLResponse)
+        @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
         async def admin_page():
             """Admin page endpoint function"""
             admin_file = join(dirname(abspath(__file__)), "templates", "admin.html")
             admin_html = open(admin_file, "r").read()
             return admin_html
 
-        @self.app.get("/dashboard", response_class=HTMLResponse)
+        @self.app.get("/dashboard", response_class=HTMLResponse, include_in_schema=False)
         async def dashboard_page():
             """Serve robotdashboard HTML endpoint function"""
             robot_dashboard_html = open("robot_dashboard.html", "r").read()
@@ -127,9 +142,45 @@ class ApiServer:
             return outputs
 
         @self.app.post("/add-outputs")
-        async def add_output_to_database(add_output: AddOutput) -> ResponseMessage:
+        async def add_output_to_database(
+            add_output: Annotated[
+                AddOutput,
+                Body(
+                    openapi_examples={
+                        "output path": {
+                            "summary": "When using an absolute path of an output.xml",
+                            "description": "When using an absolute path of an output.xml",
+                            "value": {
+                                "output_path": "C:\\users\\docs\\output.xml",
+                                "output_tags": "['tag1', 'cool-tag2', 'production_tag']",
+                            },
+                        },
+                        "output xml data": {
+                            "summary": "When using the raw data of the output.xml and sending that directly",
+                            "description": "When using the raw data of the output.xml and sending that directly",
+                            "value": {
+                                "output_data": """<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.2.2 (Python 3.12.9 on win32)" generated="2025-02-19T17:25:58.443716" rpa="false" schemaversion="5">
+<suite id="s1" name="Scripts" source="C:\docs">
+<suite id="s1-s1" name="Google" source="C:\docs\google.robot">
+<test id="s1-s1-t1" name="Test 01" line="6">... etc""",
+                                "output_tags": "[]",
+                            },
+                        },
+                        "output folder path": {
+                            "summary": "When using an absolute folder path that contains output.xml's",
+                            "description": "When using an absolute folder path that contains output.xml's",
+                            "value": {
+                                "output_path": "C:\\users\\docs\\prod-outputs",
+                                "output_tags": "['production-run']",
+                            },
+                        },
+                    },
+                ),
+            ],
+        ) -> ResponseMessage:
             """Add output to database endpoint function
-            The following combinations of parameters are valid (SEE > REQUEST BODY > SCHEMA > EXAMPLES FOR 3 CORRECT EXAMPLES):
+            The following combinations of parameters are valid:
             1. output_path: str valid path to output.xml + output_tags: list[str] tags for that output.xml
             2. output_data: str output.xml content + output_tags: list[str] tags for that output.xml
             3. output_folder_path: str valid path to folder (might have subfolders) that contain output.xml (multiple allowed) + output_tags: list[str] tags for that output.xml
@@ -190,7 +241,42 @@ class ApiServer:
 
         @self.app.post("/remove-outputs")
         async def remove_outputs_from_database(
-            remove_output: RemoveOutputs,
+            remove_output: Annotated[
+                RemoveOutputs,
+                Body(
+                    openapi_examples={
+                        "indexes": {
+                            "summary": "When removing outputs based on indexes",
+                            "description": "when removing outputs based on indexes",
+                            "value": {"runs": ["0", "-1", "5", "10"]},
+                        },
+                        "run_starts": {
+                            "summary": "When removing outputs based on run_starts",
+                            "description": "When removing outputs based on run_starts",
+                            "value": {
+                                "runs": [
+                                    "2024-10-14 12:32:59.123456",
+                                    "2024-10-14 22:32:59.580309",
+                                ]
+                            },
+                        },
+                        "indexes and run_starts": {
+                            "summary": "When removing outputs based on both indexes and run_starts",
+                            "description": "When removing outputs based on both indexes and run_starts",
+                            "value": {
+                                "runs": [
+                                    "0",
+                                    "-1",
+                                    "2024-10-14 22:32:59.580309",
+                                    "6",
+                                    "2024-10-14 12:32:59.123456",
+                                    "2024-10-15 11:10:10.384748",
+                                ]
+                            },
+                        },
+                    },
+                ),
+            ],
         ) -> ResponseMessage:
             """Remove outputs from database endpoint function
             Can be either indexes or run_starts that are known in the database

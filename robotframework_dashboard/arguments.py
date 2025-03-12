@@ -127,7 +127,7 @@ class ArgumentParser:
             "-s",
             "--server",
             help="Provide the server argument like 'robotdashboard --server default' or 'robotdashboard --server yourhost:yourport' \
-                to start a server. Additional documentation in... ",
+                to start a server. See http://github.com/timdegroot1996/robotframework-dashboard?tab=readme-ov-file#Dashboard-Server for additional information! ",
             default=None,
         )
         return parser.parse_args()
