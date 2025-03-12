@@ -31,11 +31,29 @@
         .card {
             margin-bottom: 10px;
         }
+
+        .alert-container {
+            z-index: 999;
+            top: 100px;
+        }
+
+        .alert-container .close {
+            position: absolute;
+            top: 3px;
+            right: 6px;
+            width: 10px;
+            padding: .75rem 1.25rem;
+            color: inherit;
+            padding-left: 16px;
+        }
     </style>
 </head>
 
 <body>
     <div class="container-fluid mt-4">
+        <div class="position-relative alert-container">
+            <div class="position-absolute top-50 start-50 translate-middle" id="alertContainer"></div>
+        </div>
         <div class="card">
             <div class="card-body">
                 <div class="row">
@@ -45,7 +63,7 @@
                     <div class="col-auto align-self-center">
                         <a href="/docs">
                             <button class="btn btn-outline-primary btn-sm mt-auto" id="openServerDocs">Open
-                                Server Docs</button>
+                                API Docs</button>
                         </a>
                     </div>
                     <div class="col-auto align-self-center">
@@ -59,26 +77,231 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <h2>Add output.xml To Database</h2>
+                <div class="row">
+                    <h2>Add output.xml To Database</h2>
+                </div>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">output.xml:</p>
+                    </div>
+                    <div class="col-5">
+                        <label class="form-label form-label-sm" for="outputPath">Absolute Path (C:/users/your_user/output.xml)</label>
+                        <input class="form-control form-control-sm" id="outputPath"></input>
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label form-label-sm" for="outputTags">Tags (separate with :)</label>
+                        <input class="form-control form-control-sm" id="outputTags"></input>
+                    </div>
+                    <div class="col-2 d-flex">
+                        <button class="btn btn-outline-primary btn-sm mt-auto" id="addOutputPath">Add&nbsp;
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="addPathSpinner" hidden></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">output.xml:</p>
+                    </div>
+                    <div class="col-5">
+                        <label class="form-label form-label-sm" for="outputData">XML Data (copy paste the output.xml
+                            here)</label>
+                        <input class="form-control form-control-sm" id="outputData"></input>
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label form-label-sm" for="outputDataTags">Tags (separate with :)</label>
+                        <input class="form-control form-control-sm" id="outputDataTags"></input>
+                    </div>
+                    <div class="col-2 d-flex">
+                        <button class="btn btn-outline-primary btn-sm mt-auto" id="addOutputData">Add&nbsp;
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="addDataSpinner" hidden></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">output folder:</p>
+                    </div>
+                    <div class="col-5">
+                        <label class="form-label form-label-sm" for="outputFolderPath">Absolute Path (C:/some_folder/your_output_folder)</label>
+                        <input class="form-control form-control-sm" id="outputFolderPath"></input>
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label form-label-sm" for="outputFolderTags">Tags (separate with :)</label>
+                        <input class="form-control form-control-sm" id="outputFolderTags"></input>
+                    </div>
+                    <div class="col-2 d-flex">
+                        <button class="btn btn-outline-primary btn-sm mt-auto" id="addOutputFolderPath">Add&nbsp;
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="addFolderSpinner" hidden></span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
-                <h2>Remove output.xml From Database</h2>
+                <div class="row">
+                    <h2>Remove output.xml(s) From Database</h2>
+                </div>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">outputs to remove:</p>
+                    </div>
+                    <div class="col-8">
+                        <label class="form-label form-label-sm" for="runsToRemove">Run Index or Run Start (separate with
+                            ,)</label>
+                        <input class="form-control form-control-sm" id="runsToRemove"></input>
+                    </div>
+                    <div class="col-2 d-flex">
+                        <button class="btn btn-outline-primary btn-sm mt-auto" id="removeOutputs">Remove&nbsp;
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="removeSpinner" hidden></span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
-                <h2>Runs In The Database</h2>
-                <p>Use 'Run ID' or 'Run Start' to remove runs from the database.</p>
+                <div class="row">
+                    <h2>Runs In The Database</h2>
+                    <p>Use 'Run ID' or 'Run Start' to remove runs from the database.</p>
+                </div>
                 <div class="row">
                     <div class="col">
-                        <table id="runsTable"></table>
+                        <table class="table table-striped table-dark table-bordered" id="runTable"></table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        // initialize the list when loading the page
+        get_outputs()
+
+        // add eventlisteners to all buttons
+        document.getElementById('addOutputPath').addEventListener('click', add_output_path)
+        document.getElementById('addOutputData').addEventListener('click', add_output_data)
+        document.getElementById('addOutputFolderPath').addEventListener('click', add_output_folder_path)
+        document.getElementById('removeOutputs').addEventListener('click', remove_outputs)
+
+        function add_output_path() {
+            document.getElementById('addPathSpinner').hidden = false
+            const outputPath = document.getElementById('outputPath').value
+            const outputTags = document.getElementById('outputTags').value.split(':')
+            document.getElementById('outputPath').value = ''
+            document.getElementById('outputTags').value = ''
+
+            const body = JSON.stringify({
+                output_path: outputPath,
+                output_tags: outputTags,
+            });
+            send_request("/add-output", body, 'addPathSpinner')
+        }
+
+        function add_output_data() {
+            document.getElementById('addDataSpinner').hidden = false
+            const outputData = document.getElementById('outputData').value
+            const outputDataTags = document.getElementById('outputDataTags').value.split(':')
+            document.getElementById('outputData').value = ''
+            document.getElementById('outputDataTags').value = ''
+
+            const body = JSON.stringify({
+                output_data: outputData,
+                output_tags: outputDataTags,
+            });
+            send_request("/add-output", body, 'addDataSpinner')
+        }
+
+        function add_output_folder_path() {
+            document.getElementById('addFolderSpinner').hidden = false
+            const outputFolderPath = document.getElementById('outputFolderPath').value
+            const outputFolderTags = document.getElementById('outputFolderTags').value.split(':')
+            document.getElementById('outputFolderPath').value = ''
+            document.getElementById('outputFolderTags').value = ''
+
+            const body = JSON.stringify({
+                output_folder_path: outputFolderPath,
+                output_tags: outputFolderTags,
+            });
+            send_request("/add-output", body, 'addFolderSpinner')
+        }
+
+        function remove_outputs() {
+            document.getElementById('removeSpinner').hidden = false
+            const runsToRemove = document.getElementById('runsToRemove').value.split(',')
+            document.getElementById('runsToRemove').value = ''
+            const body = JSON.stringify({ runs: runsToRemove })
+            send_request("/remove-outputs", body, 'removeSpinner')
+        }
+
+        function get_outputs() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "/get-outputs");
+            xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+            xhr.onload = () => {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    const runs = JSON.parse(xhr.responseText)
+                    let table = '<tr><th>Run Index</th><th>Run Start</th><th>Run Name</th></tr>'
+                    for (const [index, run] of runs.entries()) {
+                        table += `<tr><td>${index}</td><td>${run.run}</td><td>${run.name}</td></tr>`
+                    }
+                    document.getElementById('runTable').innerHTML = table
+                } else {
+                    add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, 'danger')
+                }
+            };
+            xhr.send();
+        }
+
+        function send_request(endpoint, body, spinner) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", endpoint);
+            xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+            xhr.onload = () => {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById(spinner).hidden = true
+                    response = JSON.parse(xhr.responseText);
+                    if (response.success == '1') {
+                        console.log(response.console)
+                        if (response.console.includes('ERROR')) {
+                            add_alert('SUCCESS: The processing was handled but some errors occurred, see the browser console for more details!', 'warning')
+                        } else {
+                            add_alert(response.message, 'success')
+                        }
+                    } else {
+                        add_alert(response.message, 'danger')
+                        console.log(response.console)
+                    }
+                    get_outputs()
+                } else {
+                    document.getElementById(spinner).hidden = true
+                    add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, 'danger')
+                }
+            };
+            xhr.send(body);
+        }
+
+        function add_alert(message, category) {
+            const alertHTML = `<div class="row alert alert-${category} alert-dismissible" role="alert" style="padding-right:46px;">
+                ${message}
+                <span onclick="close_alert()" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </span>
+            </div>`
+            document.getElementById('alertContainer').innerHTML = alertHTML
+
+        }
+
+        function close_alert() {
+            document.getElementById('alertContainer').innerHTML = ''
+        }
+
+    </script>
+
 </body>
 
 </html>

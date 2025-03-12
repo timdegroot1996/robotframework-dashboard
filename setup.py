@@ -234,7 +234,8 @@ Note: This project is not officially affiliated with or endorsed by robotframewo
     zip_safe=False,
     install_requires=[
         "robotframework>=6.0",
-        "fastapi>=0.115.11"
+        "fastapi>=0.115.11",
+        "uvicorn>=0.34.0",
     ],
     entry_points={
         "console_scripts": [

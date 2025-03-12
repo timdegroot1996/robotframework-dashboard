@@ -116,19 +116,24 @@ class DatabaseProcessor:
     def remove_runs(self, remove_runs):
         """This function removes all provided runs and all their corresponding data"""
         run_starts, run_names = self._get_runs()
+        console = ''
         for run in remove_runs:
             run = run[0]
             if run in run_starts:
                 self._remove_run(run)
                 print(f"  Removed run from the database: {run}")
+                console += f"  Removed run from the database: {run}\n"
             else:
                 try:
                     run_index = int(run)
                     run_start = run_starts[run_index]
                     self._remove_run(run_start)
                     print(f"  Removed run from the database: {run_start}")
+                    console += f"  Removed run from the database: {run_start}\n"
                 except:
                     print(f"  ERROR: Could not find run to remove the database: {run}")
+                    console += f"  ERROR: Could not find run to remove the database: {run}\n"
+        return console
 
     def _remove_run(self, run_start):
         """Helper function to remove the data from all tables"""
