@@ -126,7 +126,7 @@ class ApiServer:
                 outputs.append({"run": run, "name": name})
             return outputs
 
-        @self.app.post("/add-output")
+        @self.app.post("/add-outputs")
         async def add_output_to_database(add_output: AddOutput) -> ResponseMessage:
             """Add output to database endpoint function
             The following combinations of parameters are valid (SEE > REQUEST BODY > SCHEMA > EXAMPLES FOR 3 CORRECT EXAMPLES):

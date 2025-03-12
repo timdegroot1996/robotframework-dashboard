@@ -199,7 +199,7 @@
                 output_path: outputPath,
                 output_tags: outputTags,
             });
-            send_request("/add-output", body, 'addPathSpinner')
+            send_request("/add-outputs", body, 'addPathSpinner')
         }
 
         function add_output_data() {
@@ -213,7 +213,7 @@
                 output_data: outputData,
                 output_tags: outputDataTags,
             });
-            send_request("/add-output", body, 'addDataSpinner')
+            send_request("/add-outputs", body, 'addDataSpinner')
         }
 
         function add_output_folder_path() {
@@ -227,7 +227,7 @@
                 output_folder_path: outputFolderPath,
                 output_tags: outputFolderTags,
             });
-            send_request("/add-output", body, 'addFolderSpinner')
+            send_request("/add-outputs", body, 'addFolderSpinner')
         }
 
         function remove_outputs() {
