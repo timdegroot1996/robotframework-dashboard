@@ -35,19 +35,15 @@ class ResponseMessage(BaseModel):
 class GetOutput(BaseModel):
     """The response model that is returned when getting outputs"""
 
-    run: str
+    run_start: str
     name: str
     model_config = {
         "json_schema_extra": {
             "examples": [
                 {
-                    "run": "2024-10-14 22:32:59.580309",
+                    "run_start": "2024-10-14 22:32:59.580309",
                     "name": "RobotFramework-Dashboard",
-                },
-                {
-                    "run": "2024-10-15 12:00:45.347634",
-                    "name": "RobotFramework-Dashboard",
-                },
+                }
             ]
         }
     }
@@ -138,7 +134,7 @@ class ApiServer:
             runs, names = self.robotdashboard.get_runs()
             outputs = []
             for run, name in zip(runs, names):
-                outputs.append({"run": run, "name": name})
+                outputs.append({"run_start": run, "name": name})
             return outputs
 
         @self.app.post("/add-outputs")

@@ -247,7 +247,7 @@
                     const runs = JSON.parse(xhr.responseText)
                     let table = '<tr><th>Run Index</th><th>Run Start</th><th>Run Name</th></tr>'
                     for (const [index, run] of runs.entries()) {
-                        table += `<tr><td>${index}</td><td>${run.run}</td><td>${run.name}</td></tr>`
+                        table += `<tr><td>${index}</td><td>${run.run_start}</td><td>${run.name}</td></tr>`
                     }
                     document.getElementById('runTable').innerHTML = table
                 } else {

@@ -15,6 +15,7 @@ setup(
 - Usage
 - Examples
 - Custom Database Class
+- Dashboard Server
 - Contributing
 - License
 
@@ -139,6 +140,10 @@ robotdashboard -e False
 robotdashboard -c ./path/to/custom_class.py
 robotdashboard --databaseclass mysql.py
 ```
+- Start the robotdashboard server, see also the Dashboard Server section for examples and more details of the requirements.
+```
+robotdashboard -s default
+```
 
 ## Examples
 Here are some examples of generated files/output:
@@ -209,6 +214,25 @@ If you have made an implementation that is not yet an example please feel free t
     - **list_runs(self):**, should print out the runs in the database with useful identiefiers. This function can be empty as long as it exists. It is purely for the command line overview.
     - **remove_runs(self, remove_runs):**, should be able to handle either indexes to be removed, or run_starts that are provided which can then be used to delete the data in the database.
 - Do not use relative imports! This will not work on runtime!
+
+## Dashboard Server
+To be able to run robotdashboard on a separate machine it comes with some builtin server capabilities. If you set this up on an external machine it will then be possible to host the dashboard and add/remove outputs from other machines.
+
+### Usage
+Start the server with the desired options (all command line options can be used, only dashboard name and title will be overwritten by some defaults)
+```
+robotdashboard --server default
+robotdashboard -s 127.0.0.1:1234   # this is the default, which can be changed
+```
+After starting the server you can open http://127.0.0.1:1234/ to view the admin page and check out the API Docs and the Dashboard.
+
+### Features
+- Facilitate an admin page to view/add/remove outputs in the database manually (/)
+- Host the dashboard on an endpoint and refresh on every add/remove action (/dashboard)
+- Facilitate an endpoint to get the outputs in the database (/get-outputs)
+- Facilitate an endpoint to add outputs to the database (/add-outputs)
+- Facilitate an endpoint to remove outputs from the database (/remove-outputs)
+- The endpoint get/add/remove can be programmatically called if required, the documentation of the endpoints can be found on /docs
 
 ## Contributing
 Contributions are welcome! If you encounter any issues, have suggestions for improvements, or would like to add new features, feel free to open an issue or submit a pull request.
