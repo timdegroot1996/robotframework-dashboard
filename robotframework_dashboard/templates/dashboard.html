@@ -381,6 +381,29 @@
                 </div>
                 <div class="row">
                     <div class="col-auto mt-1">
+                        <div class="btn btn-sm btn-secondary" id="testMostFlakyButton" data-bs-toggle="collapse"
+                            data-bs-target="#testMostFlakyCollapse" aria-expanded="true"
+                            aria-controls="testMostFlakyCollapse"></div>
+                    </div>
+                    <div class="col">
+                        <h4>Most Flaky</h4>
+                    </div>
+                </div>
+                <div class="row collapse show" id="testMostFlakyCollapse">
+                    <div class="col canvas mb-5" id="testMostFlakyCanvas">
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="testMostFlakyGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                            id="testMostFlakyGraphTimeline">Timeline View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                            id="testMostFlakyFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose"
+                            hidden>Close</button>
+                        <canvas id="testMostFlakyGraph"></canvas>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="testMostFailedMessagesButton"
                             data-bs-toggle="collapse" data-bs-target="#testMostFailedMessagesCollapse"
                             aria-expanded="true" aria-controls="testMostFailedMessagesCollapse"></div>
@@ -635,6 +658,8 @@
         var testStatusGraph;
         var testDurationGraph;
         var testDurationGraphType = "bar";
+        var testMostFlakyGraph;
+        var testMostFlakyGraphType = "bar"
         var testMostFailedGraph;
         var testMostFailedGraphType = "bar";
         var testMessagesGraph
@@ -674,6 +699,7 @@
             "suiteTableButton",
             "testDetailsButton",
             "testStatusDurationButton",
+            "testMostFlakyButton",
             "testMostFailedMessagesButton",
             "testTableButton",
             "keywordDetailsButton",
@@ -715,10 +741,11 @@
         }
 
         // eventlisteners for fullscreen buttons
-        const fullscreenButtons = ["runStatistics", "runDuration",
-            "suiteStatistics", "suiteDuration", "suiteMostFailed",
-            "testStatus", "testDuration", "testMostFailed", "testMessages",
-            "keywordStatistics", "keywordTimesRun", "keywordTotalDuration", "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration"]
+        const fullscreenButtons = ["runStatistics", "runDuration", "suiteStatistics",
+            "suiteDuration", "suiteMostFailed", "testStatus", "testDuration",
+            "testMostFlaky", "testMostFailed", "testMessages",
+            "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
+            "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration"]
         for (let fullscreenButton of fullscreenButtons) {
             document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", (e) => {
                 document.getElementById(`${fullscreenButton}Canvas`).classList.add("fullscreen");
@@ -742,6 +769,7 @@
             'suite_duration': 'Bar,Line',
             'suite_most_failed': 'Bar,Timeline',
             'test_duration': 'Bar,Line',
+            'test_most_flaky': 'Bar,Timeline',
             'test_most_failed': 'Bar,Timeline',
             'test_messages': 'Bar,Timeline',
             'keyword_statistics': 'Percentages,Line,Amount',
@@ -895,6 +923,7 @@
             create_suite_table();
             create_test_status_graph();
             create_test_duration_graph();
+            create_test_most_flaky_graph();
             create_test_most_failed_graph();
             create_test_messages_graph();
             create_test_table();
@@ -1050,7 +1079,6 @@
             }
             document.getElementById("suiteSelectTests").selectedIndex = 1
             document.getElementById("suiteSelectSuites").selectedIndex = 1
-            // console.log(document.getElementById("suiteSelectTests").options)
         }
 
         // function to update the available tests to select in the filters
@@ -1418,6 +1446,43 @@
             } else if (testDurationGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Test Duration (Line)", "Date", "Duration");
                 testDurationGraph = new Chart("testDurationGraph", config);
+            }
+        }
+
+        // function to create test most flaky graph in test section
+        function create_test_most_flaky_graph(type) {
+            if (typeof type === "string") {
+                testMostFlakyGraphType = type;
+            }
+            if (testMostFlakyGraph) {
+                testMostFlakyGraph.destroy();
+            }
+            var graphData = get_most_flaky_data("test", testMostFlakyGraphType, filteredTests);
+            var callbackData = graphData[0];
+            graphData = graphData[1];
+            if (testMostFlakyGraphType == "bar") {
+                var config = get_graph_config("bar", graphData, "Top 10 Most Flaky Tests", "Test Name", "Times Failed");
+                testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
+            } else if (testMostFlakyGraphType == "timeline") {
+                var config = get_graph_config("timeline", graphData, "Top 10 Most Flaky Tests");
+                // overwrite tooltip and x scale with callbacks
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (context) {
+                            return callbackData[context.raw.x[0]];
+                        },
+                    },
+                };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 45,
+                        maxRotation: 45,
+                        callback: function (value, index, ticks) {
+                            return callbackData[this.getLabelForValue(value)];
+                        },
+                    },
+                };
+                testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
             }
         }
 
@@ -2036,6 +2101,120 @@
                     datasets.push({ label: key, fill: false, data: value });
                 }
                 return datasets;
+            }
+        }
+
+        function get_most_flaky_data(dataType, graphType, filteredData) {
+            var data = {};
+            for (value of filteredData) {
+                if (data[value.name]) {
+                    data[value.name]['run_starts'].push(value.run_start)
+                    var current_status
+                    if (value.passed == 1) { current_status = 'passed' }
+                    if (value.failed == 1) { current_status = 'failed' }
+                    if (value.skipped == 1) { current_status = 'skipped' }
+                    if (current_status != data[value.name]['previous_status']) {
+                        data[value.name]['flips'] += 1
+                        data[value.name]['previous_status'] = current_status
+                    }
+                } else {
+                    var previous_status
+                    if (value.passed == 1) { previous_status = 'passed' }
+                    if (value.failed == 1) { previous_status = 'failed' }
+                    if (value.skipped == 1) { previous_status = 'skipped' }
+                    data[value.name] = {
+                        'run_starts': [value.run_start],
+                        'flips': 0,
+                        'previous_status': previous_status,
+                    }
+                }
+            }
+            let sortedData = [];
+            for (var test in data) {
+                if (data[test].flips > 0) {
+                    sortedData.push([test, data[test]]);
+                }
+            }
+            sortedData.sort(function (a, b) {
+                return b[1].flips - a[1].flips;
+            });
+            if (graphType == "bar") {
+                var [datasets, labels, count] = [[], [], 0];
+                for (key in sortedData) {
+                    if (count > 9) {
+                        break;
+                    }
+                    labels.push(sortedData[key][0]);
+                    datasets.push(sortedData[key][1].flips);
+                    count += 1;
+                }
+                var graphData = {
+                    labels: labels,
+                    datasets: [{ data: datasets, backgroundColor: failedBackgroundColor }],
+                };
+                return [data, graphData];
+            } else if (graphType == "timeline") {
+                var labels = [];
+                var runStarts = [];
+                var count = 0;
+                for (key in sortedData) {
+                    if (count > 9) {
+                        break;
+                    }
+                    labels.push(sortedData[key][0]);
+                    for (runStart of sortedData[key][1].run_starts) {
+                        if (!runStarts.includes(runStart)) {
+                            runStarts.push(runStart);
+                        }
+                    }
+                    count += 1;
+                }
+                var datasets = [];
+                var runAxis = 0;
+                runStarts = runStarts.sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+                for (runStart of runStarts) {
+                    for (label of labels) {
+                        var foundValues = [];
+                        for (value of filteredData) {
+                            if (value.name == label && value.run_start == runStart) {
+                                foundValues.push(value);
+                            }
+                        }
+                        if (foundValues.length > 0) {
+                            var value = foundValues[0];
+                            if (value.passed == 1) {
+                                datasets.push({
+                                    label: label,
+                                    data: [{ x: [runAxis, runAxis + 1], y: label }],
+                                    backgroundColor: [passedBackgroundColor],
+                                    borderWidth: 1,
+                                });
+                            }
+                            else if (value.failed == 1) {
+                                datasets.push({
+                                    label: label,
+                                    data: [{ x: [runAxis, runAxis + 1], y: label }],
+                                    backgroundColor: [failedBackgroundColor],
+                                    borderWidth: 1,
+                                });
+                            }
+                            else if (value.skipped == 1) {
+                                datasets.push({
+                                    label: label,
+                                    data: [{ x: [runAxis, runAxis + 1], y: label }],
+                                    backgroundColor: [skippedBackgroundColor],
+                                    borderWidth: 1,
+                                });
+                            }
+                        }
+                    }
+                    runAxis += 1;
+                }
+                var graphData = {
+                    labels: labels,
+                    datasets: datasets,
+                };
+                return [runStarts, graphData];
             }
         }
 
