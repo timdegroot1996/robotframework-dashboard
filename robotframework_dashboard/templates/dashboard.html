@@ -391,9 +391,9 @@
                 </div>
                 <div class="row collapse show" id="testMostFlakyCollapse">
                     <div class="col canvas mb-5" id="testMostFlakyCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="testMostFlakyGraphBar">Bar
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="testMostFlakyGraphTimeline">Timeline View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="testMostFlakyFullscreen">Fullscreen</button>
@@ -414,9 +414,9 @@
                 </div>
                 <div class="row collapse show" id="testMostFailedMessagesCollapse">
                     <div class="col canvas mb-5" id="testMostFailedCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="testMostFailedGraphBar">Bar View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                            id="testMostFailedGraphBar">Bar View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="testMostFailedGraphTimeline">Timeline View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="testMostFailedFullscreen">Fullscreen</button>
@@ -425,9 +425,9 @@
                         <canvas id="testMostFailedGraph"></canvas>
                     </div>
                     <div class="col canvas mb-5" id="testMessagesCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="testMessagesGraphBar">Bar
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphTimeline">Timeline
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="testMessagesGraphTimeline">Timeline
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="testMessagesFullscreen">Fullscreen</button>
@@ -659,11 +659,11 @@
         var testDurationGraph;
         var testDurationGraphType = "bar";
         var testMostFlakyGraph;
-        var testMostFlakyGraphType = "bar"
+        var testMostFlakyGraphType = "timeline"
         var testMostFailedGraph;
-        var testMostFailedGraphType = "bar";
+        var testMostFailedGraphType = "timeline";
         var testMessagesGraph
-        var testMessagesGraphType = "bar";
+        var testMessagesGraphType = "timeline";
         var testTable;
         var keywordStatisticsGraph;
         var keywordStatisticsGraphType = "percentages";
