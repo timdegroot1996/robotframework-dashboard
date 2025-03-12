@@ -213,7 +213,7 @@ class ArgumentParser:
 
         # handles the server argument
         server_host = "127.0.0.1"
-        server_port = 1234
+        server_port = 8543
         if arguments.server != None:
             start_server = True
             if arguments.server != "default":
