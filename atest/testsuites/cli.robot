@@ -92,7 +92,7 @@ Validate robotdahboard databaseclass
 # might have to implement process library to run in a separate shell and do more tests
 # Validate robotdahboard s
 #     Validate CLI    command=robotdashboard --outputfolderpath ${OUTPUTS_FOLDER} -g f
-#     Validate CLI    command=robotdashboard -s 127.0.0.1:85432    expected=server
+#     Validate CLI    command=robotdashboard -s 127.0.0.1:8543    expected=server
 
 # Validate robotdahboard server
 #     Validate CLI    command=robotdashboard --outputfolderpath ${OUTPUTS_FOLDER} -g f
