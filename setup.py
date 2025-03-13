@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="robotframework-dashboard",
-    version="0.5.0",
+    version="0.6.0",
     description="Output processor and dashboard generator for Robot Framework output files",
     long_description="""# Robot Framework Dashboard
 
@@ -222,9 +222,9 @@ To be able to run robotdashboard on a separate machine it comes with some builti
 Start the server with the desired options (all command line options can be used, only dashboard name and title will be overwritten by some defaults)
 ```
 robotdashboard --server default
-robotdashboard -s 127.0.0.1:76268   # this is the default, which can be changed
+robotdashboard -s 127.0.0.1:85432   # this is the default, which can be changed
 ```
-After starting the server you can open http://127.0.0.1:76268/ to view the admin page and check out the API Docs and the Dashboard.
+After starting the server you can open http://127.0.0.1:85432/ to view the admin page and check out the API Docs and the Dashboard.
 
 ### Features
 - Facilitate an admin page to view/add/remove outputs in the database manually (/)
