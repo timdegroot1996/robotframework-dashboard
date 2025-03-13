@@ -13,7 +13,6 @@ ${OUTPUTS_FOLDER}    ${CURDIR}/../resources/outputs
 
 *** Test Cases ***
 Validate robotdashboard h
-    [Tags]    test
     Validate CLI    command=robotdashboard -h    expected=help
 
 Validate robotdashboard help
@@ -26,10 +25,10 @@ Validate robotdashboard version
     Validate CLI    command=robotdashboard --version    expected=version
 
 Validate robotdashboard o
-    Validate CLI    command=robotdashboard -o ${OUTPUTS_FOLDER}/output-20241013-223319.xml:tag1   expected=outputpath
+    Validate CLI    command=robotdashboard -o ${OUTPUTS_FOLDER}/output-20250313-002222.xml:tag1   expected=outputpath
 
 Validate robotdashboard outputpath
-    Validate CLI    command=robotdashboard --outputpath ${OUTPUTS_FOLDER}/output-20241013-223319.xml
+    Validate CLI    command=robotdashboard --outputpath ${OUTPUTS_FOLDER}/output-20250313-002222.xml
     ...       expected=outputpath
 
 Validate robotdashboard f
@@ -40,12 +39,12 @@ Validate robotdashboard outputfolderpath
 
 Validate robotdashboard r
     Validate CLI    command=robotdashboard --outputfolderpath ${OUTPUTS_FOLDER}
-    Validate CLI    command=robotdashboard -r -1 -r 0 -r 1 -r "2024-10-15 00:44:06.053103"    expected=removerun
+    Validate CLI    command=robotdashboard -r -1 -r 0 -r 1 -r "2025-03-13 00:27:39.871333"    expected=removerun
 
 Validate robotdashboard removerun
     Validate CLI    command=robotdashboard --outputfolderpath ${OUTPUTS_FOLDER}
     Validate CLI
-    ...    command=robotdashboard --removerun -1 --removerun 0 --removerun 1 --removerun "2024-10-15 00:44:06.053103"
+    ...    command=robotdashboard --removerun -1 --removerun 0 --removerun 1 --removerun "2025-03-13 00:27:39.871333"
     ...    expected=removerun
 
 Validate robotdashboard d
@@ -89,3 +88,12 @@ Validate robotdahboard c
 
 Validate robotdahboard databaseclass
     Validate CLI    command=robotdashboard --databaseclass ./example/mysql.py    expected=databaseclass
+
+# might have to implement process library to run in a separate shell and do more tests
+# Validate robotdahboard s
+#     Validate CLI    command=robotdashboard --outputfolderpath ${OUTPUTS_FOLDER} -g f
+#     Validate CLI    command=robotdashboard -s 127.0.0.1:76268    expected=server
+
+# Validate robotdahboard server
+#     Validate CLI    command=robotdashboard --outputfolderpath ${OUTPUTS_FOLDER} -g f
+#     Validate CLI    command=robotdashboard --server default    expected=server

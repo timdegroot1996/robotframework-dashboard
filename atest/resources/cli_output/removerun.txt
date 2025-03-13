@@ -13,30 +13,27 @@
   skipping step
 ======================================================================================
  3. Listing all available runs in the database
-  Run 0   | 2024-10-13 22:33:19.671820 | Robotframework-Dashboard
-  Run 1   | 2024-10-13 22:33:32.249660 | Robotframework-Dashboard
-  Run 2   | 2024-10-13 23:17:15.681417 | Robotframework-Dashboard
-  Run 3   | 2024-10-13 23:17:20.329674 | Robotframework-Dashboard
-  Run 4   | 2024-10-14 22:32:13.930430 | Robotframework-Dashboard
-  Run 5   | 2024-10-14 22:32:59.580309 | Robotframework-Dashboard
-  Run 6   | 2024-10-14 22:43:31.913166 | Robotframework-Dashboard
-  Run 7   | 2024-10-14 22:43:41.370993 | Robotframework-Dashboard
-  Run 8   | 2024-10-15 00:44:06.053103 | Robotframework-Dashboard
-  Run 9   | 2024-10-15 01:10:36.101851 | Robotframework-Dashboard
-  Run 10  | 2025-02-01 18:26:52.137174 | Robotframework-Dashboard
-  Run 11  | 2025-02-01 18:28:35.616759 | Robotframework-Dashboard
-  Run 12  | 2025-02-01 18:29:32.733526 | Robotframework-Dashboard
-  Run 13  | 2025-02-01 20:17:10.918738 | Robotframework-Dashboard
-  Run 14  | 2025-02-01 20:17:49.095082 | Robotframework-Dashboard
-  Run 15  | 2025-02-01 20:18:46.679411 | Robotframework-Dashboard
-  Run 16  | 2025-02-01 20:44:04.094016 | Robotframework-Dashboard
-  Run 17  | 2025-02-01 21:44:37.492701 | Scripts
+  Run 0   | 2025-03-13 00:21:34.707148 | Tests
+  Run 1   | 2025-03-13 00:21:51.185366 | Tests
+  Run 2   | 2025-03-13 00:22:22.304104 | Testsuites
+  Run 3   | 2025-03-13 00:22:57.472888 | Tests
+  Run 4   | 2025-03-13 00:23:38.413294 | Other
+  Run 5   | 2025-03-13 00:24:00.827779 | Tests
+  Run 6   | 2025-03-13 00:24:31.912429 | Testsuites
+  Run 7   | 2025-03-13 00:24:57.422440 | Tests
+  Run 8   | 2025-03-13 00:25:28.306253 | Tests
+  Run 9   | 2025-03-13 00:25:49.609465 | Tests
+  Run 10  | 2025-03-13 00:26:36.304669 | Other
+  Run 11  | 2025-03-13 00:27:03.713995 | Testsuites
+  Run 12  | 2025-03-13 00:27:39.871333 | Tests
+  Run 13  | 2025-03-13 00:29:15.926420 | Tests
+  Run 14  | 2025-03-13 00:30:06.726165 | Tests
 ======================================================================================
  4. Removing runs from the database
-  Removed run from the database: 2025-02-01 21:44:37.492701
-  Removed run from the database: 2024-10-13 22:33:19.671820
-  Removed run from the database: 2024-10-13 22:33:32.249660
-  Removed run from the database: 2024-10-15 00:44:06.053103
+  Removed run from the database: 2025-03-13 00:30:06.726165
+  Removed run from the database: 2025-03-13 00:21:34.707148
+  Removed run from the database: 2025-03-13 00:21:51.185366
+  Removed run from the database: 2025-03-13 00:27:39.871333
 ======================================================================================
  5. Creating dashboard HTML
-  created dashboard '*:\*\robot_dashboard_*-*.html' in * seconds
+  created dashboard *

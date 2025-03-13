@@ -10,14 +10,14 @@
   created database: 'robot_results.db'
 ======================================================================================
  2. Processing output XML(s)
-  Processing output XML 'output-20241013-223319.xml'
-  Processed output XML 'output-20241013-223319.xml' in * seconds
+  Processing output XML 'output-20250313-002222.xml'
+  Processed output XML 'output-20250313-002222.xml' in * seconds
 ======================================================================================
  3. Listing all available runs in the database
-  Run 0   | 2024-10-13 22:33:19.671820 | Robotframework-Dashboard
+  Run 0   | 2025-03-13 00:22:22.304104 | Testsuites
 ======================================================================================
  4. Removing runs from the database
   skipping step
 ======================================================================================
  5. Creating dashboard HTML
-  created dashboard '*:\*\robot_dashboard_*-*.html' in * seconds
+  created dashboard *

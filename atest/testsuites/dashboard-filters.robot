@@ -12,8 +12,9 @@ Test Teardown    Run Keywords    Close Dashboard    Remove Database And Dashboar
 
 *** Test Cases ***
 Validate dashboard runs filter
-    Validate Run Filter    option=Robotframework-Dashboard
-    Validate Run Filter    option=Scripts
+    Validate Run Filter    option=Tests
+    Validate Run Filter    option=Testsuites
+    Validate Run Filter    option=Other
     Validate Run Filter    option=All
 
 Validate dashboard run tags filter

@@ -1144,6 +1144,8 @@
             for (keywordName of keywordNames.sort()) {
                 keywordSelect.options[keywordSelect.options.length] = new Option(keywordName, keywordName);
             }
+            // select the last one to be able to test better :P as the default keyword is then sleep
+            document.getElementById("keywordSelect").selectedIndex = keywordNames.length - 1
         }
 
         // function to create run statistics graph in the run section
@@ -1366,7 +1368,7 @@
             var runStarts = [];
             var datasets = [];
             for (test of filteredTests) {
-                if (suiteSelectTests != "All" && !test.full_name.includes(`${suiteSelectTests}.${test.name}`)) {
+                if (suiteSelectTests != "All" && !test.full_name.includes(`.${suiteSelectTests}.${test.name}`)) {
                     continue;
                 }
                 if (showOnlySelectedtestStatus && testSelect != "All" && test.name != testSelect) {
