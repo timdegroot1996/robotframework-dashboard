@@ -1089,7 +1089,7 @@
             testTagsSelect = document.getElementById("testTagsSelect").value;
             var testNames = [];
             for (test of filteredTests) {
-                if (test.full_name.includes(`${suiteSelect}.${test.name}`) && !testNames.includes(test.name)) {
+                if (test.full_name.includes(`.${suiteSelect}.${test.name}`) && !testNames.includes(test.name)) {
                     var tags = test.tags.replace(/\[|\]/g, '').split(',')
                     if (tags.includes(testTagsSelect) || testTagsSelect == "All") {
                         testNames.push(test.name);
@@ -1114,7 +1114,7 @@
             suiteSelect = document.getElementById("suiteSelectTests").value;
             var testTags = [];
             for (test of filteredTests) {
-                if (test.full_name.includes(`${suiteSelect}.${test.name}`) || suiteSelect == 'All') {
+                if (test.full_name.includes(`.${suiteSelect}.${test.name}`) || suiteSelect == 'All') {
                     var tags = test.tags.replace(/\[|\]/g, '').split(',')
                     for (tag of tags) {
                         if (!testTags.includes(tag)) {
@@ -2028,7 +2028,7 @@
                     if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
                         continue;
                     }
-                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`${suiteSelectTests}.${value.name}`)) {
+                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`)) {
                         continue;
                     }
                     if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
@@ -2078,7 +2078,7 @@
                     if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
                         continue;
                     }
-                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`${suiteSelectTests}.${value.name}`)) {
+                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`)) {
                         continue;
                     }
                     if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
