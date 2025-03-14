@@ -12,6 +12,10 @@
     <script
         src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
+    <!-- ChartJs boxplot plugin (for time deviation graph) -->
+    <script type="text/javascript"
+        src="https://unpkg.com/@sgratzl/chartjs-chart-boxplot@3.6.0/build/index.umd.min.js"></script>
+
     <!-- DataTables and Bootstrap imports -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css"
         rel="stylesheet" />
@@ -401,6 +405,16 @@
                             hidden>Close</button>
                         <canvas id="testMostFlakyGraph"></canvas>
                     </div>
+                    <div class="col canvas mb-5" id="testDurationDeviationCanvas">
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                            id="testDurationDeviationGraphBar">Boxplot
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                            id="testDurationDeviationFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationDeviationClose"
+                            hidden>Close</button>
+                        <canvas id="testDurationDeviationGraph"></canvas>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-auto mt-1">
@@ -414,8 +428,8 @@
                 </div>
                 <div class="row collapse show" id="testMostFailedMessagesCollapse">
                     <div class="col canvas mb-5" id="testMostFailedCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="testMostFailedGraphBar">Bar View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedGraphBar">Bar
+                            View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="testMostFailedGraphTimeline">Timeline View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
@@ -427,7 +441,8 @@
                     <div class="col canvas mb-5" id="testMessagesCanvas">
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="testMessagesGraphTimeline">Timeline
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                            id="testMessagesGraphTimeline">Timeline
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="testMessagesFullscreen">Fullscreen</button>
@@ -660,6 +675,8 @@
         var testDurationGraphType = "bar";
         var testMostFlakyGraph;
         var testMostFlakyGraphType = "timeline"
+        var testDurationDeviationGraph;
+        var testDurationDeviationGraphType = "boxplot"
         var testMostFailedGraph;
         var testMostFailedGraphType = "timeline";
         var testMessagesGraph
@@ -743,7 +760,7 @@
         // eventlisteners for fullscreen buttons
         const fullscreenButtons = ["runStatistics", "runDuration", "suiteStatistics",
             "suiteDuration", "suiteMostFailed", "testStatus", "testDuration",
-            "testMostFlaky", "testMostFailed", "testMessages",
+            "testMostFlaky", "testDurationDeviation", "testMostFailed", "testMessages",
             "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
             "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration"]
         for (let fullscreenButton of fullscreenButtons) {
@@ -770,6 +787,7 @@
             'suite_most_failed': 'Bar,Timeline',
             'test_duration': 'Bar,Line',
             'test_most_flaky': 'Bar,Timeline',
+            'test_duration_deviation': 'Boxplot',
             'test_most_failed': 'Bar,Timeline',
             'test_messages': 'Bar,Timeline',
             'keyword_statistics': 'Percentages,Line,Amount',
@@ -924,6 +942,7 @@
             create_test_status_graph();
             create_test_duration_graph();
             create_test_most_flaky_graph();
+            create_test_duration_deviation_graph();
             create_test_most_failed_graph();
             create_test_messages_graph();
             create_test_table();
@@ -1486,6 +1505,67 @@
                 };
                 testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
             }
+        }
+
+        function create_test_duration_deviation_graph(type) {
+            if (typeof type === "string") {
+                testDurationDeviationGraphType = type;
+            }
+            if (testDurationDeviationGraph) {
+                testDurationDeviationGraph.destroy();
+            }
+            console.log('made duration deviation')
+            function randomValues(count, min, max) {
+                const delta = max - min
+                const result = Array.from({ length: count }).map(() => Math.random() * delta + min)
+                console.log(result)
+                return result;
+            }
+            const data = {
+                labels: ['Mon', 'Tue', 'Wed'],
+                datasets: [{
+                    // label: 'Weekly Sales',
+                    // outlierColor: '#999999',
+                    // padding: 0,
+                    itemRadius: 3,
+                    data: [
+                        randomValues(100, 0, 100),
+                        randomValues(100, 0, 20),
+                        randomValues(100, 20, 70),
+                    ],
+                    // backgroundColor: 'rgba(255, 26, 104, 0.2)',
+                    // borderColor: 'rgba(255, 26, 104, 1)',
+                    borderWidth: 1,
+                }]
+            }
+            const config = {
+                type: 'boxplot',
+                data,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            text: 'Test Boxplot',
+                            display: true,
+                        },
+                        tooltip: {
+                            enabled: false,
+                        },
+                        datalabels: {
+                            display: false,
+                        },
+                        legend: {
+                            display: false,
+                        },
+                    }
+                }
+            }
+
+            testDurationDeviationGraph = new Chart("testDurationDeviationGraph", config);
         }
 
         // function to create test most failed graph in the test section
