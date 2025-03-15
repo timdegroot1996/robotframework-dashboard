@@ -40,6 +40,9 @@ Validate dashboard testDuration
     Validate Graph    canvas=testDurationCanvas    graphId=testDurationGraphBar
     Validate Graph    canvas=testDurationCanvas    graphId=testDurationGraphLine    button=${true}
 
+Validate dashboard testDurationDeviation
+    Validate Graph    canvas=testDurationDeviationCanvas    graphId=testDurationDeviation
+
 Validate dashboard testMostFlaky
     Validate Graph    canvas=testMostFlakyCanvas    graphId=testMostFlakyGraphTimeline
     Validate Graph    canvas=testMostFlakyCanvas    graphId=testMostFlakyGraphBar    button=${true}
