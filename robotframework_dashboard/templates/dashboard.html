@@ -385,12 +385,34 @@
                 </div>
                 <div class="row">
                     <div class="col-auto mt-1">
+                        <div class="btn btn-sm btn-secondary" id="testDurationDeviationButton" data-bs-toggle="collapse"
+                            data-bs-target="#testDurationDeviationCollapse" aria-expanded="true"
+                            aria-controls="testDurationDeviationCollapse"></div>
+                    </div>
+                    <div class="col">
+                        <h4>Duation Deviation</h4>
+                    </div>
+                </div>
+                <div class="row collapse show" id="testDurationDeviationCollapse">
+                    <div class="col canvas mb-5" id="testDurationDeviationCanvas">
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                            id="testDurationDeviationGraphBar">Boxplot
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                            id="testDurationDeviationFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationDeviationClose"
+                            hidden>Close</button>
+                        <canvas id="testDurationDeviationGraph"></canvas>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="testMostFlakyButton" data-bs-toggle="collapse"
                             data-bs-target="#testMostFlakyCollapse" aria-expanded="true"
                             aria-controls="testMostFlakyCollapse"></div>
                     </div>
                     <div class="col">
-                        <h4>Most Flaky & Duration Deviation</h4>
+                        <h4>Most Flaky</h4>
                     </div>
                 </div>
                 <div class="row collapse show" id="testMostFlakyCollapse">
@@ -404,16 +426,6 @@
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose"
                             hidden>Close</button>
                         <canvas id="testMostFlakyGraph"></canvas>
-                    </div>
-                    <div class="col canvas mb-5" id="testDurationDeviationCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="testDurationDeviationGraphBar">Boxplot
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="testDurationDeviationFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationDeviationClose"
-                            hidden>Close</button>
-                        <canvas id="testDurationDeviationGraph"></canvas>
                     </div>
                 </div>
                 <div class="row">
@@ -636,10 +648,14 @@
         }
 
         // colors
-        const passedBackgroundColor = "#97bd61";
-        const skippedBackgroundColor = "#fed84f";
-        const failedBackgroundColor = "#ce3e01";
-        const greyBackgroundColor = "#212529";
+        const passedBackgroundBorderColor = "#97bd61";
+        const passedBackgroundColor = "rgba(151, 189, 97, 0.7)";
+        const skippedBackgroundBorderColor = "#fed84f";
+        const skippedBackgroundColor = "rgba(254, 216, 79, 0.7)";
+        const failedBackgroundBorderColor = "#ce3e01";
+        const failedBackgroundColor = "rgba(206, 62, 1, 0.7)";
+        const greyBackgroundBorderColor = "#212529";
+        const greyBackgroundColor = "rgba(33, 37, 41, 0.7)";
 
         // prepare input data
         var runs = "placeholder_runs".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
@@ -716,6 +732,7 @@
             "suiteTableButton",
             "testDetailsButton",
             "testStatusDurationButton",
+            "testDurationDeviationButton",
             "testMostFlakyButton",
             "testMostFailedMessagesButton",
             "testTableButton",
@@ -864,17 +881,20 @@
             add_tests_in_select();
             create_test_status_graph();
             create_test_duration_graph();
+            create_test_duration_deviation_graph();
         });
         document.getElementById("testTagsSelect").addEventListener("change", (e) => {
             add_tests_in_select();
             create_test_status_graph();
             create_test_duration_graph();
+            create_test_duration_deviation_graph();
         });
         document.getElementById("testSelect").addEventListener("change", (e) => {
             if (showOnlySelectedtestStatus) {
                 create_test_status_graph();
             }
             create_test_duration_graph();
+            create_test_duration_deviation_graph();
         });
         document.getElementById("keywordSelect").addEventListener("change", (e) => {
             create_keyword_statistics_graph();
@@ -1407,21 +1427,24 @@
                     datasets.push({
                         label: test.name,
                         data: [{ x: [runAxis, runAxis + 1], y: test.name }],
-                        backgroundColor: [passedBackgroundColor],
+                        backgroundColor: passedBackgroundColor,
+                        borderColor: passedBackgroundBorderColor,
                         borderWidth: 1,
                     });
                 } else if (test.failed == 1) {
                     datasets.push({
                         label: test.name,
                         data: [{ x: [runAxis, runAxis + 1], y: test.name }],
-                        backgroundColor: [failedBackgroundColor],
+                        backgroundColor: failedBackgroundColor,
+                        borderColor: failedBackgroundBorderColor,
                         borderWidth: 1,
                     });
                 } else if (test.skipped == 1) {
                     datasets.push({
                         label: test.name,
                         data: [{ x: [runAxis, runAxis + 1], y: test.name }],
-                        backgroundColor: [skippedBackgroundColor],
+                        backgroundColor: skippedBackgroundColor,
+                        borderColor: skippedBackgroundBorderColor,
                         borderWidth: 1,
                     });
                 }
@@ -1514,57 +1537,9 @@
             if (testDurationDeviationGraph) {
                 testDurationDeviationGraph.destroy();
             }
-            console.log('made duration deviation')
-            function randomValues(count, min, max) {
-                const delta = max - min
-                const result = Array.from({ length: count }).map(() => Math.random() * delta + min)
-                console.log(result)
-                return result;
-            }
-            const data = {
-                labels: ['Mon', 'Tue', 'Wed'],
-                datasets: [{
-                    // label: 'Weekly Sales',
-                    // outlierColor: '#999999',
-                    // padding: 0,
-                    itemRadius: 3,
-                    data: [
-                        randomValues(100, 0, 100),
-                        randomValues(100, 0, 20),
-                        randomValues(100, 20, 70),
-                    ],
-                    // backgroundColor: 'rgba(255, 26, 104, 0.2)',
-                    // borderColor: 'rgba(255, 26, 104, 1)',
-                    borderWidth: 1,
-                }]
-            }
-            const config = {
-                type: 'boxplot',
-                data,
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    },
-                    plugins: {
-                        title: {
-                            text: 'Test Boxplot',
-                            display: true,
-                        },
-                        tooltip: {
-                            enabled: false,
-                        },
-                        datalabels: {
-                            display: false,
-                        },
-                        legend: {
-                            display: false,
-                        },
-                    }
-                }
-            }
 
+            var graphData = get_duration_deviation_data("test", testDurationDeviationGraphType, filteredTests)
+            var config = get_graph_config("boxplot", graphData, "Duration Deviation", "Test Name", "Duration");
             testDurationDeviationGraph = new Chart("testDurationDeviationGraph", config);
         }
 
@@ -1995,6 +1970,52 @@
                         },
                     },
                 };
+            } else if (graphType == "boxplot") {
+                return {
+                    type: 'boxplot',
+                    data: graphData,
+                    options: {
+                        normalized: true,
+                        animation: false,
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: yTitle,
+                                },
+                                grace: "5%",
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: xTitle,
+                                },
+                                ticks: {
+                                    minRotation: 45,
+                                    maxRotation: 45,
+                                },
+                            },
+                        },
+                        plugins: {
+                            title: {
+                                text: graphTitle,
+                                display: true,
+                            },
+                            tooltip: {
+                                enabled: false,
+                            },
+                            datalabels: {
+                                display: false,
+                            },
+                            legend: {
+                                display: false,
+                            },
+                        }
+                    }
+                }
             }
         }
 
@@ -2044,18 +2065,24 @@
                             label: "Failed",
                             data: failed,
                             backgroundColor: failedBackgroundColor,
+                            borderColor: failedBackgroundBorderColor,
+                            borderWidth: 1,
                             stack: "Stack 0",
                         },
                         {
                             label: "Skipped",
                             data: skipped,
                             backgroundColor: skippedBackgroundColor,
+                            borderColor: skippedBackgroundBorderColor,
+                            borderWidth: 1,
                             stack: "Stack 0",
                         },
                         {
                             label: "Passed",
                             data: passed,
                             backgroundColor: passedBackgroundColor,
+                            borderColor: passedBackgroundBorderColor,
+                            borderWidth: 1,
                             stack: "Stack 0",
                         },
                     ],
@@ -2068,19 +2095,22 @@
                             label: "Failed",
                             data: failed,
                             backgroundColor: failedBackgroundColor,
-                            borderColor: failedBackgroundColor,
+                            borderColor: failedBackgroundBorderColor,
+                            borderWidth: 1,
                         },
                         {
                             label: "Skipped",
                             data: skipped,
                             backgroundColor: skippedBackgroundColor,
-                            borderColor: skippedBackgroundColor,
+                            borderColor: skippedBackgroundBorderColor,
+                            borderWidth: 1,
                         },
                         {
                             label: "Passed",
                             data: passed,
                             backgroundColor: passedBackgroundColor,
-                            borderColor: passedBackgroundColor,
+                            borderColor: passedBackgroundBorderColor,
+                            borderWidth: 1,
                         },
                     ],
                 };
@@ -2186,6 +2216,49 @@
             }
         }
 
+        // function to prepare the data in the correct format for the duration deviation graph
+        function get_duration_deviation_data(dataType, graphType, filteredData) {
+            // used for test selection filter
+            var suiteSelectTests = document.getElementById("suiteSelectTests").value;
+            var testSelect = document.getElementById("testSelect").value;
+            var testTagsSelect = document.getElementById("testTagsSelect").value;
+
+            var data = {}
+            if (graphType == 'boxplot') {
+                for (value of filteredData) {
+                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`)) {
+                        continue;
+                    }
+                    if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
+                        continue;
+                    }
+                    if (dataType == "test" && testTagsSelect != "All" && !value.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
+                        continue
+                    }
+                    if (data[value.name]) {
+                        data[value.name].push(value.elapsed_s)
+                    } else {
+                        data[value.name] = [value.elapsed_s]
+                    }
+                }
+                datasets = []
+                labels = []
+                for (test in data) {
+                    labels.push(test)
+                    datasets.push(data[test])
+                }
+                var graphData = {
+                    labels: labels,
+                    datasets: [{
+                        itemRadius: 3,
+                        data: datasets
+                    }],
+                };
+                return graphData
+            }
+        }
+
+        // function to prepare the data in the correct format for most flaky test graph
         function get_most_flaky_data(dataType, graphType, filteredData) {
             var data = {};
             for (value of filteredData) {
@@ -2232,7 +2305,12 @@
                 }
                 var graphData = {
                     labels: labels,
-                    datasets: [{ data: datasets, backgroundColor: failedBackgroundColor }],
+                    datasets: [{
+                        data: datasets,
+                        backgroundColor: failedBackgroundColor,
+                        borderColor: failedBackgroundBorderColor,
+                        borderWidth: 1,
+                    }],
                 };
                 return [data, graphData];
             } else if (graphType == "timeline") {
@@ -2268,7 +2346,8 @@
                                 datasets.push({
                                     label: label,
                                     data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                    backgroundColor: [passedBackgroundColor],
+                                    backgroundColor: passedBackgroundColor,
+                                    borderColor: passedBackgroundBorderColor,
                                     borderWidth: 1,
                                 });
                             }
@@ -2276,7 +2355,8 @@
                                 datasets.push({
                                     label: label,
                                     data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                    backgroundColor: [failedBackgroundColor],
+                                    backgroundColor: failedBackgroundColor,
+                                    borderColor: failedBackgroundBorderColor,
                                     borderWidth: 1,
                                 });
                             }
@@ -2284,7 +2364,8 @@
                                 datasets.push({
                                     label: label,
                                     data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                    backgroundColor: [skippedBackgroundColor],
+                                    backgroundColor: skippedBackgroundColor,
+                                    borderColor: skippedBackgroundBorderColor,
                                     borderWidth: 1,
                                 });
                             }
@@ -2327,7 +2408,12 @@
                 }
                 var graphData = {
                     labels: labels,
-                    datasets: [{ data: datasets, backgroundColor: failedBackgroundColor }],
+                    datasets: [{
+                        data: datasets,
+                        backgroundColor: failedBackgroundColor,
+                        borderColor: failedBackgroundBorderColor,
+                        borderWidth: 1,
+                    }],
                 };
                 return [data, graphData];
             } else if (graphType == "timeline") {
@@ -2362,7 +2448,8 @@
                             datasets.push({
                                 label: label,
                                 data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                backgroundColor: [failedBackgroundColor],
+                                backgroundColor: failedBackgroundColor,
+                                borderColor: failedBackgroundBorderColor,
                                 borderWidth: 1,
                             });
                         }
@@ -2404,7 +2491,12 @@
                 }
                 var graphData = {
                     labels: labels,
-                    datasets: [{ data: datasets, backgroundColor: failedBackgroundColor }],
+                    datasets: [{
+                        data: datasets,
+                        backgroundColor: failedBackgroundColor,
+                        borderColor: failedBackgroundBorderColor,
+                        borderWidth: 1,
+                    }],
                 };
                 return [data, graphData];
             } else if (graphType == "timeline") {
@@ -2439,17 +2531,20 @@
                             datasets.push({
                                 label: label,
                                 data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                backgroundColor: [failedBackgroundColor],
-                                borderWidth: 1,
-                            });
-                        } else {
-                            datasets.push({
-                                label: label,
-                                data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                backgroundColor: [greyBackgroundColor],
+                                backgroundColor: failedBackgroundColor,
+                                borderColor: failedBackgroundBorderColor,
                                 borderWidth: 1,
                             });
                         }
+                        // else {
+                        //     datasets.push({
+                        //         label: label,
+                        //         data: [{ x: [runAxis, runAxis + 1], y: label }],
+                        //         backgroundColor: greyBackgroundColor,
+                        //         borderColor: greyBackgroundBorderColor,
+                        //         borderWidth: 1,
+                        //     });
+                        // }
                     }
                     runAxis += 1;
                 }
