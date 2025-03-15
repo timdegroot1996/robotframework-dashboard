@@ -54,15 +54,17 @@ Currently available features:
   - Duration: total elapsed time
   - Overview: table overview of runs
 - Suites
-- - Filter: suite
+  - Filter: suite
   - Statistics: pass, fail, skip
   - Duration: total elapsed time
   - Most failed: top 10 failing suites
   - Overview: table overview of suites
 - Tests
-  - Filter: suite, test
+  - Filter: suite, test, test tags
   - Statistics: pass, fail, skip
   - Duration: total elapsed time
+  - Duration Deviation: boxplot of elapsed time to find outliers
+  - Most Flaky: top 10 flaky tests
   - Most failed: top 10 failing tests
   - Fail messages: top 10 fail messages
   - Overview: table overview of tests
