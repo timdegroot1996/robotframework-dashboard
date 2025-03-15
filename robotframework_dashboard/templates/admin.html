@@ -85,11 +85,11 @@
                         <p class="mt-auto">output.xml:</p>
                     </div>
                     <div class="col-5">
-                        <label class="form-label form-label-sm" for="outputPath">Absolute Path (C:/users/your_user/output.xml)</label>
+                        <label class="form-label form-label-sm" for="outputPath">Absolute Path (E.g. "C:/users/your_user/output.xml")</label>
                         <input class="form-control form-control-sm" id="outputPath"></input>
                     </div>
                     <div class="col-3">
-                        <label class="form-label form-label-sm" for="outputTags">Tags (separate with :)</label>
+                        <label class="form-label form-label-sm" for="outputTags">Run Tags (separate with ":")</label>
                         <input class="form-control form-control-sm" id="outputTags"></input>
                     </div>
                     <div class="col-2 d-flex">
@@ -104,16 +104,16 @@
                         <p class="mt-auto">output.xml:</p>
                     </div>
                     <div class="col-5">
-                        <label class="form-label form-label-sm" for="outputData">XML Data (copy paste the output.xml
+                        <label class="form-label form-label-sm mt-1" for="outputData">XML Data (copy paste the output.xml
                             here)</label>
-                        <input class="form-control form-control-sm" id="outputData"></input>
+                        <textarea class="form-control form-control-sm" id="outputData" rows="10"></textarea>
                     </div>
                     <div class="col-3">
-                        <label class="form-label form-label-sm" for="outputDataTags">Tags (separate with :)</label>
+                        <label class="form-label form-label-sm mt-1" for="outputDataTags">Run Tags (separate with ":")</label>
                         <input class="form-control form-control-sm" id="outputDataTags"></input>
                     </div>
-                    <div class="col-2 d-flex">
-                        <button class="btn btn-outline-primary btn-sm mt-auto" id="addOutputData">Add&nbsp;
+                    <div class="col-2">
+                        <button class="btn btn-outline-primary btn-sm" style="margin-top:36px" id="addOutputData">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addDataSpinner" hidden></span>
                         </button>
@@ -124,11 +124,11 @@
                         <p class="mt-auto">output folder:</p>
                     </div>
                     <div class="col-5">
-                        <label class="form-label form-label-sm" for="outputFolderPath">Absolute Path (C:/some_folder/your_output_folder)</label>
+                        <label class="form-label form-label-sm mt-1" for="outputFolderPath">Absolute Path (E.g. "C:/some_folder/your_output_folder")</label>
                         <input class="form-control form-control-sm" id="outputFolderPath"></input>
                     </div>
                     <div class="col-3">
-                        <label class="form-label form-label-sm" for="outputFolderTags">Tags (separate with :)</label>
+                        <label class="form-label form-label-sm mt-1" for="outputFolderTags">Run Tags (separate with ":")</label>
                         <input class="form-control form-control-sm" id="outputFolderTags"></input>
                     </div>
                     <div class="col-2 d-flex">
@@ -151,7 +151,7 @@
                     </div>
                     <div class="col-8">
                         <label class="form-label form-label-sm" for="runsToRemove">Run Index or Run Start (separate with
-                            ,)</label>
+                            ",")</label>
                         <input class="form-control form-control-sm" id="runsToRemove"></input>
                     </div>
                     <div class="col-2 d-flex">
@@ -199,7 +199,7 @@
                 output_path: outputPath,
                 output_tags: outputTags,
             });
-            send_request("/add-outputs", body, 'addPathSpinner')
+            send_request("POST", "/add-outputs", body, 'addPathSpinner')
         }
 
         function add_output_data() {
@@ -213,7 +213,7 @@
                 output_data: outputData,
                 output_tags: outputDataTags,
             });
-            send_request("/add-outputs", body, 'addDataSpinner')
+            send_request("POST", "/add-outputs", body, 'addDataSpinner')
         }
 
         function add_output_folder_path() {
@@ -227,7 +227,7 @@
                 output_folder_path: outputFolderPath,
                 output_tags: outputFolderTags,
             });
-            send_request("/add-outputs", body, 'addFolderSpinner')
+            send_request("POST", "/add-outputs", body, 'addFolderSpinner')
         }
 
         function remove_outputs() {
@@ -235,7 +235,7 @@
             const runsToRemove = document.getElementById('runsToRemove').value.split(',')
             document.getElementById('runsToRemove').value = ''
             const body = JSON.stringify({ runs: runsToRemove })
-            send_request("/remove-outputs", body, 'removeSpinner')
+            send_request("DELETE", "/remove-outputs", body, 'removeSpinner')
         }
 
         function get_outputs() {
@@ -257,9 +257,9 @@
             xhr.send();
         }
 
-        function send_request(endpoint, body, spinner) {
+        function send_request(method, endpoint, body, spinner) {
             const xhr = new XMLHttpRequest();
-            xhr.open("POST", endpoint);
+            xhr.open(method, endpoint);
             xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
             xhr.onload = () => {
                 if (xhr.readyState == 4 && xhr.status == 200) {

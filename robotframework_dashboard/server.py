@@ -61,7 +61,7 @@ class AddOutput(BaseModel):
             "examples": [
                 {
                     "output_path": "C:\\users\\docs\\output.xml",
-                    "output_tags": "['tag1', 'cool-tag2', 'production_tag']",
+                    "output_tags": ["tag1", "cool-tag2", "production_tag"],
                 },
                 {
                     "output_data": """<?xml version="1.0" encoding="UTF-8"?>
@@ -69,11 +69,11 @@ class AddOutput(BaseModel):
 <suite id="s1" name="Scripts" source="C:\docs">
 <suite id="s1-s1" name="Google" source="C:\docs\google.robot">
 <test id="s1-s1-t1" name="Test 01" line="6">... etc""",
-                    "output_tags": "[]",
+                    "output_tags": [],
                 },
                 {
                     "output_path": "C:\\users\\docs\\prod-outputs",
-                    "output_tags": "['production-run']",
+                    "output_tags": ["production-run"],
                 },
             ]
         }
@@ -121,7 +121,9 @@ class ApiServer:
             admin_html = open(admin_file, "r").read()
             return admin_html
 
-        @self.app.get("/dashboard", response_class=HTMLResponse, include_in_schema=False)
+        @self.app.get(
+            "/dashboard", response_class=HTMLResponse, include_in_schema=False
+        )
         async def dashboard_page():
             """Serve robotdashboard HTML endpoint function"""
             robot_dashboard_html = open("robot_dashboard.html", "r").read()
@@ -148,7 +150,7 @@ class ApiServer:
                             "description": "When using an absolute path of an output.xml",
                             "value": {
                                 "output_path": "C:\\users\\docs\\output.xml",
-                                "output_tags": "['tag1', 'cool-tag2', 'production_tag']",
+                                "output_tags": ["tag1", "cool-tag2", "production_tag"],
                             },
                         },
                         "output xml data": {
@@ -160,7 +162,7 @@ class ApiServer:
 <suite id="s1" name="Scripts" source="C:\docs">
 <suite id="s1-s1" name="Google" source="C:\docs\google.robot">
 <test id="s1-s1-t1" name="Test 01" line="6">... etc""",
-                                "output_tags": "[]",
+                                "output_tags": [],
                             },
                         },
                         "output folder path": {
@@ -168,7 +170,7 @@ class ApiServer:
                             "description": "When using an absolute folder path that contains output.xml's",
                             "value": {
                                 "output_path": "C:\\users\\docs\\prod-outputs",
-                                "output_tags": "['production-run']",
+                                "output_tags": ["production-run"],
                             },
                         },
                     },
@@ -235,7 +237,7 @@ class ApiServer:
                 response = {"success": "0", "message": message, "console": console}
             return response
 
-        @self.app.post("/remove-outputs")
+        @self.app.delete("/remove-outputs")
         async def remove_outputs_from_database(
             remove_output: Annotated[
                 RemoveOutputs,
