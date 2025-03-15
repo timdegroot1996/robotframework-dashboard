@@ -198,7 +198,6 @@ Currently available database type examples:
 - template.py (completely empty only requirements are filled)
 - sqlite3.py (for a sqlite3 database connection, this configuration is used by default in robotdashboard)
 - mysql.py (for a mysql database connection)
-- ...
 
 If you have made an implementation that is not yet an example please feel free to add it through a pull request or submit it in an issue. This way you can help other people implement their own solutions!!
 
@@ -233,6 +232,12 @@ After starting the server you can open http://127.0.0.1:8543/ to view the admin 
 - Facilitate an endpoint to add outputs to the database (/add-outputs)
 - Facilitate an endpoint to remove outputs from the database (/remove-outputs)
 - The endpoint get/add/remove can be programmatically called if required, the documentation of the endpoints can be found on /docs
+
+### Example scripts
+In the example/server folder there are some examples of way to interact with the server API
+- interact.http (simple http request formats)
+- interact.robot (robot implementation)
+- interact.py (python implementation)
 
 ## Contributing
 Contributions are welcome! If you encounter any issues, have suggestions for improvements, or would like to add new features, feel free to open an issue or submit a pull request.
