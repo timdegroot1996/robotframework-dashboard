@@ -251,7 +251,7 @@ After starting the server you can open http://127.0.0.1:8543/ to view the admin 
 ### Example scripts
 In the example/server folder there are some examples of way to interact with the server API
 - [interact.http](./example/server/interact.http) (simple http request formats)
-- [interact.robot](./example/server/interact.py) (robot implementation)
+- [interact.robot](./example/server/interact.robot) (robot implementation)
 - [interact.py](./example/server/interact.py) (python implementation)
 
 <a name="Contributing"></a>
