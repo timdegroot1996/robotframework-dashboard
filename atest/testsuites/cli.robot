@@ -84,10 +84,10 @@ Validate robotdahboard excludemilliseconds
     Validate CLI    command=robotdashboard --excludemilliseconds false    expected=excludemilliseconds
 
 Validate robotdahboard c
-    Validate CLI    command=robotdashboard -c example/mysql.py    expected=databaseclass
+    Validate CLI    command=robotdashboard -c example/database/mysql.py    expected=databaseclass
 
 Validate robotdahboard databaseclass
-    Validate CLI    command=robotdashboard --databaseclass ./example/mysql.py    expected=databaseclass
+    Validate CLI    command=robotdashboard --databaseclass ./example/database/mysql.py    expected=databaseclass
 
 # might have to implement process library to run in a separate shell and do more tests
 # Validate robotdahboard s
@@ -97,3 +97,9 @@ Validate robotdahboard databaseclass
 # Validate robotdahboard server
 #     Validate CLI    command=robotdashboard --outputfolderpath ${OUTPUTS_FOLDER} -g f
 #     Validate CLI    command=robotdashboard --server default    expected=server
+
+Validate robotdahboard a
+    Validate CLI    command=robotdashboard -a true    expected=aliases
+
+Validate robotdahboard aliases
+    Validate CLI    command=robotdashboard --aliases True    expected=aliases
