@@ -1129,7 +1129,7 @@
             testTagsSelect = document.getElementById("testTagsSelect").value;
             var testNames = [];
             for (test of filteredTests) {
-                if (test.full_name.includes(`.${suiteSelect}.${test.name}`) && !testNames.includes(test.name)) {
+                if ((test.full_name.includes(`.${suiteSelect}.${test.name}`) || test.full_name == `${suiteSelect}.${test.name}`) && !testNames.includes(test.name)) {
                     var tags = test.tags.replace(/\[|\]/g, '').split(',')
                     if (tags.includes(testTagsSelect) || testTagsSelect == "All") {
                         testNames.push(test.name);
@@ -1154,7 +1154,7 @@
             suiteSelect = document.getElementById("suiteSelectTests").value;
             var testTags = [];
             for (test of filteredTests) {
-                if (test.full_name.includes(`.${suiteSelect}.${test.name}`) || suiteSelect == 'All') {
+                if ((test.full_name.includes(`.${suiteSelect}.${test.name}`) || test.full_name == `${suiteSelect}.${test.name}`) || suiteSelect == 'All') {
                     var tags = test.tags.replace(/\[|\]/g, '').split(',')
                     for (tag of tags) {
                         if (!testTags.includes(tag)) {
@@ -1410,7 +1410,7 @@
             var testTagsSelect = document.getElementById("testTagsSelect").value;
             var [labels, runStarts, datasets] = [[], [], []];
             for (test of filteredTests) {
-                if (suiteSelectTests != "All" && !test.full_name.includes(`.${suiteSelectTests}.${test.name}`)) {
+                if (suiteSelectTests != "All" && !test.full_name.includes(`.${suiteSelectTests}.${test.name}`) && test.full_name != `${suiteSelect}.${test.name}`) {
                     continue;
                 }
                 if (showOnlySelectedtestStatus && testSelect != "All" && test.name != testSelect) {
@@ -2155,7 +2155,7 @@
                     if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
                         continue;
                     }
-                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`)) {
+                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name != `${suiteSelect}.${value.name}`) {
                         continue;
                     }
                     if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
@@ -2207,7 +2207,7 @@
                     if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
                         continue;
                     }
-                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`)) {
+                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name != `${suiteSelect}.${value.name}`) {
                         continue;
                     }
                     if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
@@ -2245,7 +2245,7 @@
             var data = {}
             if (graphType == 'boxplot') {
                 for (value of filteredData) {
-                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`)) {
+                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name != `${suiteSelect}.${value.name}`) {
                         continue;
                     }
                     if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
@@ -2391,7 +2391,7 @@
                     }
                     runAxis += 1;
                 }
-                if (use_run_aliases) { runStarts = run_aliases}
+                if (use_run_aliases) { runStarts = run_aliases }
                 var graphData = {
                     labels: labels,
                     datasets: datasets,
@@ -2425,8 +2425,8 @@
                         break;
                     }
                     labels.push(key);
-                    if (use_run_aliases) { 
-                        data[key] = aliases[key] 
+                    if (use_run_aliases) {
+                        data[key] = aliases[key]
                     }
                     datasets.push(data[key].length);
                     count += 1;
@@ -2480,7 +2480,7 @@
                     }
                     runAxis += 1;
                 }
-                if (use_run_aliases) { runStarts = run_aliases}
+                if (use_run_aliases) { runStarts = run_aliases }
                 var graphData = {
                     labels: labels,
                     datasets: datasets,
@@ -2515,8 +2515,8 @@
                     }
                     labels.push(key);
                     datasets.push(data[key].length);
-                    if (use_run_aliases) { 
-                        data[key] = aliases[key] 
+                    if (use_run_aliases) {
+                        data[key] = aliases[key]
                     }
                     count += 1;
                 }
@@ -2569,7 +2569,7 @@
                     }
                     runAxis += 1;
                 }
-                if (use_run_aliases) { runStarts = run_aliases}
+                if (use_run_aliases) { runStarts = run_aliases }
                 var graphData = {
                     labels: labels,
                     datasets: datasets,

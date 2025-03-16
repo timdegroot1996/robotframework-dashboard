@@ -139,6 +139,13 @@ robotdashboard -t "My Cool Title"
 ```
 robotdashboard -e False
 ```
+- Show aliases in the graphs in the dashboard html (setting aliases to False as it defaults to True). Aliases are created based on the filename, output_ and .xml are removed, everything that remains will be the output name. Duplicate aliases will get a number based on the order in the database to generate unique aliases in the dashboard.
+```
+robotdashboard -a True
+robotdashboard --aliases true --outputpath output-20250313-002257.xml         # alias will be: output-20250313-002257
+robotdashboard --aliases True --outputpath output_.xml                        # alias will be: Alias 1   (this is automatically generated to prevent dupes)
+robotdashboard --aliases True --outputpath ./folder/output_My Cool Name.xml   # alias will be: My Cool Name   (only file basename is used)
+```
 - Make use of a custom DatabaseProcessor class, see also [Custom Database Class](#Custom-Database-Class) for examples and more details of the requirements.
 ```
 robotdashboard -c ./path/to/custom_class.py
@@ -197,13 +204,13 @@ Results:
 
 <a name="Custom-Database-Class"></a>
 ## Custom Database Class
-See the [Example Folder](./example/custom_database_class) for some examples of custom database class implementations.
+See the [Example Folder](./example/database) for some examples of custom database class implementations.
 
 ### Available examples
 Currently available database type examples:
-- [template.py](./example/custom_database_class/template.py) (only requirements are in the template file)
-- [sqlite3.py](./example/custom_database_class/sqlite3.py) (for a sqlite3 database connection, this configuration is used by default in robotdashboard)
-- [mysql.py](./example/custom_database_class/mysql.py) (for a mysql database connection)
+- [template.py](./example/database/template.py) (only requirements are in the template file)
+- [sqlite3.py](./example/database/sqlite3.py) (for a sqlite3 database connection, this configuration is used by default in robotdashboard)
+- [mysql.py](./example/database/mysql.py) (for a mysql database connection)
 
 If you have made an implementation that is not yet an example please feel free to add it through a pull request or submit it in an issue. This way you can help other people implement their own solutions!!
 
@@ -211,7 +218,8 @@ If you have made an implementation that is not yet an example please feel free t
 - File: The filename can be anything as long as it is a **python file**
 - Class: The you should name the **class DatabaseProcessor**
 - Methods: 
-    - **\_\_init\_\_(self, database_path: Path):**, should handle the connection to the database and possible creation of the tables if necessary
+    - **\_\_init\_\_(self, database_path: Path):**, should handle creation of the database and tables if necessary
+    - **open_database(self):**, should open the database connection and set it like self.connection
     - **close_database(self):**, should close the database connection
     - **insert_output_data(self, output_data: dict, tags: list):**, should be able to handle the output_data dict and the run tags that are provided. Look at the example implementations for the content of output_data and tags.
     - **get_data(self):**, should retrieve all data (runs/suites/tests/keywords) from all tables in the form of a dictionary containing the 4 data types. In which each data type is a list of dicts with entries. Example:

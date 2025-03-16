@@ -126,42 +126,47 @@ class DatabaseProcessor:
 
     def get_data(self):
         """This function gets all the data in the database"""
-        data, runs, suites, tests, keywords, aliases = {}, [], [], [], [], []
+        data, runs, suites, tests, keywords, aliases = {}, [], [], [], [], {}
+        counter = 1
         # Get runs from run table
         run_rows = self.connection.cursor().execute(SELECT_FROM_RUNS).fetchall()
         for run_row in run_rows:
             row = self._dict_from_row(run_row)
             # exception made for versions before 0.6.0 without run_aliases
             if row["run_alias"] == None or row["run_alias"] == "":
-                aliases.append(row["run_start"]) # add the run start to determine Alias Index
-                row["run_alias"] = f"Alias {aliases.index(row['run_start'])}"
+                alias = f"Alias {counter}"
+                aliases[row["run_start"]] = alias
+                row["run_alias"] = alias
+                counter += 1
+            else:
+                if row["run_alias"] in aliases.values():
+                    alias = f"{row['run_alias']} {counter}"
+                    aliases[row["run_start"]] = alias
+                    row["run_alias"] = alias
+                    counter += 1
+                else:
+                    aliases[row["run_start"]] = row["run_alias"]
             runs.append(row)
         data["runs"] = runs
         # Get suites from run table
         suite_rows = self.connection.cursor().execute(SELECT_FROM_SUITES).fetchall()
         for suite_row in suite_rows:
             row = self._dict_from_row(suite_row)
-            # exception made for versions before 0.6.0 without run_aliases
-            if row["run_alias"] == None or row["run_alias"] == "":
-                row["run_alias"] = f"Alias {aliases.index(row['run_start'])}"
+            row["run_alias"] = aliases[row["run_start"]]
             suites.append(row)
         data["suites"] = suites
         # Get tests from run table
         test_rows = self.connection.cursor().execute(SELECT_FROM_TESTS).fetchall()
         for test_row in test_rows:
             row = self._dict_from_row(test_row)
-            # exception made for versions before 0.6.0 without run_aliases
-            if row["run_alias"] == None or row["run_alias"] == "":
-                row["run_alias"] = f"Alias {aliases.index(row['run_start'])}"
+            row["run_alias"] = aliases[row["run_start"]]
             tests.append(row)
         data["tests"] = tests
         # Get keywords from run table
         keyword_rows = self.connection.cursor().execute(SELECT_FROM_KEYWORDS).fetchall()
         for keyword_row in keyword_rows:
             row = self._dict_from_row(keyword_row)
-            # exception made for versions before 0.6.0 without run_aliases
-            if row["run_alias"] == None or row["run_alias"] == "":
-                row["run_alias"] = f"Alias {aliases.index(row['run_start'])}"
+            row["run_alias"] = aliases[row["run_start"]]
             keywords.append(row)
         data["keywords"] = keywords
         return data
