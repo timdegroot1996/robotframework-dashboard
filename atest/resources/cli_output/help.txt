@@ -46,8 +46,9 @@ options:
                         html shows run aliases in the graphs. The database
                         will always contain run aliases. Aliases are generated
                         based on the input name: output_run_name_1.xml will
-                        convert to alias: run_name_1, output_ and .xml are
-                        removed, everything that remains will be the run name.
+                        convert to alias: 'run_name_1'. 'output_' and '.xml'
+                        are removed, and everything that remains will be the
+                        run alias.
   -l LISTRUNS, --listruns LISTRUNS
                         `boolean` Specifies if the runs should be listed.
                         Default is True, override if you only require the
