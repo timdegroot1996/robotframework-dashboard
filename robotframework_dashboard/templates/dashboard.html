@@ -662,6 +662,7 @@
         var suites = "placeholder_suites".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var tests = "placeholder_tests".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var keywords = "placeholder_keywords".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+        const use_run_aliases = false
 
         // set default values
         document.getElementById(
@@ -961,8 +962,8 @@
             create_suite_table();
             create_test_status_graph();
             create_test_duration_graph();
-            create_test_most_flaky_graph();
             create_test_duration_deviation_graph();
+            create_test_most_flaky_graph();
             create_test_most_failed_graph();
             create_test_messages_graph();
             create_test_table();
@@ -1246,6 +1247,7 @@
                     run.elapsed_s,
                     run.start_time,
                     run.tags,
+                    run.run_alias,
                 ]);
             }
             runTable = new DataTable("#runTable", {
@@ -1264,6 +1266,7 @@
                     { title: "elapsed_s" },
                     { title: "start_time" },
                     { title: "tags" },
+                    { title: "alias" }
                 ],
                 data: data,
             });
@@ -1373,6 +1376,7 @@
                     suite.skipped,
                     suite.elapsed_s,
                     suite.start_time,
+                    suite.run_alias,
                 ]);
             }
             suiteTable = new DataTable("#suiteTable", {
@@ -1390,6 +1394,7 @@
                     { title: "skipped" },
                     { title: "elapsed_s" },
                     { title: "start_time" },
+                    { title: "alias" },
                 ],
                 data: data,
             });
@@ -1403,9 +1408,7 @@
             var suiteSelectTests = document.getElementById("suiteSelectTests").value;
             var testSelect = document.getElementById("testSelect").value;
             var testTagsSelect = document.getElementById("testTagsSelect").value;
-            var labels = [];
-            var runStarts = [];
-            var datasets = [];
+            var [labels, runStarts, datasets] = [[], [], []];
             for (test of filteredTests) {
                 if (suiteSelectTests != "All" && !test.full_name.includes(`.${suiteSelectTests}.${test.name}`)) {
                     continue;
@@ -1419,10 +1422,17 @@
                 if (!labels.includes(test.name)) {
                     labels.push(test.name);
                 }
-                if (!runStarts.includes(test.run_start)) {
-                    runStarts.push(test.run_start);
+                if (use_run_aliases) {
+                    if (!runStarts.includes(test.run_alias)) {
+                        runStarts.push(test.run_alias);
+                    }
+                    var runAxis = runStarts.indexOf(test.run_alias)
+                } else {
+                    if (!runStarts.includes(test.run_start)) {
+                        runStarts.push(test.run_start);
+                    }
+                    var runAxis = runStarts.indexOf(test.run_start)
                 }
-                var runAxis = runStarts.indexOf(test.run_start)
                 if (test.passed == 1) {
                     datasets.push({
                         label: test.name,
@@ -1505,10 +1515,10 @@
             var callbackData = graphData[0];
             graphData = graphData[1];
             if (testMostFlakyGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Top 10 Most Flaky Tests", "Test Name", "Times Failed");
+                var config = get_graph_config("bar", graphData, "Top 10 Most Flaky Tests (most status flips)", "Test Name", "Times Status Flipped");
                 testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
             } else if (testMostFlakyGraphType == "timeline") {
-                var config = get_graph_config("timeline", graphData, "Top 10 Most Flaky Tests");
+                var config = get_graph_config("timeline", graphData, "Top 10 Most Flaky Tests (most status flips)");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -1656,7 +1666,7 @@
             }
             data = [];
             for (test of filteredTests) {
-                data.push([test.run_start, test.full_name, test.name, test.passed, test.failed, test.skipped, test.elapsed_s, test.start_time, test.message, test.tags]);
+                data.push([test.run_start, test.full_name, test.name, test.passed, test.failed, test.skipped, test.elapsed_s, test.start_time, test.message, test.tags, test.run_alias]);
             }
             testTable = new DataTable("#testTable", {
                 layout: {
@@ -1674,6 +1684,7 @@
                     { title: "start_time" },
                     { title: "message" },
                     { title: "tags" },
+                    { title: "alias" },
                 ],
                 data: data,
             });
@@ -1810,6 +1821,7 @@
                     keyword.average_time_s,
                     keyword.min_time_s,
                     keyword.max_time_s,
+                    keyword.run_alias,
                 ]);
             }
             keywordTable = new DataTable("#keywordTable", {
@@ -1828,6 +1840,7 @@
                     { title: "average_execution_time" },
                     { title: "min_execution_time" },
                     { title: "max_execution_time" },
+                    { title: "alias" },
                 ],
                 data: data,
             });
@@ -2023,7 +2036,7 @@
         function get_statistics_graph_data(dataType, graphType, filteredData) {
             var keywordSelect = document.getElementById("keywordSelect").value;
             var suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
-            var [passed, failed, skipped, labels] = [[], [], [], []];
+            var [passed, failed, skipped, labels, aliases] = [[], [], [], [], []];
             for (value of filteredData) {
                 if (graphType == "percentages") {
                     if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
@@ -2037,12 +2050,14 @@
                             failed.push(Math.round((value.failed / (value.passed + value.failed + value.skipped)) * 100 * 100) / 100);
                             skipped.push(Math.round((value.skipped / (value.passed + value.failed + value.skipped)) * 100 * 100) / 100);
                             labels.push(value.run_start);
+                            aliases.push(value.run_alias);
                         }
                     } else {
                         passed.push(Math.round((value.passed / value.total) * 100 * 100) / 100);
                         failed.push(Math.round((value.failed / value.total) * 100 * 100) / 100);
                         skipped.push(Math.round((value.skipped / value.total) * 100 * 100) / 100);
                         labels.push(value.run_start);
+                        aliases.push(value.run_alias);
                     }
                 } else {
                     if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
@@ -2055,9 +2070,11 @@
                     failed.push(value.failed);
                     skipped.push(value.skipped);
                     labels.push(value.run_start);
+                    aliases.push(value.run_alias);
                 }
             }
             if (graphType != "line") {
+                if (use_run_aliases) { labels = aliases }
                 var statisticsData = {
                     labels: labels,
                     datasets: [
@@ -2129,7 +2146,7 @@
             // used for keyword selection filter
             var keywordSelect = document.getElementById("keywordSelect").value;
             if (graphType == "bar") {
-                var [labels, data] = [[], { 0: [] }];
+                var [labels, data, aliases] = [[], { 0: [] }, []];
                 // prepare data for bar chart
                 for (value of filteredData) {
                     if (dataType == "keyword" && value.name != keywordSelect) {
@@ -2148,6 +2165,7 @@
                         continue
                     }
                     labels.push(value.run_start);
+                    aliases.push(value.run_alias)
                     if (labels.length > 30) { break }
                     var dataLength = data[0].length;
                     if (data[value.name]) {
@@ -2167,6 +2185,7 @@
                     }
                 }
                 delete data[0];
+                if (use_run_aliases) { labels = aliases }
                 var graphData = {
                     labels: labels,
                     datasets: [],
@@ -2284,7 +2303,7 @@
                     }
                 }
             }
-            let sortedData = [];
+            var sortedData = [];
             for (var test in data) {
                 if (data[test].flips > 0) {
                     sortedData.push([test, data[test]]);
@@ -2314,9 +2333,7 @@
                 };
                 return [data, graphData];
             } else if (graphType == "timeline") {
-                var labels = [];
-                var runStarts = [];
-                var count = 0;
+                var [labels, runStarts, count, run_aliases] = [[], [], 0, []];
                 for (key in sortedData) {
                     if (count > 9) {
                         break;
@@ -2338,6 +2355,7 @@
                         for (value of filteredData) {
                             if (value.name == label && value.run_start == runStart) {
                                 foundValues.push(value);
+                                if (!run_aliases.includes(value.run_alias)) { run_aliases.push(value.run_alias) }
                             }
                         }
                         if (foundValues.length > 0) {
@@ -2373,6 +2391,7 @@
                     }
                     runAxis += 1;
                 }
+                if (use_run_aliases) { runStarts = run_aliases}
                 var graphData = {
                     labels: labels,
                     datasets: datasets,
@@ -2384,12 +2403,15 @@
         // function to prepare the data in the correct format for most failed graphs
         function get_most_failed_data(dataType, graphType, filteredData) {
             var data = {};
+            var aliases = {}
             for (value of filteredData) {
                 if (value.failed > 0) {
                     if (data[value.name]) {
                         data[value.name].push(value.run_start);
+                        aliases[value.name].push(value.run_alias)
                     } else {
                         data[value.name] = [value.run_start];
+                        aliases[value.name] = [value.run_alias]
                     }
                 }
             }
@@ -2403,6 +2425,9 @@
                         break;
                     }
                     labels.push(key);
+                    if (use_run_aliases) { 
+                        data[key] = aliases[key] 
+                    }
                     datasets.push(data[key].length);
                     count += 1;
                 }
@@ -2417,9 +2442,7 @@
                 };
                 return [data, graphData];
             } else if (graphType == "timeline") {
-                var labels = [];
-                var runStarts = [];
-                var count = 0;
+                var [labels, runStarts, count, run_aliases] = [[], [], 0, []];
                 for (key in data) {
                     if (count > 9) {
                         break;
@@ -2439,8 +2462,9 @@
                     for (label of labels) {
                         var foundValues = [];
                         for (value of filteredData) {
-                            if (value.name == label && value.run_start == runStart && value.failed == 1) {
+                            if (value.name == label && value.run_start == runStart && value.failed > 0) {
                                 foundValues.push(value);
+                                if (run_aliases.includes(value.run_alias)) { run_aliases.push(value.run_alias) }
                             }
                         }
                         if (foundValues.length > 0) {
@@ -2456,6 +2480,7 @@
                     }
                     runAxis += 1;
                 }
+                if (use_run_aliases) { runStarts = run_aliases}
                 var graphData = {
                     labels: labels,
                     datasets: datasets,
@@ -2467,12 +2492,15 @@
         // function to prepare the data in the correct format for messages graphs
         function get_messages_data(dataType, graphType, filteredData) {
             var data = {};
+            var aliases = {}
             for (value of filteredData) {
                 if (value.message && (value.failed == 1 || value.skipped == 1)) {
                     if (data[value.message]) {
                         data[value.message].push(value.run_start);
+                        aliases[value.message].push(value.run_alias)
                     } else {
                         data[value.message] = [value.run_start];
+                        aliases[value.message] = [value.run_alias]
                     }
                 }
             }
@@ -2487,6 +2515,9 @@
                     }
                     labels.push(key);
                     datasets.push(data[key].length);
+                    if (use_run_aliases) { 
+                        data[key] = aliases[key] 
+                    }
                     count += 1;
                 }
                 var graphData = {
@@ -2500,9 +2531,7 @@
                 };
                 return [data, graphData];
             } else if (graphType == "timeline") {
-                var labels = [];
-                var runStarts = [];
-                var count = 0;
+                var [labels, runStarts, count, run_aliases] = [[], [], 0, []];
                 for (key in data) {
                     if (count > 9) {
                         break;
@@ -2524,6 +2553,7 @@
                         for (value of filteredData) {
                             if (value.message == label && value.run_start == runStart) {
                                 foundValues.push(value);
+                                if (!run_aliases.includes(value.run_alias)) { run_aliases.push(value.run_alias) }
                             }
                         }
                         if (foundValues.length > 0) {
@@ -2539,6 +2569,7 @@
                     }
                     runAxis += 1;
                 }
+                if (use_run_aliases) { runStarts = run_aliases}
                 var graphData = {
                     labels: labels,
                     datasets: datasets,

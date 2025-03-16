@@ -23,6 +23,7 @@ class RobotDashboard:
         dashboard_title: str,
         exclude_milliseconds: bool,
         database_class: Path,
+        use_run_aliases: bool,
     ):
         """Sets the parameters provided in the command line"""
         self.database_path = database_path
@@ -33,9 +34,11 @@ class RobotDashboard:
         self.dashboard_title = dashboard_title
         self.exclude_milliseconds = exclude_milliseconds
         self.database_class = database_class
+        self.use_run_aliases = use_run_aliases
         self.server = False
+        self.database = None
 
-    def initialize_database(self, get_database=True, supress=True) -> DatabaseProcessor:
+    def initialize_database(self, supress=True) -> DatabaseProcessor:
         """Function that initializes the database if it does not exist
         Also makes a connection that is returned by default and used internally in the RobotDashboard class functions
         """
@@ -43,7 +46,7 @@ class RobotDashboard:
         if not supress:
             console += self._print_console(f" 1. Database preparation")
         if not self.database_class:
-            database = DatabaseProcessor(self.database_path)
+            self.database = DatabaseProcessor(self.database_path)
         else:
             if not supress:
                 console += self._print_console(f"  using provided databaseclass: {self.database_class}")
@@ -54,24 +57,18 @@ class RobotDashboard:
             )
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
-            database = module.DatabaseProcessor(self.database_path)
+            self.database = module.DatabaseProcessor(self.database_path)
         if not supress:
             console += self._print_console(f"  created database: '{self.database_path}'")
         if not supress:
             console += self._print_console(
                 "======================================================================================"
             )
-        # if used internally in the class return the database for usage
-        if get_database:
-            return database
-        # if used externally we do not want to return a connection and just close the database after the checks
-        else:
-            database.close_database()
         return console
 
     def process_outputs(self, outputs = None, output_folder_path = None):
         """Function that processes the outputs and output_folder_path that were set when instantiating the RobotDashboard class"""
-        database = self.initialize_database()
+        self.database.open_database()
         console = ''
         if outputs or output_folder_path:
             console += self._print_console(f" 2. Processing output XML(s)")
@@ -83,7 +80,8 @@ class RobotDashboard:
                         start = time()
                         console += self._print_console(f"  Processing output XML '{basename(output_path)}'")
                         output_data = OutputProcessor().get_output_data(output_path)
-                        database.insert_output_data(output_data, tags)
+                        run_alias = str(basename(output_path)).replace("output_", "").replace(".xml", "")
+                        self.database.insert_output_data(output_data, tags, run_alias)
                         end = time()
                         console += self._print_console(f"  Processed output XML '{basename(output_path)}' in {round(end-start, 2)} seconds")
                     except Exception as error:
@@ -99,8 +97,9 @@ class RobotDashboard:
                                     output_data = OutputProcessor().get_output_data(
                                         join(subdir, file)
                                     )
-                                    database.insert_output_data(
-                                        output_data, output_folder_path[1]
+                                    run_alias = str(basename(file)).replace("output_", "").replace(".xml", "")
+                                    self.database.insert_output_data(
+                                        output_data, output_folder_path[1], run_alias
                                     )
                                     end = time()
                                     console += self._print_console(f"  Processed output XML '{join(subdir, file)}' in {round(end-start, 2)} seconds")
@@ -111,7 +110,7 @@ class RobotDashboard:
         else:
             console += self._print_console(f" 2. Processing output XML(s)\n  skipping step")
         console += self._print_console("======================================================================================")
-        database.close_database()
+        self.database.close_database()
         return console
 
     def print_runs(self):
@@ -119,9 +118,9 @@ class RobotDashboard:
         console = ''
         if self.list_runs:
             console += self._print_console(f" 3. Listing all available runs in the database")
-            database = self.initialize_database()
-            database.list_runs()
-            database.close_database()
+            self.database.open_database()
+            self.database.list_runs()
+            self.database.close_database()
         else:
             console += self._print_console(f" 3. Listing all available runs in the database\n  skipping step")
         console += self._print_console(
@@ -131,9 +130,9 @@ class RobotDashboard:
 
     def get_runs(self):
         """Function that gets the runs and corresponding names from the database"""
-        database = self.initialize_database()
-        runs, names = database._get_runs()
-        database.close_database()
+        self.database.open_database()
+        runs, names = self.database._get_runs()
+        self.database.close_database()
         return runs, names
 
     def remove_outputs(self, remove_runs = None):
@@ -141,9 +140,9 @@ class RobotDashboard:
         console = ''
         if remove_runs != None:
             console += self._print_console(f" 4. Removing runs from the database")
-            database = self.initialize_database()
-            console += database.remove_runs(remove_runs)
-            database.close_database()
+            self.database.open_database()
+            console += self.database.remove_runs(remove_runs)
+            self.database.close_database()
         else:
             console += self._print_console(f" 4. Removing runs from the database\n  skipping step")
         console += self._print_console(
@@ -157,9 +156,9 @@ class RobotDashboard:
         if self.generate_dashboard:
             start = time()
             console += self._print_console(f" 5. Creating dashboard HTML")
-            database = self.initialize_database()
-            dashboard_data = database.get_data()
-            database.close_database()
+            self.database.open_database()
+            dashboard_data = self.database.get_data()
+            self.database.close_database()
             DashboardGenerator().generate_dashboard(
                 self.dashboard_name,
                 dashboard_data,
@@ -167,6 +166,7 @@ class RobotDashboard:
                 self.dashboard_title,
                 self.exclude_milliseconds,
                 self.server,
+                self.use_run_aliases
             )
             end = time()
             console += self._print_console(

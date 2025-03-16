@@ -5,10 +5,13 @@ from pathlib import Path
 
 class DatabaseProcessor:
     def __init__(self, database_path: Path):
-        """This function should handle the connection to the database
-        And if required the creation of the tables
+        """This function should handle the creation of the tables if required
         The use of the database_path variable might not be required but you should still keep it as an argument!
         """
+        pass
+
+    def open_database(self):
+        """This function should handle the connection to the database and set it for other functions to use"""
         pass
 
     def close_database(self):

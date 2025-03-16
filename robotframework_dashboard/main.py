@@ -29,6 +29,7 @@ def main():
         arguments.dashboard_title,
         arguments.exclude_milliseconds,
         arguments.database_class,
+        arguments.use_run_aliases,
     )
     # If arguments.start_server is provided override some required args
     if arguments.start_server:
@@ -37,7 +38,7 @@ def main():
         robotdashboard.generate_dashboard = True
         robotdashboard.server = True
     # 1. Database preparation
-    robotdashboard.initialize_database(get_database=False, supress=False)
+    robotdashboard.initialize_database(supress=False)
     # 2. Processing output XML(s)
     robotdashboard.process_outputs(outputs=arguments.outputs, output_folder_path=arguments.output_folder_path)
     # 3. Listing all available runs in the database

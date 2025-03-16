@@ -4,12 +4,12 @@ from pathlib import Path
 # Some helper queries I used to create the initial database and tables directly in MySQL
 # If you want another way of storing the data feel free to make your own tables and queries!
 
-CREATE_RUNS = """ CREATE TABLE runs (`run_start` VARCHAR(26) UNIQUE, `full_name` text, `name` text, `total` int, `passed` int, `failed` int, `skipped` int, `elapsed_s` text, `start_time` text, `tags` text) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; """
+CREATE_RUNS = """ CREATE TABLE runs (`run_start` VARCHAR(26) UNIQUE, `full_name` text, `name` text, `total` int, `passed` int, `failed` int, `skipped` int, `elapsed_s` text, `start_time` text, `tags` text, `run_alias` text) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; """
 CREATE_SUITES = """ CREATE TABLE suites (`run_start` text, `full_name` text, `name` text, `total` int, `passed` int, `failed` int, `skipped` int, `elapsed_s` text, `start_time` text) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; """
 CREATE_TESTS = """ CREATE TABLE tests (`run_start` text, `full_name` text, `name` text, `passed` int, `failed` int, `skipped` int, `elapsed_s` text, `start_time` text, `message` text, `tags` text) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; """
 CREATE_KEYWORDS = """ CREATE TABLE keywords (`run_start` text, `name` text, `passed` int, `failed` int, `skipped` int, `times_run` text, `total_time_s` text, `average_time_s` text, `min_time_s` text, `max_time_s` text) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; """
 
-INSERT_INTO_RUNS = """ INSERT INTO runs (run_start, full_name, name, total, passed, failed, skipped, elapsed_s, start_time, tags) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) """
+INSERT_INTO_RUNS = """ INSERT INTO runs (run_start, full_name, name, total, passed, failed, skipped, elapsed_s, start_time, tags, run_alias) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) """
 INSERT_INTO_SUITES = """ INSERT INTO suites (run_start, full_name, name, total, passed, failed, skipped, elapsed_s, start_time) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) """
 INSERT_INTO_TESTS = """ INSERT INTO tests (run_start, full_name, name, passed, failed, skipped, elapsed_s, start_time, message, tags) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) """
 INSERT_INTO_KEYWORDS = """ INSERT INTO keywords (run_start, name, passed, failed, skipped, times_run, total_time_s, average_time_s, min_time_s, max_time_s) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) """
@@ -76,10 +76,13 @@ KEYWORD_KEYS = [
 
 class DatabaseProcessor:
     def __init__(self, database_path: Path):
-        """This function should handle the connection to the database
-        And if required the creation of the tables
-        The use of the database_path variable is not needed as the connection is not made based on a path
+        """This function should handle the creation of the tables if required
+        The use of the database_path variable might not be required but you should still keep it as an argument!
         """
+        self.connection: mysql.connector
+
+    def open_database(self):
+        """This function should handle the setting of the connection to the database"""
         self.connection = mysql.connector.connect(
             host="localhost",
             user="root",
@@ -93,10 +96,10 @@ class DatabaseProcessor:
         self.connection.disconnect()
         self.connection.close()
 
-    def insert_output_data(self, output_data: dict, tags: list):
+    def insert_output_data(self, output_data: dict, tags: list, run_alias: str):
         """This function inserts the data of an output file into the database"""
         try:
-            self._insert_runs(output_data["runs"], tags)
+            self._insert_runs(output_data["runs"], tags, run_alias)
             self._insert_suites(output_data["suites"])
             self._insert_tests(output_data["tests"])
             self._insert_keywords(output_data["keywords"])
@@ -105,11 +108,12 @@ class DatabaseProcessor:
                 f"   ERROR: you are probably trying to add the same output again, {error}"
             )
 
-    def _insert_runs(self, runs: list, tags: list):
+    def _insert_runs(self, runs: list, tags: list, run_alias: str):
         """Helper function to insert the run data with the run tags"""
         full_runs = []
         for run in runs:
             run += (",".join(tags),)
+            run += (run_alias,)
             full_runs.append(run)
         self.connection.cursor().executemany(INSERT_INTO_RUNS, full_runs)
         self.connection.commit()

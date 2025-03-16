@@ -15,6 +15,7 @@ class DashboardGenerator:
         dashboard_title: str,
         exclude_milliseconds: bool,
         server: bool,
+        use_run_aliases: bool,
     ):
         """Function that generates the dashboard"""
         # update the dashboard data to exclude milliseconds if needed
@@ -68,6 +69,10 @@ class DashboardGenerator:
             else:
                 dashboard_data = dashboard_data.replace(
                     'hidden="placeholder_server_admin_page"', "hidden"
+                )
+            if use_run_aliases:
+                dashboard_data = dashboard_data.replace(
+                    'const use_run_aliases = false', "const use_run_aliases = true"
                 )
 
         # handle possible subdirectories
