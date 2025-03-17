@@ -38,17 +38,17 @@ class RobotDashboard:
         self.server = False
         self.database = None
 
-    def initialize_database(self, supress=True) -> DatabaseProcessor:
+    def initialize_database(self, suppress=True):
         """Function that initializes the database if it does not exist
-        Also makes a connection that is returned by default and used internally in the RobotDashboard class functions
+        Also makes a connection that is used internally in the RobotDashboard class functions
         """
         console = ''
-        if not supress:
+        if not suppress:
             console += self._print_console(f" 1. Database preparation")
         if not self.database_class:
             self.database = DatabaseProcessor(self.database_path)
         else:
-            if not supress:
+            if not suppress:
                 console += self._print_console(f"  using provided databaseclass: {self.database_class}")
             import importlib.util
 
@@ -58,9 +58,9 @@ class RobotDashboard:
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             self.database = module.DatabaseProcessor(self.database_path)
-        if not supress:
+        if not suppress:
             console += self._print_console(f"  created database: '{self.database_path}'")
-        if not supress:
+        if not suppress:
             console += self._print_console(
                 "======================================================================================"
             )
