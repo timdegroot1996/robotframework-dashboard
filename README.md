@@ -10,6 +10,7 @@
 - [Examples](#Examples)
 - [Custom Database Class](#Custom-Database-Class)
 - [Dashboard Server](#Dashboard-Server)
+- [Listener](#Listener)
 - [Contributing](#Contributing)
 - [License](#License)
 
@@ -253,6 +254,17 @@ In the example/server folder there are some examples of way to interact with the
 - [interact.http](./example/server/interact.http) (simple http request formats)
 - [interact.robot](./example/server/interact.robot) (robot implementation)
 - [interact.py](./example/server/interact.py) (python implementation)
+
+<a name="Listener"></a>
+## Listener
+To be able to automatically follow up on the server implementation and not have to create your own scripts to interact with the API I created a **listener** that automatically updates robotdashboard with every run you execute.
+
+### Usage
+1. Download [robotdashboardlistener.py](./example/listener/robotdashboardlistener.py) and place it somewhere in your project
+2. Make sure the robotdashboard server is running see [Dashboard Server](#Dashboard-Server) for detailed instructions
+3. Update your robot.toml or manual command line usage with "--listener path/to/robotdashboardlistener.py:output=path/to/output.xml:tags=tag1,tag2"
+4. Optionally you can also provide ":host=yourhost:port=yourport" if the defaults of robotdashboard server are not to your liking. See the comments in the listener
+5. Enjoy automatic dashboarding of your manual/pipeline runs! :)
 
 <a name="Contributing"></a>
 ## Contributing
