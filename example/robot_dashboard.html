@@ -1,7 +1,7 @@
 <html data-bs-theme="dark">
 
 <head>
-    <title>Robot Framework Dashboard - 2025-03-16 03:08:16</title>
+    <title>Robot Framework Dashboard - 2025-03-19 00:46:48</title>
     <!-- ChartJs import -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
@@ -91,7 +91,7 @@
                     <div class="col-10">
                         <div class="row">
                             <div class="col-auto">
-                                <h1>Robot Framework Dashboard - 2025-03-16 03:08:16</h1>
+                                <h1>Robot Framework Dashboard - 2025-03-19 00:46:48</h1>
                             </div>
                             <div class="col-auto align-self-center">
                                 <a href="/">
@@ -339,11 +339,11 @@
                         </div>
                     </div>
                     <div class="col-auto">
-                        <div class="btn-group">
+                        <div class="btn-group ms-1">
                             <label class="form-check-label mt-2" for="showOnlySelectedtestStatus">Show Only
                                 Test</label>
                         </div>
-                        <div class="btn-group form-switch">
+                        <div class="btn-group form-switch ms-1">
                             <input class="form-check-input mt-2" type="checkbox" role="switch"
                                 id="showOnlySelectedtestStatus" />
                         </div>
@@ -417,14 +417,21 @@
                 </div>
                 <div class="row collapse show" id="testMostFlakyCollapse">
                     <div class="col canvas mb-5" id="testMostFlakyCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar
+                        <div class="btn-group me-1">
+                            <label class="form-check-label mb-2" for="ignoreSkips">Ignore Skips</label>
+                        </div>
+                        <div class="btn-group form-switch me-1">
+                            <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkips">
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar"
+                            >Bar
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="testMostFlakyGraphTimeline">Timeline View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="testMostFlakyFullscreen">Fullscreen</button>
+                            id="testMostFlakyFullscreen" style="margin-right:56px;">Fullscreen</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose"
-                            hidden>Close</button>
+                            hidden style="margin-right:56px;">Close</button>
                         <canvas id="testMostFlakyGraph"></canvas>
                     </div>
                 </div>
@@ -719,8 +726,9 @@
         var filteredTests;
         var filteredKeywords;
 
-        // var to keep track of show only selected test stats
+        // var to keep track of the checkbox statuses
         var showOnlySelectedtestStatus = false;
+        var ignoreSkips = false;
 
         // initialize all collapsables by adding the eventlisteners to the buttonIds
         const collapsables = [
@@ -876,6 +884,10 @@
         document.getElementById("showOnlySelectedtestStatus").addEventListener("change", (e) => {
             showOnlySelectedtestStatus = !showOnlySelectedtestStatus;
             create_test_status_graph();
+        });
+        document.getElementById("ignoreSkips").addEventListener("change", (e) => {
+            ignoreSkips = !ignoreSkips;
+            create_test_most_flaky_graph();
         });
         document.getElementById("suiteSelectTests").addEventListener("change", (e) => {
             add_testtags_in_select();
@@ -2286,7 +2298,9 @@
                     var current_status
                     if (value.passed == 1) { current_status = 'passed' }
                     if (value.failed == 1) { current_status = 'failed' }
-                    if (value.skipped == 1) { current_status = 'skipped' }
+                    if (!ignoreSkips) {
+                        if (value.skipped == 1) { current_status = 'skipped' }
+                    }
                     if (current_status != data[value.name]['previous_status']) {
                         data[value.name]['flips'] += 1
                         data[value.name]['previous_status'] = current_status
@@ -2295,7 +2309,9 @@
                     var previous_status
                     if (value.passed == 1) { previous_status = 'passed' }
                     if (value.failed == 1) { previous_status = 'failed' }
-                    if (value.skipped == 1) { previous_status = 'skipped' }
+                    if (!ignoreSkips) {
+                        if (value.skipped == 1) { previous_status = 'skipped' }
+                    }
                     data[value.name] = {
                         'run_starts': [value.run_start],
                         'flips': 0,
