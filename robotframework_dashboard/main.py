@@ -4,7 +4,7 @@ from .server import ApiServer
 
 
 def main():
-    """Main function that runs robotdashboard. Everything is orcestrated from here!"""
+    """Main function that runs robotdashboard. Everything is orchestrated from here!"""
     print(
         "======================================================================================"
     )
@@ -38,7 +38,7 @@ def main():
         robotdashboard.generate_dashboard = True
         robotdashboard.server = True
     # 1. Database preparation
-    robotdashboard.initialize_database(supress=False)
+    robotdashboard.initialize_database(suppress=False)
     # 2. Processing output XML(s)
     robotdashboard.process_outputs(outputs=arguments.outputs, output_folder_path=arguments.output_folder_path)
     # 3. Listing all available runs in the database
