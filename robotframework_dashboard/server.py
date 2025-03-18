@@ -52,10 +52,10 @@ class GetOutput(BaseModel):
 class AddOutput(BaseModel):
     """The model that has to be provided when trying to add outputs to the database"""
 
-    output_path: str | None = None
-    output_data: str | None = None
-    output_folder_path: str | None = None
-    output_tags: list[str] | None = None
+    output_path: str = None
+    output_data: str = None
+    output_folder_path: str = None
+    output_tags: list[str] = None
     model_config = {
         "json_schema_extra": {
             "examples": [
