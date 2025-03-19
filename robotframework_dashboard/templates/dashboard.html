@@ -1528,6 +1528,8 @@
             graphData = graphData[1];
             if (testMostFlakyGraphType == "bar") {
                 var config = get_graph_config("bar", graphData, "Top 10 Most Flaky Tests (most status flips)", "Test Name", "Times Status Flipped");
+                // disable lenged in bar graph
+                config.options.plugins.legend = false
                 testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
             } else if (testMostFlakyGraphType == "timeline") {
                 var config = get_graph_config("timeline", graphData, "Top 10 Most Flaky Tests (most status flips)");
