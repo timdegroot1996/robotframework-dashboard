@@ -262,9 +262,10 @@ To be able to automatically follow up on the server implementation and not have 
 ### Usage
 1. Download [robotdashboardlistener.py](./example/listener/robotdashboardlistener.py) and place it somewhere in your project
 2. Make sure the robotdashboard server is running see [Dashboard Server](#Dashboard-Server) for detailed instructions
-3. Update your robot.toml or manual command line usage with "--listener path/to/robotdashboardlistener.py:output=path/to/output.xml:tags=tag1,tag2"
+3. Update your [robot.toml](./example/listener/robot.toml) or manual command line usage with "--listener path/to/robotdashboardlistener.py:tags=tag1,tag2"
 4. Optionally you can also provide ":host=yourhost:port=yourport" if the defaults of robotdashboard server are not to your liking. See the comments in the listener
-5. Enjoy automatic dashboarding of your manual/pipeline runs! :)
+5. Optionally you can automatically limit the amount of runs in your database by providing ":limit=100"
+6. Enjoy automatic dashboarding of your manual/pipeline runs! :)
 
 <a name="Contributing"></a>
 ## Contributing

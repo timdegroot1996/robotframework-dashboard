@@ -14,6 +14,8 @@ from requests.exceptions import ConnectionError
 # robot --listener robotdashboardlistener.py:tags=prod,dev tests.robot
 # with changed server host/port:
 # robot --listener robotdashboardlistener.py:tags=prod,dev:host=127.0.0.2:port=8544 tests.robot
+# with a database limit and automatic run deletion:
+# robot --listener robotdashboardlistener.py:limit=1000 tests.robot
 
 
 class robotdashboardlistener:
