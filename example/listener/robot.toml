@@ -1,0 +1,28 @@
+# steps to use:
+# 1. place the robot.toml in the root of the project
+# 2. place the robotdashboardlistener.py in the root, or update the "robotdashboardlistener.py" paths below to the correct path
+# 3. run "pip install robotcode-runner"
+# 4. start the robotdashboard server "robotdashboard --server default" (or with custom host/port ofcourse!)
+# 5. choose any of the listener implementations below (choose 1!!)
+# 6. run your tests with "robotcode robot ."
+
+# extra robotcode command examples
+# robotcode robot path/to/tests/
+# robotcode -p dev robot -d results ./tests/
+# see https://robotcode.io/02_get_started/configuration for robot.toml/robotcode documentation
+
+# most basic toml usage
+[listeners]
+"robotdashboardlistener.py" = []
+
+# usage with tags
+# [listeners]
+# "robotdashboardlistener.py" = ["tags=dev1,dev2,dev3"]
+
+# usage with changed host/port for the server
+# [listeners]
+# "robotdashboardlistener.py" = ["tags=dev1,dev2,dev3", "host=127.0.0.2", "port=8888"]
+
+# usage where you automatically delete the oldest run if there are more than 100 in the database
+# [listeners]
+# "robotdashboardlistener.py" = ["tags=dev1,dev2,dev3", "limit=100"]
