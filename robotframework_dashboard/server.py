@@ -60,6 +60,7 @@ class AddOutput(BaseModel):
     output_data: str = None
     output_folder_path: str = None
     output_tags: list[str] = None
+    output_alias: str = None
     model_config = {
         "json_schema_extra": {
             "examples": [
@@ -74,6 +75,7 @@ class AddOutput(BaseModel):
 <suite id="s1-s1" name="Google" source="C:\docs\google.robot">
 <test id="s1-s1-t1" name="Test 01" line="6">... etc""",
                     "output_tags": [],
+                    "output_alias": "some_cool_alias",
                 },
                 {
                     "output_path": "C:\\users\\docs\\prod-outputs",
@@ -169,6 +171,7 @@ class ApiServer:
 <suite id="s1-s1" name="Google" source="C:\docs\google.robot">
 <test id="s1-s1-t1" name="Test 01" line="6">... etc""",
                                 "output_tags": [],
+                                "output_alias": "some_cool_alias",
                             },
                         },
                         "output folder path": {
@@ -186,7 +189,7 @@ class ApiServer:
             """Add output to database endpoint function
             The following combinations of parameters are valid:
             1. output_path: str valid path to output.xml + output_tags: list[str] tags for that output.xml
-            2. output_data: str output.xml content + output_tags: list[str] tags for that output.xml
+            2. output_data: str output.xml content + output_tags: list[str] tags for that output.xml + optional output_alias
             3. output_folder_path: str valid path to folder (might have subfolders) that contain output.xml (multiple allowed) + output_tags: list[str] tags for that output.xml
             """
             input = "provided input, overwritten on runtime"
@@ -224,14 +227,20 @@ class ApiServer:
                         output_folder_path=output_folder_path
                     )
                 if add_output.output_data != None:
-                    input = "temp_output.xml"
-                    file = open("temp_output.xml", "w", encoding="utf-8")
+                    input = ""
+                    if add_output.output_alias != None:
+                        input = f"{add_output.output_alias}.xml"
+                        file = open(input, "w", encoding="utf-8")
+                        output_path = abspath(input)
+                    else:
+                        input = "temp_output.xml"
+                        file = open(input, "w", encoding="utf-8")
+                        output_path = abspath(input)
                     file.write(add_output.output_data)
                     file.close()
-                    output_path = abspath("temp_output.xml")
                     outputs = [[output_path, add_output.output_tags]]
                     console = self.robotdashboard.process_outputs(outputs=outputs)
-                    remove("temp_output.xml")
+                    remove(input)
                 console += self.robotdashboard.create_dashboard()
                 response = {
                     "success": "1",

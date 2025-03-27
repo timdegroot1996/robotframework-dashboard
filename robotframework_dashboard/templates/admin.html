@@ -111,6 +111,8 @@
                     <div class="col-3">
                         <label class="form-label form-label-sm mt-1" for="outputDataTags">Run Tags (separate with ":")</label>
                         <input class="form-control form-control-sm" id="outputDataTags"></input>
+                        <label class="form-label form-label-sm mt-1" for="outputDataAlias">Run Alias</label>
+                        <input class="form-control form-control-sm" id="outputDataAlias"></input>
                     </div>
                     <div class="col-2">
                         <button class="btn btn-outline-primary btn-sm" style="margin-top:36px" id="addOutputData">Add&nbsp;
@@ -206,12 +208,15 @@
             document.getElementById('addDataSpinner').hidden = false
             const outputData = document.getElementById('outputData').value
             const outputDataTags = document.getElementById('outputDataTags').value.split(':')
+            const outputAlias = document.getElementById('outputDataAlias').value
             document.getElementById('outputData').value = ''
             document.getElementById('outputDataTags').value = ''
+            document.getElementById('outputDataAlias').value = ''
 
             const body = JSON.stringify({
                 output_data: outputData,
                 output_tags: outputDataTags,
+                output_alias: outputAlias,
             });
             send_request("POST", "/add-outputs", body, 'addDataSpinner')
         }
