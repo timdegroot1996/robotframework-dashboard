@@ -201,7 +201,7 @@ class TestProcessor(ResultVisitor):
                 test.skipped,
                 elapsed_time,
                 start_time,
-                test.message[:150],
+                test.message,
                 str(test.tags).replace(" ", ""),
             )
         )

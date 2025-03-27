@@ -23,6 +23,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.js"></script>
 
+    <!-- String similarity import -->
+    <script src="https://unpkg.com/string-similarity@4.0.4/umd/string-similarity.min.js"></script>
+
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon"
         href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==" />
@@ -423,15 +427,14 @@
                         <div class="btn-group form-switch me-1">
                             <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkips">
                         </div>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar"
-                            >Bar
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="testMostFlakyGraphTimeline">Timeline View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="testMostFlakyFullscreen" style="margin-right:56px;">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose"
-                            hidden style="margin-right:56px;">Close</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyFullscreen"
+                            style="margin-right:56px;">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose" hidden
+                            style="margin-right:56px;">Close</button>
                         <canvas id="testMostFlakyGraph"></canvas>
                     </div>
                 </div>
@@ -458,6 +461,13 @@
                         <canvas id="testMostFailedGraph"></canvas>
                     </div>
                     <div class="col canvas mb-5" id="testMessagesCanvas">
+                        <div class="btn-group me-1" style="margin-bottom:6px">
+                            <label class="form-label form-label-sm" for="similarity">Similarity %</label>
+                        </div>
+                        <div class="btn-group me-1" style="margin-bottom:13px">
+                            <input class="form-control form-control-sm" type=number min=0 max=100 id="similarity"
+                                value="100">
+                        </div>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
@@ -917,6 +927,14 @@
             create_keyword_min_duration_graph();
             create_keyword_max_duration_graph();
         });
+        document.getElementById("similarity").addEventListener("change", (e) => {
+            var similarity = parseFloat(document.getElementById("similarity").value)
+            if (similarity > 100 || similarity < 0) {
+                similarity = 100
+                document.getElementById("similarity").value = 100
+            }
+            create_test_messages_graph();
+        })
 
         // function that initializes the from date/time and to date/time selection boxes in the filters
         function set_lowest_highest_dates() {
@@ -2509,16 +2527,37 @@
 
         // function to prepare the data in the correct format for messages graphs
         function get_messages_data(dataType, graphType, filteredData) {
-            var data = {};
+            var data = {}
             var aliases = {}
-            for (value of filteredData) {
-                if (value.message && (value.failed == 1 || value.skipped == 1)) {
-                    if (data[value.message]) {
-                        data[value.message].push(value.run_start);
-                        aliases[value.message].push(value.run_alias)
-                    } else {
-                        data[value.message] = [value.run_start];
-                        aliases[value.message] = [value.run_alias]
+            var similarity = parseFloat(document.getElementById("similarity").value)/100
+            if (similarity == 1) {
+                for (value of filteredData) {
+                    if (value.message && (value.failed == 1 || value.skipped == 1)) {
+                        if (data[value.message]) {
+                            data[value.message].push(value.run_start);
+                            aliases[value.message].push(value.run_alias)
+                        } else {
+                            data[value.message] = [value.run_start];
+                            aliases[value.message] = [value.run_alias]
+                        }
+                    }
+                }
+            } else {
+                for (value of filteredData) {
+                    if (value.message && (value.failed == 1 || value.skipped == 1)) {
+                        var match = false
+                        for (key of Object.keys(data)){
+                            var similarityPercentage = stringSimilarity.compareTwoStrings(value.message.toLowerCase(), key.toLowerCase())
+                            if (similarityPercentage >= similarity) {
+                                match = true
+                                data[key].push(value.run_start)
+                                aliases     [key].push(value.run_alias)
+                            }
+                        }
+                        if (!match) {
+                            data[value.message] = [value.run_start]
+                            aliases[value.message] = [value.run_alias]
+                        }
                     }
                 }
             }
