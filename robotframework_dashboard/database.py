@@ -150,18 +150,19 @@ class DatabaseProcessor:
 
     def _get_runs(self):
         """Helper function to get the run data"""
-        data = self.connection.cursor().execute(SELECT_NAME_START_FROM_RUNS).fetchall()
-        runs = []
-        names = []
+        data = self.connection.cursor().execute(SELECT_RUN_DATA).fetchall()
+        runs, names, aliases, tags = [], [], [], []
         for entry in data:
             entry = self._dict_from_row(entry)
             runs.append(entry["run_start"])
             names.append(entry["name"])
-        return runs, names
+            aliases.append(entry["run_alias"])
+            tags.append(entry["tags"])
+        return runs, names, aliases, tags
 
     def list_runs(self):
         """This function gets all available runs and prints them to the console"""
-        run_starts, run_names = self._get_runs()
+        run_starts, run_names, run_aliases, run_tags = self._get_runs()
         for index, run_start in enumerate(run_starts):
             print(
                 f"  Run {str(index).ljust(3, ' ')} | {run_start} | {run_names[index]}"
@@ -171,7 +172,7 @@ class DatabaseProcessor:
 
     def remove_runs(self, remove_runs):
         """This function removes all provided runs and all their corresponding data"""
-        run_starts, run_names = self._get_runs()
+        run_starts, run_names, run_aliases, run_tags = self._get_runs()
         console = ""
         for run in remove_runs:
             run = run[0]

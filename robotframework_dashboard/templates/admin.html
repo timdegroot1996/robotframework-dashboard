@@ -245,9 +245,9 @@
             xhr.onload = () => {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     const runs = JSON.parse(xhr.responseText)
-                    let table = '<tr><th>Run Index</th><th>Run Start</th><th>Run Name</th></tr>'
+                    let table = '<tr><th>Run Index</th><th>Run Start</th><th>Run Name</th><th>Run Alias</th><th>Run Tags</th></tr>'
                     for (const [index, run] of runs.entries()) {
-                        table += `<tr><td>${index}</td><td>${run.run_start}</td><td>${run.name}</td></tr>`
+                        table += `<tr><td>${index}</td><td>${run.run_start}</td><td>${run.name}</td><td>${run.alias}</td><td>${run.tags}</td></tr>`
                     }
                     document.getElementById('runTable').innerHTML = table
                 } else {

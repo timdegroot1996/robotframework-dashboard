@@ -16,7 +16,7 @@ INSERT_INTO_TESTS = """ INSERT INTO tests VALUES (?,?,?,?,?,?,?,?,?,?,?) """
 INSERT_INTO_KEYWORDS = """ INSERT INTO keywords VALUES (?,?,?,?,?,?,?,?,?,?,?) """
 
 SELECT_FROM_RUNS = """ SELECT * FROM runs """
-SELECT_NAME_START_FROM_RUNS = """ SELECT name, run_start FROM runs """
+SELECT_RUN_DATA = """ SELECT name, run_start, run_alias, tags FROM runs """
 SELECT_FROM_SUITES = """ SELECT * FROM suites """
 SELECT_FROM_TESTS = """ SELECT * FROM tests """
 SELECT_FROM_KEYWORDS = """ SELECT * FROM keywords """

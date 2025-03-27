@@ -131,9 +131,9 @@ class RobotDashboard:
     def get_runs(self):
         """Function that gets the runs and corresponding names from the database"""
         self.database.open_database()
-        runs, names = self.database._get_runs()
+        runs, names, aliases, tags = self.database._get_runs()
         self.database.close_database()
-        return runs, names
+        return runs, names, aliases, tags
 
     def remove_outputs(self, remove_runs = None):
         """Function that removes the remove_runs that were set when instantiating the RobotDashboard class"""

@@ -6,7 +6,9 @@ CREATE_SUITES = """ CREATE TABLE IF NOT EXISTS suites ("run_start" TEXT, "full_n
 CREATE_TESTS = """ CREATE TABLE IF NOT EXISTS tests ("run_start" TEXT, "full_name" TEXT, "name" TEXT, "passed" INTEGER, "failed" INTEGER, "skipped" INTEGER, "elapsed_s" TEXT, "start_time" TEXT, "message" TEXT, "tags" TEXT, "run_alias" TEXT); """
 CREATE_KEYWORDS = """ CREATE TABLE IF NOT EXISTS keywords ("run_start" TEXT, "name" TEXT, "passed" INTEGER, "failed" INTEGER, "skipped" INTEGER, "times_run" TEXT, "total_time_s" TEXT, "average_time_s" TEXT, "min_time_s" TEXT, "max_time_s" TEXT, "run_alias" TEXT); """
 
-RUN_TABLE_EXISTS = """SELECT name FROM sqlite_master WHERE type='table' AND name='runs';"""
+RUN_TABLE_EXISTS = (
+    """SELECT name FROM sqlite_master WHERE type='table' AND name='runs';"""
+)
 RUN_TABLE_LENGTH = """PRAGMA table_info(runs);"""
 RUN_TABLE_UPDATE = """ALTER TABLE runs ADD COLUMN run_alias TEXT;"""
 SUITE_TABLE_UPDATE = """ALTER TABLE suites ADD COLUMN run_alias TEXT;"""
@@ -19,7 +21,7 @@ INSERT_INTO_TESTS = """ INSERT INTO tests VALUES (?,?,?,?,?,?,?,?,?,?,?) """
 INSERT_INTO_KEYWORDS = """ INSERT INTO keywords VALUES (?,?,?,?,?,?,?,?,?,?,?) """
 
 SELECT_FROM_RUNS = """ SELECT * FROM runs """
-SELECT_NAME_START_FROM_RUNS = """ SELECT name, run_start FROM runs """
+SELECT_RUN_DATA = """ SELECT name, run_start, run_alias, tags FROM runs """
 SELECT_FROM_SUITES = """ SELECT * FROM suites """
 SELECT_FROM_TESTS = """ SELECT * FROM tests """
 SELECT_FROM_KEYWORDS = """ SELECT * FROM keywords """
@@ -177,18 +179,19 @@ class DatabaseProcessor:
 
     def _get_runs(self):
         """Helper function to get the run data"""
-        data = self.connection.cursor().execute(SELECT_NAME_START_FROM_RUNS).fetchall()
-        runs = []
-        names = []
+        data = self.connection.cursor().execute(SELECT_RUN_DATA).fetchall()
+        runs, names, aliases, tags = [], [], [], []
         for entry in data:
             entry = self._dict_from_row(entry)
             runs.append(entry["run_start"])
             names.append(entry["name"])
-        return runs, names
+            aliases.append(entry["run_alias"])
+            tags.append(entry["tags"])
+        return runs, names, aliases, tags
 
     def list_runs(self):
         """This function gets all available runs and prints them to the console"""
-        run_starts, run_names = self._get_runs()
+        run_starts, run_names, run_aliases, run_tags = self._get_runs()
         for index, run_start in enumerate(run_starts):
             print(
                 f"  Run {str(index).ljust(3, ' ')} | {run_start} | {run_names[index]}"
@@ -198,7 +201,7 @@ class DatabaseProcessor:
 
     def remove_runs(self, remove_runs):
         """This function removes all provided runs and all their corresponding data"""
-        run_starts, run_names = self._get_runs()
+        run_starts, run_names, run_aliases, run_tags = self._get_runs()
         console = ""
         for run in remove_runs:
             run = run[0]

@@ -15,7 +15,7 @@ INSERT_INTO_TESTS = """ INSERT INTO tests (run_start, full_name, name, passed, f
 INSERT_INTO_KEYWORDS = """ INSERT INTO keywords (run_start, name, passed, failed, skipped, times_run, total_time_s, average_time_s, min_time_s, max_time_s) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) """
 
 SELECT_FROM_RUNS = """ SELECT * FROM runs """
-SELECT_NAME_START_FROM_RUNS = """ SELECT name, run_start FROM runs """
+SELECT_RUN_DATA = """ SELECT name, run_start, run_alias, tags FROM runs """
 SELECT_FROM_SUITES = """ SELECT * FROM suites """
 SELECT_FROM_TESTS = """ SELECT * FROM tests """
 SELECT_FROM_KEYWORDS = """ SELECT * FROM keywords """
@@ -170,20 +170,21 @@ class DatabaseProcessor:
     def _get_runs(self):
         """Helper function to get the run data"""
         cursor = self.connection.cursor()
-        cursor.execute(SELECT_NAME_START_FROM_RUNS)
+        cursor.execute(SELECT_RUN_DATA)
         data = cursor.fetchall()
-        runs = []
-        names = []
+        runs, names, aliases, tags = [], [], [], []
         keys = ["name", "run_start"]
         for entry in data:
             entry = self._dict_from_row(entry, keys)
             runs.append(entry["run_start"])
             names.append(entry["name"])
-        return runs, names
+            aliases.append(entry["run_alias"])
+            tags.append(entry["tags"])
+        return runs, names, aliases, tags
 
     def list_runs(self):
         """This function gets all available runs and prints them to the console"""
-        run_starts, run_names = self._get_runs()
+        run_starts, run_names, run_aliases, run_tags = self._get_runs()
         for index, run_start in enumerate(run_starts):
             print(
                 f"  Run {str(index).ljust(3, ' ')} | {run_start} | {run_names[index]}"
@@ -193,7 +194,7 @@ class DatabaseProcessor:
 
     def remove_runs(self, remove_runs):
         """This function removes all provided runs and all their corresponding data"""
-        run_starts, run_names = self._get_runs()
+        run_starts, run_names, run_aliases, run_tags = self._get_runs()
         for run in remove_runs:
             run = run[0]
             if run in run_starts:

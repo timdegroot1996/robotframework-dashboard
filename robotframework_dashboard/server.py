@@ -37,12 +37,16 @@ class GetOutput(BaseModel):
 
     run_start: str
     name: str
+    alias: str
+    tags: str
     model_config = {
         "json_schema_extra": {
             "examples": [
                 {
                     "run_start": "2024-10-14 22:32:59.580309",
                     "name": "RobotFramework-Dashboard",
+                    "alias": "cool_run_alias",
+                    "tags": "prod,tag1,nightly",
                 }
             ]
         }
@@ -133,10 +137,12 @@ class ApiServer:
         async def get_outputs() -> list[GetOutput]:
             """Get a list of dictionaries containting the runs (run_starts) and names of the runs
             currently available in the database"""
-            runs, names = self.robotdashboard.get_runs()
+            runs, names, aliases, tags = self.robotdashboard.get_runs()
             outputs = []
-            for run, name in zip(runs, names):
-                outputs.append({"run_start": run, "name": name})
+            for run, name, alias, tag in zip(runs, names, aliases, tags):
+                outputs.append(
+                    {"run_start": run, "name": name, "alias": alias, "tags": tag}
+                )
             return outputs
 
         @self.app.post("/add-outputs")
