@@ -67,9 +67,12 @@ class ArgumentParser:
         parser.add_argument(
             "-r",
             "--removeruns",
-            help="`string` Specifies 1 or more indexes or run_start datetimes to remove from the database. \
-                            Specify every run separately with -r if you are providing more than one. \
-                            Examples: -r 0 -r 1 -r 10 or --removeRuns '2024-07-30 15:27:20.184407' -r 20",
+            help="`string` Specifies 1 or more indexes, run_starts, aliases or tags to remove from the database. \
+                            You can add multiple runs to remove in one call as long as you split with a comma (,). \
+                            Do note that it is required to specify the type of data you are providing (index, run_start, alias or tag). \
+                            Multiple types of data at once is allowed! With indexes you can use : for ranges and ; for singular indexes at once. \
+                            Examples: -r index=0,index=1:4;9,index=10 or --removeruns 'run_start=2024-07-30 15:27:20.184407,index=20' \
+                            or -r alias=some_cool_alias,tag=prod,tag=dev",
             action="append",
             nargs="*",
             default=None,
@@ -174,6 +177,15 @@ class ArgumentParser:
             tags = splitted[1:]
             outputfolderpath = [path, tags]
 
+        # handles the processing of --removeruns
+        remove_runs = None
+        if arguments.removeruns != None:
+            remove_runs = []
+            for runs in arguments.removeruns:
+                parts = str(runs[0]).split(',')
+                for part in parts:
+                    remove_runs.append(part)
+
         # handles the boolean handling of --generatedashboard
         generate_dashboard = (
             True
@@ -248,7 +260,7 @@ class ArgumentParser:
             "dashboard_name": dashboard_name,
             "generation_datetime": generation_datetime,
             "list_runs": list_runs,
-            "remove_runs": arguments.removeruns,
+            "remove_runs": remove_runs,
             "dashboard_title": arguments.dashboardtitle,
             "exclude_milliseconds": exclude_milliseconds,
             "use_run_aliases": use_run_aliases,

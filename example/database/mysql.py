@@ -173,7 +173,7 @@ class DatabaseProcessor:
         cursor.execute(SELECT_RUN_DATA)
         data = cursor.fetchall()
         runs, names, aliases, tags = [], [], [], []
-        keys = ["name", "run_start"]
+        keys = ["name", "run_start", "run_alias", "tags"]
         for entry in data:
             entry = self._dict_from_row(entry, keys)
             runs.append(entry["run_start"])

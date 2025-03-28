@@ -175,23 +175,55 @@ class DatabaseProcessor:
         run_starts, run_names, run_aliases, run_tags = self._get_runs()
         console = ""
         for run in remove_runs:
-            run = run[0]
-            if run in run_starts:
-                self._remove_run(run)
-                print(f"  Removed run from the database: {run}")
-                console += f"  Removed run from the database: {run}\n"
-            else:
-                try:
-                    run_index = int(run)
-                    run_start = run_starts[run_index]
+            try:
+                if "run_start=" in run:
+                    run_start = run.replace("run_start=", "")
+                    if not run_start in run_starts:
+                        print(f"  ERROR: Could not find run to remove from the database: {run_start}")
+                        console += f"  ERROR: Could not find run to remove from the database: {run_start}\n"
+                        continue
                     self._remove_run(run_start)
-                    print(f"  Removed run from the database: {run_start}")
-                    console += f"  Removed run from the database: {run_start}\n"
-                except:
-                    print(f"  ERROR: Could not find run to remove the database: {run}")
-                    console += (
-                        f"  ERROR: Could not find run to remove the database: {run}\n"
-                    )
+                    print(f"  Removed run from the database: run_start={run_start}")
+                    console += f"  Removed run from the database: run_start={run_start}\n"
+                elif "index=" in run:
+                    runs = run.replace("index=", "").split(';')
+                    indexes = []
+                    for run in runs:
+                        if ':' in run:
+                            start, stop = run.split(':')
+                            for i in range(int(start), int(stop)+1):
+                                indexes.append(i)
+                        else:
+                            indexes.append(int(run))
+                    for index in indexes:
+                        self._remove_run(run_starts[index])
+                        print(f"  Removed run from the database: index={index}, run_start={run_starts[index]}")
+                        console += f"  Removed run from the database: index={index}, run_start={run_starts[index]}\n"
+                elif "alias=" in run:
+                    alias = run.replace("alias=", "")
+                    self._remove_run(run_starts[run_aliases.index(alias)])
+                    print(f"  Removed run from the database: alias={alias}, run_start={run_starts[run_aliases.index(alias)]}")
+                    console += f"  Removed run from the database: alias={alias}, run_start={run_starts[run_aliases.index(alias)]}\n"
+                elif "tag=" in run:
+                    tag = run.replace("tag=", "")
+                    removed = 0
+                    for index, run_tag in enumerate(run_tags):
+                        if tag in run_tag:
+                            self._remove_run(run_starts[index])
+                            print(f"  Removed run from the database: tag={tag}, run_start={run_starts[index]}")
+                            console += f"  Removed run from the database: tag={tag}, run_start={run_starts[index]}\n"
+                            removed += 1
+                    if removed == 0:
+                        print(f"  WARNING: no runs were removed as no runs were found with tag: {tag}")
+                        console += f"  WARNING: no runs were removed as no runs were found with tag: {tag}\n"
+                else:
+                    print(f"  ERROR: incorrect usage of the remove_run feature ({run}), check out robotdashboard --help for instructions")
+                    console += f"  ERROR: incorrect usage of the remove_run feature ({run}), check out robotdashboard --help for instructions\n"
+            except:
+                print(f"  ERROR: Could not find run to remove from the database: {run}")
+                console += (
+                    f"  ERROR: Could not find run to remove from the database: {run}\n"
+                )
         return console
 
     def _remove_run(self, run_start):

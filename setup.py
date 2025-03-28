@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="robotframework-dashboard",
-    version="0.6.2",
+    version="0.6.3",
     description="Output processor and dashboard generator for Robot Framework output files",
     long_description="""# Robot Framework Dashboard
 
@@ -125,10 +125,11 @@ robotdashboard -n results/result_robot_dashboard.html
 ```
 robotdashboard -d result_data/robot_result_database.db
 ```
-- Remove data from the database, can be based on run number (index) or run start time
+- Remove data from the database, can be based on run_start, index, alias or tag
 ```
-robotdashboard -r 0
-robotdashboard -r -1 -r "2024-10-17 15:05:04.563559"
+robotdashboard -r index=0,index=1:4;9,index=10    # will remove index 0,1,2,3,4,9,10
+robotdashboard --removeruns 'run_start=2024-07-30 15:27:20.184407,index=20'    # use quotes when using spaces!
+robotdashboard -r alias=some_cool_alias,tag=prod,tag=dev -r alias=alias12345
 ```
 - Add a custom dashboard html title
 ```

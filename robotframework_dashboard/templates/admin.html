@@ -82,7 +82,7 @@
                 </div>
                 <div class="row">
                     <div class="col-2 d-flex">
-                        <p class="mt-auto">output.xml:</p>
+                        <p class="mt-auto">output.xml</p>
                     </div>
                     <div class="col-5">
                         <label class="form-label form-label-sm" for="outputPath">Absolute Path (E.g. "C:/users/your_user/output.xml")</label>
@@ -101,7 +101,7 @@
                 </div>
                 <div class="row">
                     <div class="col-2 d-flex">
-                        <p class="mt-auto">output.xml:</p>
+                        <p class="mt-auto">output.xml</p>
                     </div>
                     <div class="col-5">
                         <label class="form-label form-label-sm mt-1" for="outputData">XML Data (copy paste the output.xml
@@ -123,7 +123,7 @@
                 </div>
                 <div class="row">
                     <div class="col-2 d-flex">
-                        <p class="mt-auto">output folder:</p>
+                        <p class="mt-auto">output folder</p>
                     </div>
                     <div class="col-5">
                         <label class="form-label form-label-sm mt-1" for="outputFolderPath">Absolute Path (E.g. "C:/some_folder/your_output_folder")</label>
@@ -149,12 +149,38 @@
                 </div>
                 <div class="row">
                     <div class="col-2 d-flex">
-                        <p class="mt-auto">outputs to remove:</p>
+                        <p class="mt-auto">outputs to remove by run_start</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm" for="runsToRemove">Run Index or Run Start (separate with
-                            ",")</label>
-                        <input class="form-control form-control-sm" id="runsToRemove"></input>
+                        <label class="form-label form-label-sm" for="removeRunStarts">E.g. '2025-03-13 00:29:15.926420,2025-03-23 20:31:03.541062' (, separated)</label>
+                        <input class="form-control form-control-sm" id="removeRunStarts"></input>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">outputs to remove by index</p>
+                    </div>
+                    <div class="col-8">
+                        <label class="form-label form-label-sm mt-1" for="removeIndexes">E.g. '1:3;9;13', will remove 1,2,3,9,13 (: or ; separated)</label>
+                        <input class="form-control form-control-sm" id="removeIndexes"></input>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">outputs to remove by alias</p>
+                    </div>
+                    <div class="col-8">
+                        <label class="form-label form-label-sm mt-1" for="removeAliases">E.g. 'alias1,cool_alias_2' (, separated)</label>
+                        <input class="form-control form-control-sm" id="removeAliases"></input>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">outputs to remove by tag</p>
+                    </div>
+                    <div class="col-8">
+                        <label class="form-label form-label-sm mt-1" for="removeTags">E.g. 'prod,dev,nightly,tag1' (, separated)</label>
+                        <input class="form-control form-control-sm" id="removeTags"></input>
                     </div>
                     <div class="col-2 d-flex">
                         <button class="btn btn-outline-primary btn-sm mt-auto" id="removeOutputs">Remove&nbsp;
@@ -237,9 +263,36 @@
 
         function remove_outputs() {
             document.getElementById('removeSpinner').hidden = false
-            const runsToRemove = document.getElementById('runsToRemove').value.split(',')
-            document.getElementById('runsToRemove').value = ''
-            const body = JSON.stringify({ runs: runsToRemove })
+            var [data, run_starts, indexes, aliases, tags] = [{}, [], [], [], []]
+            const removeRunStarts = document.getElementById('removeRunStarts').value.split(',')
+            for (const runStart of removeRunStarts) {
+                if (runStart == '') { continue }
+                run_starts.push(runStart)
+            }
+            if (run_starts.length > 0) { data['run_starts'] = run_starts }
+            const removeIndexes = document.getElementById('removeIndexes').value.split(';')
+            for (const index of removeIndexes) {
+                if (index == '') { continue }
+                indexes.push(index)
+            }
+            if (indexes.length > 0) { data['indexes'] = indexes }
+            const removeAliases = document.getElementById('removeAliases').value.split(',')
+            for (const removeAlias of removeAliases) {
+                if (removeAlias == '') { continue }
+                aliases.push(removeAlias)
+            }
+            if (aliases.length > 0) { data['aliases'] = aliases }
+            const removeTags = document.getElementById('removeTags').value.split(',')
+            for (const removeTag of removeTags) {
+                if (removeTag == '') { continue }
+                tags.push(removeTag)
+            }
+            if (tags.length > 0) { data['tags'] = tags }
+            // document.getElementById('removeRunStarts').value = ''
+            // document.getElementById('removeIndexes').value = ''
+            // document.getElementById('removeAliases').value = ''
+            // document.getElementById('removeTags').value = ''
+            const body = JSON.stringify(data)
             send_request("DELETE", "/remove-outputs", body, 'removeSpinner')
         }
 

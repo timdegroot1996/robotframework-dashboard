@@ -89,21 +89,24 @@ class AddOutput(BaseModel):
 class RemoveOutputs(BaseModel):
     """The model that has to be provided when trying to delete outputs from the database"""
 
-    runs: list[str]
+    run_starts: list[str] = None
+    indexes: list[str] = None
+    aliases: list[str] = None
+    tags: list[str] = None
     model_config = {
         "json_schema_extra": {
             "examples": [
-                {"runs": ["0", "-1", "5", "10"]},
-                {"runs": ["2024-10-14 12:32:59.123456", "2024-10-14 22:32:59.580309"]},
+                {"indexes": ["0", "-1", "5", "10"]},
                 {
-                    "runs": [
-                        "0",
-                        "-1",
-                        "2024-10-14 22:32:59.580309",
-                        "6",
+                    "run_starts": [
                         "2024-10-14 12:32:59.123456",
-                        "2024-10-15 11:10:10.580309",
+                        "2024-10-14 22:32:59.580309",
                     ]
+                },
+                {
+                    "aliases": ["alias1", "alias2"],
+                    "indexes": ["0", "-1"],
+                    "tags": ["tag1", "tag2", "tag3"],
                 },
             ]
         }
@@ -261,30 +264,25 @@ class ApiServer:
                         "indexes": {
                             "summary": "When removing outputs based on indexes",
                             "description": "when removing outputs based on indexes",
-                            "value": {"runs": ["0", "-1", "5", "10"]},
+                            "value": {"indexes": ["0", "-1", "5", "10"]},
                         },
                         "run_starts": {
                             "summary": "When removing outputs based on run_starts",
                             "description": "When removing outputs based on run_starts",
                             "value": {
-                                "runs": [
+                                "run_starts": [
                                     "2024-10-14 12:32:59.123456",
                                     "2024-10-14 22:32:59.580309",
                                 ]
                             },
                         },
-                        "indexes and run_starts": {
-                            "summary": "When removing outputs based on both indexes and run_starts",
-                            "description": "When removing outputs based on both indexes and run_starts",
+                        "aliases, indexes and tags": {
+                            "summary": "When removing outputs based on multiple types: aliases, indexes and tags",
+                            "description": "When removing outputs based on multiple types: aliases, indexes and tags",
                             "value": {
-                                "runs": [
-                                    "0",
-                                    "-1",
-                                    "2024-10-14 22:32:59.580309",
-                                    "6",
-                                    "2024-10-14 12:32:59.123456",
-                                    "2024-10-15 11:10:10.384748",
-                                ]
+                                "aliases": ["alias1", "alias2"],
+                                "indexes": ["0", "-1"],
+                                "tags": ["tag1", "tag2", "tag3"],
                             },
                         },
                     },
@@ -299,8 +297,19 @@ class ApiServer:
                 # Because the argparser makes use of the format: [[outputtoremove1], [outputtoremove2]]
                 # We have to create a list of lists with 1 item to match the handling of the API
                 remove_runs = []
-                for run in remove_output.runs:
-                    remove_runs.append([run])
+                if remove_output.run_starts != None:
+                    for run in remove_output.run_starts:
+                        remove_runs.append(f'run_start={run}')
+                if remove_output.indexes != None:
+                    for run in remove_output.indexes:
+                        remove_runs.append(f'index={run}')
+                if remove_output.aliases != None:
+                    for run in remove_output.aliases:
+                        remove_runs.append(f'alias={run}')
+                if remove_output.tags != None:
+                    for run in remove_output.tags:
+                        remove_runs.append(f'tag={run}')
+                print(remove_runs)
                 console = self.robotdashboard.remove_outputs(remove_runs)
                 console += self.robotdashboard.create_dashboard()
                 response = {

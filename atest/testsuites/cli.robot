@@ -39,12 +39,12 @@ Validate robotdashboard outputfolderpath
 
 Validate robotdashboard r
     Validate CLI    command=robotdashboard --outputfolderpath ${OUTPUTS_FOLDER}
-    Validate CLI    command=robotdashboard -r -1 -r 0 -r 1 -r "2025-03-13 00:27:39.871333"    expected=removerun
+    Validate CLI    command=robotdashboard -r "index=0:3;-1;6,run_start=2025-03-13 00:27:39.871333,alias=abc,tag=tag1"    expected=removerun
 
 Validate robotdashboard removerun
     Validate CLI    command=robotdashboard --outputfolderpath ${OUTPUTS_FOLDER}
     Validate CLI
-    ...    command=robotdashboard --removerun -1 --removerun 0 --removerun 1 --removerun "2025-03-13 00:27:39.871333"
+    ...    command=robotdashboard --removerun index=0:3;-1;6 --removerun "run_start=2025-03-13 00:27:39.871333" --removerun alias=abc,tag=tag1
     ...    expected=removerun
 
 Validate robotdashboard d

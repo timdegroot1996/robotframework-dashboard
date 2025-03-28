@@ -24,11 +24,17 @@ options:
                         will look in all folders and subfolders for
                         *output*.xml files to be processed into the database
   -r [[]REMOVERUNS ...[]], --removeruns [[]REMOVERUNS ...[]]
-                        `string` Specifies 1 or more indexes or run_start
-                        datetimes to remove from the database. Specify every
-                        run separately with -r if you are providing more than
-                        one. Examples: -r 0 -r 1 -r 10 or --removeRuns
-                        '2024-07-30 15:27:20.184407' -r 20
+                        `string` Specifies 1 or more indexes, run_starts,
+                        aliases or tags to remove from the database. You can
+                        add multiple runs to remove in one call as long as you
+                        split with a comma (,). Do note that it is required to
+                        specify the type of data you are providing (index,
+                        run_start, alias or tag). Multiple types of data at
+                        once is allowed! With indexes you can use : for ranges
+                        and ; for singular indexes at once. Examples: -r
+                        index=0,index=1:4;9,index=10 or --removeruns
+                        'run_start=2024-07-30 15:27:20.184407,index=20' or -r
+                        alias=some_cool_alias,tag=prod,tag=dev
   -d DATABASEPATH, --databasepath DATABASEPATH
                         `path` Specifies the path to the database you want to
                         store the results in.
