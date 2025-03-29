@@ -76,6 +76,6 @@ Validate Run Tag Filter
         Check Checkbox    selector=id=dev
     END
     Click    selector=id=selectRunTags
-    Sleep    time_=5000ms
+    Sleep    time_=1s
     Take Screenshot    filename=filterRunTags${option}    fullPage=${True}
     Validate Screenshot    screenshot=filterRunTags${option}    reference=filterRunTags${option}
