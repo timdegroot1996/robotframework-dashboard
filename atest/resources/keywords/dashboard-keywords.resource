@@ -61,6 +61,21 @@ Validate Run Filter
 
 Validate Run Tag Filter
     [Arguments]    ${option}
-    Select Options By    id=runTag    value    ${option}
+    Click    selector=id=selectRunTags
+    IF    '${option}' == 'All'
+        Check Checkbox    selector=id=All
+        Uncheck Checkbox    selector=id=prod
+        Uncheck Checkbox    selector=id=dev
+    ELSE IF    '${option}' == 'prod'
+        Uncheck Checkbox    selector=id=All
+        Check Checkbox    selector=id=prod
+        Uncheck Checkbox    selector=id=dev
+    ELSE IF    '${option}' == 'dev'
+        Uncheck Checkbox    selector=id=All
+        Uncheck Checkbox    selector=id=prod
+        Check Checkbox    selector=id=dev
+    END
+    Click    selector=id=selectRunTags
+    Sleep    time_=5000ms
     Take Screenshot    filename=filterRunTags${option}    fullPage=${True}
     Validate Screenshot    screenshot=filterRunTags${option}    reference=filterRunTags${option}

@@ -79,6 +79,32 @@
             z-index: 10;
             padding: 11px 20px 70px 20px;
         }
+
+        .selectBox {
+            position: relative;
+        }
+
+        .selectBox select {
+            width: 100%;
+        }
+
+        .overSelect {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+
+        #checkboxes {
+            display: none;
+            position: absolute;
+            z-index: 2;
+        }
+
+        #checkboxes label {
+            display: block;
+        }
     </style>
 </head>
 
@@ -86,7 +112,6 @@
     <div class="container-fluid mt-4">
         <div class="card">
             <div class="card-body">
-                <!-- Title row -->
                 <div class="row">
                     <div class="col-10">
                         <div class="row">
@@ -107,8 +132,16 @@
                                 <select class="form-select form-select-sm" id="runs"></select>
                             </div>
                             <div class="col-auto">
-                                <label class="form-label form-label-sm" for="runTag">Run Tags</label>
-                                <select class="form-select form-select-sm" id="runTag"></select>
+                                <div class="selectBox" id="selectRunTags">
+                                    <label class="form-label form-label-sm" for="runTag">Run Tags</label>
+                                    <select class="form-select form-select-sm" id="selectRunTagsElement">
+                                        <option>Select Tags</option>
+                                    </select>
+                                    <div class="overSelect"></div>
+                                </div>
+                                <div id="checkboxes">
+                                    <ul class="list-group" id="runTag"></ul>
+                                </div>
                             </div>
                             <div class="col-auto">
                                 <label class="form-label form-label-sm" for="fromDate">From Date</label>
@@ -423,15 +456,14 @@
                         <div class="btn-group form-switch me-1">
                             <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkips">
                         </div>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar"
-                            >Bar
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
                             id="testMostFlakyGraphTimeline">Timeline View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="testMostFlakyFullscreen" style="margin-right:56px;">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose"
-                            hidden style="margin-right:56px;">Close</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyFullscreen"
+                            style="margin-right:56px;">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose" hidden
+                            style="margin-right:56px;">Close</button>
                         <canvas id="testMostFlakyGraph"></canvas>
                     </div>
                 </div>
@@ -777,8 +809,8 @@
         //initialize all data and graphs on load of the dashboard.html
         update_data_and_all_graphs();
 
-        // eventlisteners for filters
-        const filters = ["runs", "runTag", "fromDate", "fromTime", "toDate", "toTime"]
+        // eventlisteners for filters (runTags is done separately because of different usage)
+        const filters = ["runs", "fromDate", "fromTime", "toDate", "toTime"]
         for (let f of filters) {
             document.getElementById(f).addEventListener("change", update_data_and_all_graphs);
         }
@@ -874,6 +906,8 @@
             }
         }
 
+        // eventlistener for run tags selection
+        document.getElementById("selectRunTags").addEventListener("click", show_checkboxes);
         // eventlistener for reset filter button
         document.getElementById("resetFilters").addEventListener("click", reset_filters);
         // eventlistener for all selection boxes and their respective graphs that should be updated
@@ -1004,20 +1038,35 @@
 
         // function to filter run data based on the run tags filter
         function filter_runtags(runs) {
-            var tag = document.getElementById("runTag").value;
+            var tagElements = document.getElementById("runTag").getElementsByTagName("input");
+            var tags = []
+            for (tagElement of tagElements) {
+                if (tagElement.checked) {
+                    tags.push(tagElement.id)
+                }
+            }
             var filteredRuns = [];
             for (value of runs) {
-                if (tag != "All") {
+                if (tags.includes("All")) {
+                    // if All is included just return everything
+                    filteredRuns = runs;
+                } else if (tags.length == 0) {
+                    // if no filter is applied just return an empty list
+                    return filteredRuns
+                }
+                else {
+                    // do the complicated filtering if above conditions are not true
                     var runTags = value.tags.split(",");
-                    for (runTag of runTags) {
-                        if (tag != runTag) {
-                            continue;
-                        } else {
-                            filteredRuns.push(value);
+                    var valid = true
+                    for (tag of tags) {
+                        if (!runTags.includes(tag)) {
+                            valid = false
+                            break
                         }
                     }
-                } else {
-                    filteredRuns = runs;
+                    if (valid) {
+                        filteredRuns.push(value);
+                    }
                 }
             }
             return filteredRuns;
@@ -1103,10 +1152,38 @@
                     }
                 }
             }
-            var tagsSelect = document.getElementById("runTag");
-            tagsSelect.options[tagsSelect.options.length] = new Option("All", "All");
+            var listItem = `<li class="list-group-item d-flex small" onclick="update_data_and_all_graphs()">
+                                <input class="form-check-input me-1" type="checkbox" value="" id="{value}">
+                                <label class="form-check-label ms-2" for="{value}">{value}</label>
+                            </li>`
+            var listItems = listItem.replaceAll('{value}', 'All')
             for (tag of tags) {
-                tagsSelect.options[tagsSelect.options.length] = new Option(tag, tag);
+                listItems += listItem.replaceAll('{value}', tag)
+            }
+            var tagsSelect = document.getElementById("runTag");
+            tagsSelect.innerHTML = listItems
+            document.getElementById("All").checked = true
+        }
+
+        const checkboxesElement = document.getElementById('checkboxes');
+        const runTagsSelectElement = document.getElementById('selectRunTags')
+        // listen for click events on body to hide the run checkboxes when clicking outside of the select/checkboxes elements
+        document.body.addEventListener('click', function (event) {
+            if (showingRunTags == true && !checkboxesElement.contains(event.target) && !runTagsSelectElement.contains(event.target)) {
+                show_checkboxes()
+            }
+        });
+
+        // var and function to keep track of the checkboxes for the runtags
+        var showingRunTags = false;
+        function show_checkboxes() {
+            var checkboxes = document.getElementById("checkboxes");
+            if (!showingRunTags) {
+                checkboxes.style.display = "block";
+                showingRunTags = true;
+            } else {
+                checkboxes.style.display = "none";
+                showingRunTags = false;
             }
         }
 
