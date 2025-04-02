@@ -782,11 +782,6 @@
             "stats"
         ).innerHTML = `<i>"placeholder_version"</i><br><b>Database Summary</b><br>Runs: ${runs.length}<br>Suites: ${suites.length}<br>Tests: ${tests.length}<br>Keywords: ${keywords.length}`;
 
-        // set initial filters and fill selects based on provided data
-        set_lowest_highest_dates();
-        add_runs_in_select();
-        add_runtags_in_select();
-
         // add chevrons in hide modal
         const arrows = ['sectionRight', 'sectionLeft', 'graphRight', 'graphLeft']
         for (let arrow of arrows) {
@@ -1155,6 +1150,11 @@
             create_keyword_max_duration_graph();
         });
 
+        // set initial filters and fill selects based on provided data
+        set_lowest_highest_dates();
+        add_runs_in_select();
+        add_runtags_in_select();
+
         //initialize all data and graphs on load of the dashboard.html
         update_data_and_all_graphs();
 
@@ -1163,6 +1163,13 @@
             var dates = [];
             for (run of runs) {
                 dates.push(new Date(run.run_start));
+            }
+            if (dates.length == 0) {
+                document.getElementById("fromDate").value = "1900-01-01";
+                document.getElementById("fromTime").value = "00:00";
+                document.getElementById("toDate").value = "9999-12-31";
+                document.getElementById("toTime").value = "23:59";
+                return
             }
             var lowest = new Date(Math.min.apply(null, dates));
             var highest = new Date(Math.max.apply(null, dates));
@@ -1448,33 +1455,43 @@
         // function to filter run data based on the run tags filter
         function filter_runtags(runs) {
             var tagElements = document.getElementById("runTag").getElementsByTagName("input");
-            var tags = []
+            var useOrTags = document.getElementById("useOrTags").checked
+            var selectedTags = []
             for (tagElement of tagElements) {
                 if (tagElement.checked) {
-                    tags.push(tagElement.id)
+                    selectedTags.push(tagElement.id)
                 }
             }
             var filteredRuns = [];
             for (value of runs) {
-                if (tags.includes("All")) {
+                var runTags = value.tags.split(",");
+                if (selectedTags.includes("All")) {
                     // if All is included just return everything
                     filteredRuns = runs;
-                } else if (tags.length == 0) {
+                } else if (selectedTags.length == 0) {
                     // if no filter is applied just return an empty list
                     return filteredRuns
-                }
-                else {
+                } else if (!useOrTags) {
                     // do the complicated filtering if above conditions are not true
-                    var runTags = value.tags.split(",");
+                    // this filtering is based on inclusive AND, if it does not have a tag it will not pass
                     var valid = true
-                    for (tag of tags) {
-                        if (!runTags.includes(tag)) {
+                    for (selectedTag of selectedTags) {
+                        if (!runTags.includes(selectedTag)) {
                             valid = false
                             break
                         }
                     }
                     if (valid) {
                         filteredRuns.push(value);
+                    }
+                } else if (useOrTags) {
+                    // do the complicated filtering if above conditions are not true
+                    // this filtering is based on OR, if it does have any of the selected tags it will pass
+                    for (selectedTag of selectedTags) {
+                        if (runTags.includes(selectedTag)) {
+                            filteredRuns.push(value);
+                            break
+                        }
                     }
                 }
             }
@@ -1561,11 +1578,21 @@
                     }
                 }
             }
+            var andOrTags = `<li class="list-group-item d-flex small">
+                                <div class="btn-group form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                        id="useOrTags" />
+                                </div>
+                                <div class="btn-group">
+                                    <label class="form-check-label" for="orTags">Use OR (default
+                                        AND)</label>
+                                </div>
+                            </li>`
             var listItem = `<li class="list-group-item list-group-item-action d-flex small" onclick="update_data_and_all_graphs()">
                                 <input class="form-check-input me-1" type="checkbox" value="" id="{value}">
                                 <label class="form-check-label ms-2" for="{value}">{value}</label>
                             </li>`
-            var listItems = listItem.replaceAll('{value}', 'All')
+            var listItems = andOrTags + listItem.replaceAll('{value}', 'All')
             for (tag of tags) {
                 listItems += listItem.replaceAll('{value}', tag)
             }
