@@ -105,6 +105,11 @@
         #checkboxes label {
             display: block;
         }
+
+        .border,
+        .controls {
+            min-height: 165px;
+        }
     </style>
 </head>
 
@@ -117,13 +122,6 @@
                         <div class="row">
                             <div class="col-auto">
                                 <h1>"placeholder_dashboard_title"</h1>
-                            </div>
-                            <div class="col-auto align-self-center">
-                                <a href="/">
-                                    <button class="btn btn-outline-primary btn-sm" id="openDashboard"
-                                        hidden="placeholder_server_admin_page">Open
-                                        Admin Page</button>
-                                </a>
                             </div>
                         </div>
                         <div class="row">
@@ -166,8 +164,15 @@
                             <div class="col-auto d-flex">
                                 <button type="button" class="btn btn-outline-primary btn-sm mt-auto"
                                     data-bs-toggle="modal" data-bs-target="#hideModal">
-                                    Hide Graphs/Sections
+                                    Customize View
                                 </button>
+                            </div>
+                            <div class="col-auto mt-auto">
+                                <a href="/">
+                                    <button class="btn btn-outline-primary btn-sm" id="openDashboard"
+                                        hidden="placeholder_server_admin_page">Open
+                                        Admin Page</button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -675,12 +680,12 @@
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title" id="hideModalLabel">Hide Graphs/Sections</h1>
+                        <h1 class="modal-title" id="hideModalLabel">Customize View</h1>
                         <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-dismiss="modal"
-                            id="closeHide">Close</button>
+                            id="saveHide">Save</button>
                     </div>
                     <div class="modal-body">
-                        <div class="row justify-content-evenly mt-3">
+                        <div class="row justify-content-evenly">
                             <div class="col">
                                 <h2>Sections</h2>
                             </div>
@@ -691,33 +696,39 @@
                         <div class="row mt-2">
                             <div class="col">
                                 <h4>Show</h4>
-                                <ul id="sectionShow" class="list-group">
-                                </ul>
+                                <div class="border border-3 rounded-3">
+                                    <ul id="sectionShow" class="list-group"></ul>
+                                </div>
                             </div>
                             <div class="col-auto mt-5">
-                                <div class="controls">
+                                <div class="controls mt-5">
                                     <button class="btn btn-sm btn-secondary" id="sectionRight"></button>
                                     <button class="btn btn-sm btn-secondary" id="sectionLeft"></button>
                                 </div>
                             </div>
                             <div class="col">
                                 <h4>Hide</h4>
-                                <ul id="sectionHide" class="list-group"></ul>
+                                <div class="border border-3 rounded-3">
+                                    <ul id="sectionHide" class="list-group"></ul>
+                                </div>
                             </div>
                             <div class="col">
                                 <h4>Show</h4>
-                                <ul id="graphShow" class="list-group">
-                                </ul>
+                                <div class="border border-3 rounded-3">
+                                    <ul id="graphShow" class="list-group"></ul>
+                                </div>
                             </div>
                             <div class="col-auto mt-5">
-                                <div class="controls">
+                                <div class="controls mt-5">
                                     <button class="btn btn-sm btn-secondary" id="graphRight"></button>
                                     <button class="btn btn-sm btn-secondary" id="graphLeft"></button>
                                 </div>
                             </div>
                             <div class="col">
                                 <h4>Hide</h4>
-                                <ul id="graphHide" class="list-group"></ul>
+                                <div class="border border-3 rounded-3">
+                                    <ul id="graphHide" class="list-group"></ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -769,7 +780,7 @@
         // set default values
         document.getElementById(
             "stats"
-        ).innerHTML = `<b>Database Summary</b><br>Runs: ${runs.length}<br>Suites: ${suites.length}<br>Tests: ${tests.length}<br>Keywords: ${keywords.length}`;
+        ).innerHTML = `<i>"placeholder_version"</i><br><b>Database Summary</b><br>Runs: ${runs.length}<br>Suites: ${suites.length}<br>Tests: ${tests.length}<br>Keywords: ${keywords.length}`;
 
         // set initial filters and fill selects based on provided data
         set_lowest_highest_dates();
@@ -836,10 +847,14 @@
         for (let section of hideSections) {
             const element = hideItem.replaceAll('{value}', section)
             var hidden = localStorage.getItem('sectionHide')
-            if (hidden == null) {
+            var adminHidden = localStorage.getItem('adminSectionHide')
+            if (hidden == null) { // first load to create a string
                 localStorage.setItem('sectionHide', '')
-                hidden = localStorage.getItem('sectionHide')
             }
+            if (hidden == '' && adminHidden != null) { // override empty config with admin config if exists
+                localStorage.setItem('sectionHide', adminHidden)
+            }
+            hidden = localStorage.getItem('sectionHide')
             if (hidden.includes(`'${section}'`)) {
                 sectionHideItems += element
             } else {
@@ -849,10 +864,14 @@
         for (let graph of hideGraphs) {
             const element = hideItem.replaceAll('{value}', graph)
             var hidden = localStorage.getItem('graphHide')
-            if (hidden == null) {
+            var adminHidden = localStorage.getItem('adminGraphHide')
+            if (hidden == null) { // first load to create a string
                 localStorage.setItem('graphHide', '')
-                hidden = localStorage.getItem('graphHide')
             }
+            if (hidden == '' && adminHidden != null) { // override empty config with admin config if exists
+                localStorage.setItem('graphHide', adminHidden)
+            }
+            hidden = localStorage.getItem('graphHide')
             if (hidden.includes(`'${graph}'`)) {
                 graphHideItems += element
             } else {
@@ -898,7 +917,7 @@
         });
 
         // update all graphs based on new hidden graphs/sections
-        document.getElementById('closeHide').addEventListener('click', update_all_graphs)
+        document.getElementById('saveHide').addEventListener('click', update_all_graphs)
 
         // create graphs
         var runStatisticsGraph;

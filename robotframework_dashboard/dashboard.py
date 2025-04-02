@@ -2,6 +2,7 @@ from os.path import join, abspath, dirname
 from pathlib import Path
 from datetime import datetime
 from json import dumps
+from .version import __version__
 
 
 class DashboardGenerator:
@@ -42,6 +43,9 @@ class DashboardGenerator:
         with open(index_html, "r") as file:
             dashboard_data = file.read()
             dashboard_data = dashboard_data.replace(
+                '"placeholder_version"', __version__
+            )
+            dashboard_data = dashboard_data.replace(
                 '"placeholder_runs"', dumps(data["runs"])
             )
             dashboard_data = dashboard_data.replace(
@@ -72,7 +76,7 @@ class DashboardGenerator:
                 )
             if use_run_aliases:
                 dashboard_data = dashboard_data.replace(
-                    'const use_run_aliases = false', "const use_run_aliases = true"
+                    "const use_run_aliases = false", "const use_run_aliases = true"
                 )
 
         # handle possible subdirectories

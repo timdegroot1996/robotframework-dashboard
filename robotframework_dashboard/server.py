@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from uvicorn import run
 from os.path import join, abspath, dirname
 from os import remove
+from .version import __version__
 
 
 class ResponseMessage(BaseModel):
@@ -128,6 +129,7 @@ class ApiServer:
             """Admin page endpoint function"""
             admin_file = join(dirname(abspath(__file__)), "templates", "admin.html")
             admin_html = open(admin_file, "r").read()
+            admin_html = admin_html.replace('"placeholder_version"', __version__)
             return admin_html
 
         @self.app.get(
@@ -299,16 +301,16 @@ class ApiServer:
                 remove_runs = []
                 if remove_output.run_starts != None:
                     for run in remove_output.run_starts:
-                        remove_runs.append(f'run_start={run}')
+                        remove_runs.append(f"run_start={run}")
                 if remove_output.indexes != None:
                     for run in remove_output.indexes:
-                        remove_runs.append(f'index={run}')
+                        remove_runs.append(f"index={run}")
                 if remove_output.aliases != None:
                     for run in remove_output.aliases:
-                        remove_runs.append(f'alias={run}')
+                        remove_runs.append(f"alias={run}")
                 if remove_output.tags != None:
                     for run in remove_output.tags:
-                        remove_runs.append(f'tag={run}')
+                        remove_runs.append(f"tag={run}")
                 print(remove_runs)
                 console = self.robotdashboard.remove_outputs(remove_runs)
                 console += self.robotdashboard.create_dashboard()

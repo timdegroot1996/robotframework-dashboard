@@ -28,6 +28,13 @@
             }
         }
 
+        .stats {
+            float: right;
+            text-align: right;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
         .card {
             margin-bottom: 10px;
         }
@@ -45,6 +52,11 @@
             padding: .75rem 1.25rem;
             color: inherit;
             padding-left: 16px;
+        }
+
+        .border,
+        .controls {
+            min-height: 165px;
         }
     </style>
 </head>
@@ -67,10 +79,21 @@
                         </a>
                     </div>
                     <div class="col-auto align-self-center">
+                        <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-toggle="modal"
+                            data-bs-target="#hideModal">
+                            Customize Admin View
+                        </button>
+                    </div>
+                    <div class="col-auto align-self-center">
                         <a href="/dashboard">
                             <button class="btn btn-outline-primary btn-sm mt-auto" id="openDashboard">Open
                                 Dashboard</button>
                         </a>
+                    </div>
+                    <div class="col-2 ms-auto stats">
+                        <span id="stats">
+                            <i>"placeholder_version"</i>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -85,7 +108,8 @@
                         <p class="mt-auto">output.xml</p>
                     </div>
                     <div class="col-5">
-                        <label class="form-label form-label-sm" for="outputPath">Absolute Path (E.g. "C:/users/your_user/output.xml")</label>
+                        <label class="form-label form-label-sm" for="outputPath">Absolute Path (E.g.
+                            "C:/users/your_user/output.xml")</label>
                         <input class="form-control form-control-sm" id="outputPath"></input>
                     </div>
                     <div class="col-3">
@@ -104,18 +128,21 @@
                         <p class="mt-auto">output.xml</p>
                     </div>
                     <div class="col-5">
-                        <label class="form-label form-label-sm mt-1" for="outputData">XML Data (copy paste the output.xml
+                        <label class="form-label form-label-sm mt-1" for="outputData">XML Data (copy paste the
+                            output.xml
                             here)</label>
                         <textarea class="form-control form-control-sm" id="outputData" rows="10"></textarea>
                     </div>
                     <div class="col-3">
-                        <label class="form-label form-label-sm mt-1" for="outputDataTags">Run Tags (separate with ":")</label>
+                        <label class="form-label form-label-sm mt-1" for="outputDataTags">Run Tags (separate with
+                            ":")</label>
                         <input class="form-control form-control-sm" id="outputDataTags"></input>
                         <label class="form-label form-label-sm mt-1" for="outputDataAlias">Run Alias</label>
                         <input class="form-control form-control-sm" id="outputDataAlias"></input>
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-outline-primary btn-sm" style="margin-top:36px" id="addOutputData">Add&nbsp;
+                        <button class="btn btn-outline-primary btn-sm" style="margin-top:36px"
+                            id="addOutputData">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addDataSpinner" hidden></span>
                         </button>
@@ -126,11 +153,13 @@
                         <p class="mt-auto">output folder</p>
                     </div>
                     <div class="col-5">
-                        <label class="form-label form-label-sm mt-1" for="outputFolderPath">Absolute Path (E.g. "C:/some_folder/your_output_folder")</label>
+                        <label class="form-label form-label-sm mt-1" for="outputFolderPath">Absolute Path (E.g.
+                            "C:/some_folder/your_output_folder")</label>
                         <input class="form-control form-control-sm" id="outputFolderPath"></input>
                     </div>
                     <div class="col-3">
-                        <label class="form-label form-label-sm mt-1" for="outputFolderTags">Run Tags (separate with ":")</label>
+                        <label class="form-label form-label-sm mt-1" for="outputFolderTags">Run Tags (separate with
+                            ":")</label>
                         <input class="form-control form-control-sm" id="outputFolderTags"></input>
                     </div>
                     <div class="col-2 d-flex">
@@ -152,7 +181,8 @@
                         <p class="mt-auto">outputs to remove by run_start</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm" for="removeRunStarts">E.g. '2025-03-13 00:29:15.926420,2025-03-23 20:31:03.541062' (, separated)</label>
+                        <label class="form-label form-label-sm" for="removeRunStarts">E.g. '2025-03-13
+                            00:29:15.926420,2025-03-23 20:31:03.541062' (, separated)</label>
                         <input class="form-control form-control-sm" id="removeRunStarts"></input>
                     </div>
                 </div>
@@ -161,7 +191,8 @@
                         <p class="mt-auto">outputs to remove by index</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm mt-1" for="removeIndexes">E.g. '1:3;9;13', will remove 1,2,3,9,13 (: or ; separated)</label>
+                        <label class="form-label form-label-sm mt-1" for="removeIndexes">E.g. '1:3;9;13', will remove
+                            1,2,3,9,13 (: or ; separated)</label>
                         <input class="form-control form-control-sm" id="removeIndexes"></input>
                     </div>
                 </div>
@@ -170,7 +201,8 @@
                         <p class="mt-auto">outputs to remove by alias</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm mt-1" for="removeAliases">E.g. 'alias1,cool_alias_2' (, separated)</label>
+                        <label class="form-label form-label-sm mt-1" for="removeAliases">E.g. 'alias1,cool_alias_2' (,
+                            separated)</label>
                         <input class="form-control form-control-sm" id="removeAliases"></input>
                     </div>
                 </div>
@@ -179,7 +211,8 @@
                         <p class="mt-auto">outputs to remove by tag</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm mt-1" for="removeTags">E.g. 'prod,dev,nightly,tag1' (, separated)</label>
+                        <label class="form-label form-label-sm mt-1" for="removeTags">E.g. 'prod,dev,nightly,tag1' (,
+                            separated)</label>
                         <input class="form-control form-control-sm" id="removeTags"></input>
                     </div>
                     <div class="col-2 d-flex">
@@ -204,9 +237,86 @@
                 </div>
             </div>
         </div>
+        <!-- Modal for hiding graphs/sections -->
+        <div class="modal fade" id="hideModal" tabindex="-1" aria-labelledby="hideModalLabel">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title" id="hideModalLabel">Customize View</h1>
+                        <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-dismiss="modal"
+                            id="saveHide">Save</button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Admin custom view usage instructions</h4>
+                        <ul>
+                            <li>You can set which sections and graphs are hidden by default as admin</li>
+                            <li>If a user opens the dashboard and does not yet have any 'hidden settings' the admin
+                                config will be used and saved in local storage</li>
+                            <li>If a user does already have 'hidden settings' the admin settings are ignored even if
+                                they are different</li>
+                            <li>To view current 'hidden settings' (both admin and user) you can open 'Developer Tools
+                                (F12)' > 'App' > 'Local Storage'</li>
+                            <li>Only when refreshing the dashboard page will admin settings be used for above checks
+                            </li>
+                        </ul>
+                        <div class="row justify-content-evenly">
+                            <div class="col">
+                                <h2>Sections</h2>
+                            </div>
+                            <div class="col">
+                                <h2>Graphs</h2>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <h4>Show</h4>
+                                <div class="border border-3 rounded-3">
+                                    <ul id="sectionShow" class="list-group"></ul>
+                                </div>
+                            </div>
+                            <div class="col-auto mt-5">
+                                <div class="controls mt-5">
+                                    <button class="btn btn-sm btn-secondary" id="sectionRight"></button>
+                                    <button class="btn btn-sm btn-secondary" id="sectionLeft"></button>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h4>Hide</h4>
+                                <div class="border border-3 rounded-3">
+                                    <ul id="sectionHide" class="list-group"></ul>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h4>Show</h4>
+                                <div class="border border-3 rounded-3">
+                                    <ul id="graphShow" class="list-group"></ul>
+                                </div>
+                            </div>
+                            <div class="col-auto mt-5">
+                                <div class="controls mt-5">
+                                    <button class="btn btn-sm btn-secondary" id="graphRight"></button>
+                                    <button class="btn btn-sm btn-secondary" id="graphLeft"></button>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h4>Hide</h4>
+                                <div class="border border-3 rounded-3">
+                                    <ul id="graphHide" class="list-group"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
+        const collapsed =
+            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
+        const inversedCollapsed =
+            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g transform="scale(-1,1) translate(-52,0)"><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"/></g></svg>'
+
         // initialize the list when loading the page
         get_outputs()
 
@@ -358,6 +468,130 @@
             document.getElementById('alertContainer').innerHTML = ''
         }
 
+        // add chevrons in hide modal
+        const arrows = ['sectionRight', 'sectionLeft', 'graphRight', 'graphLeft']
+        for (let arrow of arrows) {
+            update_arrow_button(arrow);
+            document.getElementById(arrow).addEventListener("click", (e) => {
+                if (arrow == 'sectionRight') { moveItems('sectionShow', 'sectionHide') }
+                else if (arrow == 'sectionLeft') { moveItems('sectionHide', 'sectionShow') }
+                else if (arrow == 'graphRight') { moveItems('graphShow', 'graphHide') }
+                else if (arrow == 'graphLeft') { moveItems('graphHide', 'graphShow') }
+            });
+        }
+
+        // add arrow chevrons
+        function update_arrow_button(id) {
+            if (id.includes('Right')) {
+                document.getElementById(id).innerHTML = collapsed
+            }
+            if (id.includes('Left')) {
+                document.getElementById(id).innerHTML = inversedCollapsed
+            }
+        }
+
+        // add items in hide modal
+        var hideSections = [
+            'Run Statistics',
+            'Suite Statistics',
+            'Test Statistics',
+            'Keyword Statistics',
+        ]
+        var hideGraphs = [
+            'Run Statistics',
+            'Run Duration',
+            'Run Table',
+            'Suite Statistics',
+            'Suite Duration',
+            'Suite Most Failed',
+            'Suite Table',
+            'Test Statistics',
+            'Test Duration',
+            'Test Duration Deviation',
+            'Test Most Flaky',
+            'Test Most Failed',
+            'Test Top 10 Messages',
+            'Test Table',
+            'Keyword Statistics',
+            'Keyword Times Run',
+            'Keyword Total Duration',
+            'Keyword Average Duration',
+            'Keyword Min Duration',
+            'Keyword Max Duration',
+            'Keyword Table'
+        ]
+        var hideItem = '<li class="hideItem list-group-item list-group-item-action">{value}</li>'
+        var sectionShowItems = ''
+        var sectionHideItems = ''
+        var graphShowItems = ''
+        var graphHideItems = ''
+        for (let section of hideSections) {
+            const element = hideItem.replaceAll('{value}', section)
+            var hidden = localStorage.getItem('adminSectionHide')
+            if (hidden == null) { // first load to create a string
+                localStorage.setItem('adminSectionHide', '')
+                hidden = localStorage.getItem('adminSectionHide')
+            }
+            if (hidden.includes(`'${section}'`)) {
+                sectionHideItems += element
+            } else {
+                sectionShowItems += element
+            }
+        }
+        for (let graph of hideGraphs) {
+            const element = hideItem.replaceAll('{value}', graph)
+            var hidden = localStorage.getItem('adminGraphHide')
+            if (hidden == null) { // first load to create a string
+                localStorage.setItem('adminGraphHide', '')
+                hidden = localStorage.getItem('adminGraphHide')
+            }
+            if (hidden.includes(`'${graph}'`)) {
+                graphHideItems += element
+            } else {
+                graphShowItems += element
+            }
+        }
+        document.getElementById('sectionShow').innerHTML = sectionShowItems
+        document.getElementById('sectionHide').innerHTML = sectionHideItems
+        document.getElementById('graphShow').innerHTML = graphShowItems
+        document.getElementById('graphHide').innerHTML = graphHideItems
+
+        function capitalizeFirstLetter(val) {
+            return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+        }
+
+        // function to move the items from showing to hidden
+        function moveItems(fromId, toId) {
+            const fromBox = document.getElementById(fromId);
+            const toBox = document.getElementById(toId);
+            const selectedItems = fromBox.querySelectorAll('.active');
+
+            if (toId.includes('Hide')) {
+                for (let item of selectedItems) {
+                    var hidden = localStorage.getItem(`admin${capitalizeFirstLetter(toId)}`)
+                    hidden += `'${item.innerText}',`
+                    localStorage.setItem(`admin${capitalizeFirstLetter(toId)}`, hidden)
+                }
+            } else {
+                for (let item of selectedItems) {
+                    var hidden = localStorage.getItem(`admin${capitalizeFirstLetter(fromId)}`)
+                    hidden = hidden.replaceAll(`'${item.innerText}',`, '')
+                    localStorage.setItem(`admin${capitalizeFirstLetter(fromId)}`, hidden)
+                }
+            }
+
+            selectedItems.forEach(item => {
+                item.classList.remove('active');
+                toBox.appendChild(item);
+            });
+        }
+
+        // set which sections and graphs are shown and fill the modal
+        document.querySelectorAll('.hideItem').forEach(item => {
+            item.addEventListener('click', function () {
+                this.classList.toggle('active');
+            });
+        });
     </script>
 
 </body>
