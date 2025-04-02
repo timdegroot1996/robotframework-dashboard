@@ -110,7 +110,7 @@
 
 <body>
     <div class="container-fluid mt-4">
-        <div class="card">
+        <div class="card" id="filterSection">
             <div class="card-body">
                 <div class="row">
                     <div class="col-10">
@@ -163,6 +163,12 @@
                                 <button class="btn btn-outline-primary btn-sm mt-auto" id="resetFilters">Reset
                                     Filters</button>
                             </div>
+                            <div class="col-auto d-flex">
+                                <button type="button" class="btn btn-outline-primary btn-sm mt-auto"
+                                    data-bs-toggle="modal" data-bs-target="#hideModal">
+                                    Hide Graphs/Sections
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="col-2 stats">
@@ -172,7 +178,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" id="runSection">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
@@ -185,7 +191,7 @@
                 </div>
             </div>
             <div class="card-body collapse show" id="runDetails">
-                <div class="row">
+                <div class="row" id="runStatisticsDurationChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="runStatisticsDurationButton" data-bs-toggle="collapse"
                             data-bs-target="#runStatisticsDurationCollapse" aria-expanded="true"
@@ -221,7 +227,7 @@
                         <canvas id="runDurationGraph"></canvas>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="runTableChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary collapsed" id="runTableButton" data-bs-toggle="collapse"
                             data-bs-target="#runTableCollapse" aria-expanded="true" aria-controls="runTableCollapse">
@@ -239,7 +245,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" id="suiteSection">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
@@ -260,7 +266,7 @@
                 </div>
             </div>
             <div class="card-body collapse show" id="suiteDetails">
-                <div class="row">
+                <div class="row" id="suiteStatisticsDurationChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="suiteStatisticsDurationButton"
                             data-bs-toggle="collapse" data-bs-target="#suiteStatisticsDurationCollapse"
@@ -296,7 +302,7 @@
                         <canvas id="suiteDurationGraph"></canvas>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="suiteMostFailedChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="suiteMostFailedButton" data-bs-toggle="collapse"
                             data-bs-target="#suiteMostFailedCollapse" aria-expanded="true"
@@ -319,7 +325,7 @@
                         <canvas id="suiteMostFailedGraph"></canvas>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="suiteTableChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary collapsed" id="suiteTableButton" data-bs-toggle="collapse"
                             data-bs-target="#suiteTableCollapse" aria-expanded="true"
@@ -337,7 +343,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" id="testSection">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
@@ -384,7 +390,7 @@
                 </div>
             </div>
             <div class="card-body collapse show" id="testDetails">
-                <div class="row">
+                <div class="row" id="testStatusDurationChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="testStatusDurationButton" data-bs-toggle="collapse"
                             data-bs-target="#testStatusDurationCollapse" aria-expanded="true"
@@ -416,14 +422,14 @@
                         <canvas id="testDurationGraph"></canvas>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="testDurationDeviationChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="testDurationDeviationButton" data-bs-toggle="collapse"
                             data-bs-target="#testDurationDeviationCollapse" aria-expanded="true"
                             aria-controls="testDurationDeviationCollapse"></div>
                     </div>
                     <div class="col">
-                        <h4>Duation Deviation</h4>
+                        <h4>Duration Deviation</h4>
                     </div>
                 </div>
                 <div class="row collapse show" id="testDurationDeviationCollapse">
@@ -438,7 +444,7 @@
                         <canvas id="testDurationDeviationGraph"></canvas>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="testMostFlakyChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="testMostFlakyButton" data-bs-toggle="collapse"
                             data-bs-target="#testMostFlakyCollapse" aria-expanded="true"
@@ -467,7 +473,7 @@
                         <canvas id="testMostFlakyGraph"></canvas>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="testMostFailedMessagesChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="testMostFailedMessagesButton"
                             data-bs-toggle="collapse" data-bs-target="#testMostFailedMessagesCollapse"
@@ -502,7 +508,7 @@
                         <canvas id="testMessagesGraph"></canvas>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="testTableChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary collapsed" id="testTableButton" data-bs-toggle="collapse"
                             data-bs-target="#testTableCollapse" aria-expanded="true" aria-controls="testTableCollapse">
@@ -520,7 +526,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" id="keywordSection">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
@@ -541,7 +547,7 @@
                 </div>
             </div>
             <div class="card-body collapse show" id="keywordDetails">
-                <div class="row">
+                <div class="row" id="keywordStatisticsTimesRunChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="keywordStatisticsTimesRunButton"
                             data-bs-toggle="collapse" data-bs-target="#keywordStatisticsTimesRunCollapse"
@@ -577,7 +583,7 @@
                         <canvas id="keywordTimesRunGraph"></canvas>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="keywordTotalDurationAverageDurationChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="keywordTotalAverageButton" data-bs-toggle="collapse"
                             data-bs-target="#keywordTotalAverageCollapse" aria-expanded="true"
@@ -612,7 +618,7 @@
                         <canvas id="keywordAverageDurationGraph"></canvas>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="keywordMinMaxDurationChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="keywordMinMaxButton" data-bs-toggle="collapse"
                             data-bs-target="#keywordMinMaxCollapse" aria-expanded="true"
@@ -646,7 +652,7 @@
                         <canvas id="keywordMaxDurationGraph"></canvas>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="keywordTableChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary collapsed" id="keywordTableButton"
                             data-bs-toggle="collapse" data-bs-target="#keywordTableCollapse" aria-expanded="true"
@@ -663,6 +669,61 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal for hiding graphs/sections -->
+        <div class="modal fade" id="hideModal" tabindex="-1" aria-labelledby="hideModalLabel">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title" id="hideModalLabel">Hide Graphs/Sections</h1>
+                        <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-dismiss="modal"
+                            id="closeHide">Close</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row justify-content-evenly mt-3">
+                            <div class="col">
+                                <h2>Sections</h2>
+                            </div>
+                            <div class="col">
+                                <h2>Graphs</h2>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <h4>Show</h4>
+                                <ul id="sectionShow" class="list-group">
+                                </ul>
+                            </div>
+                            <div class="col-auto mt-5">
+                                <div class="controls">
+                                    <button class="btn btn-sm btn-secondary" id="sectionRight"></button>
+                                    <button class="btn btn-sm btn-secondary" id="sectionLeft"></button>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h4>Hide</h4>
+                                <ul id="sectionHide" class="list-group"></ul>
+                            </div>
+                            <div class="col">
+                                <h4>Show</h4>
+                                <ul id="graphShow" class="list-group">
+                                </ul>
+                            </div>
+                            <div class="col-auto mt-5">
+                                <div class="controls">
+                                    <button class="btn btn-sm btn-secondary" id="graphRight"></button>
+                                    <button class="btn btn-sm btn-secondary" id="graphLeft"></button>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h4>Hide</h4>
+                                <ul id="graphHide" class="list-group"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -675,6 +736,8 @@
             '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
         const expandedSmall =
             '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
+        const inversedCollapsed =
+            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g transform="scale(-1,1) translate(-52,0)"><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"/></g></svg>'
 
         // theme function based on browser/machine color scheme
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -712,6 +775,130 @@
         set_lowest_highest_dates();
         add_runs_in_select();
         add_runtags_in_select();
+
+        // add chevrons in hide modal
+        const arrows = ['sectionRight', 'sectionLeft', 'graphRight', 'graphLeft']
+        for (let arrow of arrows) {
+            update_arrow_button(arrow);
+            document.getElementById(arrow).addEventListener("click", (e) => {
+                if (arrow == 'sectionRight') { moveItems('sectionShow', 'sectionHide') }
+                else if (arrow == 'sectionLeft') { moveItems('sectionHide', 'sectionShow') }
+                else if (arrow == 'graphRight') { moveItems('graphShow', 'graphHide') }
+                else if (arrow == 'graphLeft') { moveItems('graphHide', 'graphShow') }
+            });
+        }
+
+        // add arrow chevrons
+        function update_arrow_button(id) {
+            if (id.includes('Right')) {
+                document.getElementById(id).innerHTML = collapsed
+            }
+            if (id.includes('Left')) {
+                document.getElementById(id).innerHTML = inversedCollapsed
+            }
+        }
+
+        // add items in hide modal
+        var hideSections = [
+            'Run Statistics',
+            'Suite Statistics',
+            'Test Statistics',
+            'Keyword Statistics',
+        ]
+        var hideGraphs = [
+            'Run Statistics',
+            'Run Duration',
+            'Run Table',
+            'Suite Statistics',
+            'Suite Duration',
+            'Suite Most Failed',
+            'Suite Table',
+            'Test Statistics',
+            'Test Duration',
+            'Test Duration Deviation',
+            'Test Most Flaky',
+            'Test Most Failed',
+            'Test Top 10 Messages',
+            'Test Table',
+            'Keyword Statistics',
+            'Keyword Times Run',
+            'Keyword Total Duration',
+            'Keyword Average Duration',
+            'Keyword Min Duration',
+            'Keyword Max Duration',
+            'Keyword Table'
+        ]
+        var hideItem = '<li class="hideItem list-group-item list-group-item-action">{value}</li>'
+        var sectionShowItems = ''
+        var sectionHideItems = ''
+        var graphShowItems = ''
+        var graphHideItems = ''
+        for (let section of hideSections) {
+            const element = hideItem.replaceAll('{value}', section)
+            var hidden = localStorage.getItem('sectionHide')
+            if (hidden == null) {
+                localStorage.setItem('sectionHide', '')
+                hidden = localStorage.getItem('sectionHide')
+            }
+            if (hidden.includes(`'${section}'`)) {
+                sectionHideItems += element
+            } else {
+                sectionShowItems += element
+            }
+        }
+        for (let graph of hideGraphs) {
+            const element = hideItem.replaceAll('{value}', graph)
+            var hidden = localStorage.getItem('graphHide')
+            if (hidden == null) {
+                localStorage.setItem('graphHide', '')
+                hidden = localStorage.getItem('graphHide')
+            }
+            if (hidden.includes(`'${graph}'`)) {
+                graphHideItems += element
+            } else {
+                graphShowItems += element
+            }
+        }
+        document.getElementById('sectionShow').innerHTML = sectionShowItems
+        document.getElementById('sectionHide').innerHTML = sectionHideItems
+        document.getElementById('graphShow').innerHTML = graphShowItems
+        document.getElementById('graphHide').innerHTML = graphHideItems
+
+        // function to move the items from showing to hidden
+        function moveItems(fromId, toId) {
+            const fromBox = document.getElementById(fromId);
+            const toBox = document.getElementById(toId);
+            const selectedItems = fromBox.querySelectorAll('.active');
+
+            if (toId.includes('Hide')) {
+                for (let item of selectedItems) {
+                    var hidden = localStorage.getItem(toId)
+                    hidden += `'${item.innerText}',`
+                    localStorage.setItem(toId, hidden)
+                }
+            } else {
+                for (let item of selectedItems) {
+                    var hidden = localStorage.getItem(fromId)
+                    hidden = hidden.replaceAll(`'${item.innerText}',`, '')
+                    localStorage.setItem(fromId, hidden)
+                }
+            }
+
+            selectedItems.forEach(item => {
+                item.classList.remove('active');
+                toBox.appendChild(item);
+            });
+        }
+
+        // set which sections and graphs are shown and fill the modal
+        document.querySelectorAll('.hideItem').forEach(item => {
+            item.addEventListener('click', function () {
+                this.classList.toggle('active');
+            });
+        });
+
+        // update all graphs based on new hidden graphs/sections
+        document.getElementById('closeHide').addEventListener('click', update_all_graphs)
 
         // create graphs
         var runStatisticsGraph;
@@ -805,9 +992,6 @@
                 }
             }
         }
-
-        //initialize all data and graphs on load of the dashboard.html
-        update_data_and_all_graphs();
 
         // eventlisteners for filters (runTags is done separately because of different usage)
         const filters = ["runs", "fromDate", "fromTime", "toDate", "toTime"]
@@ -952,6 +1136,9 @@
             create_keyword_max_duration_graph();
         });
 
+        //initialize all data and graphs on load of the dashboard.html
+        update_data_and_all_graphs();
+
         // function that initializes the from date/time and to date/time selection boxes in the filters
         function set_lowest_highest_dates() {
             var dates = [];
@@ -963,6 +1150,8 @@
             var tzoffset = new Date().getTimezoneOffset() * 60000;
             lowest = new Date(new Date(lowest - tzoffset).getTime() + -1 * 60000); // this is to account for seconds in the initial filter value
             highest = new Date(new Date(highest - tzoffset).getTime() + 1 * 60000); // this is to account for seconds in the initial filter value
+            lowest.setTime(lowest.getTime() - 1 * 60 * 60 * 1000) // minus 1 hour to account for possible daylight saving time switches of 1 hour!
+            highest.setTime(highest.getTime() + 1 * 60 * 60 * 1000) // plus 1 hour to account for possible daylight saving time switches of 1 hour!
             document.getElementById("fromDate").value = lowest.toISOString().split("T")[0];
             document.getElementById("fromTime").value = lowest.toISOString().split("T")[1].substring(0, 5);
             document.getElementById("toDate").value = highest.toISOString().split("T")[0];
@@ -997,7 +1186,7 @@
             add_keywords_in_select();
         }
 
-        // function that updates all graphs based on the new filtered data
+        // function that updates all graphs based on the new filtered data and hidden choices
         function update_all_graphs() {
             create_run_statistics_graph();
             create_run_duration_graph();
@@ -1020,6 +1209,207 @@
             create_keyword_min_duration_graph();
             create_keyword_max_duration_graph();
             create_keyword_table();
+            set_hidden_sections_and_graphs();
+        }
+
+        function set_hidden_sections_and_graphs() {
+            const hiddenSections = localStorage.getItem("sectionHide")
+            const hiddenGraphs = localStorage.getItem("graphHide")
+            if (hiddenSections.includes('Run Statistics')) {
+                document.getElementById('runSection').hidden = true
+            } else {
+                document.getElementById('runSection').hidden = false
+                // run statistics
+                if (hiddenGraphs.includes('Run Statistics')) {
+                    document.getElementById('runStatisticsCanvas').hidden = true
+                } else {
+                    document.getElementById('runStatisticsCanvas').hidden = false
+                }
+                // run duration
+                if (hiddenGraphs.includes('Run Duration')) {
+                    document.getElementById('runDurationCanvas').hidden = true
+                } else {
+                    document.getElementById('runDurationCanvas').hidden = false
+                }
+                if (hiddenGraphs.includes('Run Statistics') && hiddenGraphs.includes('Run Duration')) {
+                    document.getElementById('runStatisticsDurationChevronRow').hidden = true
+                } else {
+                    document.getElementById('runStatisticsDurationChevronRow').hidden = false
+                }
+                // run table
+                if (hiddenGraphs.includes('Run Table')) {
+                    document.getElementById('runTableCollapse').hidden = true
+                    document.getElementById('runTableChevronRow').hidden = true
+                } else {
+                    document.getElementById('runTableCollapse').hidden = false
+                    document.getElementById('runTableChevronRow').hidden = false
+                }
+            }
+            if (hiddenSections.includes('Suite Statistics')) {
+                document.getElementById('suiteSection').hidden = true
+            } else {
+                document.getElementById('suiteSection').hidden = false
+                // suite statistics
+                if (hiddenGraphs.includes('Suite Statistics')) {
+                    document.getElementById('suiteStatisticsCanvas').hidden = true
+                } else {
+                    document.getElementById('suiteStatisticsCanvas').hidden = false
+                }
+                // suite duration
+                if (hiddenGraphs.includes('Suite Duration')) {
+                    document.getElementById('suiteDurationCanvas').hidden = true
+                } else {
+                    document.getElementById('suiteDurationCanvas').hidden = false
+                }
+                if (hiddenGraphs.includes('Suite Statistics') && hiddenGraphs.includes('Suite Duration')) {
+                    document.getElementById('suiteStatisticsDurationChevronRow').hidden = true
+                } else {
+                    document.getElementById('suiteStatisticsDurationChevronRow').hidden = false
+                }
+                // suite most failed
+                if (hiddenGraphs.includes('Suite Most Failed')) {
+                    document.getElementById('suiteMostFailedCanvas').hidden = true
+                    document.getElementById('suiteMostFailedChevronRow').hidden = true
+                } else {
+                    document.getElementById('suiteMostFailedCanvas').hidden = false
+                    document.getElementById('suiteMostFailedChevronRow').hidden = false
+                }
+                // suite table
+                if (hiddenGraphs.includes('Suite Table')) {
+                    document.getElementById('suiteTableCollapse').hidden = true
+                    document.getElementById('suiteTableChevronRow').hidden = true
+                } else {
+                    document.getElementById('suiteTableCollapse').hidden = false
+                    document.getElementById('suiteTableChevronRow').hidden = false
+                }
+            }
+            if (hiddenSections.includes('Test Statistics')) {
+                document.getElementById('testSection').hidden = true
+            } else {
+                document.getElementById('testSection').hidden = false
+                // test status
+                if (hiddenGraphs.includes('Test Statistics')) {
+                    document.getElementById('testStatusCanvas').hidden = true
+                } else {
+                    document.getElementById('testStatusCanvas').hidden = false
+                }
+                // test duration
+                if (hiddenGraphs.includes('Test Duration')) {
+                    document.getElementById('testDurationCanvas').hidden = true
+                } else {
+                    document.getElementById('testDurationCanvas').hidden = false
+                }
+                if (hiddenGraphs.includes('Test Statistics') && hiddenGraphs.includes('Test Duration')) {
+                    document.getElementById('testStatusDurationChevronRow').hidden = true
+                } else {
+                    document.getElementById('testStatusDurationChevronRow').hidden = false
+                }
+                // test duration deviation
+                if (hiddenGraphs.includes('Test Duration Deviation')) {
+                    document.getElementById('testDurationDeviationCanvas').hidden = true
+                    document.getElementById('testDurationDeviationChevronRow').hidden = true
+                } else {
+                    document.getElementById('testDurationDeviationCanvas').hidden = false
+                    document.getElementById('testDurationDeviationChevronRow').hidden = false
+                }
+                // test most flaky
+                if (hiddenGraphs.includes('Test Most Flaky')) {
+                    document.getElementById('testMostFlakyCanvas').hidden = true
+                    document.getElementById('testMostFlakyChevronRow').hidden = true
+                } else {
+                    document.getElementById('testMostFlakyCanvas').hidden = false
+                    document.getElementById('testMostFlakyChevronRow').hidden = false
+                }
+                // test most failed
+                if (hiddenGraphs.includes('Test Most Failed')) {
+                    document.getElementById('testMostFailedCanvas').hidden = true
+                } else {
+                    document.getElementById('testMostFailedCanvas').hidden = false
+                }
+                // test top 10 messages
+                if (hiddenGraphs.includes('Test Top 10 Messages')) {
+                    document.getElementById('testMessagesCanvas').hidden = true
+                } else {
+                    document.getElementById('testMessagesCanvas').hidden = false
+                }
+                if (hiddenGraphs.includes('Test Most Failed') && hiddenGraphs.includes('Test Top 10 Messages')) {
+                    document.getElementById('testMostFailedMessagesChevronRow').hidden = true
+                } else {
+                    document.getElementById('testMostFailedMessagesChevronRow').hidden = false
+                }
+                // test table
+                if (hiddenGraphs.includes('Test Table')) {
+                    document.getElementById('testTableCollapse').hidden = true
+                    document.getElementById('testTableChevronRow').hidden = true
+                } else {
+                    document.getElementById('testTableCollapse').hidden = false
+                    document.getElementById('testTableChevronRow').hidden = false
+                }
+            }
+            if (hiddenSections.includes('Keyword Statistics')) {
+                document.getElementById('keywordSection').hidden = true
+            } else {
+                document.getElementById('keywordSection').hidden = false
+                // keyword statistics
+                if (hiddenGraphs.includes('Keyword Statistics')) {
+                    document.getElementById('keywordStatisticsCanvas').hidden = true
+                } else {
+                    document.getElementById('keywordStatisticsCanvas').hidden = false
+                }
+                // keyword times run
+                if (hiddenGraphs.includes('Keyword Times Run')) {
+                    document.getElementById('keywordTimesRunCanvas').hidden = true
+                } else {
+                    document.getElementById('keywordTimesRunCanvas').hidden = false
+                }
+                if (hiddenGraphs.includes('Keyword Statistics') && hiddenGraphs.includes('Keyword Times Run')) {
+                    document.getElementById('keywordStatisticsTimesRunChevronRow').hidden = true
+                } else {
+                    document.getElementById('keywordStatisticsTimesRunChevronRow').hidden = false
+                }
+                // keyword total duration
+                if (hiddenGraphs.includes('Keyword Total Duration')) {
+                    document.getElementById('keywordTotalDurationCanvas').hidden = true
+                } else {
+                    document.getElementById('keywordTotalDurationCanvas').hidden = false
+                }
+                // keyword average duration
+                if (hiddenGraphs.includes('Keyword Average Duration')) {
+                    document.getElementById('keywordAverageDurationCanvas').hidden = true
+                } else {
+                    document.getElementById('keywordAverageDurationCanvas').hidden = false
+                }
+                if (hiddenGraphs.includes('Keyword Total Duration') && hiddenGraphs.includes('Keyword Average Duration')) {
+                    document.getElementById('keywordTotalDurationAverageDurationChevronRow').hidden = true
+                } else {
+                    document.getElementById('keywordTotalDurationAverageDurationChevronRow').hidden = false
+                }
+                // keyword min duration
+                if (hiddenGraphs.includes('Keyword Min Duration')) {
+                    document.getElementById('keywordMinDurationCanvas').hidden = true
+                } else {
+                    document.getElementById('keywordMinDurationCanvas').hidden = false
+                }
+                // keyword max duration
+                if (hiddenGraphs.includes('Keyword Max Duration')) {
+                    document.getElementById('keywordMaxDurationCanvas').hidden = true
+                } else {
+                    document.getElementById('keywordMaxDurationCanvas').hidden = false
+                }
+                if (hiddenGraphs.includes('Keyword Min Duration') && hiddenGraphs.includes('Keyword Max Duration')) {
+                    document.getElementById('keywordMinMaxDurationChevronRow').hidden = true
+                } else {
+                    document.getElementById('keywordMinMaxDurationChevronRow').hidden = false
+                }
+                // keyword table
+                if (hiddenGraphs.includes('Keyword Table')) {
+                    document.getElementById('keywordTableCollapse').hidden = true
+                    document.getElementById('keywordTableChevronRow').hidden = true
+                } else {
+                    document.getElementById('keywordTableCollapse').hidden = false
+                    document.getElementById('keywordTableChevronRow').hidden = false
+                }
+            }
         }
 
         // function to filter run data based on the runs (aka run name) filter
@@ -1074,14 +1464,14 @@
 
         // function to filter the run data based on the selected date range
         function filter_dates(runs) {
-            var fromDate = document.getElementById("fromDate").value;
-            var fromTime = document.getElementById("fromTime").value;
-            var toDate = document.getElementById("toDate").value;
-            var toTime = document.getElementById("toTime").value;
+            const fromDate = document.getElementById("fromDate").value;
+            const fromTime = document.getElementById("fromTime").value;
+            const toDate = document.getElementById("toDate").value;
+            const toTime = document.getElementById("toTime").value;
             var filteredRuns = [];
             if (fromDate && fromTime && toDate && toTime) {
-                var fromDateTime = new Date(`${fromDate} ${fromTime}:00`);
-                var toDateTime = new Date(`${toDate} ${toTime}:00`);
+                const fromDateTime = new Date(`${fromDate} ${fromTime}:00`);
+                const toDateTime = new Date(`${toDate} ${toTime}:00`);
                 if (fromDateTime <= toDateTime) {
                     for (value of runs) {
                         var run_start = new Date(value.run_start);
@@ -1152,7 +1542,7 @@
                     }
                 }
             }
-            var listItem = `<li class="list-group-item d-flex small" onclick="update_data_and_all_graphs()">
+            var listItem = `<li class="list-group-item list-group-item-action d-flex small" onclick="update_data_and_all_graphs()">
                                 <input class="form-check-input me-1" type="checkbox" value="" id="{value}">
                                 <label class="form-check-label ms-2" for="{value}">{value}</label>
                             </li>`
