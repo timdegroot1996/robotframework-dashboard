@@ -183,7 +183,7 @@
             </div>
         </div>
 
-        <div class="card" id="runSection">
+        <div class="card" id="runStatisticsSection">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
@@ -196,7 +196,7 @@
                 </div>
             </div>
             <div class="card-body collapse show" id="runDetails">
-                <div class="row" id="runStatisticsDurationChevronRow">
+                <div class="row" id="runStatisticsChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="runStatisticsDurationButton" data-bs-toggle="collapse"
                             data-bs-target="#runStatisticsDurationCollapse" aria-expanded="true"
@@ -209,9 +209,9 @@
                 <div class="row collapse show" id="runStatisticsDurationCollapse">
                     <div class="col canvas mb-5" id="runStatisticsCanvas">
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="runStatisticsGraphBarPercentages">Percentages</button>
+                            id="runStatisticsGraphPercentages">Percentages</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="runStatisticsGraphBarAmount">Amount</button>
+                            id="runStatisticsGraphAmount">Amount</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="runStatisticsGraphLine">Timeline</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
@@ -250,7 +250,7 @@
             </div>
         </div>
 
-        <div class="card" id="suiteSection">
+        <div class="card" id="suiteStatisticsSection">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
@@ -271,7 +271,7 @@
                 </div>
             </div>
             <div class="card-body collapse show" id="suiteDetails">
-                <div class="row" id="suiteStatisticsDurationChevronRow">
+                <div class="row" id="suiteStatisticsChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="suiteStatisticsDurationButton"
                             data-bs-toggle="collapse" data-bs-target="#suiteStatisticsDurationCollapse"
@@ -284,9 +284,9 @@
                 <div class="row collapse show" id="suiteStatisticsDurationCollapse">
                     <div class="col canvas mb-5" id="suiteStatisticsCanvas">
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="suiteStatisticsGraphBarPercentages">Percentages</button>
+                            id="suiteStatisticsGraphPercentages">Percentages</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="suiteStatisticsGraphBarAmount">Amount</button>
+                            id="suiteStatisticsGraphAmount">Amount</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="suiteStatisticsGraphLine">Timeline</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
@@ -348,7 +348,7 @@
             </div>
         </div>
 
-        <div class="card" id="testSection">
+        <div class="card" id="testStatisticsSection">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
@@ -384,35 +384,35 @@
                     </div>
                     <div class="col-auto">
                         <div class="btn-group ms-1">
-                            <label class="form-check-label mt-2" for="showOnlySelectedtestStatus">Show Only
+                            <label class="form-check-label mt-2" for="showOnlySelectedtestStatistics">Show Only
                                 Test</label>
                         </div>
                         <div class="btn-group form-switch ms-1">
                             <input class="form-check-input mt-2" type="checkbox" role="switch"
-                                id="showOnlySelectedtestStatus" />
+                                id="showOnlySelectedtestStatistics" />
                         </div>
                     </div>
                 </div>
             </div>
             <div class="card-body collapse show" id="testDetails">
-                <div class="row" id="testStatusDurationChevronRow">
+                <div class="row" id="testStatisticsChevronRow">
                     <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="testStatusDurationButton" data-bs-toggle="collapse"
-                            data-bs-target="#testStatusDurationCollapse" aria-expanded="true"
-                            aria-controls="testStatusDurationCollapse"></div>
+                        <div class="btn btn-sm btn-secondary" id="testStatisticsDurationButton"
+                            data-bs-toggle="collapse" data-bs-target="#testStatisticsDurationCollapse"
+                            aria-expanded="true" aria-controls="testStatisticsDurationCollapse"></div>
                     </div>
                     <div class="col">
                         <h4>Statistics & Duration</h4>
                     </div>
                 </div>
-                <div class="row collapse show" id="testStatusDurationCollapse">
-                    <div class="col canvas canvas-vertical" id="testStatusCanvas">
-                        <div id="testStatusVertical">
+                <div class="row collapse show" id="testStatisticsDurationCollapse">
+                    <div class="col canvas canvas-vertical" id="testStatisticsCanvas">
+                        <div id="testStatisticsVertical">
                             <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                                id="testStatusFullscreen">Fullscreen</button>
-                            <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testStatusClose"
+                                id="testStatisticsFullscreen">Fullscreen</button>
+                            <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testStatisticsClose"
                                 hidden>Close</button>
-                            <canvas id="testStatusGraph"></canvas>
+                            <canvas id="testStatisticsGraph"></canvas>
                         </div>
                     </div>
                     <div class="col canvas mb-5" id="testDurationCanvas">
@@ -478,7 +478,7 @@
                         <canvas id="testMostFlakyGraph"></canvas>
                     </div>
                 </div>
-                <div class="row" id="testMostFailedMessagesChevronRow">
+                <div class="row" id="testMostFailedChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="testMostFailedMessagesButton"
                             data-bs-toggle="collapse" data-bs-target="#testMostFailedMessagesCollapse"
@@ -531,7 +531,7 @@
             </div>
         </div>
 
-        <div class="card" id="keywordSection">
+        <div class="card" id="keywordStatisticsSection">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
@@ -552,7 +552,7 @@
                 </div>
             </div>
             <div class="card-body collapse show" id="keywordDetails">
-                <div class="row" id="keywordStatisticsTimesRunChevronRow">
+                <div class="row" id="keywordStatisticsChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="keywordStatisticsTimesRunButton"
                             data-bs-toggle="collapse" data-bs-target="#keywordStatisticsTimesRunCollapse"
@@ -565,9 +565,9 @@
                 <div class="row collapse show" id="keywordStatisticsTimesRunCollapse">
                     <div class="col canvas mb-5" id="keywordStatisticsCanvas">
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="keywordStatisticsGraphBarPercentages">Percentages</button>
+                            id="keywordStatisticsGraphPercentages">Percentages</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordStatisticsGraphBarAmount">Amount</button>
+                            id="keywordStatisticsGraphAmount">Amount</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="keywordStatisticsGraphLine">Timeline</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
@@ -588,7 +588,7 @@
                         <canvas id="keywordTimesRunGraph"></canvas>
                     </div>
                 </div>
-                <div class="row" id="keywordTotalDurationAverageDurationChevronRow">
+                <div class="row" id="keywordTotalDurationChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="keywordTotalAverageButton" data-bs-toggle="collapse"
                             data-bs-target="#keywordTotalAverageCollapse" aria-expanded="true"
@@ -623,7 +623,7 @@
                         <canvas id="keywordAverageDurationGraph"></canvas>
                     </div>
                 </div>
-                <div class="row" id="keywordMinMaxDurationChevronRow">
+                <div class="row" id="keywordMinDurationChevronRow">
                     <div class="col-auto mt-1">
                         <div class="btn btn-sm btn-secondary" id="keywordMinMaxButton" data-bs-toggle="collapse"
                             data-bs-target="#keywordMinMaxCollapse" aria-expanded="true"
@@ -778,30 +778,35 @@
         const use_run_aliases = false
 
         // set default values
-        document.getElementById(
-            "stats"
-        ).innerHTML = `<i>"placeholder_version"</i><br><b>Database Summary</b><br>Runs: ${runs.length}<br>Suites: ${suites.length}<br>Tests: ${tests.length}<br>Keywords: ${keywords.length}`;
+        document.getElementById("stats").innerHTML = `<i>"placeholder_version"</i><br>
+        <b>Database Summary</b><br>
+        Runs: ${runs.length}<br>
+        Suites: ${suites.length}<br>
+        Tests: ${tests.length}<br>
+        Keywords: ${keywords.length}`;
 
-        // add chevrons in hide modal
-        const arrows = ['sectionRight', 'sectionLeft', 'graphRight', 'graphLeft']
-        for (let arrow of arrows) {
-            update_arrow_button(arrow);
-            document.getElementById(arrow).addEventListener("click", (e) => {
-                if (arrow == 'sectionRight') { moveItems('sectionShow', 'sectionHide') }
-                else if (arrow == 'sectionLeft') { moveItems('sectionHide', 'sectionShow') }
-                else if (arrow == 'graphRight') { moveItems('graphShow', 'graphHide') }
-                else if (arrow == 'graphLeft') { moveItems('graphHide', 'graphShow') }
+        // Map the arrow actions and associated operations
+        const arrowMappings = {
+            'sectionRight': { from: 'sectionShow', to: 'sectionHide', content: collapsed },
+            'sectionLeft': { from: 'sectionHide', to: 'sectionShow', content: inversedCollapsed },
+            'graphRight': { from: 'graphShow', to: 'graphHide', content: collapsed },
+            'graphLeft': { from: 'graphHide', to: 'graphShow', content: inversedCollapsed }
+        };
+
+        // Initialize arrows with their respective functionality and content
+        for (let arrow in arrowMappings) {
+            const { from, to, content } = arrowMappings[arrow];
+            // Update button content based on direction
+            update_arrow_button(arrow, content);
+            // Add event listener to each arrow button
+            document.getElementById(arrow).addEventListener("click", () => {
+                moveItems(from, to);
             });
         }
 
-        // add arrow chevrons
-        function update_arrow_button(id) {
-            if (id.includes('Right')) {
-                document.getElementById(id).innerHTML = collapsed
-            }
-            if (id.includes('Left')) {
-                document.getElementById(id).innerHTML = inversedCollapsed
-            }
+        // Function to update arrow button content
+        function update_arrow_button(id, content) {
+            document.getElementById(id).innerHTML = content;
         }
 
         // add items in hide modal
@@ -824,7 +829,7 @@
             'Test Duration Deviation',
             'Test Most Flaky',
             'Test Most Failed',
-            'Test Top 10 Messages',
+            'Test Messages',
             'Test Table',
             'Keyword Statistics',
             'Keyword Times Run',
@@ -927,7 +932,7 @@
         var suiteMostFailedGraph;
         var suiteMostFailedGraphType = "bar";
         var suiteTable;
-        var testStatusGraph;
+        var testStatisticsGraph;
         var testDurationGraph;
         var testDurationGraphType = "bar";
         var testMostFlakyGraph;
@@ -960,7 +965,7 @@
         var filteredKeywords;
 
         // var to keep track of the checkbox statuses
-        var showOnlySelectedtestStatus = false;
+        var showOnlySelectedtestStatistics = false;
         var ignoreSkips = false;
 
         // initialize all collapsables by adding the eventlisteners to the buttonIds
@@ -973,7 +978,7 @@
             "suiteMostFailedButton",
             "suiteTableButton",
             "testDetailsButton",
-            "testStatusDurationButton",
+            "testStatisticsDurationButton",
             "testDurationDeviationButton",
             "testMostFlakyButton",
             "testMostFailedMessagesButton",
@@ -1015,7 +1020,7 @@
 
         // eventlisteners for fullscreen buttons
         const fullscreenButtons = ["runStatistics", "runDuration", "suiteStatistics",
-            "suiteDuration", "suiteMostFailed", "testStatus", "testDuration",
+            "suiteDuration", "suiteMostFailed", "testStatistics", "testDuration",
             "testMostFlaky", "testDurationDeviation", "testMostFailed", "testMessages",
             "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
             "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration"]
@@ -1052,57 +1057,46 @@
             'keyword_average_duration': 'Bar,Line',
             'keyword_min_duration': 'Bar,Line',
             'keyword_max_duration': 'Bar,Line',
+        };
+
+        function underscoreToCamelcase(str) {
+            return str.replace(/_(.)/g, (match, group) => group.toUpperCase());
         }
-        function underscoreToCamelcase(string) {
-            return string.replace(/(\_\w)/g, function (m) {
-                return m[1].toUpperCase();
+
+        function handleGraphButtonClick(graphChangeButton, graphType, camelButtonName) {
+            // Dynamically trigger the graph creation function
+            window[`create_${graphChangeButton}_graph`](graphType);
+            // Update the UI to enable/disable buttons accordingly
+            const buttons = ['Bar', 'Line', 'Timeline', 'Percentages', 'Amount']; // All possible button types
+            buttons.forEach(button => {
+                const buttonId = `${camelButtonName}Graph${button}`;
+                if (document.getElementById(buttonId)) {
+                    if (button.toLowerCase() === graphType.toLowerCase()) {
+                        document.getElementById(buttonId).classList.add("disabled");
+                    } else {
+                        document.getElementById(buttonId).classList.remove("disabled");
+                    }
+                }
             });
         }
-        for (let graphChangeButton in graphChangeButtons) {
-            let camelButtonName = underscoreToCamelcase(graphChangeButton)
-            if (graphChangeButtons[graphChangeButton] == 'Percentages,Line,Amount') {
-                document.getElementById(`${camelButtonName}GraphBarPercentages`).addEventListener("click", (e) => {
-                    window[`create_${graphChangeButton}_graph`]("percentages");
-                    document.getElementById(`${camelButtonName}GraphBarAmount`).classList.remove("disabled");
-                    document.getElementById(`${camelButtonName}GraphLine`).classList.remove("disabled");
-                    document.getElementById(`${camelButtonName}GraphBarPercentages`).classList.add("disabled");
-                });
-                document.getElementById(`${camelButtonName}GraphBarAmount`).addEventListener("click", (e) => {
-                    window[`create_${graphChangeButton}_graph`]("amount");
-                    document.getElementById(`${camelButtonName}GraphBarAmount`).classList.add("disabled");
-                    document.getElementById(`${camelButtonName}GraphLine`).classList.remove("disabled");
-                    document.getElementById(`${camelButtonName}GraphBarPercentages`).classList.remove("disabled");
-                });
-                document.getElementById(`${camelButtonName}GraphLine`).addEventListener("click", (e) => {
-                    window[`create_${graphChangeButton}_graph`]("line");
-                    document.getElementById(`${camelButtonName}GraphBarAmount`).classList.remove("disabled");
-                    document.getElementById(`${camelButtonName}GraphLine`).classList.add("disabled");
-                    document.getElementById(`${camelButtonName}GraphBarPercentages`).classList.remove("disabled");
-                });
-            } else if (graphChangeButtons[graphChangeButton] == 'Bar,Line') {
-                document.getElementById(`${camelButtonName}GraphBar`).addEventListener("click", (e) => {
-                    window[`create_${graphChangeButton}_graph`]("bar");
-                    document.getElementById(`${camelButtonName}GraphBar`).classList.add("disabled");
-                    document.getElementById(`${camelButtonName}GraphLine`).classList.remove("disabled");
-                });
-                document.getElementById(`${camelButtonName}GraphLine`).addEventListener("click", (e) => {
-                    window[`create_${graphChangeButton}_graph`]("line");
-                    document.getElementById(`${camelButtonName}GraphBar`).classList.remove("disabled");
-                    document.getElementById(`${camelButtonName}GraphLine`).classList.add("disabled");
-                });
-            } else if (graphChangeButtons[graphChangeButton] == 'Bar,Timeline') {
-                document.getElementById(`${camelButtonName}GraphBar`).addEventListener("click", (e) => {
-                    window[`create_${graphChangeButton}_graph`]("bar");
-                    document.getElementById(`${camelButtonName}GraphBar`).classList.add("disabled");
-                    document.getElementById(`${camelButtonName}GraphTimeline`).classList.remove("disabled");
-                });
-                document.getElementById(`${camelButtonName}GraphTimeline`).addEventListener("click", (e) => {
-                    window[`create_${graphChangeButton}_graph`]("timeline");
-                    document.getElementById(`${camelButtonName}GraphBar`).classList.remove("disabled");
-                    document.getElementById(`${camelButtonName}GraphTimeline`).classList.add("disabled");
-                });
-            }
+
+        function addGraphEventListeners(graphChangeButton, buttonTypes) {
+            const camelButtonName = underscoreToCamelcase(graphChangeButton);
+            const graphTypes = buttonTypes.split(',');
+            graphTypes.forEach((graphType, index) => {
+                const buttonId = `${camelButtonName}Graph${graphType}`;
+                if (document.getElementById(buttonId)) {
+                    document.getElementById(buttonId).addEventListener("click", (e) => {
+                        handleGraphButtonClick(graphChangeButton, graphType.toLowerCase(), camelButtonName);
+                    });
+                }
+            });
         }
+
+        // Iterate over the graphChangeButtons object to attach event listeners
+        Object.entries(graphChangeButtons).forEach(([graphChangeButton, buttonTypes]) => {
+            addGraphEventListeners(graphChangeButton, buttonTypes);
+        });
 
         // eventlistener for run tags selection
         document.getElementById("selectRunTags").addEventListener("click", show_checkboxes);
@@ -1113,9 +1107,9 @@
             create_suite_duration_graph();
             create_suite_statistics_graph();
         });
-        document.getElementById("showOnlySelectedtestStatus").addEventListener("change", (e) => {
-            showOnlySelectedtestStatus = !showOnlySelectedtestStatus;
-            create_test_status_graph();
+        document.getElementById("showOnlySelectedtestStatistics").addEventListener("change", (e) => {
+            showOnlySelectedtestStatistics = !showOnlySelectedtestStatistics;
+            create_test_statistics_graph();
         });
         document.getElementById("ignoreSkips").addEventListener("change", (e) => {
             ignoreSkips = !ignoreSkips;
@@ -1124,19 +1118,19 @@
         document.getElementById("suiteSelectTests").addEventListener("change", (e) => {
             add_testtags_in_select();
             add_tests_in_select();
-            create_test_status_graph();
+            create_test_statistics_graph();
             create_test_duration_graph();
             create_test_duration_deviation_graph();
         });
         document.getElementById("testTagsSelect").addEventListener("change", (e) => {
             add_tests_in_select();
-            create_test_status_graph();
+            create_test_statistics_graph();
             create_test_duration_graph();
             create_test_duration_deviation_graph();
         });
         document.getElementById("testSelect").addEventListener("change", (e) => {
-            if (showOnlySelectedtestStatus) {
-                create_test_status_graph();
+            if (showOnlySelectedtestStatistics) {
+                create_test_statistics_graph();
             }
             create_test_duration_graph();
             create_test_duration_deviation_graph();
@@ -1221,7 +1215,7 @@
             create_suite_duration_graph();
             create_suite_most_failed_graph();
             create_suite_table();
-            create_test_status_graph();
+            create_test_statistics_graph();
             create_test_duration_graph();
             create_test_duration_deviation_graph();
             create_test_most_flaky_graph();
@@ -1239,263 +1233,100 @@
         }
 
         function set_hidden_sections_and_graphs() {
-            const hiddenSections = localStorage.getItem("sectionHide")
-            const hiddenGraphs = localStorage.getItem("graphHide")
-            if (hiddenSections.includes('Run Statistics')) {
-                document.getElementById('runSection').hidden = true
-            } else {
-                document.getElementById('runSection').hidden = false
-                // run statistics
-                if (hiddenGraphs.includes('Run Statistics')) {
-                    document.getElementById('runStatisticsCanvas').hidden = true
-                } else {
-                    document.getElementById('runStatisticsCanvas').hidden = false
-                }
-                // run duration
-                if (hiddenGraphs.includes('Run Duration')) {
-                    document.getElementById('runDurationCanvas').hidden = true
-                } else {
-                    document.getElementById('runDurationCanvas').hidden = false
-                }
-                if (hiddenGraphs.includes('Run Statistics') && hiddenGraphs.includes('Run Duration')) {
-                    document.getElementById('runStatisticsDurationChevronRow').hidden = true
-                } else {
-                    document.getElementById('runStatisticsDurationChevronRow').hidden = false
-                }
-                // run table
-                if (hiddenGraphs.includes('Run Table')) {
-                    document.getElementById('runTableCollapse').hidden = true
-                    document.getElementById('runTableChevronRow').hidden = true
-                } else {
-                    document.getElementById('runTableCollapse').hidden = false
-                    document.getElementById('runTableChevronRow').hidden = false
+            const hiddenSections = localStorage.getItem("sectionHide");
+            const hiddenGraphs = localStorage.getItem("graphHide");
+            // function to convert to camelcase
+            function spaceToCamelCase(string) {
+                return string.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+                    return index === 0 ? word.toLowerCase() : word.toUpperCase();
+                }).replace(/\s+/g, '');
+            }
+            // function to show or hide elements
+            function toggleElement(id, condition) {
+                const element = document.getElementById(id);
+                if (element) element.hidden = condition;
+            }
+            // function to handle a section
+            function handleSection(sectionId, graphs) {
+                const isSectionHidden = hiddenSections.includes(sectionId);
+                toggleElement(spaceToCamelCase(sectionId.toLowerCase() + 'Section'), isSectionHidden);
+                if (!isSectionHidden) {
+                    graphs.forEach(({ id, dependencies }) => {
+                        const isGraphHidden = hiddenGraphs.includes(id);
+                        toggleElement(spaceToCamelCase(id + ' Canvas'), isGraphHidden);
+
+                        if (dependencies) {
+                            const areDependenciesHidden = dependencies.every(dep => hiddenGraphs.includes(dep));
+                            toggleElement(spaceToCamelCase(id + ' ChevronRow'), areDependenciesHidden);
+                        }
+                    });
                 }
             }
-            if (hiddenSections.includes('Suite Statistics')) {
-                document.getElementById('suiteSection').hidden = true
-            } else {
-                document.getElementById('suiteSection').hidden = false
-                // suite statistics
-                if (hiddenGraphs.includes('Suite Statistics')) {
-                    document.getElementById('suiteStatisticsCanvas').hidden = true
-                } else {
-                    document.getElementById('suiteStatisticsCanvas').hidden = false
-                }
-                // suite duration
-                if (hiddenGraphs.includes('Suite Duration')) {
-                    document.getElementById('suiteDurationCanvas').hidden = true
-                } else {
-                    document.getElementById('suiteDurationCanvas').hidden = false
-                }
-                if (hiddenGraphs.includes('Suite Statistics') && hiddenGraphs.includes('Suite Duration')) {
-                    document.getElementById('suiteStatisticsDurationChevronRow').hidden = true
-                } else {
-                    document.getElementById('suiteStatisticsDurationChevronRow').hidden = false
-                }
-                // suite most failed
-                if (hiddenGraphs.includes('Suite Most Failed')) {
-                    document.getElementById('suiteMostFailedCanvas').hidden = true
-                    document.getElementById('suiteMostFailedChevronRow').hidden = true
-                } else {
-                    document.getElementById('suiteMostFailedCanvas').hidden = false
-                    document.getElementById('suiteMostFailedChevronRow').hidden = false
-                }
-                // suite table
-                if (hiddenGraphs.includes('Suite Table')) {
-                    document.getElementById('suiteTableCollapse').hidden = true
-                    document.getElementById('suiteTableChevronRow').hidden = true
-                } else {
-                    document.getElementById('suiteTableCollapse').hidden = false
-                    document.getElementById('suiteTableChevronRow').hidden = false
-                }
-            }
-            if (hiddenSections.includes('Test Statistics')) {
-                document.getElementById('testSection').hidden = true
-            } else {
-                document.getElementById('testSection').hidden = false
-                // test status
-                if (hiddenGraphs.includes('Test Statistics')) {
-                    document.getElementById('testStatusCanvas').hidden = true
-                } else {
-                    document.getElementById('testStatusCanvas').hidden = false
-                }
-                // test duration
-                if (hiddenGraphs.includes('Test Duration')) {
-                    document.getElementById('testDurationCanvas').hidden = true
-                } else {
-                    document.getElementById('testDurationCanvas').hidden = false
-                }
-                if (hiddenGraphs.includes('Test Statistics') && hiddenGraphs.includes('Test Duration')) {
-                    document.getElementById('testStatusDurationChevronRow').hidden = true
-                } else {
-                    document.getElementById('testStatusDurationChevronRow').hidden = false
-                }
-                // test duration deviation
-                if (hiddenGraphs.includes('Test Duration Deviation')) {
-                    document.getElementById('testDurationDeviationCanvas').hidden = true
-                    document.getElementById('testDurationDeviationChevronRow').hidden = true
-                } else {
-                    document.getElementById('testDurationDeviationCanvas').hidden = false
-                    document.getElementById('testDurationDeviationChevronRow').hidden = false
-                }
-                // test most flaky
-                if (hiddenGraphs.includes('Test Most Flaky')) {
-                    document.getElementById('testMostFlakyCanvas').hidden = true
-                    document.getElementById('testMostFlakyChevronRow').hidden = true
-                } else {
-                    document.getElementById('testMostFlakyCanvas').hidden = false
-                    document.getElementById('testMostFlakyChevronRow').hidden = false
-                }
-                // test most failed
-                if (hiddenGraphs.includes('Test Most Failed')) {
-                    document.getElementById('testMostFailedCanvas').hidden = true
-                } else {
-                    document.getElementById('testMostFailedCanvas').hidden = false
-                }
-                // test top 10 messages
-                if (hiddenGraphs.includes('Test Top 10 Messages')) {
-                    document.getElementById('testMessagesCanvas').hidden = true
-                } else {
-                    document.getElementById('testMessagesCanvas').hidden = false
-                }
-                if (hiddenGraphs.includes('Test Most Failed') && hiddenGraphs.includes('Test Top 10 Messages')) {
-                    document.getElementById('testMostFailedMessagesChevronRow').hidden = true
-                } else {
-                    document.getElementById('testMostFailedMessagesChevronRow').hidden = false
-                }
-                // test table
-                if (hiddenGraphs.includes('Test Table')) {
-                    document.getElementById('testTableCollapse').hidden = true
-                    document.getElementById('testTableChevronRow').hidden = true
-                } else {
-                    document.getElementById('testTableCollapse').hidden = false
-                    document.getElementById('testTableChevronRow').hidden = false
-                }
-            }
-            if (hiddenSections.includes('Keyword Statistics')) {
-                document.getElementById('keywordSection').hidden = true
-            } else {
-                document.getElementById('keywordSection').hidden = false
-                // keyword statistics
-                if (hiddenGraphs.includes('Keyword Statistics')) {
-                    document.getElementById('keywordStatisticsCanvas').hidden = true
-                } else {
-                    document.getElementById('keywordStatisticsCanvas').hidden = false
-                }
-                // keyword times run
-                if (hiddenGraphs.includes('Keyword Times Run')) {
-                    document.getElementById('keywordTimesRunCanvas').hidden = true
-                } else {
-                    document.getElementById('keywordTimesRunCanvas').hidden = false
-                }
-                if (hiddenGraphs.includes('Keyword Statistics') && hiddenGraphs.includes('Keyword Times Run')) {
-                    document.getElementById('keywordStatisticsTimesRunChevronRow').hidden = true
-                } else {
-                    document.getElementById('keywordStatisticsTimesRunChevronRow').hidden = false
-                }
-                // keyword total duration
-                if (hiddenGraphs.includes('Keyword Total Duration')) {
-                    document.getElementById('keywordTotalDurationCanvas').hidden = true
-                } else {
-                    document.getElementById('keywordTotalDurationCanvas').hidden = false
-                }
-                // keyword average duration
-                if (hiddenGraphs.includes('Keyword Average Duration')) {
-                    document.getElementById('keywordAverageDurationCanvas').hidden = true
-                } else {
-                    document.getElementById('keywordAverageDurationCanvas').hidden = false
-                }
-                if (hiddenGraphs.includes('Keyword Total Duration') && hiddenGraphs.includes('Keyword Average Duration')) {
-                    document.getElementById('keywordTotalDurationAverageDurationChevronRow').hidden = true
-                } else {
-                    document.getElementById('keywordTotalDurationAverageDurationChevronRow').hidden = false
-                }
-                // keyword min duration
-                if (hiddenGraphs.includes('Keyword Min Duration')) {
-                    document.getElementById('keywordMinDurationCanvas').hidden = true
-                } else {
-                    document.getElementById('keywordMinDurationCanvas').hidden = false
-                }
-                // keyword max duration
-                if (hiddenGraphs.includes('Keyword Max Duration')) {
-                    document.getElementById('keywordMaxDurationCanvas').hidden = true
-                } else {
-                    document.getElementById('keywordMaxDurationCanvas').hidden = false
-                }
-                if (hiddenGraphs.includes('Keyword Min Duration') && hiddenGraphs.includes('Keyword Max Duration')) {
-                    document.getElementById('keywordMinMaxDurationChevronRow').hidden = true
-                } else {
-                    document.getElementById('keywordMinMaxDurationChevronRow').hidden = false
-                }
-                // keyword table
-                if (hiddenGraphs.includes('Keyword Table')) {
-                    document.getElementById('keywordTableCollapse').hidden = true
-                    document.getElementById('keywordTableChevronRow').hidden = true
-                } else {
-                    document.getElementById('keywordTableCollapse').hidden = false
-                    document.getElementById('keywordTableChevronRow').hidden = false
-                }
-            }
+            handleSection('Run Statistics', [
+                { id: 'Run Statistics', dependencies: ['Run Statistics', 'Run Duration'] },
+                { id: 'Run Duration' },
+                { id: 'Run Table', dependencies: ['Run Table'] }
+            ]);
+            handleSection('Suite Statistics', [
+                { id: 'Suite Statistics', dependencies: ['Suite Statistics', 'Suite Duration'] },
+                { id: 'Suite Duration' },
+                { id: 'Suite Most Failed', dependencies: ['Suite Most Failed'] },
+                { id: 'Suite Table', dependencies: ['Suite Table'] }
+            ]);
+            handleSection('Test Statistics', [
+                { id: 'Test Statistics', dependencies: ['Test Statistics', 'Test Duration'] },
+                { id: 'Test Duration' },
+                { id: 'Test Duration Deviation', dependencies: ['Test Duration Deviation'] },
+                { id: 'Test Most Flaky', dependencies: ['Test Most Flaky'] },
+                { id: 'Test Most Failed', dependencies: ['Test Most Failed', 'Test Messages'] },
+                { id: 'Test Messages' },
+                { id: 'Test Table', dependencies: ['Test Table'] }
+            ]);
+            handleSection('Keyword Statistics', [
+                { id: 'Keyword Statistics', dependencies: ['Keyword Statistics', 'Keyword Times Run'] },
+                { id: 'Keyword Times Run' },
+                { id: 'Keyword Total Duration', dependencies: ['Keyword Total Duration', 'Keyword Average Duration'] },
+                { id: 'Keyword Average Duration' },
+                { id: 'Keyword Min Duration', dependencies: ['Keyword Min Duration', 'Keyword Max Duration'] },
+                { id: 'Keyword Max Duration' },
+                { id: 'Keyword Table', dependencies: ['Keyword Table'] }
+            ]);
         }
 
         // function to filter run data based on the runs (aka run name) filter
         function filter_runs(runs) {
-            var run = document.getElementById("runs").value;
-            var filteredRuns = [];
-            for (var [key, value] of Object.entries(runs)) {
-                if (run != "All" && value.name != run) {
-                    continue;
-                } else {
-                    filteredRuns.push(value);
-                }
+            const selectedRun = document.getElementById("runs").value;
+            // If "All" is selected, return the original array of runs
+            if (selectedRun === "All") {
+                return runs;
             }
-            return filteredRuns;
+            return Object.values(runs).filter(run => run.name === selectedRun);
         }
 
         // function to filter run data based on the run tags filter
         function filter_runtags(runs) {
-            var tagElements = document.getElementById("runTag").getElementsByTagName("input");
-            var useOrTags = document.getElementById("useOrTags").checked
-            var selectedTags = []
-            for (tagElement of tagElements) {
-                if (tagElement.checked) {
-                    selectedTags.push(tagElement.id)
-                }
+            const tagElements = document.getElementById("runTag").getElementsByTagName("input");
+            const useOrTags = document.getElementById("useOrTags").checked;
+            const selectedTags = Array.from(tagElements)
+                .filter(tagElement => tagElement.checked)
+                .map(tagElement => tagElement.id);
+            // If "All" is selected, return all runs
+            if (selectedTags.includes("All")) {
+                return runs;
             }
-            var filteredRuns = [];
-            for (value of runs) {
-                var runTags = value.tags.split(",");
-                if (selectedTags.includes("All")) {
-                    // if All is included just return everything
-                    filteredRuns = runs;
-                } else if (selectedTags.length == 0) {
-                    // if no filter is applied just return an empty list
-                    return filteredRuns
-                } else if (!useOrTags) {
-                    // do the complicated filtering if above conditions are not true
-                    // this filtering is based on inclusive AND, if it does not have a tag it will not pass
-                    var valid = true
-                    for (selectedTag of selectedTags) {
-                        if (!runTags.includes(selectedTag)) {
-                            valid = false
-                            break
-                        }
-                    }
-                    if (valid) {
-                        filteredRuns.push(value);
-                    }
-                } else if (useOrTags) {
-                    // do the complicated filtering if above conditions are not true
-                    // this filtering is based on OR, if it does have any of the selected tags it will pass
-                    for (selectedTag of selectedTags) {
-                        if (runTags.includes(selectedTag)) {
-                            filteredRuns.push(value);
-                            break
-                        }
-                    }
-                }
+            // If no tags are selected, return an empty list
+            if (selectedTags.length === 0) {
+                return [];
             }
-            return filteredRuns;
+            return runs.filter(run => {
+                const runTags = run.tags.split(",");
+                // Use AND logic: the run must contain all selected tags
+                if (!useOrTags) {
+                    return selectedTags.every(selectedTag => runTags.includes(selectedTag));
+                }
+                // Use OR logic: the run must contain at least one selected tag
+                return selectedTags.some(selectedTag => runTags.includes(selectedTag));
+            });
         }
 
         // function to filter the run data based on the selected date range
@@ -1504,29 +1335,22 @@
             const fromTime = document.getElementById("fromTime").value;
             const toDate = document.getElementById("toDate").value;
             const toTime = document.getElementById("toTime").value;
-            var filteredRuns = [];
-            if (fromDate && fromTime && toDate && toTime) {
-                const fromDateTime = new Date(`${fromDate} ${fromTime}:00`);
-                const toDateTime = new Date(`${toDate} ${toTime}:00`);
-                if (fromDateTime <= toDateTime) {
-                    for (value of runs) {
-                        var run_start = new Date(value.run_start);
-                        if (run_start < fromDateTime || run_start > toDateTime) {
-                            continue;
-                        } else {
-                            filteredRuns.push(value);
-                        }
-                    }
-                } else {
-                    // you end up here if fromDate > toDate
-                    alert("Filter error: The selected from date + time is later than your selected to date + time. Date filter has not been applied!");
-                    filteredRuns = runs;
-                }
-            } else {
-                // no dates or not all value are provided
-                filteredRuns = runs;
+            // Return all runs if any date/time values are missing
+            if (!fromDate || !fromTime || !toDate || !toTime) {
+                return runs;
             }
-            return filteredRuns;
+            const fromDateTime = new Date(`${fromDate} ${fromTime}:00`);
+            const toDateTime = new Date(`${toDate} ${toTime}:00`);
+            // Check for valid date range
+            if (fromDateTime > toDateTime) {
+                alert("Filter error: The selected from date + time is later than your selected to date + time. Date filter has not been applied!");
+                return runs;  // Return all runs if invalid range
+            }
+            // Use the array filter method for a cleaner approach
+            return runs.filter(run => {
+                const runStart = new Date(run.run_start);
+                return runStart >= fromDateTime && runStart <= toDateTime;
+            });
         }
 
         // function to filter suites/tests/keywords based on the already filtered runs
@@ -1554,51 +1378,59 @@
 
         // function to update the available runs to select in the filters
         function add_runs_in_select() {
-            var runOptions = [];
-            for (run of runs) {
-                if (!runOptions.includes(run.name)) {
-                    runOptions.push(run.name);
-                }
-            }
-            var runsSelect = document.getElementById("runs");
-            runsSelect.options[runsSelect.options.length] = new Option("All", "All");
-            for (runOption of runOptions) {
-                runsSelect.options[runsSelect.options.length] = new Option(runOption, runOption);
-            }
+            // Use a Set to collect unique run names
+            const runOptions = new Set();
+            // Collect all unique run names
+            runs.forEach(run => runOptions.add(run.name));
+            // Build the options HTML (including "All" as the first option)
+            const optionsHtml = Array.from(runOptions)
+                .map(runName => `<option value="${runName}">${runName}</option>`)
+                .join('');
+            // Add the "All" option and append all other options
+            const runsSelect = document.getElementById("runs");
+            runsSelect.innerHTML = `<option value="All">All</option>` + optionsHtml;
         }
+
 
         // function to update the available runtags to select in the filters
         function add_runtags_in_select() {
-            var tags = [];
-            for (run of runs) {
-                var runTags = run.tags.split(",");
-                for (tag of runTags) {
-                    if (!tags.includes(tag) && tag != "") {
-                        tags.push(tag);
+            // Use a Set to collect unique tags
+            const tags = new Set();
+            // Collect all unique tags from the runs
+            runs.forEach(run => {
+                run.tags.split(",").forEach(tag => {
+                    if (tag) { // Avoid adding empty tags
+                        tags.add(tag);
                     }
-                }
-            }
-            var andOrTags = `<li class="list-group-item d-flex small">
-                                <div class="btn-group form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch"
-                                        id="useOrTags" />
-                                </div>
-                                <div class="btn-group">
-                                    <label class="form-check-label" for="orTags">Use OR (default
-                                        AND)</label>
-                                </div>
-                            </li>`
-            var listItem = `<li class="list-group-item list-group-item-action d-flex small" onclick="update_data_and_all_graphs()">
-                                <input class="form-check-input me-1" type="checkbox" value="" id="{value}">
-                                <label class="form-check-label ms-2" for="{value}">{value}</label>
-                            </li>`
-            var listItems = andOrTags + listItem.replaceAll('{value}', 'All')
-            for (tag of tags) {
-                listItems += listItem.replaceAll('{value}', tag)
-            }
-            var tagsSelect = document.getElementById("runTag");
-            tagsSelect.innerHTML = listItems
-            document.getElementById("All").checked = true
+                });
+            });
+            // Create the "Use OR" toggle item
+            const andOrTags = `
+                <li class="list-group-item d-flex small">
+                    <div class="btn-group form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="useOrTags" />
+                    </div>
+                    <div class="btn-group">
+                        <label class="form-check-label" for="orTags">Use OR (default AND)</label>
+                    </div>
+                </li>
+            `;
+            // Template for list items
+            const listItemTemplate = (value) => `
+                <li class="list-group-item list-group-item-action d-flex small" onclick="update_data_and_all_graphs()">
+                    <input class="form-check-input me-1" type="checkbox" value="" id="${value}">
+                    <label class="form-check-label ms-2" for="${value}">${value}</label>
+                </li>
+            `;
+            // Build the list items for all tags and the "All" tag
+            const listItems = [listItemTemplate('All')].concat(
+                Array.from(tags).map(tag => listItemTemplate(tag))
+            ).join('');
+            // Insert the generated HTML into the DOM
+            const tagsSelect = document.getElementById("runTag");
+            tagsSelect.innerHTML = andOrTags + listItems;
+            // Set the "All" tag to be checked by default
+            document.getElementById("All").checked = true;
         }
 
         const checkboxesElement = document.getElementById('checkboxes');
@@ -1611,106 +1443,93 @@
         });
 
         // var and function to keep track of the checkboxes for the runtags
-        var showingRunTags = false;
+        let showingRunTags = false;
         function show_checkboxes() {
-            var checkboxes = document.getElementById("checkboxes");
-            if (!showingRunTags) {
-                checkboxes.style.display = "block";
-                showingRunTags = true;
-            } else {
-                checkboxes.style.display = "none";
-                showingRunTags = false;
-            }
+            const checkboxes = document.getElementById("checkboxes");
+            showingRunTags = !showingRunTags;
+            checkboxes.style.display = showingRunTags ? "block" : "none";
         }
 
         // function to update the available suites to select in the filters
         // applies to the suite filter on the suite statistics level and the test statistics level
         function add_suites_in_selects() {
-            document.getElementById("suiteSelectTests").innerHTML = "";
-            document.getElementById("suiteSelectSuites").innerHTML = "";
-            var suiteNames = [];
-            for (suite of filteredSuites) {
-                if (!suiteNames.includes(suite.name)) {
-                    suiteNames.push(suite.name);
-                }
-            }
-            var suiteSelectTests = document.getElementById("suiteSelectTests");
-            var suiteSelectSuites = document.getElementById("suiteSelectSuites");
-            suiteSelectTests.options[suiteSelectTests.options.length] = new Option("All", "All");
-            suiteSelectSuites.options[suiteSelectSuites.options.length] = new Option("All", "All");
-            for (suiteName of suiteNames.sort()) {
-                suiteSelectTests.options[suiteSelectTests.options.length] = new Option(suiteName, suiteName);
-                suiteSelectSuites.options[suiteSelectSuites.options.length] = new Option(suiteName, suiteName);
-            }
-            document.getElementById("suiteSelectTests").selectedIndex = 1
-            document.getElementById("suiteSelectSuites").selectedIndex = 1
+            const suiteSelectTests = document.getElementById("suiteSelectTests");
+            const suiteSelectSuites = document.getElementById("suiteSelectSuites");
+            // Clear existing options
+            suiteSelectTests.innerHTML = "";
+            suiteSelectSuites.innerHTML = "";
+            // Extract and sort suite names
+            const suiteNames = [...new Set(filteredSuites.map(suite => suite.name))].sort();
+            // Add "All" as default
+            suiteSelectTests.options.add(new Option("All", "All"));
+            suiteSelectSuites.options.add(new Option("All", "All"));
+            // Add suite names to selects
+            suiteNames.forEach(suiteName => {
+                suiteSelectTests.options.add(new Option(suiteName, suiteName));
+                suiteSelectSuites.options.add(new Option(suiteName, suiteName));
+            });
+            // Set the default selection to the second option (All is default)
+            suiteSelectTests.selectedIndex = 1;
+            suiteSelectSuites.selectedIndex = 1;
         }
 
         // function to update the available tests to select in the filters
         // applies to the test filter on the test statistics level
         function add_tests_in_select() {
-            document.getElementById("testSelect").innerHTML = "";
-            suiteSelect = document.getElementById("suiteSelectTests").value;
-            testTagsSelect = document.getElementById("testTagsSelect").value;
-            var testNames = [];
-            for (test of filteredTests) {
-                if ((test.full_name.includes(`.${suiteSelect}.${test.name}`) || test.full_name == `${suiteSelect}.${test.name}`) && !testNames.includes(test.name)) {
-                    var tags = test.tags.replace(/\[|\]/g, '').split(',')
-                    if (tags.includes(testTagsSelect) || testTagsSelect == "All") {
-                        testNames.push(test.name);
-                    }
-                } else if (suiteSelect == 'All') {
-                    if (!testNames.includes(test.name)) {
-                        testNames.push(test.name)
-                    }
+            const suiteSelect = document.getElementById("suiteSelectTests").value;
+            const testTagsSelect = document.getElementById("testTagsSelect").value;
+            const testSelect = document.getElementById("testSelect");
+            // Clear existing options
+            testSelect.innerHTML = "";
+            // Filter test names based on suite and tags
+            const testNames = filteredTests.reduce((names, test) => {
+                const isInSuite = test.full_name.includes(`.${suiteSelect}.${test.name}`) || suiteSelect === "All";
+                const hasTag = testTagsSelect === "All" || test.tags.includes(testTagsSelect);
+
+                if (isInSuite && hasTag && !names.includes(test.name)) {
+                    names.push(test.name);
                 }
-            }
-            var testSelect = document.getElementById("testSelect");
-            testSelect.options[testSelect.options.length] = new Option("All", "All");
-            for (testName of testNames) {
-                testSelect.options[testSelect.options.length] = new Option(testName, testName);
-            }
+
+                return names;
+            }, []);
+            // Add "All" as default
+            testSelect.options.add(new Option("All", "All"));
+            // Add filtered test names to select
+            testNames.forEach(testName => testSelect.options.add(new Option(testName, testName)));
         }
 
         // function to update the available testtags to select in the filters
         // applies to the testtag filter on the test statistics level
         function add_testtags_in_select() {
-            document.getElementById("testTagsSelect").innerHTML = "";
-            suiteSelect = document.getElementById("suiteSelectTests").value;
-            var testTags = [];
-            for (test of filteredTests) {
-                if ((test.full_name.includes(`.${suiteSelect}.${test.name}`) || test.full_name == `${suiteSelect}.${test.name}`) || suiteSelect == 'All') {
-                    var tags = test.tags.replace(/\[|\]/g, '').split(',')
-                    for (tag of tags) {
-                        if (!testTags.includes(tag)) {
-                            testTags.push(tag)
-                        }
-                    }
+            const suiteSelect = document.getElementById("suiteSelectTests").value;
+            const testTagsSelect = document.getElementById("testTagsSelect");
+            // Clear existing options
+            testTagsSelect.innerHTML = "";
+            // Extract unique tags for the selected suite
+            const testTags = [...new Set(filteredTests.reduce((tags, test) => {
+                if (test.full_name.includes(`.${suiteSelect}.${test.name}`) || suiteSelect === "All") {
+                    test.tags.replace(/\[|\]/g, '').split(',').forEach(tag => tags.push(tag.trim()));
                 }
-            }
-            var testTagsSelect = document.getElementById("testTagsSelect");
-            testTagsSelect.options[testTagsSelect.options.length] = new Option("All", "All");
-            for (tag of testTags) {
-                testTagsSelect.options[testTagsSelect.options.length] = new Option(tag, tag);
-            }
+                return tags;
+            }, []))];
+            // Add "All" as default
+            testTagsSelect.options.add(new Option("All", "All"));
+            // Add tags to select
+            testTags.forEach(tag => testTagsSelect.options.add(new Option(tag, tag)));
         }
 
         // function to update the available keywords to select in the filters
         // applies to the keyword filter on the keyword statistics level
         function add_keywords_in_select() {
-            document.getElementById("keywordSelect").innerHTML = "";
-            var keywordNames = [];
-            for (keyword of filteredKeywords) {
-                if (!keywordNames.includes(keyword.name)) {
-                    keywordNames.push(keyword.name);
-                }
-            }
-            var keywordSelect = document.getElementById("keywordSelect");
-            for (keywordName of keywordNames.sort()) {
-                keywordSelect.options[keywordSelect.options.length] = new Option(keywordName, keywordName);
-            }
-            // select the last one to be able to test better :P as the default keyword is then sleep
-            document.getElementById("keywordSelect").selectedIndex = keywordNames.length - 1
+            const keywordSelect = document.getElementById("keywordSelect");
+            // Clear existing options
+            keywordSelect.innerHTML = "";
+            // Extract unique keyword names
+            const keywordNames = [...new Set(filteredKeywords.map(keyword => keyword.name))].sort();
+            // Add keywords to select
+            keywordNames.forEach(keywordName => keywordSelect.options.add(new Option(keywordName, keywordName)));
+            // Select the last keyword by default
+            keywordSelect.selectedIndex = keywordNames.length - 1;
         }
 
         // function to create run statistics graph in the run section
@@ -1925,20 +1744,20 @@
             });
         }
 
-        // function to create test status graph in the test section
-        function create_test_status_graph() {
-            if (testStatusGraph) {
-                testStatusGraph.destroy();
+        // function to create test statistics graph in the test section
+        function create_test_statistics_graph() {
+            if (testStatisticsGraph) {
+                testStatisticsGraph.destroy();
             }
-            var suiteSelectTests = document.getElementById("suiteSelectTests").value;
-            var testSelect = document.getElementById("testSelect").value;
-            var testTagsSelect = document.getElementById("testTagsSelect").value;
+            const suiteSelectTests = document.getElementById("suiteSelectTests").value;
+            const testSelect = document.getElementById("testSelect").value;
+            const testTagsSelect = document.getElementById("testTagsSelect").value;
             var [labels, runStarts, datasets] = [[], [], []];
             for (test of filteredTests) {
-                if (suiteSelectTests != "All" && !test.full_name.includes(`.${suiteSelectTests}.${test.name}`) && test.full_name != `${suiteSelect}.${test.name}`) {
+                if (suiteSelectTests != "All" && !test.full_name.includes(`.${suiteSelectTests}.${test.name}`) && test.full_name != `${suiteSelectTests}.${test.name}`) {
                     continue;
                 }
-                if (showOnlySelectedtestStatus && testSelect != "All" && test.name != testSelect) {
+                if (showOnlySelectedtestStatistics && testSelect != "All" && test.name != testSelect) {
                     continue;
                 }
                 if (testTagsSelect != "All" && !test.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
@@ -1988,7 +1807,7 @@
                 labels: labels,
                 datasets: datasets,
             };
-            var config = get_graph_config("timeline", graphData, "Test Status (Bar)");
+            var config = get_graph_config("timeline", graphData, "Test Statistics (Bar)");
             // overwrite tooltip and x scale with callbacks
             config.options.plugins.tooltip = {
                 callbacks: {
@@ -2006,8 +1825,8 @@
                     },
                 },
             };
-            testStatusGraph = new Chart("testStatusGraph", config);
-            update_height('testStatusVertical', testStatusGraph)
+            testStatisticsGraph = new Chart("testStatisticsGraph", config);
+            update_height('testStatisticsVertical', testStatisticsGraph)
         }
 
         // function to create test duration graph in the test section
@@ -2375,93 +2194,84 @@
 
         // function to retrieve the required graph config for chartjs, based on the different type of graphs
         function get_graph_config(graphType, graphData, graphTitle, xTitle, yTitle, dataSets = true) {
+            // Common base config to reduce repetition
+            const baseConfig = {
+                normalized: true,
+                animation: false,
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: graphTitle,
+                    },
+                    datalabels: {
+                        display: false,
+                    },
+                },
+            };
+            // Common scales configuration
+            const commonScales = {
+                x: {
+                    title: {
+                        display: true,
+                        text: xTitle,
+                    },
+                    ticks: {
+                        minRotation: 45,
+                        maxRotation: 45,
+                    },
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: yTitle,
+                    },
+                    grace: "5%",
+                },
+            };
             if (dataSets && graphType == "line") {
                 graphData = { datasets: graphData };
             }
-            if (graphType == "line") {
+            // Configuration for 'line' graph
+            if (graphType === "line") {
                 return {
                     type: "line",
                     data: graphData,
                     options: {
-                        normalized: true,
-                        animation: false,
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            title: {
-                                text: graphTitle,
-                                display: true,
-                            },
-                            datalabels: {
-                                display: false,
-                            },
-                            legend: {
-                                display: true,
-                            },
-                        },
+                        ...baseConfig,
                         scales: {
+                            ...commonScales,
                             x: {
+                                ...commonScales.x,
                                 type: "time",
                                 time: {
                                     tooltipFormat: "dd.MM.yyyy - HH:mm:ss.SSS",
                                 },
-                                title: {
-                                    display: true,
-                                    text: xTitle,
-                                },
-                                ticks: {
-                                    minRotation: 45,
-                                    maxRotation: 45,
-                                },
-                            },
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: yTitle,
-                                },
-                                grace: "5%",
                             },
                         },
                     },
                 };
-            } else if (graphType == "bar") {
+            }
+            // Configuration for 'bar' graph
+            if (graphType === "bar") {
                 return {
                     type: "bar",
                     data: graphData,
                     options: {
-                        normalized: true,
-                        animation: false,
-                        responsive: true,
-                        maintainAspectRatio: false,
+                        ...baseConfig,
                         scales: {
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: xTitle,
-                                },
-                                ticks: {
-                                    minRotation: 45,
-                                    maxRotation: 45,
-                                },
-                            },
+                            ...commonScales,
                             y: {
+                                ...commonScales.y,
                                 stacked: true,
-                                title: {
-                                    display: true,
-                                    text: yTitle,
-                                },
-                                grace: "5%",
                             },
                         },
                         interaction: {
                             mode: "x",
                         },
                         plugins: {
-                            title: {
-                                display: true,
-                                text: graphTitle,
-                            },
+                            ...baseConfig.plugins,
                             tooltip: {
                                 filter: (tooltipItem) => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0,
                             },
@@ -2469,27 +2279,19 @@
                                 color: "#000000",
                                 align: "center",
                                 anchor: "center",
-                                formatter: function (value) {
-                                    if (value > 0) {
-                                        return value;
-                                    } else {
-                                        value = "";
-                                        return value;
-                                    }
-                                },
+                                formatter: (value) => value > 0 ? value : "",
                             },
                         },
                     },
                 };
-            } else if (graphType == "timeline") {
+            }
+            // Configuration for 'timeline' graph
+            if (graphType === "timeline") {
                 return {
                     type: "bar",
                     data: graphData,
                     options: {
-                        normalized: true,
-                        animation: false,
-                        responsive: true,
-                        maintainAspectRatio: false,
+                        ...baseConfig,
                         indexAxis: "y",
                         scales: {
                             y: {
@@ -2497,42 +2299,26 @@
                             },
                         },
                         plugins: {
-                            title: {
-                                text: graphTitle,
-                                display: true,
-                            },
+                            ...baseConfig.plugins,
                             legend: {
-                                display: false,
-                            },
-                            datalabels: {
                                 display: false,
                             },
                         },
                     },
                 };
-            } else if (graphType == "boxplot") {
+            }
+
+            // Configuration for 'boxplot' graph
+            if (graphType === "boxplot") {
                 return {
-                    type: 'boxplot',
+                    type: "boxplot",
                     data: graphData,
                     options: {
-                        normalized: true,
-                        animation: false,
-                        responsive: true,
-                        maintainAspectRatio: false,
+                        ...baseConfig,
                         scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: yTitle,
-                                },
-                                grace: "5%",
-                            },
+                            ...commonScales,
                             x: {
-                                title: {
-                                    display: true,
-                                    text: xTitle,
-                                },
+                                ...commonScales.x,
                                 ticks: {
                                     minRotation: 45,
                                     maxRotation: 45,
@@ -2540,59 +2326,55 @@
                             },
                         },
                         plugins: {
-                            title: {
-                                text: graphTitle,
-                                display: true,
-                            },
+                            ...baseConfig.plugins,
                             tooltip: {
                                 enabled: false,
-                            },
-                            datalabels: {
-                                display: false,
                             },
                             legend: {
                                 display: false,
                             },
-                        }
-                    }
-                }
+                        },
+                    },
+                };
             }
         }
 
         // function to prepare the data in the correct format for statistics graphs
         function get_statistics_graph_data(dataType, graphType, filteredData) {
-            var keywordSelect = document.getElementById("keywordSelect").value;
-            var suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
-            var [passed, failed, skipped, labels, aliases] = [[], [], [], [], []];
-            for (value of filteredData) {
-                if (graphType == "percentages") {
-                    if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
-                        continue;
-                    }
-                    if (dataType == "keyword") {
-                        if (value.name != keywordSelect) {
-                            continue;
-                        } else {
-                            passed.push(Math.round((value.passed / (value.passed + value.failed + value.skipped)) * 100 * 100) / 100);
-                            failed.push(Math.round((value.failed / (value.passed + value.failed + value.skipped)) * 100 * 100) / 100);
-                            skipped.push(Math.round((value.skipped / (value.passed + value.failed + value.skipped)) * 100 * 100) / 100);
-                            labels.push(value.run_start);
-                            aliases.push(value.run_alias);
+            // Cache DOM values once for performance
+            const keywordSelect = document.getElementById("keywordSelect").value;
+            const suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
+            // Initialize arrays to store the data
+            const passed = [], failed = [], skipped = [], labels = [], aliases = [];
+            // Helper function to calculate percentages
+            const calculatePercentage = (value, total) => Math.round((value / total) * 100 * 100) / 100;
+            // Helper function to process each value for graph data
+            const processValue = (value) => {
+                const total = value.passed + value.failed + value.skipped;
+                const passedPercentage = calculatePercentage(value.passed, total);
+                const failedPercentage = calculatePercentage(value.failed, total);
+                const skippedPercentage = calculatePercentage(value.skipped, total);
+                passed.push(passedPercentage);
+                failed.push(failedPercentage);
+                skipped.push(skippedPercentage);
+                labels.push(value.run_start);
+                aliases.push(value.run_alias);
+            };
+            // Loop through filtered data and process it based on the graph type
+            for (const value of filteredData) {
+                if (dataType === "suite" && suiteSelectSuites !== "All" && value.name !== suiteSelectSuites) continue;
+                if (dataType === "keyword" && value.name !== keywordSelect) continue;
+                // Process percentage-based data
+                if (graphType === "percentages") {
+                    if (dataType === "keyword") {
+                        if (value.name === keywordSelect) {
+                            processValue(value);
                         }
                     } else {
-                        passed.push(Math.round((value.passed / value.total) * 100 * 100) / 100);
-                        failed.push(Math.round((value.failed / value.total) * 100 * 100) / 100);
-                        skipped.push(Math.round((value.skipped / value.total) * 100 * 100) / 100);
-                        labels.push(value.run_start);
-                        aliases.push(value.run_alias);
+                        processValue(value);
                     }
                 } else {
-                    if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
-                        continue;
-                    }
-                    if (dataType == "keyword" && value.name != keywordSelect) {
-                        continue;
-                    }
+                    // Process raw count data
                     passed.push(value.passed);
                     failed.push(value.failed);
                     skipped.push(value.skipped);
@@ -2600,207 +2382,161 @@
                     aliases.push(value.run_alias);
                 }
             }
-            if (graphType != "line") {
-                if (use_run_aliases) { labels = aliases }
-                var statisticsData = {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: "Failed",
-                            data: failed,
-                            backgroundColor: failedBackgroundColor,
-                            borderColor: failedBackgroundBorderColor,
-                            borderWidth: 1,
-                            stack: "Stack 0",
-                        },
-                        {
-                            label: "Skipped",
-                            data: skipped,
-                            backgroundColor: skippedBackgroundColor,
-                            borderColor: skippedBackgroundBorderColor,
-                            borderWidth: 1,
-                            stack: "Stack 0",
-                        },
-                        {
-                            label: "Passed",
-                            data: passed,
-                            backgroundColor: passedBackgroundColor,
-                            borderColor: passedBackgroundBorderColor,
-                            borderWidth: 1,
-                            stack: "Stack 0",
-                        },
-                    ],
-                };
-            } else {
-                var statisticsData = {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: "Failed",
-                            data: failed,
-                            backgroundColor: failedBackgroundColor,
-                            borderColor: failedBackgroundBorderColor,
-                            borderWidth: 1,
-                        },
-                        {
-                            label: "Skipped",
-                            data: skipped,
-                            backgroundColor: skippedBackgroundColor,
-                            borderColor: skippedBackgroundBorderColor,
-                            borderWidth: 1,
-                        },
-                        {
-                            label: "Passed",
-                            data: passed,
-                            backgroundColor: passedBackgroundColor,
-                            borderColor: passedBackgroundBorderColor,
-                            borderWidth: 1,
-                        },
-                    ],
-                };
-            }
+            // Determine if we need to use aliases for labels
+            const finalLabels = use_run_aliases ? aliases : labels;
+            // Common dataset construction logic
+            const createDataset = (label, data, backgroundColor, borderColor) => ({
+                label,
+                data,
+                backgroundColor,
+                borderColor,
+                borderWidth: 1,
+                stack: graphType === "percentages" || "amount" ? "Stack 0" : undefined,
+            });
+            // Construct the statistics data based on the graph type
+            const statisticsData = {
+                labels: finalLabels,
+                datasets: [
+                    createDataset("Failed", failed, failedBackgroundColor, failedBackgroundBorderColor),
+                    createDataset("Skipped", skipped, skippedBackgroundColor, skippedBackgroundBorderColor),
+                    createDataset("Passed", passed, passedBackgroundColor, passedBackgroundBorderColor),
+                ],
+            };
             return statisticsData;
         }
 
         // function to prepare the data in the correct format for duration graphs
         function get_duration_graph_data(dataType, graphType, objectDataAttribute, filteredData) {
-            // used for suite selection filter
-            var suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
-            // used for test selection filter
-            var suiteSelectTests = document.getElementById("suiteSelectTests").value;
-            var testSelect = document.getElementById("testSelect").value;
-            var testTagsSelect = document.getElementById("testTagsSelect").value;
-            // used for keyword selection filter
-            var keywordSelect = document.getElementById("keywordSelect").value;
-            if (graphType == "bar") {
-                var [labels, data, aliases] = [[], { 0: [] }, []];
-                // prepare data for bar chart
-                for (value of filteredData) {
-                    if (dataType == "keyword" && value.name != keywordSelect) {
-                        continue;
-                    }
-                    if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
-                        continue;
-                    }
-                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name != `${suiteSelect}.${value.name}`) {
-                        continue;
-                    }
-                    if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
-                        continue;
-                    }
-                    if (dataType == "test" && testTagsSelect != "All" && !value.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
-                        continue
-                    }
+            // Cache DOM elements once for performance
+            const suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
+            const suiteSelectTests = document.getElementById("suiteSelectTests").value;
+            const testSelect = document.getElementById("testSelect").value;
+            const testTagsSelect = document.getElementById("testTagsSelect").value;
+            const keywordSelect = document.getElementById("keywordSelect").value;
+            // Helper function for filtering based on selection criteria
+            const shouldInclude = (value) => {
+                if (dataType === "keyword" && value.name !== keywordSelect) return false;
+                if (dataType === "suite" && suiteSelectSuites !== "All" && value.name !== suiteSelectSuites) return false;
+                if (dataType === "test" && suiteSelectTests !== "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name !== `${suiteSelectTests}.${value.name}`) return false;
+                if (dataType === "test" && testSelect !== "All" && value.name !== testSelect) return false;
+                if (dataType === "test" && testTagsSelect !== "All" && !value.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) return false;
+                return true;
+            };
+            // Bar graph construction
+            if (graphType === "bar") {
+                const labels = [];
+                const data = new Map();
+                const aliases = [];
+                for (const value of filteredData) {
+                    if (!shouldInclude(value)) continue;
                     labels.push(value.run_start);
-                    aliases.push(value.run_alias)
-                    if (labels.length > 30) { break }
-                    var dataLength = data[0].length;
-                    if (data[value.name]) {
-                        // add value.data to matching array
-                        data[value.name].push(Math.round(value[objectDataAttribute] * 100) / 100);
+                    aliases.push(value.run_alias);
+                    const dataLength = labels.length;
+                    // Round the attribute value and push it into the corresponding dataset
+                    const roundedValue = Math.round(value[objectDataAttribute] * 100) / 100;
+                    if (!data.has(value.name)) {
+                        const arr = Array(dataLength).fill(0);
+                        arr.push(roundedValue);
+                        data.set(value.name, arr);
                     } else {
-                        // add longest amount of 0's to matched array and add the value.data
-                        (arr = []).length = dataLength;
-                        arr.fill(0).push(Math.round(value[objectDataAttribute] * 100) / 100)
-                        data[value.name] = arr
+                        const arr = data.get(value.name);
+                        arr.push(roundedValue);
                     }
-                    // add 0 to every other value to keep the length the same as the labels
-                    for (d in data) {
-                        if (d != value.name) {
-                            data[d].push(0);
-                        }
+                    // Fill in 0s for other datasets to keep the length consistent
+                    for (const [key, arr] of data.entries()) {
+                        if (key !== value.name) arr.push(0);
                     }
+                    if (labels.length > 30) break;  // Limiting the number of labels to 30
                 }
-                delete data[0];
-                if (use_run_aliases) { labels = aliases }
-                var graphData = {
-                    labels: labels,
-                    datasets: [],
-                };
-                for (key in data) {
-                    graphData["datasets"].push({
-                        label: key,
-                        data: data[key],
+                // Set aliases if enabled
+                if (use_run_aliases) {
+                    labels.length = 0;
+                    labels.push(...aliases);
+                }
+                // Prepare graph data for bar chart
+                const graphData = {
+                    labels,
+                    datasets: Array.from(data.entries()).map(([label, dataset]) => ({
+                        label,
+                        data: dataset,
                         stack: "Stack 0",
-                    });
-                }
+                    })),
+                };
                 return graphData;
-            } else if (graphType == "line") {
-                var [labels, datasets, sets] = [[], [], {}];
-                for (value of filteredData) {
-                    if (dataType == "keyword" && value.name != keywordSelect) {
-                        continue;
-                    }
-                    if (dataType == "suite" && suiteSelectSuites != "All" && value.name != suiteSelectSuites) {
-                        continue;
-                    }
-                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name != `${suiteSelect}.${value.name}`) {
-                        continue;
-                    }
-                    if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
-                        continue;
-                    }
-                    if (dataType == "test" && testTagsSelect != "All" && !value.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
-                        continue
-                    }
-                    var name = value.name;
-                    var run_start = new Date(value.run_start);
-                    var rounded_value = Math.round(value[objectDataAttribute] * 100) / 100;
-                    if (labels.includes(name)) {
-                        var values = sets[name];
-                        values.push({ x: run_start, y: rounded_value });
-                        sets[name] = values;
-                    } else {
+            }
+            // Line graph construction
+            else if (graphType === "line") {
+                const labels = [];
+                const sets = new Map();
+                for (const value of filteredData) {
+                    if (!shouldInclude(value)) continue;
+                    const name = value.name;
+                    const run_start = new Date(value.run_start);
+                    const roundedValue = Math.round(value[objectDataAttribute] * 100) / 100;
+                    if (!sets.has(name)) {
                         labels.push(name);
-                        sets[name] = [{ x: run_start, y: rounded_value }];
+                        sets.set(name, [{ x: run_start, y: roundedValue }]);
+                    } else {
+                        sets.get(name).push({ x: run_start, y: roundedValue });
                     }
                 }
-                for (var [key, value] of Object.entries(sets)) {
-                    datasets.push({ label: key, fill: false, data: value });
-                }
+                // Prepare graph data for line chart
+                const datasets = Array.from(sets.entries()).map(([key, values]) => ({
+                    label: key,
+                    fill: false,
+                    data: values,
+                }));
                 return datasets;
             }
         }
 
         // function to prepare the data in the correct format for the duration deviation graph
         function get_duration_deviation_data(dataType, graphType, filteredData) {
-            // used for test selection filter
-            var suiteSelectTests = document.getElementById("suiteSelectTests").value;
-            var testSelect = document.getElementById("testSelect").value;
-            var testTagsSelect = document.getElementById("testTagsSelect").value;
-
-            var data = {}
-            if (graphType == 'boxplot') {
-                for (value of filteredData) {
-                    if (dataType == "test" && suiteSelectTests != "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name != `${suiteSelect}.${value.name}`) {
-                        continue;
+            // Cache the DOM selections once to avoid repeated access
+            const suiteSelectTests = document.getElementById("suiteSelectTests").value;
+            const testSelect = document.getElementById("testSelect").value;
+            const testTagsSelect = document.getElementById("testTagsSelect").value;
+            // Use a Map to store data for better performance and management
+            const data = new Map();
+            // Only process if graphType is 'boxplot'
+            if (graphType === 'boxplot') {
+                // Iterate over filteredData to collect elapsed times
+                for (const value of filteredData) {
+                    // Apply filtering based on user selections
+                    if (dataType === "test") {
+                        if (suiteSelectTests !== "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name !== `${suiteSelectTests}.${value.name}`) {
+                            continue;
+                        }
+                        if (testSelect !== "All" && value.name !== testSelect) {
+                            continue;
+                        }
+                        if (testTagsSelect !== "All" && !value.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
+                            continue;
+                        }
                     }
-                    if (dataType == "test" && testSelect != "All" && value.name != testSelect) {
-                        continue;
-                    }
-                    if (dataType == "test" && testTagsSelect != "All" && !value.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
-                        continue
-                    }
-                    if (data[value.name]) {
-                        data[value.name].push(value.elapsed_s)
+                    // Add elapsed time data to the Map, grouping by test name
+                    if (data.has(value.name)) {
+                        data.get(value.name).push(value.elapsed_s);
                     } else {
-                        data[value.name] = [value.elapsed_s]
+                        data.set(value.name, [value.elapsed_s]);
                     }
                 }
-                datasets = []
-                labels = []
-                for (test in data) {
-                    labels.push(test)
-                    datasets.push(data[test])
+                // Prepare the data for the graph (labels and datasets)
+                const labels = [];
+                const datasets = [];
+                // Iterate over the Map and construct graph data
+                for (const [testName, elapsedTimes] of data.entries()) {
+                    labels.push(testName);
+                    datasets.push(elapsedTimes);
                 }
-                var graphData = {
-                    labels: labels,
+                // Return the graph data object
+                return {
+                    labels,
                     datasets: [{
                         itemRadius: 3,
                         data: datasets
                     }],
                 };
-                return graphData
             }
         }
 
@@ -2853,8 +2589,8 @@
                     datasets.push(sortedData[key][1].flips);
                     count += 1;
                 }
-                var graphData = {
-                    labels: labels,
+                const graphData = {
+                    labels,
                     datasets: [{
                         data: datasets,
                         backgroundColor: failedBackgroundColor,
@@ -2933,37 +2669,37 @@
 
         // function to prepare the data in the correct format for most failed graphs
         function get_most_failed_data(dataType, graphType, filteredData) {
-            var data = {};
-            var aliases = {}
-            for (value of filteredData) {
+            // Maps to store data and aliases
+            const data = new Map();
+            const aliases = new Map();
+            // Collect data and aliases
+            for (const value of filteredData) {
                 if (value.failed > 0) {
-                    if (data[value.name]) {
-                        data[value.name].push(value.run_start);
-                        aliases[value.name].push(value.run_alias)
-                    } else {
-                        data[value.name] = [value.run_start];
-                        aliases[value.name] = [value.run_alias]
+                    if (!data.has(value.name)) {
+                        data.set(value.name, []);
+                        aliases.set(value.name, []);
                     }
+                    data.get(value.name).push(value.run_start);
+                    aliases.get(value.name).push(value.run_alias);
                 }
             }
-            data = Object.keys(data) // sorted failed items based on amount of times it has failed
-                .sort((a, b) => data[b].length - data[a].length)
-                .reduce((acc, key) => ((acc[key] = data[key]), acc), {});
-            if (graphType == "bar") {
-                var [datasets, labels, count] = [[], [], 0];
-                for (key in data) {
-                    if (count > 9) {
-                        break;
-                    }
-                    labels.push(key);
+            // Sort the data based on the number of failures (descending order)
+            const sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length);
+            if (graphType === 'bar') {
+                const datasets = [];
+                const labels = [];
+                let count = 0;
+                for (const [name, runStarts] of sortedData) {
+                    if (count > 9) break;
+                    labels.push(name);
                     if (use_run_aliases) {
-                        data[key] = aliases[key]
+                        data.set(name, aliases.get(name));
                     }
-                    datasets.push(data[key].length);
-                    count += 1;
+                    datasets.push(runStarts.length);
+                    count++;
                 }
-                var graphData = {
-                    labels: labels,
+                const graphData = {
+                    labels,
                     datasets: [{
                         data: datasets,
                         backgroundColor: failedBackgroundColor,
@@ -2971,35 +2707,29 @@
                         borderWidth: 1,
                     }],
                 };
-                return [data, graphData];
-            } else if (graphType == "timeline") {
-                var [labels, runStarts, count, run_aliases] = [[], [], 0, []];
-                for (key in data) {
-                    if (count > 9) {
-                        break;
-                    }
-                    labels.push(key);
-                    for (runStart of data[key]) {
-                        if (!runStarts.includes(runStart)) {
-                            runStarts.push(runStart);
-                        }
-                    }
-                    count += 1;
+                return [Object.fromEntries(sortedData.map(([name, runs]) => [name, aliases.get(name)])), graphData];
+            } else if (graphType === 'timeline') {
+                const labels = [];
+                const runStartsSet = new Set();
+                const runAliasesSet = new Set();
+                let count = 0;
+                // Collect unique run starts and labels
+                for (const [name, runStarts] of sortedData) {
+                    if (count > 9) break;
+                    labels.push(name);
+                    runStarts.forEach(runStart => runStartsSet.add(runStart));
+                    count++;
                 }
-                var datasets = [];
-                var runAxis = 0;
-                runStarts = runStarts.sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
-                for (runStart of runStarts) {
-                    for (label of labels) {
-                        var foundValues = [];
-                        for (value of filteredData) {
-                            if (value.name == label && value.run_start == runStart && value.failed > 0) {
-                                foundValues.push(value);
-                                if (run_aliases.includes(value.run_alias)) { run_aliases.push(value.run_alias) }
-                            }
-                        }
+                // Convert set to sorted array
+                const runStarts = Array.from(runStartsSet).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+                // Build datasets
+                const datasets = [];
+                let runAxis = 0;
+                for (const runStart of runStarts) {
+                    for (const label of labels) {
+                        const foundValues = filteredData.filter(value => value.name === label && value.run_start === runStart && value.failed > 0);
                         if (foundValues.length > 0) {
-                            var value = foundValues[0];
+                            const value = foundValues[0];
                             datasets.push({
                                 label: label,
                                 data: [{ x: [runAxis, runAxis + 1], y: label }],
@@ -3007,52 +2737,53 @@
                                 borderColor: failedBackgroundBorderColor,
                                 borderWidth: 1,
                             });
+                            foundValues.forEach(value => runAliasesSet.add(value.run_alias));
                         }
                     }
-                    runAxis += 1;
+                    runAxis++;
                 }
-                if (use_run_aliases) { runStarts = run_aliases }
-                var graphData = {
-                    labels: labels,
-                    datasets: datasets,
+                const runStartsArray = use_run_aliases ? Array.from(runAliasesSet) : runStarts;
+                const graphData = {
+                    labels,
+                    datasets,
                 };
-                return [runStarts, graphData];
+                return [runStartsArray, graphData];
             }
         }
 
         // function to prepare the data in the correct format for messages graphs
         function get_messages_data(dataType, graphType, filteredData) {
-            var data = {};
-            var aliases = {}
-            for (value of filteredData) {
-                if (value.message && (value.failed == 1 || value.skipped == 1)) {
-                    if (data[value.message]) {
-                        data[value.message].push(value.run_start);
-                        aliases[value.message].push(value.run_alias)
-                    } else {
-                        data[value.message] = [value.run_start];
-                        aliases[value.message] = [value.run_alias]
+            // Maps to store data and aliases
+            const data = new Map();
+            const aliases = new Map();
+            // Build data and aliases
+            for (const value of filteredData) {
+                if (value.message && (value.failed === 1 || value.skipped === 1)) {
+                    if (!data.has(value.message)) {
+                        data.set(value.message, []);
+                        aliases.set(value.message, []);
                     }
+                    data.get(value.message).push(value.run_start);
+                    aliases.get(value.message).push(value.run_alias);
                 }
             }
-            data = Object.keys(data) // sorted failed items based on amount of times it has failed
-                .sort((a, b) => data[b].length - data[a].length)
-                .reduce((acc, key) => ((acc[key] = data[key]), acc), {});
-            if (graphType == "bar") {
-                var [datasets, labels, count] = [[], [], 0];
-                for (key in data) {
-                    if (count > 9) {
-                        break;
-                    }
-                    labels.push(key);
-                    datasets.push(data[key].length);
+            // Sort messages by failure count
+            const sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length);
+            if (graphType === 'bar') {
+                const [datasets, labels] = [[], []];
+                let count = 0;
+
+                for (const [message, runStarts] of sortedData) {
+                    if (count > 9) break;
+                    labels.push(message);
+                    datasets.push(runStarts.length);
                     if (use_run_aliases) {
-                        data[key] = aliases[key]
+                        data.set(message, aliases.get(message));
                     }
-                    count += 1;
+                    count++;
                 }
-                var graphData = {
-                    labels: labels,
+                const graphData = {
+                    labels,
                     datasets: [{
                         data: datasets,
                         backgroundColor: failedBackgroundColor,
@@ -3060,35 +2791,29 @@
                         borderWidth: 1,
                     }],
                 };
-                return [data, graphData];
-            } else if (graphType == "timeline") {
-                var [labels, runStarts, count, run_aliases] = [[], [], 0, []];
-                for (key in data) {
-                    if (count > 9) {
-                        break;
-                    }
-                    labels.push(key);
-                    for (runStart of data[key]) {
-                        if (!runStarts.includes(runStart)) {
-                            runStarts.push(runStart);
-                        }
-                    }
-                    count += 1;
+                return [Object.fromEntries(sortedData.map(([message, runs]) => [message, aliases.get(message)])), graphData];
+            } else if (graphType === 'timeline') {
+                const labels = [];
+                const runStartsSet = new Set();
+                const runAliasesSet = new Set();
+                let count = 0;
+                // Collect unique run starts and labels
+                for (const [message, runStarts] of sortedData) {
+                    if (count > 9) break;
+                    labels.push(message);
+                    runStarts.forEach(runStart => runStartsSet.add(runStart));
+                    count++;
                 }
-                runStarts = runStarts.sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
-                var datasets = [];
-                var runAxis = 0;
-                for (runStart of runStarts) {
-                    for (label of labels) {
-                        var foundValues = [];
-                        for (value of filteredData) {
-                            if (value.message == label && value.run_start == runStart) {
-                                foundValues.push(value);
-                                if (!run_aliases.includes(value.run_alias)) { run_aliases.push(value.run_alias) }
-                            }
-                        }
+                // Convert set to sorted array
+                const runStarts = Array.from(runStartsSet).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+                // Build datasets
+                const datasets = [];
+                let runAxis = 0;
+                for (const runStart of runStarts) {
+                    for (const label of labels) {
+                        const foundValues = filteredData.filter(value => value.message === label && value.run_start === runStart);
                         if (foundValues.length > 0) {
-                            var value = foundValues[0];
+                            const value = foundValues[0];
                             datasets.push({
                                 label: label,
                                 data: [{ x: [runAxis, runAxis + 1], y: label }],
@@ -3096,16 +2821,17 @@
                                 borderColor: failedBackgroundBorderColor,
                                 borderWidth: 1,
                             });
+                            foundValues.forEach(value => runAliasesSet.add(value.run_alias));
                         }
                     }
-                    runAxis += 1;
+                    runAxis++;
                 }
-                if (use_run_aliases) { runStarts = run_aliases }
-                var graphData = {
-                    labels: labels,
-                    datasets: datasets,
+                const runStartsArray = use_run_aliases ? Array.from(runAliasesSet) : runStarts;
+                const graphData = {
+                    labels,
+                    datasets,
                 };
-                return [runStarts, graphData];
+                return [runStartsArray, graphData];
             }
         }
 
