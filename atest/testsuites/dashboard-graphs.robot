@@ -12,8 +12,8 @@ Test Teardown    Run Keywords    Close Dashboard    Remove Database And Dashboar
 
 *** Test Cases ***
 Validate dashboard runStatistics
-    Validate Graph    canvas=runStatisticsCanvas    graphId=runStatisticsGraphBarPercentages
-    Validate Graph    canvas=runStatisticsCanvas    graphId=runStatisticsGraphBarAmount    button=${true}
+    Validate Graph    canvas=runStatisticsCanvas    graphId=runStatisticsGraphPercentages
+    Validate Graph    canvas=runStatisticsCanvas    graphId=runStatisticsGraphAmount    button=${true}
     Validate Graph    canvas=runStatisticsCanvas    graphId=runStatisticsGraphLine    button=${true}
 
 Validate dashboard runDuration
@@ -21,8 +21,8 @@ Validate dashboard runDuration
     Validate Graph    canvas=runDurationCanvas    graphId=runDurationGraphLine    button=${true}
 
 Validate dashboard suiteStatistics
-    Validate Graph    canvas=suiteStatisticsCanvas    graphId=suiteStatisticsGraphBarPercentages
-    Validate Graph    canvas=suiteStatisticsCanvas    graphId=suiteStatisticsGraphBarAmount    button=${true}
+    Validate Graph    canvas=suiteStatisticsCanvas    graphId=suiteStatisticsGraphPercentages
+    Validate Graph    canvas=suiteStatisticsCanvas    graphId=suiteStatisticsGraphAmount    button=${true}
     Validate Graph    canvas=suiteStatisticsCanvas    graphId=suiteStatisticsGraphLine    button=${true}
 
 Validate dashboard suiteDuration
@@ -34,7 +34,7 @@ Validate dashboard suiteMostFailed
     Validate Graph    canvas=suiteMostFailedCanvas    graphId=suiteMostFailedGraphTimeline    button=${true}
 
 Validate dashboard testStatistics
-    Validate Graph    canvas=testStatusCanvas    graphId=testStatusGraph
+    Validate Graph    canvas=testStatisticsCanvas    graphId=testStatisticsGraph
 
 Validate dashboard testDuration
     Validate Graph    canvas=testDurationCanvas    graphId=testDurationGraphBar
@@ -56,8 +56,8 @@ Validate dashboard testMessages
     Validate Graph    canvas=testMessagesCanvas    graphId=testMessagesGraphBar    button=${true}
 
 Validate dashboard keywordStatistics
-    Validate Graph    canvas=keywordStatisticsCanvas    graphId=keywordStatisticsGraphBarPercentages
-    Validate Graph    canvas=keywordStatisticsCanvas    graphId=keywordStatisticsGraphBarAmount    button=${true}
+    Validate Graph    canvas=keywordStatisticsCanvas    graphId=keywordStatisticsGraphPercentages
+    Validate Graph    canvas=keywordStatisticsCanvas    graphId=keywordStatisticsGraphAmount    button=${true}
     Validate Graph    canvas=keywordStatisticsCanvas    graphId=keywordStatisticsGraphLine    button=${true}
 
 Validate dashboard keywordTimesRun

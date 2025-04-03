@@ -2431,24 +2431,17 @@
                     if (!shouldInclude(value)) continue;
                     labels.push(value.run_start);
                     aliases.push(value.run_alias);
-                    const dataLength = labels.length;
-                    // Round the attribute value and push it into the corresponding dataset
                     const roundedValue = Math.round(value[objectDataAttribute] * 100) / 100;
+                    for (const [key, arr] of data.entries()) {
+                        arr.push(key === value.name ? roundedValue : 0); // Append to each dataset
+                    }
                     if (!data.has(value.name)) {
-                        const arr = Array(dataLength).fill(0);
+                        const arr = Array(labels.length - 1).fill(0); // Fill up to current length
                         arr.push(roundedValue);
                         data.set(value.name, arr);
-                    } else {
-                        const arr = data.get(value.name);
-                        arr.push(roundedValue);
                     }
-                    // Fill in 0s for other datasets to keep the length consistent
-                    for (const [key, arr] of data.entries()) {
-                        if (key !== value.name) arr.push(0);
-                    }
-                    if (labels.length > 30) break;  // Limiting the number of labels to 30
+                    if (labels.length > 30) break;
                 }
-                // Set aliases if enabled
                 if (use_run_aliases) {
                     labels.length = 0;
                     labels.push(...aliases);
