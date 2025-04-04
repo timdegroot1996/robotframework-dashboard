@@ -243,20 +243,29 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title" id="hideModalLabel">Customize View</h1>
-                        <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-dismiss="modal"
-                            id="saveHide">Save</button>
+                        <button class="btn btn-outline-primary btn-sm mt-auto" id="saveHide" data-bs-dismiss="modal"
+                            type="button">Save
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="saveHideSpinner" hidden></span>
+                        </button>
                     </div>
                     <div class="modal-body">
                         <h4>Admin custom view usage instructions</h4>
                         <ul>
                             <li>You can set which sections and graphs are hidden by default as admin</li>
-                            <li>If a user opens the dashboard and does not yet have any 'hidden settings' the admin
-                                config will be used and saved in local storage</li>
+                            <li>This 'admin hidden settings' are saved in browser local storage and on the server itself
+                            </li>
+                            <li>If the server is turned off it loses the configuration.
+                            <li>If you start the admin page the browser local storage in the admin page should
+                                automatically restore the 'admin hidden settings' on first load</li>
+                            <li>Above point assumes you are using a machine/browser you have previously used to set the
+                                settings!</li>
                             <li>If a user does already have 'hidden settings' the admin settings are ignored even if
                                 they are different</li>
                             <li>To view current 'hidden settings' (both admin and user) you can open 'Developer Tools
-                                (F12)' > 'App' > 'Local Storage'</li>
-                            <li>Only when refreshing the dashboard page will admin settings be used for above checks
+                                (F12)' > 'Application (App)' > 'Local Storage'</li>
+                            <li>Only when refreshing the dashboard page will admin settings be used if they were changed
+                                while it was open
                             </li>
                         </ul>
                         <div class="row justify-content-evenly">
@@ -325,6 +334,7 @@
         document.getElementById('addOutputData').addEventListener('click', add_output_data)
         document.getElementById('addOutputFolderPath').addEventListener('click', add_output_folder_path)
         document.getElementById('removeOutputs').addEventListener('click', remove_outputs)
+        document.getElementById('saveHide').addEventListener('click', set_hidden_config)
 
         function add_output_path() {
             document.getElementById('addPathSpinner').hidden = false
@@ -398,10 +408,6 @@
                 tags.push(removeTag)
             }
             if (tags.length > 0) { data['tags'] = tags }
-            // document.getElementById('removeRunStarts').value = ''
-            // document.getElementById('removeIndexes').value = ''
-            // document.getElementById('removeAliases').value = ''
-            // document.getElementById('removeTags').value = ''
             const body = JSON.stringify(data)
             send_request("DELETE", "/remove-outputs", body, 'removeSpinner')
         }
@@ -425,7 +431,108 @@
             xhr.send();
         }
 
-        function send_request(method, endpoint, body, spinner) {
+        function set_hidden_config(notifications = true) {
+            const adminSectionHide = localStorage.getItem('adminSectionHide')
+            const adminGraphHide = localStorage.getItem('adminGraphHide')
+            document.getElementById('saveHideSpinner').hidden = false
+            const body = JSON.stringify({
+                admin_section_hide: adminSectionHide,
+                admin_graph_hide: adminGraphHide,
+            });
+            send_request("POST", "set-hidden-config", body, 'saveHideSpinner', notifications)
+        }
+
+        function get_hidden_config() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "/get-hidden-config");
+            xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+            xhr.onload = () => {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    const config = JSON.parse(xhr.responseText)
+                    const adminSectionHide = localStorage.getItem('adminSectionHide')
+                    const adminGraphHide = localStorage.getItem('adminGraphHide')
+                    if (adminSectionHide == null) {
+                        localStorage.setItem('adminSectionHide', config.admin_section_hide)
+                    }
+                    if (adminGraphHide == null) {
+                        localStorage.setItem('adminGraphHide', config.admin_graph_hide)
+                    }
+                    // add items in hide modal
+                    var hideSections = [
+                        'Run Statistics',
+                        'Suite Statistics',
+                        'Test Statistics',
+                        'Keyword Statistics',
+                    ]
+                    var hideGraphs = [
+                        'Run Statistics',
+                        'Run Duration',
+                        'Run Table',
+                        'Suite Statistics',
+                        'Suite Duration',
+                        'Suite Most Failed',
+                        'Suite Table',
+                        'Test Statistics',
+                        'Test Duration',
+                        'Test Duration Deviation',
+                        'Test Most Flaky',
+                        'Test Most Failed',
+                        'Test Top 10 Messages',
+                        'Test Table',
+                        'Keyword Statistics',
+                        'Keyword Times Run',
+                        'Keyword Total Duration',
+                        'Keyword Average Duration',
+                        'Keyword Min Duration',
+                        'Keyword Max Duration',
+                        'Keyword Table'
+                    ]
+                    var hideItem = '<li class="hideItem list-group-item list-group-item-action">{value}</li>'
+                    var sectionShowItems = ''
+                    var sectionHideItems = ''
+                    var graphShowItems = ''
+                    var graphHideItems = ''
+                    for (let section of hideSections) {
+                        const element = hideItem.replaceAll('{value}', section)
+                        var hidden = localStorage.getItem('adminSectionHide')
+                        console.log(hidden, hidden.includes(`'${section}'`))
+                        if (hidden.includes(`'${section}'`)) {
+                            sectionHideItems += element
+                        } else {
+                            sectionShowItems += element
+                        }
+                    }
+                    for (let graph of hideGraphs) {
+                        const element = hideItem.replaceAll('{value}', graph)
+                        var hidden = localStorage.getItem('adminGraphHide')
+                        if (hidden.includes(`'${graph}'`)) {
+                            graphHideItems += element
+                        } else {
+                            graphShowItems += element
+                        }
+                    }
+                    document.getElementById('sectionShow').innerHTML = sectionShowItems
+                    document.getElementById('sectionHide').innerHTML = sectionHideItems
+                    document.getElementById('graphShow').innerHTML = graphShowItems
+                    document.getElementById('graphHide').innerHTML = graphHideItems
+
+                    // set which sections and graphs are shown and fill the modal
+                    document.querySelectorAll('.hideItem').forEach(item => {
+                        item.addEventListener('click', function () {
+                            this.classList.toggle('active');
+                        });
+                    });
+
+                    // if there is a local storage already in place update that on server side
+                    set_hidden_config(false)
+                } else {
+                    add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, 'danger')
+                }
+            };
+            xhr.send();
+        }
+
+        function send_request(method, endpoint, body, spinner, notifications = true) {
             const xhr = new XMLHttpRequest();
             xhr.open(method, endpoint);
             xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
@@ -435,10 +542,12 @@
                     response = JSON.parse(xhr.responseText);
                     if (response.success == '1') {
                         console.log(response.console)
-                        if (response.console.includes('ERROR')) {
-                            add_alert('SUCCESS: The processing was handled but some errors occurred, see the browser console for more details!', 'warning')
-                        } else {
-                            add_alert(response.message, 'success')
+                        if (notifications) {
+                            if (response.console.includes('ERROR')) {
+                                add_alert('SUCCESS: The processing was handled but some errors occurred, see the browser console for more details!', 'warning')
+                            } else {
+                                add_alert(response.message, 'success')
+                            }
                         }
                     } else {
                         add_alert(response.message, 'danger')
@@ -490,72 +599,6 @@
             }
         }
 
-        // add items in hide modal
-        var hideSections = [
-            'Run Statistics',
-            'Suite Statistics',
-            'Test Statistics',
-            'Keyword Statistics',
-        ]
-        var hideGraphs = [
-            'Run Statistics',
-            'Run Duration',
-            'Run Table',
-            'Suite Statistics',
-            'Suite Duration',
-            'Suite Most Failed',
-            'Suite Table',
-            'Test Statistics',
-            'Test Duration',
-            'Test Duration Deviation',
-            'Test Most Flaky',
-            'Test Most Failed',
-            'Test Top 10 Messages',
-            'Test Table',
-            'Keyword Statistics',
-            'Keyword Times Run',
-            'Keyword Total Duration',
-            'Keyword Average Duration',
-            'Keyword Min Duration',
-            'Keyword Max Duration',
-            'Keyword Table'
-        ]
-        var hideItem = '<li class="hideItem list-group-item list-group-item-action">{value}</li>'
-        var sectionShowItems = ''
-        var sectionHideItems = ''
-        var graphShowItems = ''
-        var graphHideItems = ''
-        for (let section of hideSections) {
-            const element = hideItem.replaceAll('{value}', section)
-            var hidden = localStorage.getItem('adminSectionHide')
-            if (hidden == null) { // first load to create a string
-                localStorage.setItem('adminSectionHide', '')
-                hidden = localStorage.getItem('adminSectionHide')
-            }
-            if (hidden.includes(`'${section}'`)) {
-                sectionHideItems += element
-            } else {
-                sectionShowItems += element
-            }
-        }
-        for (let graph of hideGraphs) {
-            const element = hideItem.replaceAll('{value}', graph)
-            var hidden = localStorage.getItem('adminGraphHide')
-            if (hidden == null) { // first load to create a string
-                localStorage.setItem('adminGraphHide', '')
-                hidden = localStorage.getItem('adminGraphHide')
-            }
-            if (hidden.includes(`'${graph}'`)) {
-                graphHideItems += element
-            } else {
-                graphShowItems += element
-            }
-        }
-        document.getElementById('sectionShow').innerHTML = sectionShowItems
-        document.getElementById('sectionHide').innerHTML = sectionHideItems
-        document.getElementById('graphShow').innerHTML = graphShowItems
-        document.getElementById('graphHide').innerHTML = graphHideItems
-
         function capitalizeFirstLetter(val) {
             return String(val).charAt(0).toUpperCase() + String(val).slice(1);
         }
@@ -586,12 +629,8 @@
             });
         }
 
-        // set which sections and graphs are shown and fill the modal
-        document.querySelectorAll('.hideItem').forEach(item => {
-            item.addEventListener('click', function () {
-                this.classList.toggle('active');
-            });
-        });
+        // on first load
+        get_hidden_config() // get server side config if it exists and update local storage with it
     </script>
 
 </body>

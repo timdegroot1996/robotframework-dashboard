@@ -847,11 +847,11 @@
         for (let section of hideSections) {
             const element = hideItem.replaceAll('{value}', section)
             var hidden = localStorage.getItem('sectionHide')
-            var adminHidden = localStorage.getItem('adminSectionHide')
+            var adminHidden = "placeholder_admin_section_hide"
             if (hidden == null) { // first load to create a string
                 localStorage.setItem('sectionHide', '')
             }
-            if (hidden == '' && adminHidden != null) { // override empty config with admin config if exists
+            if (hidden == '' && adminHidden.includes(',')) { // override empty config with admin config if exists
                 localStorage.setItem('sectionHide', adminHidden)
             }
             hidden = localStorage.getItem('sectionHide')
@@ -864,11 +864,11 @@
         for (let graph of hideGraphs) {
             const element = hideItem.replaceAll('{value}', graph)
             var hidden = localStorage.getItem('graphHide')
-            var adminHidden = localStorage.getItem('adminGraphHide')
+            var adminHidden = "placeholder_admin_graph_hide"
             if (hidden == null) { // first load to create a string
                 localStorage.setItem('graphHide', '')
             }
-            if (hidden == '' && adminHidden != null) { // override empty config with admin config if exists
+            if (hidden == '' && adminHidden.includes(',')) { // override empty config with admin config if exists
                 localStorage.setItem('graphHide', adminHidden)
             }
             hidden = localStorage.getItem('graphHide')

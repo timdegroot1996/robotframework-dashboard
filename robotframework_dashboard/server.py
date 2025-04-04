@@ -32,6 +32,10 @@ class ResponseMessage(BaseModel):
         }
     }
 
+class HiddenConfig(BaseModel):
+    admin_section_hide: str
+    admin_graph_hide: str
+
 
 class GetOutput(BaseModel):
     """The response model that is returned when getting outputs"""
@@ -123,6 +127,8 @@ class ApiServer:
         self.robotdashboard: RobotDashboard
         self.server_host = server_host
         self.server_port = server_port
+        self.admin_section_hide = ""
+        self.admin_graph_hide = ""
 
         @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
         async def admin_page():
@@ -138,7 +144,39 @@ class ApiServer:
         async def dashboard_page():
             """Serve robotdashboard HTML endpoint function"""
             robot_dashboard_html = open("robot_dashboard.html", "r").read()
+            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_section_hide"', f'"{self.admin_section_hide}"')
+            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_graph_hide"', f'"{self.admin_graph_hide}"')
             return robot_dashboard_html
+        
+        @self.app.get("/get-hidden-config", include_in_schema=False)
+        async def get_hidden_config() -> HiddenConfig:
+            response = {
+                "admin_section_hide": self.admin_section_hide,
+                "admin_graph_hide": self.admin_graph_hide,
+            }
+            return response
+        
+        @self.app.post("/set-hidden-config", include_in_schema=False)
+        async def set_hidden_config(config: HiddenConfig) -> ResponseMessage:
+            """Adds the config to the class variables for use when generating the dashboard"""
+            console = "no console output"
+            try:
+                self.admin_section_hide = config.admin_section_hide
+                self.admin_graph_hide = config.admin_graph_hide
+                console = self.robotdashboard.create_dashboard()
+            except Exception as error:
+                response = {
+                    "success": "0",
+                    "message": f"ERROR: something went wrong while setting the admin hidden config: {error}",
+                    "console": console,
+                }
+                return response
+            response = {
+                    "success": "1",
+                    "message": f"SUCCESS: set the new config and generated the report",
+                    "console": console,
+                }
+            return response
 
         @self.app.get("/get-outputs")
         async def get_outputs() -> list[GetOutput]:
