@@ -2,6 +2,8 @@ from sys import exit
 from os.path import exists
 from requests import post, get, delete
 from requests.exceptions import ConnectionError
+from robot.libraries.BuiltIn import BuiltIn
+from time import sleep
 
 # for usage with a "robot.toml" see robot.toml in this folder
 
@@ -17,6 +19,13 @@ from requests.exceptions import ConnectionError
 # with a database limit and automatic run deletion:
 # robot --listener robotdashboardlistener.py:limit=1000 tests.robot
 
+# pabot basic usage:
+# pabot --listener robotdashboardlistener.py tests.robot
+# pabot testlevelsplit usage:
+# pabot --testlevelsplit --listener robotdashboardlistener.py tests.robot
+# pabot usage with custom output.xml name
+# pabot --testlevelsplit --listener robotdashboardlistener.py:output=custom_output.xml -o custom_output.xml tests.robot
+
 
 class robotdashboardlistener:
 
@@ -26,15 +35,40 @@ class robotdashboardlistener:
         host: str = "127.0.0.1",
         port: str = "8543",
         limit: str = "0",
+        output: str = None,  # this option is only required when using pabot and a custom output.xml name!
     ):
         self.host = host
         self.port = port
         self.tags = tags.split(",") if tags != None else [""]
         self.limit = int(limit)
+        self.output = output if output != None else "output.xml"
+        self.path: str
+        self.last_execution: str
+
+    def end_suite(self, data, result):
+        self.last_execution = BuiltIn().get_variable_value(
+            "${PABOTISLASTEXECUTIONINPOOL}"
+        )
 
     def output_file(self, path):
-        self._add_output_to_database(path=str(path))
-        self._remove_runs_over_limi()
+        self.path = str(path)
+
+    def close(self):
+        if (
+            self.last_execution and self.last_execution == "1"
+        ):  # pabot usage and it's the very last execution
+            self.path = self.path.rsplit("\\", 1)[0] + f"\..\..\{self.output}"
+            # added to make sure the output file is created, make this longer if the output generation is longer!
+            sleep(2)
+            self._add_output_to_database(path=str(self.path))
+            self._remove_runs_over_limit()
+        elif self.last_execution == None:  # normal robot usage
+            self._add_output_to_database(path=str(self.path))
+            self._remove_runs_over_limit()
+        else:
+            self._print_listener(
+                "WARNING the listener was called but did not run! This was probably because of pabot usage and this is not the last test/suite!"
+            )
 
     def _add_output_to_database(self, path: str):
         if exists(path):
@@ -60,7 +94,7 @@ class robotdashboardlistener:
                 f"ERROR could not find output.xml '{path}', skipped automatic processing"
             )
 
-    def _remove_runs_over_limi(self):
+    def _remove_runs_over_limit(self):
         response = get(f"http://{self.host}:{self.port}/get-outputs")
         if response.status_code == 200:
             response_json = response.json()
