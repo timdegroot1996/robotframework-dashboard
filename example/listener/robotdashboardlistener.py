@@ -59,40 +59,50 @@ class robotdashboardlistener:
         ):  # pabot usage and it's the very last execution
             self.path = self.path.rsplit("\\", 1)[0] + f"\..\..\{self.output}"
             # added to make sure the output file is created, make this longer if the output generation is longer!
-            sleep(2)
+            timeout = 0
+            while timeout < 10:
+                if exists(self.path): break
+                sleep(1)
+                timeout += 1
+            if not exists(self.path):
+                self._print_listener(
+                    f"ERROR could not find output.xml '{self.path}', skipped automatic processing"
+                )
+                exit(0)
             self._add_output_to_database(path=str(self.path))
             self._remove_runs_over_limit()
         elif self.last_execution == None:  # normal robot usage
-            self._add_output_to_database(path=str(self.path))
-            self._remove_runs_over_limit()
+            if exists(self.path):
+                self._add_output_to_database(path=str(self.path))
+                self._remove_runs_over_limit()
+            else:
+                self._print_listener(
+                    f"ERROR could not find output.xml '{self.path}', skipped automatic processing"
+                )
         else:
             self._print_listener(
                 "WARNING the listener was called but did not run! This was probably because of pabot usage and this is not the last test/suite!"
             )
 
     def _add_output_to_database(self, path: str):
-        if exists(path):
-            self._print_listener(f"starting processing output.xml '{path}'")
-            body = {"output_path": path, "output_tags": self.tags}
-            try:
-                response = post(
-                    f"http://{self.host}:{self.port}/add-outputs", json=body
-                )
-            except ConnectionError as e:
-                self._print_listener(
-                    f"ERROR the server is not running or the url http://{self.host}:{self.port}/add-outputs is not correct!"
-                )
-                exit(0)
-            if response.status_code == 200:
-                self._print_console_message(response)
-            else:
-                self._print_listener(
-                    f"ERROR something went wrong while sending results to the server: {response.json()}"
-                )
+        self._print_listener(f"starting processing output.xml '{path}'")
+        body = {"output_path": path, "output_tags": self.tags}
+        try:
+            response = post(
+                f"http://{self.host}:{self.port}/add-outputs", json=body
+            )
+        except ConnectionError as e:
+            self._print_listener(
+                f"ERROR the server is not running or the url http://{self.host}:{self.port}/add-outputs is not correct!"
+            )
+            exit(0)
+        if response.status_code == 200:
+            self._print_console_message(response)
         else:
             self._print_listener(
-                f"ERROR could not find output.xml '{path}', skipped automatic processing"
+                f"ERROR something went wrong while sending results to the server: {response.json()}"
             )
+
 
     def _remove_runs_over_limit(self):
         response = get(f"http://{self.host}:{self.port}/get-outputs")
@@ -109,7 +119,7 @@ class robotdashboardlistener:
                 run_starts = []
                 for i in range(0, amount_to_remove):
                     run_starts.append(response_json[i]["run_start"])
-                body = {"runs": run_starts}
+                body = {"run_starts": run_starts}
                 response = delete("http://127.0.0.1:8543/remove-outputs", json=body)
                 if response.status_code == 200:
                     self._print_console_message(response)

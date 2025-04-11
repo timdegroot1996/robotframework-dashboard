@@ -349,7 +349,6 @@ class ApiServer:
                 if remove_output.tags != None:
                     for run in remove_output.tags:
                         remove_runs.append(f"tag={run}")
-                print(remove_runs)
                 console = self.robotdashboard.remove_outputs(remove_runs)
                 console += self.robotdashboard.create_dashboard()
                 response = {
