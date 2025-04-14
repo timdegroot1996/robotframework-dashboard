@@ -161,7 +161,7 @@ robotdashboard -s default
 <a name="Examples"></a>
 ## Examples
 Here are some examples of generated files/output:
-- [Full Dashboard](./example/robot_dashboard.html) -> Download and open in a browser to use it!
+- [Full Dashboard](https://timdegroot1996.github.io/robotframework-dashboard/example/robot_dashboard.html) -> View an actual dashboard!
 - [Database](./example/robot_results.db) -> Download and use any tool to check the tables or use it as a base for using the "robotdashboard" command line interface
 - Example Command Line Output (below)
   
