@@ -128,6 +128,13 @@ class ArgumentParser:
             default=True,
         )
         parser.add_argument(
+            "-m",
+            "--messageconfig",
+            help="`path` Specifies the path to a conifg file that contains lines of messages with placeholders to 'bundle' test messages. \
+                Example lines can be 'The test has failed on date: ${date}' or 'Expected ${x} but received: ${y}'. Placeholders match everything and the content is irrelevant.",
+            default=None,
+        )
+        parser.add_argument(
             "-c",
             "--databaseclass",
             help="`path` Specifies the path to your implementation of the databaseclass. \
@@ -140,7 +147,7 @@ class ArgumentParser:
             "-s",
             "--server",
             help="Provide the server argument like 'robotdashboard --server default' or 'robotdashboard --server yourhost:yourport' \
-                to start a server. See http://github.com/timdegroot1996/robotframework-dashboard?tab=readme-ov-file#Dashboard-Server for additional information! ",
+                to start a server. See http://github.com/timdegroot1996/robotframework-dashboard?tab=readme-ov-file#Dashboard-Server for additional information!",
             default=None,
         )
         return parser.parse_args()
@@ -182,7 +189,7 @@ class ArgumentParser:
         if arguments.removeruns != None:
             remove_runs = []
             for runs in arguments.removeruns:
-                parts = str(runs[0]).split(',')
+                parts = str(runs[0]).split(",")
                 for part in parts:
                     remove_runs.append(part)
 
@@ -218,6 +225,13 @@ class ArgumentParser:
 
         # generates the datetime used in the file dashboard name and the html title
         generation_datetime = datetime.now()
+
+        # handles the custom test message handling
+        message_config = []
+        if arguments.messageconfig != None:
+            with open(arguments.messageconfig) as file:
+                for line in file:
+                    message_config.append(line.strip())
 
         # handles the custom dashboard name
         if arguments.namedashboard == "":
@@ -268,5 +282,6 @@ class ArgumentParser:
             "start_server": start_server,
             "server_host": server_host,
             "server_port": server_port,
+            "message_config": message_config,
         }
         return dotdict(provided_args)

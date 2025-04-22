@@ -775,6 +775,8 @@
         var suites = "placeholder_suites".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var tests = "placeholder_tests".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var keywords = "placeholder_keywords".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+        var message_config = '"placeholder_message_config"'
+        if (!message_config.includes('placeholder_message_config')) { message_config = JSON.parse(message_config) }
         const use_run_aliases = false
 
         // set default values

@@ -17,6 +17,7 @@ class DashboardGenerator:
         exclude_milliseconds: bool,
         server: bool,
         use_run_aliases: bool,
+        message_config: list,
     ):
         """Function that generates the dashboard"""
         # update the dashboard data to exclude milliseconds if needed
@@ -78,6 +79,8 @@ class DashboardGenerator:
                 dashboard_data = dashboard_data.replace(
                     "const use_run_aliases = false", "const use_run_aliases = true"
                 )
+            if message_config:
+                dashboard_data = dashboard_data.replace('"placeholder_message_config"', str(message_config).replace("'",'"'))
 
         # handle possible subdirectories
         path = Path(name_dashboard)
