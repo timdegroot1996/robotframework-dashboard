@@ -885,6 +885,22 @@
         document.getElementById('graphShow').innerHTML = graphShowItems
         document.getElementById('graphHide').innerHTML = graphHideItems
 
+        // function to add/remove disabled to the graphs in the customize view popup
+        function disable_graphs_in_customize_view(disable, identifier) {
+            const relatedGraphs1 = document.getElementById("graphShow").querySelectorAll(".hideItem")
+            const relatedGraphs2 = document.getElementById("graphHide").querySelectorAll(".hideItem")
+            const relatedGraphs = [ ...relatedGraphs1, ...relatedGraphs2 ]
+            for (const graph of relatedGraphs) {
+                if (graph.innerText.startsWith(identifier)) {
+                    if (disable) {
+                        graph.classList.add('disabled');
+                    } else {
+                        graph.classList.remove('disabled');
+                    }
+                }
+            }
+        }
+
         // function to move the items from showing to hidden
         function moveItems(fromId, toId) {
             const fromBox = document.getElementById(fromId);
@@ -897,11 +913,23 @@
                     hidden += `'${item.innerText}',`
                     localStorage.setItem(toId, hidden)
                 }
+                if (toId.includes('section')) {
+                    for (let item of selectedItems) {
+                        const identifier = item.innerText.split(" ")[0]
+                        disable_graphs_in_customize_view(true, identifier)
+                    }
+                }
             } else {
                 for (let item of selectedItems) {
                     var hidden = localStorage.getItem(fromId)
                     hidden = hidden.replaceAll(`'${item.innerText}',`, '')
                     localStorage.setItem(fromId, hidden)
+                }
+                if (toId.includes('section')) {
+                    for (let item of selectedItems) {
+                        const identifier = item.innerText.split(" ")[0]
+                        disable_graphs_in_customize_view(false, identifier)
+                    }
                 }
             }
 
@@ -1262,6 +1290,8 @@
                             toggleElement(spaceToCamelCase(id + ' ChevronRow'), areDependenciesHidden);
                         }
                     });
+                } else {
+                    disable_graphs_in_customize_view(true, sectionId.split(" ")[0])
                 }
             }
             handleSection('Run Statistics', [
@@ -2774,7 +2804,7 @@
 
                 for (const config of message_config) {
                     for (const [message, runStarts] of data) {
-                        if (message == config) {continue}
+                        if (message == config) { continue }
                         if (matches_message_config(message, config)) {
                             if (!data.has(config)) {
                                 data.set(config, []);
@@ -2835,8 +2865,8 @@
                 let runAxis = 0;
                 function check_label(message, label) {
                     return !message_config.includes('placeholder_message_config')
-                    ? matches_message_config(message, label)
-                    : message === label;
+                        ? matches_message_config(message, label)
+                        : message === label;
                 }
                 for (const runStart of runStarts) {
                     for (const label of labels) {
