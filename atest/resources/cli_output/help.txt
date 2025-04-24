@@ -65,7 +65,7 @@ options:
                         dashboard. Default is True, override if you only
                         require the database.
   -m MESSAGECONFIG, --messageconfig MESSAGECONFIG
-                        `path` Specifies the path to a conifg file that
+                        `path` Specifies the path to a config file that
                         contains lines of messages with placeholders to
                         'bundle' test messages. Example lines can be 'The test
                         has failed on date: ${date}' or 'Expected ${x} but
