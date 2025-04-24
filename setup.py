@@ -146,6 +146,16 @@ robotdashboard --aliases true --outputpath output-20250313-002257.xml         # 
 robotdashboard --aliases True --outputpath output_.xml                        # alias will be: Alias 1   (this is automatically generated to prevent dupes)
 robotdashboard --aliases True --outputpath ./folder/output_My Cool Name.xml   # alias will be: My Cool Name   (only file basename is used)
 ```
+- Create message config file that can be loaded to match similar test error messages as "the same" the ${...} variables will be regex matched like * to match any possible character of any length.
+```
+robotdashboard -m message_config.txt
+robotdashboard --messageconfig path/to/message_config.txt
+```
+message_config.txt
+```
+Expected ${x} but received: ${y}
+The test Normal Test ${number} has failed for some strange reason
+```
 - Make use of a custom DatabaseProcessor class see also the Custom Database Class section for examples and more details of the requirements.
 ```
 robotdashboard -c ./path/to/custom_class.py

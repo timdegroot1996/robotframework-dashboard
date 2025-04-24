@@ -130,7 +130,7 @@ class ArgumentParser:
         parser.add_argument(
             "-m",
             "--messageconfig",
-            help="`path` Specifies the path to a conifg file that contains lines of messages with placeholders to 'bundle' test messages. \
+            help="`path` Specifies the path to a config file that contains lines of messages with placeholders to 'bundle' test messages. \
                 Example lines can be 'The test has failed on date: ${date}' or 'Expected ${x} but received: ${y}'. Placeholders match everything and the content is irrelevant.",
             default=None,
         )
