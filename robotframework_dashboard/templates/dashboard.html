@@ -456,7 +456,7 @@
                             aria-controls="testMostFlakyCollapse"></div>
                     </div>
                     <div class="col">
-                        <h4>Most Flaky</h4>
+                        <h4>Most Flaky & Recent Most Flaky</h4>
                     </div>
                 </div>
                 <div class="row collapse show" id="testMostFlakyCollapse">
@@ -476,6 +476,23 @@
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose" hidden
                             style="margin-right:56px;">Close</button>
                         <canvas id="testMostFlakyGraph"></canvas>
+                    </div>
+                    <div class="col canvas mb-5" id="testRecentMostFlakyCanvas">
+                        <div class="btn-group me-1">
+                            <label class="form-check-label mb-2" for="ignoreSkipsRecent">Ignore Skips</label>
+                        </div>
+                        <div class="btn-group form-switch me-1">
+                            <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkipsRecent">
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                            id="testRecentMostFlakyGraphTimeline">Timeline View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyFullscreen"
+                            style="margin-right:56px;">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyClose" hidden
+                            style="margin-right:56px;">Close</button>
+                        <canvas id="testRecentMostFlakyGraph"></canvas>
                     </div>
                 </div>
                 <div class="row" id="testMostFailedChevronRow">
@@ -830,6 +847,7 @@
             'Test Duration',
             'Test Duration Deviation',
             'Test Most Flaky',
+            'Test Recent Most Flaky',
             'Test Most Failed',
             'Test Messages',
             'Test Table',
@@ -889,7 +907,7 @@
         function disable_graphs_in_customize_view(disable, identifier) {
             const relatedGraphs1 = document.getElementById("graphShow").querySelectorAll(".hideItem")
             const relatedGraphs2 = document.getElementById("graphHide").querySelectorAll(".hideItem")
-            const relatedGraphs = [ ...relatedGraphs1, ...relatedGraphs2 ]
+            const relatedGraphs = [...relatedGraphs1, ...relatedGraphs2]
             for (const graph of relatedGraphs) {
                 if (graph.innerText.startsWith(identifier)) {
                     if (disable) {
@@ -967,6 +985,8 @@
         var testDurationGraphType = "bar";
         var testMostFlakyGraph;
         var testMostFlakyGraphType = "timeline"
+        var testRecentMostFlakyGraph;
+        var testRecentMostFlakyGraphType = "timeline"
         var testDurationDeviationGraph;
         var testDurationDeviationGraphType = "boxplot"
         var testMostFailedGraph;
@@ -996,7 +1016,8 @@
 
         // var to keep track of the checkbox statuses
         var showOnlySelectedtestStatistics = false;
-        var ignoreSkips = false;
+        var ignoreSkips = false; // test most flaky graph
+        var ignoreSkipsRecent = false; // test recent most flaky graph
 
         // initialize all collapsables by adding the eventlisteners to the buttonIds
         const collapsables = [
@@ -1051,7 +1072,7 @@
         // eventlisteners for fullscreen buttons
         const fullscreenButtons = ["runStatistics", "runDuration", "suiteStatistics",
             "suiteDuration", "suiteMostFailed", "testStatistics", "testDuration",
-            "testMostFlaky", "testDurationDeviation", "testMostFailed", "testMessages",
+            "testMostFlaky", "testRecentMostFlaky", "testDurationDeviation", "testMostFailed", "testMessages",
             "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
             "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration"]
         for (let fullscreenButton of fullscreenButtons) {
@@ -1078,6 +1099,7 @@
             'suite_most_failed': 'Bar,Timeline',
             'test_duration': 'Bar,Line',
             'test_most_flaky': 'Bar,Timeline',
+            'test_recent_most_flaky': 'Bar,Timeline',
             'test_duration_deviation': 'Boxplot',
             'test_most_failed': 'Bar,Timeline',
             'test_messages': 'Bar,Timeline',
@@ -1144,6 +1166,10 @@
         document.getElementById("ignoreSkips").addEventListener("change", (e) => {
             ignoreSkips = !ignoreSkips;
             create_test_most_flaky_graph();
+        });
+        document.getElementById("ignoreSkipsRecent").addEventListener("change", (e) => {
+            ignoreSkipsRecent = !ignoreSkipsRecent;
+            create_test_recent_most_flaky_graph();
         });
         document.getElementById("suiteSelectTests").addEventListener("change", (e) => {
             add_testtags_in_select();
@@ -1249,6 +1275,7 @@
             create_test_duration_graph();
             create_test_duration_deviation_graph();
             create_test_most_flaky_graph();
+            create_test_recent_most_flaky_graph();
             create_test_most_failed_graph();
             create_test_messages_graph();
             create_test_table();
@@ -1309,7 +1336,7 @@
                 { id: 'Test Statistics', dependencies: ['Test Statistics', 'Test Duration'] },
                 { id: 'Test Duration' },
                 { id: 'Test Duration Deviation', dependencies: ['Test Duration Deviation'] },
-                { id: 'Test Most Flaky', dependencies: ['Test Most Flaky'] },
+                { id: 'Test Most Flaky', dependencies: ['Test Most Flaky', 'Test Recent Most Flaky'] },
                 { id: 'Test Most Failed', dependencies: ['Test Most Failed', 'Test Messages'] },
                 { id: 'Test Messages' },
                 { id: 'Test Table', dependencies: ['Test Table'] }
@@ -1887,7 +1914,7 @@
             if (testMostFlakyGraph) {
                 testMostFlakyGraph.destroy();
             }
-            var graphData = get_most_flaky_data("test", testMostFlakyGraphType, filteredTests);
+            var graphData = get_most_flaky_data("test", testMostFlakyGraphType, filteredTests, ignoreSkips, false);
             var callbackData = graphData[0];
             graphData = graphData[1];
             if (testMostFlakyGraphType == "bar") {
@@ -1915,6 +1942,45 @@
                     },
                 };
                 testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
+            }
+        }
+
+        // function to create test recent most flaky graph in test section
+        function create_test_recent_most_flaky_graph(type) {
+            if (typeof type === "string") {
+                testRecentMostFlakyGraphType = type;
+            }
+            if (testRecentMostFlakyGraph) {
+                testRecentMostFlakyGraph.destroy();
+            }
+            var graphData = get_most_flaky_data("test", testRecentMostFlakyGraphType, filteredTests, ignoreSkipsRecent, true);
+            var callbackData = graphData[0];
+            graphData = graphData[1];
+            if (testRecentMostFlakyGraphType == "bar") {
+                var config = get_graph_config("bar", graphData, "Top 10 Recent Most Flaky Tests (most status flips)", "Test Name", "Times Status Flipped");
+                // disable lenged in bar graph
+                config.options.plugins.legend = false
+                testRecentMostFlakyGraph = new Chart("testRecentMostFlakyGraph", config);
+            } else if (testRecentMostFlakyGraphType == "timeline") {
+                var config = get_graph_config("timeline", graphData, "Top 10 Recent Most Flaky Tests (most status flips)");
+                // overwrite tooltip and x scale with callbacks
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (context) {
+                            return callbackData[context.raw.x[0]];
+                        },
+                    },
+                };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 45,
+                        maxRotation: 45,
+                        callback: function (value, index, ticks) {
+                            return callbackData[this.getLabelForValue(value)];
+                        },
+                    },
+                };
+                testRecentMostFlakyGraph = new Chart("testRecentMostFlakyGraph", config);
             }
         }
 
@@ -2565,17 +2631,23 @@
             }
         }
 
-        // function to prepare the data in the correct format for most flaky test graph
-        function get_most_flaky_data(dataType, graphType, filteredData) {
+        // function to prepare the data in the correct format for (recent) most flaky test graph
+        function get_most_flaky_data(dataType, graphType, filteredData, ignore, recent) {
             var data = {};
             for (value of filteredData) {
                 if (data[value.name]) {
                     data[value.name]['run_starts'].push(value.run_start)
                     var current_status
                     if (value.passed == 1) { current_status = 'passed' }
-                    if (value.failed == 1) { current_status = 'failed' }
-                    if (!ignoreSkips) {
-                        if (value.skipped == 1) { current_status = 'skipped' }
+                    else if (value.failed == 1) {
+                        current_status = 'failed'
+                        data[value.name]['failed_run_starts'].push(value.run_start)
+                    }
+                    else if (!ignore) {
+                        if (value.skipped == 1) {
+                            current_status = 'skipped'
+                            data[value.name]['failed_run_starts'].push(value.run_start)
+                        }
                     }
                     if (current_status != data[value.name]['previous_status']) {
                         data[value.name]['flips'] += 1
@@ -2583,16 +2655,23 @@
                     }
                 } else {
                     var previous_status
-                    if (value.passed == 1) { previous_status = 'passed' }
-                    if (value.failed == 1) { previous_status = 'failed' }
-                    if (!ignoreSkips) {
-                        if (value.skipped == 1) { previous_status = 'skipped' }
-                    }
                     data[value.name] = {
                         'run_starts': [value.run_start],
                         'flips': 0,
-                        'previous_status': previous_status,
+                        'failed_run_starts': []
                     }
+                    if (value.passed == 1) { previous_status = 'passed' }
+                    else if (value.failed == 1) {
+                        previous_status = 'failed'
+                        data[value.name]['failed_run_starts'].push(value.run_start)
+                    }
+                    else if (!ignore) {
+                        if (value.skipped == 1) {
+                            previous_status = 'skipped'
+                            data[value.name]['failed_run_starts'].push(value.run_start)
+                        }
+                    }
+                    data[value.name]['previous_status'] = previous_status
                 }
             }
             var sortedData = [];
@@ -2604,6 +2683,11 @@
             sortedData.sort(function (a, b) {
                 return b[1].flips - a[1].flips;
             });
+            if (recent) { // do extra filtering to get most recent flaky tests at the top
+                sortedData.sort(function (a, b) {
+                    return new Date(b[1].failed_run_starts[b[1].failed_run_starts.length - 1]).getTime() - new Date(a[1].failed_run_starts[a[1].failed_run_starts.length - 1]).getTime()
+                })
+            }
             if (graphType == "bar") {
                 var [datasets, labels, count] = [[], [], 0];
                 for (key in sortedData) {
