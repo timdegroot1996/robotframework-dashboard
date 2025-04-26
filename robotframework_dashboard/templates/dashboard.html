@@ -896,7 +896,21 @@
             <button class="btn btn-sm btn-secondary moveUp"></button>
             </li>`
 
-        // GRAPHS FIRST TO BE ABLE TO DISABLE THEM BASED ON SECTIONS LATER!
+        // on first load update the sectionHide, sectionShow, graphHide, graphShow based on admin config
+        const adminSectionHide = "placeholder_admin_section_hide"
+        const adminSectionShow = "placeholder_admin_section_show"
+        const adminGraphHide = "placeholder_admin_graph_hide"
+        const adminGraphShow = "placeholder_admin_graph_show"
+        // first load to create a string
+        if (localStorage.getItem('sectionHide') == null) { localStorage.setItem('sectionHide', '') }
+        if (localStorage.getItem('sectionShow') == null) { localStorage.setItem('sectionShow', '') }
+        if (localStorage.getItem('graphHide') == null) { localStorage.setItem('graphHide', '') }
+        if (localStorage.getItem('graphShow') == null) { localStorage.setItem('graphShow', '') }
+        // override empty config with admin config if exists
+        if (localStorage.getItem('sectionHide') == '' && adminSectionHide.includes(',')) { localStorage.setItem('sectionHide', adminSectionHide) }
+        if (localStorage.getItem('sectionShow') == '' && adminSectionShow.includes(',')) { localStorage.setItem('sectionShow', adminSectionShow) }
+        if (localStorage.getItem('graphHide') == '' && adminGraphHide.includes(',')) { localStorage.setItem('graphHide', adminGraphHide) }
+        if (localStorage.getItem('graphShow') == '' && adminGraphShow.includes(',')) { localStorage.setItem('graphShow', adminGraphShow) }
 
         // create the modal with the correct layout based on localstorage
         function update_modal() {
@@ -904,17 +918,11 @@
             var sectionHideItems = ''
             var graphShowItems = ''
             var graphHideItems = ''
+
+            // function that adds the section to the correct box
             function add_section(section) {
                 const element = hideItem.replaceAll('{value}', section).replaceAll('{type}', 'section')
-                var hidden = localStorage.getItem('sectionHide')
-                var adminHidden = "placeholder_admin_section_hide"
-                if (hidden == null) { // first load to create a string
-                    localStorage.setItem('sectionHide', '')
-                }
-                if (hidden == '' && adminHidden.includes(',')) { // override empty config with admin config if exists
-                    localStorage.setItem('sectionHide', adminHidden)
-                }
-                hidden = localStorage.getItem('sectionHide')
+                const hidden = localStorage.getItem('sectionHide')
                 if (hidden.includes(`'${section}'`)) {
                     const identifier = section.split(' ')[0]
                     disable_graphs_in_customize_view(true, identifier)
@@ -923,27 +931,23 @@
                     sectionShowItems += element
                 }
             }
+
+            // function that adds the graph to the correct box
             function add_graph(graph) {
                 const element = hideItem.replaceAll('{value}', graph).replaceAll('{type}', 'graph')
-                var hidden = localStorage.getItem('graphHide')
-                var adminHidden = "placeholder_admin_graph_hide"
-                if (hidden == null) { // first load to create a string
-                    localStorage.setItem('graphHide', '')
-                }
-                if (hidden == '' && adminHidden.includes(',')) { // override empty config with admin config if exists
-                    localStorage.setItem('graphHide', adminHidden)
-                }
-                hidden = localStorage.getItem('graphHide')
+                const hidden = localStorage.getItem('graphHide')
                 if (hidden.includes(`'${graph}'`)) {
                     graphHideItems += element
                 } else {
                     graphShowItems += element
                 }
             }
+
+            // GRAPHS FIRST TO BE ABLE TO DISABLE THEM BASED ON SECTIONS LATER!
             // create the graphs in the correct order if sectionshow is set
             var hideGraphsCopy = hideGraphs
             var hideSectionsCopy = hideSections
-            if (localStorage.getItem('graphShow') != null && localStorage.getItem('graphShow') != '') {
+            if (localStorage.getItem('graphShow') != '') {
                 for (let graph of localStorage.getItem('graphShow').split(',')) {
                     if (graph == '') { continue }
                     graph = graph.replaceAll('\'', '')
@@ -954,11 +958,15 @@
                 localStorage.setItem('graphShow', '')
             }
             // use the default order for the remaining items
-            for (let graph of hideGraphs) {
+            for (let graph of hideGraphsCopy) {
                 add_graph(graph.replaceAll('\'', ''))
             }
+            document.getElementById('graphShow').innerHTML = graphShowItems
+            document.getElementById('graphHide').innerHTML = graphHideItems
+
+            // SECTIONS SECOND TO BE ABLE TO DISABLE THE ITEMS CORRECTLY
             // create the sections in the correct order if sectionShow is set
-            if (localStorage.getItem('sectionShow') != null && localStorage.getItem('sectionShow') != '') {
+            if (localStorage.getItem('sectionShow') != '') {
                 for (let section of localStorage.getItem('sectionShow').split(',')) {
                     if (section == '') { continue }
                     section = section.replaceAll('\'', '')
@@ -969,14 +977,13 @@
                 localStorage.setItem('sectionShow', '')
             }
             // use the default order for the remaining items
-            for (let section of hideSections) {
+            for (let section of hideSectionsCopy) {
                 add_section(section.replaceAll('\'', ''))
             }
             document.getElementById('sectionShow').innerHTML = sectionShowItems
             document.getElementById('sectionHide').innerHTML = sectionHideItems
-            document.getElementById('graphShow').innerHTML = graphShowItems
-            document.getElementById('graphHide').innerHTML = graphHideItems
-            // eventlisteners for the section up and down buttons
+
+            // eventlisteners for the section up buttons
             document.querySelectorAll('.section .moveUp').forEach(item => {
                 item.innerHTML = arrowUpVerySmall
                 item.addEventListener('click', function (event) {
@@ -985,6 +992,7 @@
                     event.stopPropagation();
                 });
             });
+            // eventlisteners for the section down buttons
             document.querySelectorAll('.section .moveDown').forEach(item => {
                 item.innerHTML = arrowDownVerySmall
                 item.addEventListener('click', function (event) {
@@ -993,7 +1001,7 @@
                     event.stopPropagation();
                 });
             });
-            // eventlisteners for the graph up and down buttons
+            // eventlisteners for the graph up buttons
             document.querySelectorAll('.graph .moveUp').forEach(item => {
                 item.innerHTML = arrowUpVerySmall
                 item.addEventListener('click', function (event) {
@@ -1005,6 +1013,7 @@
                     $(this).parent().insertBefore(before)
                 });
             });
+            // eventlisteners for the graph down buttons
             document.querySelectorAll('.graph .moveDown').forEach(item => {
                 item.innerHTML = arrowDownVerySmall
                 item.addEventListener('click', function (event) {
@@ -1016,7 +1025,7 @@
                     $(this).parent().insertAfter(after)
                 });
             });
-            // set which sections and graphs are shown and fill the modal
+            // eventlistener on all items in the modal to trigger active
             document.querySelectorAll('.hideItem').forEach(item => {
                 item.addEventListener('click', function () {
                     this.classList.toggle('active');
@@ -1050,24 +1059,24 @@
             if (toId.includes('Hide')) {
                 for (let item of selectedItems) {
                     var hidden = localStorage.getItem(toId)
-                    hidden += `'${item.innerText}',`
+                    hidden += `'${item.children[0].innerText}',`
                     localStorage.setItem(toId, hidden)
                 }
                 if (toId.includes('section')) {
                     for (let item of selectedItems) {
-                        const identifier = item.innerText.split(" ")[0]
+                        const identifier = item.children[0].innerText.split(" ")[0]
                         disable_graphs_in_customize_view(true, identifier)
                     }
                 }
             } else {
                 for (let item of selectedItems) {
                     var hidden = localStorage.getItem(fromId)
-                    hidden = hidden.replaceAll(`'${item.innerText}',`, '')
+                    hidden = hidden.replaceAll(`'${item.children[0].innerText}',`, '')
                     localStorage.setItem(fromId, hidden)
                 }
                 if (toId.includes('section')) {
                     for (let item of selectedItems) {
-                        const identifier = item.innerText.split(" ")[0]
+                        const identifier = item.children[0].innerText.split(" ")[0]
                         disable_graphs_in_customize_view(false, identifier)
                     }
                 }
@@ -1081,10 +1090,10 @@
             } else {
                 selectedItems.forEach(item => {
                     item.classList.remove('active');
-                    const section = item.querySelector('div').innerText.split(' ')[0]
+                    const section = item.children[0].innerText.split(' ')[0]
                     const listItems = document.getElementById('graphShow').querySelectorAll('.hideItem')
                     var lastMatchingItem = Array.from(listItems).reverse().find(li => {
-                        const div = li.querySelector('div');
+                        const div = li.children[0];
                         return div.innerText.startsWith(section)
                     });
                     if (lastMatchingItem == undefined) {
@@ -1099,10 +1108,10 @@
         document.getElementById('saveHide').addEventListener('click', function () {
             var sectionShow = ''
             var graphShow = ''
-            document.getElementById('sectionShow').querySelectorAll('.hideItem').forEach(item => {
+            document.getElementById('sectionShow').querySelectorAll('.hideItemText').forEach(item => {
                 sectionShow += `'${item.innerText}',`
             });
-            document.getElementById('graphShow').querySelectorAll('.hideItem').forEach(item => {
+            document.getElementById('graphShow').querySelectorAll('.hideItemText').forEach(item => {
                 graphShow += `'${item.innerText}',`
             });
             localStorage.setItem('sectionShow', sectionShow)
@@ -1414,6 +1423,7 @@
 
         // function that updates all graphs based on the new filtered data and hidden choices
         function update_all_graphs() {
+            set_hidden_sections_and_graphs();
             order_sections()
             create_run_statistics_graph();
             create_run_duration_graph();
@@ -1437,7 +1447,6 @@
             create_keyword_min_duration_graph();
             create_keyword_max_duration_graph();
             create_keyword_table();
-            set_hidden_sections_and_graphs();
         }
 
         function order_sections() {
