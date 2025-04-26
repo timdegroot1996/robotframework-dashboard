@@ -3183,7 +3183,8 @@
         // function that updates all graphs based on the new filtered data and hidden choices
         function setup_all_graphs() {
             set_hidden_sections_and_graphs();
-            setup_sections()
+            setup_section_order()
+            setup_graph_order()
             create_run_statistics_graph();
             create_run_duration_graph();
             create_run_table();
@@ -3209,7 +3210,7 @@
         }
 
         // function to order the sections according to the localstorage config
-        function setup_sections() {
+        function setup_section_order() {
             const sections = localStorage.getItem("sectionShow")
             var prevId = '#filterSection'
             for (let section of sections.split(',')) {
@@ -3218,6 +3219,11 @@
                 $(nextId).insertAfter(prevId)
                 prevId = nextId
             }
+        }
+
+        // function to order the grphs according to the localstorage config
+        function setup_graph_order() {
+            // placeholder tbd how to implement this
         }
 
         ///////////////////////////
