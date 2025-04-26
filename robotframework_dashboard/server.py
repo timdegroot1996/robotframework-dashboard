@@ -35,6 +35,8 @@ class ResponseMessage(BaseModel):
 class HiddenConfig(BaseModel):
     admin_section_hide: str
     admin_graph_hide: str
+    admin_section_show: str
+    admin_graph_show: str
 
 
 class GetOutput(BaseModel):
@@ -129,6 +131,8 @@ class ApiServer:
         self.server_port = server_port
         self.admin_section_hide = ""
         self.admin_graph_hide = ""
+        self.admin_section_show = ""
+        self.admin_graph_show = ""
 
         @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
         async def admin_page():
@@ -146,6 +150,8 @@ class ApiServer:
             robot_dashboard_html = open("robot_dashboard.html", "r").read()
             robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_section_hide"', f'"{self.admin_section_hide}"')
             robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_graph_hide"', f'"{self.admin_graph_hide}"')
+            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_section_show"', f'"{self.admin_section_show}"')
+            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_graph_show"', f'"{self.admin_graph_show}"')
             return robot_dashboard_html
         
         @self.app.get("/get-hidden-config", include_in_schema=False)
@@ -153,6 +159,8 @@ class ApiServer:
             response = {
                 "admin_section_hide": self.admin_section_hide,
                 "admin_graph_hide": self.admin_graph_hide,
+                "admin_section_show": self.admin_section_show,
+                "admin_graph_show": self.admin_graph_show,
             }
             return response
         
@@ -163,6 +171,8 @@ class ApiServer:
             try:
                 self.admin_section_hide = config.admin_section_hide
                 self.admin_graph_hide = config.admin_graph_hide
+                self.admin_section_show = config.admin_section_show
+                self.admin_graph_show = config.admin_graph_show
                 console = self.robotdashboard.create_dashboard()
             except Exception as error:
                 response = {

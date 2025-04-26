@@ -36,11 +36,19 @@
             body {
                 background-color: #eee;
             }
+
+            .fullscreen {
+                background: #eee;
+            }
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
                 color-scheme: dark;
+            }
+
+            .fullscreen {
+                background: #212529;
             }
         }
 
@@ -75,7 +83,6 @@
             height: 100%;
             left: 0;
             top: 0;
-            background: #212529;
             z-index: 10;
             padding: 11px 20px 70px 20px;
         }
@@ -109,6 +116,22 @@
         .border,
         .controls {
             min-height: 165px;
+        }
+
+        .hideItemText {
+            margin-right: auto;
+        }
+
+        .moveUp {
+            margin: 5px 2px 0px 2px;
+            padding: 2px 1px 2px 1px;
+            height: 16px !important;
+        }
+
+        .moveDown {
+            margin: 5px 2px 0px 2px;
+            padding: 3px 1px 2px 1px;
+            height: 16px !important;
         }
     </style>
 </head>
@@ -698,8 +721,12 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title" id="hideModalLabel">Customize View</h1>
-                        <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-dismiss="modal"
-                            id="saveHide">Save</button>
+                        <div>
+                            <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-dismiss="modal"
+                                id="resetView">Reset View</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm mt-auto ms-3"
+                                data-bs-dismiss="modal" id="saveHide">Save</button>
+                        </div>
                     </div>
                     <div class="modal-body">
                         <div class="row justify-content-evenly">
@@ -714,7 +741,7 @@
                             <div class="col">
                                 <h4>Show</h4>
                                 <div class="border border-3 rounded-3">
-                                    <ul id="sectionShow" class="list-group"></ul>
+                                    <ol id="sectionShow" class="list-group list-group-numbered"></ol>
                                 </div>
                             </div>
                             <div class="col-auto mt-5">
@@ -726,13 +753,13 @@
                             <div class="col">
                                 <h4>Hide</h4>
                                 <div class="border border-3 rounded-3">
-                                    <ul id="sectionHide" class="list-group"></ul>
+                                    <ol id="sectionHide" class="list-group"></ol>
                                 </div>
                             </div>
                             <div class="col">
                                 <h4>Show</h4>
                                 <div class="border border-3 rounded-3">
-                                    <ul id="graphShow" class="list-group"></ul>
+                                    <ol id="graphShow" class="list-group list-group-numbered"></ol>
                                 </div>
                             </div>
                             <div class="col-auto mt-5">
@@ -744,7 +771,7 @@
                             <div class="col">
                                 <h4>Hide</h4>
                                 <div class="border border-3 rounded-3">
-                                    <ul id="graphHide" class="list-group"></ul>
+                                    <ol id="graphHide" class="list-group"></ol>
                                 </div>
                             </div>
                         </div>
@@ -756,16 +783,20 @@
 
     <script>
         // collapse/expand buttons icons/svgs
-        const collapsed =
+        const arrowRight =
             '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
-        const collapsedSmall =
+        const arrowRightSmall =
             '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><g><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
-        const expanded =
+        const arrowDown =
             '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
-        const expandedSmall =
+        const arrowDownSmall =
             '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
-        const inversedCollapsed =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g transform="scale(-1,1) translate(-52,0)"><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"/></g></svg>'
+        const arrowLeft =
+            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g transform="scale(-1,1) translate(-52,0)"><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"/></g></svg>';
+        const arrowDownVerySmall =
+            '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
+        const arrowUpVerySmall =
+            '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52" transform="matrix(-1,1.2246467991473532e-16,-1.2246467991473532e-16,-1,0,0)"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"></path></svg>';
 
         // theme function based on browser/machine color scheme
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -806,10 +837,10 @@
 
         // Map the arrow actions and associated operations
         const arrowMappings = {
-            'sectionRight': { from: 'sectionShow', to: 'sectionHide', content: collapsed },
-            'sectionLeft': { from: 'sectionHide', to: 'sectionShow', content: inversedCollapsed },
-            'graphRight': { from: 'graphShow', to: 'graphHide', content: collapsed },
-            'graphLeft': { from: 'graphHide', to: 'graphShow', content: inversedCollapsed }
+            'sectionRight': { from: 'sectionShow', to: 'sectionHide', content: arrowRight },
+            'sectionLeft': { from: 'sectionHide', to: 'sectionShow', content: arrowLeft },
+            'graphRight': { from: 'graphShow', to: 'graphHide', content: arrowRight },
+            'graphLeft': { from: 'graphHide', to: 'graphShow', content: arrowLeft }
         };
 
         // Initialize arrows with their respective functionality and content
@@ -829,13 +860,13 @@
         }
 
         // add items in hide modal
-        var hideSections = [
+        const hideSections = [
             'Run Statistics',
             'Suite Statistics',
             'Test Statistics',
             'Keyword Statistics',
         ]
-        var hideGraphs = [
+        const hideGraphs = [
             'Run Statistics',
             'Run Duration',
             'Run Table',
@@ -859,61 +890,152 @@
             'Keyword Max Duration',
             'Keyword Table'
         ]
-        var hideItem = '<li class="hideItem list-group-item list-group-item-action">{value}</li>'
-        var sectionShowItems = ''
-        var sectionHideItems = ''
-        var graphShowItems = ''
-        var graphHideItems = ''
-        for (let section of hideSections) {
-            const element = hideItem.replaceAll('{value}', section)
-            var hidden = localStorage.getItem('sectionHide')
-            var adminHidden = "placeholder_admin_section_hide"
-            if (hidden == null) { // first load to create a string
-                localStorage.setItem('sectionHide', '')
+        var hideItem = `<li class="hideItem list-group-item list-group-item-action d-flex {type}">
+            <div class="hideItemText">{value}</div>
+            <button class="btn btn-sm btn-secondary moveDown"></button>
+            <button class="btn btn-sm btn-secondary moveUp"></button>
+            </li>`
+
+        // GRAPHS FIRST TO BE ABLE TO DISABLE THEM BASED ON SECTIONS LATER!
+
+        // create the modal with the correct layout based on localstorage
+        function update_modal() {
+            var sectionShowItems = ''
+            var sectionHideItems = ''
+            var graphShowItems = ''
+            var graphHideItems = ''
+            function add_section(section) {
+                const element = hideItem.replaceAll('{value}', section).replaceAll('{type}', 'section')
+                var hidden = localStorage.getItem('sectionHide')
+                var adminHidden = "placeholder_admin_section_hide"
+                if (hidden == null) { // first load to create a string
+                    localStorage.setItem('sectionHide', '')
+                }
+                if (hidden == '' && adminHidden.includes(',')) { // override empty config with admin config if exists
+                    localStorage.setItem('sectionHide', adminHidden)
+                }
+                hidden = localStorage.getItem('sectionHide')
+                if (hidden.includes(`'${section}'`)) {
+                    const identifier = section.split(' ')[0]
+                    disable_graphs_in_customize_view(true, identifier)
+                    sectionHideItems += element
+                } else {
+                    sectionShowItems += element
+                }
             }
-            if (hidden == '' && adminHidden.includes(',')) { // override empty config with admin config if exists
-                localStorage.setItem('sectionHide', adminHidden)
+            function add_graph(graph) {
+                const element = hideItem.replaceAll('{value}', graph).replaceAll('{type}', 'graph')
+                var hidden = localStorage.getItem('graphHide')
+                var adminHidden = "placeholder_admin_graph_hide"
+                if (hidden == null) { // first load to create a string
+                    localStorage.setItem('graphHide', '')
+                }
+                if (hidden == '' && adminHidden.includes(',')) { // override empty config with admin config if exists
+                    localStorage.setItem('graphHide', adminHidden)
+                }
+                hidden = localStorage.getItem('graphHide')
+                if (hidden.includes(`'${graph}'`)) {
+                    graphHideItems += element
+                } else {
+                    graphShowItems += element
+                }
             }
-            hidden = localStorage.getItem('sectionHide')
-            if (hidden.includes(`'${section}'`)) {
-                sectionHideItems += element
+            // create the graphs in the correct order if sectionshow is set
+            var hideGraphsCopy = hideGraphs
+            var hideSectionsCopy = hideSections
+            if (localStorage.getItem('graphShow') != null && localStorage.getItem('graphShow') != '') {
+                for (let graph of localStorage.getItem('graphShow').split(',')) {
+                    if (graph == '') { continue }
+                    graph = graph.replaceAll('\'', '')
+                    hideGraphsCopy = hideGraphsCopy.filter(hiddenGraph => hiddenGraph !== graph)
+                    add_graph(graph)
+                }
             } else {
-                sectionShowItems += element
+                localStorage.setItem('graphShow', '')
             }
-        }
-        for (let graph of hideGraphs) {
-            const element = hideItem.replaceAll('{value}', graph)
-            var hidden = localStorage.getItem('graphHide')
-            var adminHidden = "placeholder_admin_graph_hide"
-            if (hidden == null) { // first load to create a string
-                localStorage.setItem('graphHide', '')
+            // use the default order for the remaining items
+            for (let graph of hideGraphs) {
+                add_graph(graph.replaceAll('\'', ''))
             }
-            if (hidden == '' && adminHidden.includes(',')) { // override empty config with admin config if exists
-                localStorage.setItem('graphHide', adminHidden)
-            }
-            hidden = localStorage.getItem('graphHide')
-            if (hidden.includes(`'${graph}'`)) {
-                graphHideItems += element
+            // create the sections in the correct order if sectionShow is set
+            if (localStorage.getItem('sectionShow') != null && localStorage.getItem('sectionShow') != '') {
+                for (let section of localStorage.getItem('sectionShow').split(',')) {
+                    if (section == '') { continue }
+                    section = section.replaceAll('\'', '')
+                    hideSectionsCopy = hideSectionsCopy.filter(hiddenSection => hiddenSection !== section)
+                    add_section(section)
+                }
             } else {
-                graphShowItems += element
+                localStorage.setItem('sectionShow', '')
             }
+            // use the default order for the remaining items
+            for (let section of hideSections) {
+                add_section(section.replaceAll('\'', ''))
+            }
+            document.getElementById('sectionShow').innerHTML = sectionShowItems
+            document.getElementById('sectionHide').innerHTML = sectionHideItems
+            document.getElementById('graphShow').innerHTML = graphShowItems
+            document.getElementById('graphHide').innerHTML = graphHideItems
+            // eventlisteners for the section up and down buttons
+            document.querySelectorAll('.section .moveUp').forEach(item => {
+                item.innerHTML = arrowUpVerySmall
+                item.addEventListener('click', function (event) {
+                    before = $(this).parent().prev();
+                    $(this).parent().insertBefore(before)
+                    event.stopPropagation();
+                });
+            });
+            document.querySelectorAll('.section .moveDown').forEach(item => {
+                item.innerHTML = arrowDownVerySmall
+                item.addEventListener('click', function (event) {
+                    after = $(this).parent().next();
+                    $(this).parent().insertAfter(after)
+                    event.stopPropagation();
+                });
+            });
+            // eventlisteners for the graph up and down buttons
+            document.querySelectorAll('.graph .moveUp').forEach(item => {
+                item.innerHTML = arrowUpVerySmall
+                item.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    before = $(this).parent().prev();
+                    if (before[0] == undefined || $(this).parent().children()[0].innerText.split(' ')[0] != before[0].innerText.split(' ')[0]) {
+                        return
+                    }
+                    $(this).parent().insertBefore(before)
+                });
+            });
+            document.querySelectorAll('.graph .moveDown').forEach(item => {
+                item.innerHTML = arrowDownVerySmall
+                item.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    after = $(this).parent().next();
+                    if (after[0] == undefined || $(this).parent().children()[0].innerText.split(' ')[0] != after[0].innerText.split(' ')[0]) {
+                        return
+                    }
+                    $(this).parent().insertAfter(after)
+                });
+            });
+            // set which sections and graphs are shown and fill the modal
+            document.querySelectorAll('.hideItem').forEach(item => {
+                item.addEventListener('click', function () {
+                    this.classList.toggle('active');
+                });
+            });
         }
-        document.getElementById('sectionShow').innerHTML = sectionShowItems
-        document.getElementById('sectionHide').innerHTML = sectionHideItems
-        document.getElementById('graphShow').innerHTML = graphShowItems
-        document.getElementById('graphHide').innerHTML = graphHideItems
+        update_modal()
 
         // function to add/remove disabled to the graphs in the customize view popup
         function disable_graphs_in_customize_view(disable, identifier) {
-            const relatedGraphs1 = document.getElementById("graphShow").querySelectorAll(".hideItem")
-            const relatedGraphs2 = document.getElementById("graphHide").querySelectorAll(".hideItem")
+            const relatedGraphs1 = document.getElementById("graphShow").querySelectorAll(".hideItemText")
+            const relatedGraphs2 = document.getElementById("graphHide").querySelectorAll(".hideItemText")
             const relatedGraphs = [...relatedGraphs1, ...relatedGraphs2]
             for (const graph of relatedGraphs) {
                 if (graph.innerText.startsWith(identifier)) {
                     if (disable) {
-                        graph.classList.add('disabled');
+                        graph.parentElement.classList.add('disabled');
                     } else {
-                        graph.classList.remove('disabled');
+                        graph.parentElement.classList.remove('disabled');
                     }
                 }
             }
@@ -951,38 +1073,66 @@
                 }
             }
 
-            selectedItems.forEach(item => {
-                item.classList.remove('active');
-                toBox.appendChild(item);
-            });
+            if (toId != 'graphShow') {
+                selectedItems.forEach(item => {
+                    item.classList.remove('active');
+                    toBox.appendChild(item);
+                });
+            } else {
+                selectedItems.forEach(item => {
+                    item.classList.remove('active');
+                    const section = item.querySelector('div').innerText.split(' ')[0]
+                    const listItems = document.getElementById('graphShow').querySelectorAll('.hideItem')
+                    var lastMatchingItem = Array.from(listItems).reverse().find(li => {
+                        const div = li.querySelector('div');
+                        return div.innerText.startsWith(section)
+                    });
+                    if (lastMatchingItem == undefined) {
+                        lastMatchingItem = listItems[listItems.length - 1]
+                    }
+                    lastMatchingItem.after(item);
+                });
+            }
         }
 
-        // set which sections and graphs are shown and fill the modal
-        document.querySelectorAll('.hideItem').forEach(item => {
-            item.addEventListener('click', function () {
-                this.classList.toggle('active');
+        // update all graphs based on new hidden graphs/sections
+        document.getElementById('saveHide').addEventListener('click', function () {
+            var sectionShow = ''
+            var graphShow = ''
+            document.getElementById('sectionShow').querySelectorAll('.hideItem').forEach(item => {
+                sectionShow += `'${item.innerText}',`
             });
+            document.getElementById('graphShow').querySelectorAll('.hideItem').forEach(item => {
+                graphShow += `'${item.innerText}',`
+            });
+            localStorage.setItem('sectionShow', sectionShow)
+            localStorage.setItem('graphShow', graphShow)
+            update_all_graphs()
         });
 
-        // update all graphs based on new hidden graphs/sections
-        document.getElementById('saveHide').addEventListener('click', update_all_graphs)
+        // remove the entire customized view configuration
+        document.getElementById('resetView').addEventListener('click', function () {
+            localStorage.clear()
+            update_modal()
+            update_all_graphs()
+        });
 
         // create graphs
         var runStatisticsGraph;
         var runStatisticsGraphType = "percentages";
         var runDurationGraph;
-        var runDurationGraphType = "bar";
+        var runDurationGraphType = "line";
         var runTable;
         var suiteStatisticsGraph;
         var suiteStatisticsGraphType = "percentages";
         var suiteDurationGraph;
-        var suiteDurationGraphType = "bar";
+        var suiteDurationGraphType = "line";
         var suiteMostFailedGraph;
         var suiteMostFailedGraphType = "bar";
         var suiteTable;
         var testStatisticsGraph;
         var testDurationGraph;
-        var testDurationGraphType = "bar";
+        var testDurationGraphType = "line";
         var testMostFlakyGraph;
         var testMostFlakyGraphType = "timeline"
         var testRecentMostFlakyGraph;
@@ -999,9 +1149,9 @@
         var keywordTimesRunGraph;
         var keywordTimesRunGraphType = "bar";
         var keywordTotalDurationGraph;
-        var keywordTotalDurationGraphType = "bar";
+        var keywordTotalDurationGraphType = "line";
         var keywordAverageDurationGraph;
-        var keywordAverageDurationGraphType = "bar";
+        var keywordAverageDurationGraphType = "line";
         var keywordMinDurationGraph;
         var keywordMinDurationGraphType = "bar";
         var keywordMaxDurationGraph;
@@ -1050,15 +1200,15 @@
         function update_collapse_button(id) {
             if (document.getElementById(id).className.includes("collapsed")) {
                 if (id.includes('Details')) {
-                    document.getElementById(id).innerHTML = collapsed;
+                    document.getElementById(id).innerHTML = arrowRight;
                 } else {
-                    document.getElementById(id).innerHTML = collapsedSmall;
+                    document.getElementById(id).innerHTML = arrowRightSmall;
                 }
             } else {
                 if (id.includes('Details')) {
-                    document.getElementById(id).innerHTML = expanded;
+                    document.getElementById(id).innerHTML = arrowDown;
                 } else {
-                    document.getElementById(id).innerHTML = expandedSmall;
+                    document.getElementById(id).innerHTML = arrowDownSmall;
                 }
             }
         }
@@ -1264,6 +1414,7 @@
 
         // function that updates all graphs based on the new filtered data and hidden choices
         function update_all_graphs() {
+            order_sections()
             create_run_statistics_graph();
             create_run_duration_graph();
             create_run_table();
@@ -1289,15 +1440,27 @@
             set_hidden_sections_and_graphs();
         }
 
+        function order_sections() {
+            const sections = localStorage.getItem("sectionShow")
+            var prevId = '#filterSection'
+            for (let section of sections.split(',')) {
+                section = section.replaceAll('\'', '')
+                var nextId = `#${spaceToCamelCase(section + ' Section')}`
+                $(nextId).insertAfter(prevId)
+                prevId = nextId
+            }
+        }
+
+        // function to convert to camelcase
+        function spaceToCamelCase(string) {
+            return string.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+                return index === 0 ? word.toLowerCase() : word.toUpperCase();
+            }).replace(/\s+/g, '');
+        }
+
         function set_hidden_sections_and_graphs() {
             const hiddenSections = localStorage.getItem("sectionHide");
             const hiddenGraphs = localStorage.getItem("graphHide");
-            // function to convert to camelcase
-            function spaceToCamelCase(string) {
-                return string.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-                    return index === 0 ? word.toLowerCase() : word.toUpperCase();
-                }).replace(/\s+/g, '');
-            }
             // function to show or hide elements
             function toggleElement(id, condition) {
                 const element = document.getElementById(id);
