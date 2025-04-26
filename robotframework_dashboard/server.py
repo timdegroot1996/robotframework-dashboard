@@ -32,7 +32,7 @@ class ResponseMessage(BaseModel):
         }
     }
 
-class HiddenConfig(BaseModel):
+class CustomizedViewConfig(BaseModel):
     admin_section_hide: str
     admin_graph_hide: str
     admin_section_show: str
@@ -154,8 +154,8 @@ class ApiServer:
             robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_graph_show"', f'"{self.admin_graph_show}"')
             return robot_dashboard_html
         
-        @self.app.get("/get-hidden-config", include_in_schema=False)
-        async def get_hidden_config() -> HiddenConfig:
+        @self.app.get("/get-customized-view-config", include_in_schema=False)
+        async def get_customized_view_config() -> CustomizedViewConfig:
             response = {
                 "admin_section_hide": self.admin_section_hide,
                 "admin_graph_hide": self.admin_graph_hide,
@@ -164,8 +164,8 @@ class ApiServer:
             }
             return response
         
-        @self.app.post("/set-hidden-config", include_in_schema=False)
-        async def set_hidden_config(config: HiddenConfig) -> ResponseMessage:
+        @self.app.post("/set-customized-view-config", include_in_schema=False)
+        async def set_customized_view_config(config: CustomizedViewConfig) -> ResponseMessage:
             """Adds the config to the class variables for use when generating the dashboard"""
             console = "no console output"
             try:
@@ -177,7 +177,7 @@ class ApiServer:
             except Exception as error:
                 response = {
                     "success": "0",
-                    "message": f"ERROR: something went wrong while setting the admin hidden config: {error}",
+                    "message": f"ERROR: something went wrong while setting the admin customized view config: {error}",
                     "console": console,
                 }
                 return response
