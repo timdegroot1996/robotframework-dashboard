@@ -1,7 +1,7 @@
 <html data-bs-theme="dark">
 
 <head>
-    <title>Robot Framework Dashboard - 2025-04-27 20:05:38</title>
+    <title>Robot Framework Dashboard - 2025-04-27 20:21:10</title>
     <!-- ChartJs import -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
@@ -144,7 +144,7 @@
                     <div class="col-10">
                         <div class="row">
                             <div class="col-auto">
-                                <h1>Robot Framework Dashboard - 2025-04-27 20:05:38</h1>
+                                <h1>Robot Framework Dashboard - 2025-04-27 20:21:10</h1>
                             </div>
                         </div>
                         <div class="row">
@@ -238,9 +238,9 @@
                 </div>
                 <!-- Run Duration -->
                 <div class="col canvas mb-5" id="runDurationCanvas">
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="runDurationGraphBar">Bar
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runDurationGraphBar">Bar
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runDurationGraphLine">Line
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="runDurationGraphLine">Line
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                         id="runDurationFullscreen">Fullscreen</button>
@@ -295,9 +295,9 @@
                 </div>
                 <!-- Suite Duration -->
                 <div class="col canvas mb-5" id="suiteDurationCanvas">
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="suiteDurationGraphBar">Bar
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteDurationGraphBar">Bar
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteDurationGraphLine">Line
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="suiteDurationGraphLine">Line
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                         id="suiteDurationFullscreen">Fullscreen</button>
@@ -387,9 +387,9 @@
                 </div>
                 <!-- Test Duration -->
                 <div class="col canvas mb-5" id="testDurationCanvas">
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="testDurationGraphBar">Bar
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationGraphBar">Bar
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationGraphLine">Line
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="testDurationGraphLine">Line
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                         id="testDurationFullscreen">Fullscreen</button>
@@ -529,9 +529,10 @@
                 </div>
                 <!-- Keyword Total Duration -->
                 <div class="col canvas mb-5" id="keywordTotalDurationCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalDurationGraphBar">Bar
+                        View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                        id="keywordTotalDurationGraphBar">Bar View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalDurationGraphLine">Line
+                        id="keywordTotalDurationGraphLine">Line
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                         id="keywordTotalDurationFullscreen">Fullscreen</button>
@@ -541,9 +542,10 @@
                 </div>
                 <!-- Keyword Average Duration -->
                 <div class="col canvas mb-5" id="keywordAverageDurationCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageDurationGraphBar">Bar
+                        View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                        id="keywordAverageDurationGraphBar">Bar View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageDurationGraphLine">Line
+                        id="keywordAverageDurationGraphLine">Line
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                         id="keywordAverageDurationFullscreen">Fullscreen</button>
@@ -1082,65 +1084,6 @@
             }
         }
 
-        // function to hide graphs based on the configured localstorage
-        function set_hidden_sections_and_graphs() {
-            /// THIS HAS TO BE CHANGED COMPLETELY
-            const hiddenSections = localStorage.getItem("sectionHide");
-            const hiddenGraphs = localStorage.getItem("graphHide");
-            // function to show or hide elements
-            function toggleElement(id, condition) {
-                const element = document.getElementById(id);
-                if (element) element.hidden = condition;
-            }
-            // function to handle a section
-            function handleSection(sectionId, graphs) {
-                const isSectionHidden = hiddenSections.includes(sectionId);
-                toggleElement(space_to_camel_case(sectionId.toLowerCase() + 'Section'), isSectionHidden);
-                if (!isSectionHidden) {
-                    graphs.forEach(({ id, dependencies }) => {
-                        const isGraphHidden = hiddenGraphs.includes(id);
-                        toggleElement(space_to_camel_case(id + ' Canvas'), isGraphHidden);
-
-                        if (dependencies) {
-                            const areDependenciesHidden = dependencies.every(dep => hiddenGraphs.includes(dep));
-                            toggleElement(space_to_camel_case(id + ' ChevronRow'), areDependenciesHidden);
-                        }
-                    });
-                } else {
-                    disable_graphs_in_customize_view(true, sectionId.split(" ")[0])
-                }
-            }
-            handleSection('Run Statistics', [
-                { id: 'Run Statistics', dependencies: ['Run Statistics', 'Run Duration'] },
-                { id: 'Run Duration' },
-                { id: 'Run Table', dependencies: ['Run Table'] }
-            ]);
-            handleSection('Suite Statistics', [
-                { id: 'Suite Statistics', dependencies: ['Suite Statistics', 'Suite Duration'] },
-                { id: 'Suite Duration' },
-                { id: 'Suite Most Failed', dependencies: ['Suite Most Failed'] },
-                { id: 'Suite Table', dependencies: ['Suite Table'] }
-            ]);
-            handleSection('Test Statistics', [
-                { id: 'Test Statistics', dependencies: ['Test Statistics', 'Test Duration'] },
-                { id: 'Test Duration' },
-                { id: 'Test Duration Deviation', dependencies: ['Test Duration Deviation'] },
-                { id: 'Test Most Flaky', dependencies: ['Test Most Flaky', 'Test Recent Most Flaky'] },
-                { id: 'Test Most Failed', dependencies: ['Test Most Failed', 'Test Messages'] },
-                { id: 'Test Messages' },
-                { id: 'Test Table', dependencies: ['Test Table'] }
-            ]);
-            handleSection('Keyword Statistics', [
-                { id: 'Keyword Statistics', dependencies: ['Keyword Statistics', 'Keyword Times Run'] },
-                { id: 'Keyword Times Run' },
-                { id: 'Keyword Total Duration', dependencies: ['Keyword Total Duration', 'Keyword Average Duration'] },
-                { id: 'Keyword Average Duration' },
-                { id: 'Keyword Min Duration', dependencies: ['Keyword Min Duration', 'Keyword Max Duration'] },
-                { id: 'Keyword Max Duration' },
-                { id: 'Keyword Table', dependencies: ['Keyword Table'] }
-            ]);
-        }
-
         /////////////////////////////
         // EVENTLISTENER FUNCTIONS //
         /////////////////////////////
@@ -1164,7 +1107,7 @@
             // update all graphs based on new hidden graphs/sections
             document.getElementById('saveHide').addEventListener('click', function () {
                 update_local_storage_show()
-                setup_all_graphs()
+                setup_data_and_graphs()
             });
 
             // remove the entire customized view configuration
@@ -1175,7 +1118,7 @@
                 localStorage.setItem('graphShow', '')
                 setup_modal_items()
                 update_local_storage_show()
-                setup_all_graphs()
+                setup_data_and_graphs()
             });
         }
 
@@ -1238,6 +1181,7 @@
 
             function handleGraphButtonClick(graphChangeButton, graphType, camelButtonName) {
                 // Dynamically trigger the graph creation function
+                console.log(`create_${graphChangeButton}_graph`, graphType)
                 window[`create_${graphChangeButton}_graph`](graphType);
                 // Update the UI to enable/disable buttons accordingly
                 const buttons = ['Bar', 'Line', 'Timeline', 'Percentages', 'Amount']; // All possible button types
@@ -3005,6 +2949,11 @@
         // function to update all graph data, function is called when updating filters and when the page loads
         function setup_data_and_graphs() {
             setup_filtered_data_and_filters();
+            setup_section_order();
+            setup_graph_order();
+            setup_collapsables();
+            setup_eventlisteners_graph_view_buttons();
+            setup_eventlisteners_filter_buttons();
             setup_all_graphs();
         }
 
@@ -3032,10 +2981,6 @@
 
         // function that updates all graphs based on the new filtered data and hidden choices
         function setup_all_graphs() {
-            set_hidden_sections_and_graphs();
-            setup_section_order();
-            setup_graph_order();
-            setup_collapsables();
             create_run_statistics_graph();
             create_run_duration_graph();
             create_run_table();
@@ -3189,8 +3134,6 @@
             setup_local_storage();
             setup_modal_items();
             setup_eventlisteners_customized_view_buttons();
-            setup_eventlisteners_filter_buttons();
-            setup_eventlisteners_graph_view_buttons();
             setup_eventlisteners_section_filter_buttons();
             setup_lowest_highest_dates();
             setup_runs_in_select_filter_buttons();
