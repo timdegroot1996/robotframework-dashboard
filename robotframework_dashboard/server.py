@@ -196,7 +196,7 @@ class ApiServer:
             outputs = []
             for run, name, alias, tag in zip(runs, names, aliases, tags):
                 outputs.append(
-                    {"run_start": run, "name": name, "alias": alias, "tags": tag}
+                    {"run_start": str(run), "name": str(name), "alias": str(alias), "tags": str(tag)}
                 )
             return outputs
 
