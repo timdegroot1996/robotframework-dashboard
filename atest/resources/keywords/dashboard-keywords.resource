@@ -47,8 +47,8 @@ Validate Graph
     Validate Screenshot    screenshot=${graphId}    reference=${graphId}
 
 Validate Table
-    [Arguments]    ${tableId}
-    Click    selector=id=${tableId}Button
+    [Arguments]    ${tableId}    ${collapseButtonId}
+    Click    selector=id=${collapseButtonId}
     Sleep    time_=200ms
     Take Screenshot    filename=${tableId}    selector=id=${tableId}
     Validate Screenshot    screenshot=${tableId}    reference=${tableId}

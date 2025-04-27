@@ -4,7 +4,8 @@ Library    OperatingSystem
 
 *** Keywords ***
 Generate Dashboard
-    Run    command=robotdashboard -f ${CURDIR}/../outputs:dev:prod -n robot_dashboard.html
+    ${output}    Run    command=robotdashboard -f ${CURDIR}/../outputs:dev:prod -n robot_dashboard.html
+    Log    ${output}
 
 Remove Database And Dashboard
     ${files}    List Files In Directory    path=${CURDIR}/../../..

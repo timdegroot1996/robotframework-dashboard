@@ -12,13 +12,13 @@ Test Teardown    Run Keywords    Close Dashboard    Remove Database And Dashboar
 
 *** Test Cases ***
 Validate dashboard runTable
-    Validate Table    tableId=runTable
+    Validate Table    tableId=runTableCanvas    collapseButtonId=runChevronButton2
 
 Validate dashboard suiteTable
-    Validate Table    tableId=suiteTable
+    Validate Table    tableId=suiteTableCanvas    collapseButtonId=suiteChevronButton3
 
 Validate dashboard testTable
-    Validate Table    tableId=testTable
+    Validate Table    tableId=testTableCanvas    collapseButtonId=testChevronButton5
 
 Validate dashboard keywordTable
-    Validate Table    tableId=keywordTable
+    Validate Table    tableId=keywordTableCanvas    collapseButtonId=keywordChevronButton4

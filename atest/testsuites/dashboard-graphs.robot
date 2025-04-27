@@ -17,8 +17,8 @@ Validate dashboard runStatistics
     Validate Graph    canvas=runStatisticsCanvas    graphId=runStatisticsGraphLine    button=${true}
 
 Validate dashboard runDuration
-    Validate Graph    canvas=runDurationCanvas    graphId=runDurationGraphBar
-    Validate Graph    canvas=runDurationCanvas    graphId=runDurationGraphLine    button=${true}
+    Validate Graph    canvas=runDurationCanvas    graphId=runDurationGraphLine
+    Validate Graph    canvas=runDurationCanvas    graphId=runDurationGraphBar    button=${true}
 
 Validate dashboard suiteStatistics
     Validate Graph    canvas=suiteStatisticsCanvas    graphId=suiteStatisticsGraphPercentages
@@ -26,8 +26,8 @@ Validate dashboard suiteStatistics
     Validate Graph    canvas=suiteStatisticsCanvas    graphId=suiteStatisticsGraphLine    button=${true}
 
 Validate dashboard suiteDuration
-    Validate Graph    canvas=suiteDurationCanvas    graphId=suiteDurationGraphBar
-    Validate Graph    canvas=suiteDurationCanvas    graphId=suiteDurationGraphLine    button=${true}
+    Validate Graph    canvas=suiteDurationCanvas    graphId=suiteDurationGraphLine
+    Validate Graph    canvas=suiteDurationCanvas    graphId=suiteDurationGraphBar    button=${true}
 
 Validate dashboard suiteMostFailed
     Validate Graph    canvas=suiteMostFailedCanvas    graphId=suiteMostFailedGraphBar
@@ -37,8 +37,8 @@ Validate dashboard testStatistics
     Validate Graph    canvas=testStatisticsCanvas    graphId=testStatisticsGraph
 
 Validate dashboard testDuration
-    Validate Graph    canvas=testDurationCanvas    graphId=testDurationGraphBar
-    Validate Graph    canvas=testDurationCanvas    graphId=testDurationGraphLine    button=${true}
+    Validate Graph    canvas=testDurationCanvas    graphId=testDurationGraphLine
+    Validate Graph    canvas=testDurationCanvas    graphId=testDurationGraphBar    button=${true}
 
 Validate dashboard testDurationDeviation
     Validate Graph    canvas=testDurationDeviationCanvas    graphId=testDurationDeviation
@@ -46,6 +46,10 @@ Validate dashboard testDurationDeviation
 Validate dashboard testMostFlaky
     Validate Graph    canvas=testMostFlakyCanvas    graphId=testMostFlakyGraphTimeline
     Validate Graph    canvas=testMostFlakyCanvas    graphId=testMostFlakyGraphBar    button=${true}
+
+Validate dashboard testRecentMostFlaky
+    Validate Graph    canvas=testRecentMostFlakyCanvas    graphId=testRecentMostFlakyGraphTimeline
+    Validate Graph    canvas=testRecentMostFlakyCanvas    graphId=testRecentMostFlakyGraphBar    button=${true}
 
 Validate dashboard testMostFailed
     Validate Graph    canvas=testMostFailedCanvas    graphId=testMostFailedGraphTimeline
@@ -65,12 +69,12 @@ Validate dashboard keywordTimesRun
     Validate Graph    canvas=keywordTimesRunCanvas    graphId=keywordTimesRunGraphLine    button=${true}
 
 Validate dashboard keywordTotalDuration
-    Validate Graph    canvas=keywordTotalDurationCanvas    graphId=keywordTotalDurationGraphBar
-    Validate Graph    canvas=keywordTotalDurationCanvas    graphId=keywordTotalDurationGraphLine    button=${true}
+    Validate Graph    canvas=keywordTotalDurationCanvas    graphId=keywordTotalDurationGraphLine
+    Validate Graph    canvas=keywordTotalDurationCanvas    graphId=keywordTotalDurationGraphBar    button=${true}
 
 Validate dashboard keywordAverageDuration
-    Validate Graph    canvas=keywordAverageDurationCanvas    graphId=keywordAverageDurationGraphBar
-    Validate Graph    canvas=keywordAverageDurationCanvas    graphId=keywordAverageDurationGraphLine    button=${true}
+    Validate Graph    canvas=keywordAverageDurationCanvas    graphId=keywordAverageDurationGraphLine
+    Validate Graph    canvas=keywordAverageDurationCanvas    graphId=keywordAverageDurationGraphBar    button=${true}
 
 Validate dashboard minDuration
     Validate Graph    canvas=keywordMinDurationCanvas    graphId=keywordMinDurationGraphBar

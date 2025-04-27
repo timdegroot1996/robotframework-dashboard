@@ -173,6 +173,7 @@ robotdashboard -s default
 Here are some examples of generated files/output:
 - [Full Dashboard](https://timdegroot1996.github.io/robotframework-dashboard/example/robot_dashboard.html) -> View an actual dashboard!
 - [Database](./example/robot_results.db) -> Download and use any tool to check the tables or use it as a base for using the "robotdashboard" command line interface
+- [Message Config](./example/messageconfig.txt) -> Check out an example messageconfig.txt for the --messageconfig feature (see above at Usage)
 - Example Command Line Output (below)
   
 This is an example after running robotdashboard for the first time. 3 outputs are added, stored and processed in the dashboard HTML.

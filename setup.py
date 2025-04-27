@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="robotframework-dashboard",
-    version="0.6.8",
+    version="0.7.0",
     description="Output processor and dashboard generator for Robot Framework output files",
     long_description="""# Robot Framework Dashboard
 
@@ -170,6 +170,7 @@ robotdashboard -s default
 Here are some examples of generated files/output:
 - See robot_dashboard.html in the Example Folder in GitHub  -> Download and open in a browser to use it!
 - See robot_results.db in the Example Folder in GitHub -> Download and use any tool to check the tables or use it as a base for using the "robotdashboard" command line interface
+- See messageconfig.txt in the Example Folder in GitHub -> Check out an example messageconfig.txt for the --messageconfig feature (see above at Usage)
 - Example Command Line Output (below)
   
 This is an example after running robotdashboard for the first time. 3 outputs are added, stored and processed in the dashboard HTML.
