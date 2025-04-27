@@ -258,7 +258,7 @@
             </div>
         </div>
         <!-- Modal for hiding graphs/sections -->
-        <div class="modal fade" id="hideModal" tabindex="-1" aria-labelledby="hideModalLabel">
+        <div class="modal fade" id="hideModal" tabindex="-1" aria-labelledby="hideModalLabel" data-bs-backdrop="static">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -689,7 +689,7 @@
                     selectedItems.forEach(item => {
                         item.classList.remove('active');
                         const section = item.children[0].innerText.split(' ')[0]
-                        const listItems = document.getElementById('graphShow').querySelectorAll('.hideItem')
+                        const listItems = document.getElementById('adminGraphShow').querySelectorAll('.hideItem')
                         var lastMatchingItem = Array.from(listItems).reverse().find(li => {
                             const div = li.children[0];
                             return div.innerText.startsWith(section)
@@ -770,7 +770,6 @@
             var hideGraphsCopy = hideGraphs
             var graphShowItems = ''
             var graphHideItems = ''
-            console.log(localStorage.getItem('adminGraphShow'))
             if (localStorage.getItem('adminGraphShow') != '') {
                 for (let graph of localStorage.getItem('adminGraphShow').split(',')) {
                     if (graph == '') { continue }
@@ -804,7 +803,6 @@
             var hideSectionsCopy = hideSections
             var sectionShowItems = ''
             var sectionHideItems = ''
-            console.log(localStorage.getItem('adminSectionShow'))
             if (localStorage.getItem('adminSectionShow') != '') {
                 for (let section of localStorage.getItem('adminSectionShow').split(',')) {
                     if (section == '') { continue }
@@ -852,7 +850,7 @@
                     $(this).parent().insertBefore(before)
                 });
             });
-           
+
             // eventlisteners for the graph down buttons
             document.querySelectorAll('.graph .moveDown').forEach(item => {
                 item.innerHTML = arrowDownVerySmall
