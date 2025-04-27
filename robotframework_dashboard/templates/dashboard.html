@@ -941,10 +941,10 @@
             if (localStorage.getItem('graphShow') == null) { localStorage.setItem('graphShow', '') }
             // override empty config with admin config if exists
             if (localStorage.getItem('sectionHide') == '' && localStorage.getItem('sectionShow') == '' && localStorage.getItem('graphHide') == '' && localStorage.getItem('graphShow') == '') {
-                localStorage.setItem('sectionHide', adminSectionHide)
-                localStorage.setItem('sectionShow', adminSectionShow)
-                localStorage.setItem('graphHide', adminGraphHide)
-                localStorage.setItem('graphShow', adminGraphShow)
+                if (!adminSectionHide.includes('admin')) { localStorage.setItem('sectionHide', adminSectionHide) }
+                if (!adminSectionShow.includes('admin')) { localStorage.setItem('sectionShow', adminSectionShow) }
+                if (!adminGraphHide.includes('admin')) { localStorage.setItem('graphHide', adminGraphHide) }
+                if (!adminGraphShow.includes('admin')) { localStorage.setItem('graphShow', adminGraphShow) }
             }
         }
 
@@ -1066,6 +1066,7 @@
                     this.classList.toggle('active');
                 });
             });
+            update_local_storage_show();
         }
 
         // function to add/remove disabled to the graphs in the customize view popup
@@ -1084,26 +1085,26 @@
             }
         }
 
+        // function to update show local storage
+        function update_local_storage_show() {
+            var sectionShow = ''
+            var graphShow = ''
+            document.getElementById('sectionShow').querySelectorAll('.hideItemText').forEach(item => {
+                sectionShow += `'${item.innerText}',`
+            });
+            document.getElementById('graphShow').querySelectorAll('.hideItemText').forEach(item => {
+                graphShow += `'${item.innerText}',`
+            });
+            localStorage.setItem('sectionShow', sectionShow)
+            localStorage.setItem('graphShow', graphShow)
+        }
+
         /////////////////////////////
         // EVENTLISTENER FUNCTIONS //
         /////////////////////////////
 
         // function to create customized view eventlisteners
         function setup_eventlisteners_customized_view_buttons() {
-            // function to update show local storage
-            function update_local_storage_show() {
-                var sectionShow = ''
-                var graphShow = ''
-                document.getElementById('sectionShow').querySelectorAll('.hideItemText').forEach(item => {
-                    sectionShow += `'${item.innerText}',`
-                });
-                document.getElementById('graphShow').querySelectorAll('.hideItemText').forEach(item => {
-                    graphShow += `'${item.innerText}',`
-                });
-                localStorage.setItem('sectionShow', sectionShow)
-                localStorage.setItem('graphShow', graphShow)
-            }
-
             // update all graphs based on new hidden graphs/sections
             document.getElementById('saveHide').addEventListener('click', function () {
                 update_local_storage_show()
