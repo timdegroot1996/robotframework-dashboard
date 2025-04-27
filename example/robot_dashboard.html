@@ -1,7 +1,7 @@
 <html data-bs-theme="dark">
 
 <head>
-    <title>Robot Framework Dashboard - 2025-04-26 00:58:58</title>
+    <title>Robot Framework Dashboard - 2025-04-27 20:05:38</title>
     <!-- ChartJs import -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
@@ -144,7 +144,7 @@
                     <div class="col-10">
                         <div class="row">
                             <div class="col-auto">
-                                <h1>Robot Framework Dashboard - 2025-04-26 00:58:58</h1>
+                                <h1>Robot Framework Dashboard - 2025-04-27 20:05:38</h1>
                             </div>
                         </div>
                         <div class="row">
@@ -210,75 +210,58 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
-                        <div class="btn btn-sm btn-secondary" id="runDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#runDetails" aria-arrowDown="true" aria-controls="runDetails"></div>
+                        <div class="btn btn-sm btn-secondary collapse-icon" id="runDetailsButton"
+                            data-bs-toggle="collapse" data-bs-target="#runData" aria-expanded="true"
+                            aria-controls="runData"></div>
                     </div>
                     <div class="col-4">
                         <h2 id="runTitle">Statistics</h2>
                     </div>
                 </div>
             </div>
-            <div class="card-body collapse show" id="runDetails">
-                <div class="row" id="runStatisticsChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="runStatisticsDurationButton" data-bs-toggle="collapse"
-                            data-bs-target="#runStatisticsDurationCollapse" aria-arrowDown="true"
-                            aria-controls="runStatisticsDurationCollapse"></div>
-                    </div>
-                    <div class="col">
-                        <h4>Statistics & Duration</h4>
-                    </div>
+            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card runData -->
+            <div id="runDataHiddenTemp" hidden></div>
+            <div id="runDataHidden" hidden>
+                <!-- Run Statistics -->
+                <div class="col canvas mb-5" id="runStatisticsCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                        id="runStatisticsGraphPercentages">Percentages</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="runStatisticsGraphAmount">Amount</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="runStatisticsGraphLine">Timeline</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="runStatisticsFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runStatisticsClose"
+                        hidden>Close</button>
+                    <canvas id="runStatisticsGraph"></canvas>
                 </div>
-                <div class="row collapse show" id="runStatisticsDurationCollapse">
-                    <div class="col canvas mb-5" id="runStatisticsCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="runStatisticsGraphPercentages">Percentages</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="runStatisticsGraphAmount">Amount</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="runStatisticsGraphLine">Timeline</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="runStatisticsFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runStatisticsClose"
-                            hidden>Close</button>
-                        <canvas id="runStatisticsGraph"></canvas>
-                    </div>
-                    <div class="col canvas mb-5" id="runDurationCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="runDurationGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runDurationGraphLine">Line
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="runDurationFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runDurationClose"
-                            hidden>Close</button>
-                        <canvas id="runDurationGraph"></canvas>
-                    </div>
+                <!-- Run Duration -->
+                <div class="col canvas mb-5" id="runDurationCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="runDurationGraphBar">Bar
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runDurationGraphLine">Line
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="runDurationFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runDurationClose" hidden>Close</button>
+                    <canvas id="runDurationGraph"></canvas>
                 </div>
-                <div class="row" id="runTableChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary collapsed" id="runTableButton" data-bs-toggle="collapse"
-                            data-bs-target="#runTableCollapse" aria-arrowDown="true" aria-controls="runTableCollapse">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <h4>Table</h4>
-                    </div>
-                </div>
-                <div class="row collapse" id="runTableCollapse">
-                    <div class="col">
-                        <table class="table table-striped" id="runTable"></table>
-                    </div>
+                <!-- Run Table -->
+                <div class="col" id="runTableCanvas">
+                    <table class="table table-striped" id="runTable"></table>
                 </div>
             </div>
+            <div class="card-body collapse show" id="runData"></div>
         </div>
 
         <div class="card" id="suiteStatisticsSection">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
-                        <div class="btn btn-sm btn-secondary" id="suiteDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#suiteDetails" aria-arrowDown="true" aria-controls="suiteDetails"></div>
+                        <div class="btn btn-sm btn-secondary collapse-icon" id="suiteDetailsButton"
+                            data-bs-toggle="collapse" data-bs-target="#suiteData" aria-expanded="true"
+                            aria-controls="suiteData"></div>
                     </div>
                     <div class="col-4">
                         <h2 id="suiteTitle">Suite Statistics</h2>
@@ -293,90 +276,62 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body collapse show" id="suiteDetails">
-                <div class="row" id="suiteStatisticsChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="suiteStatisticsDurationButton"
-                            data-bs-toggle="collapse" data-bs-target="#suiteStatisticsDurationCollapse"
-                            aria-arrowDown="true" aria-controls="suiteStatisticsDurationCollapse"></div>
-                    </div>
-                    <div class="col">
-                        <h4>Statistics & Duration</h4>
-                    </div>
+            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card suiteData -->
+            <div id="suiteDataHiddenTemp" hidden></div>
+            <div id="suiteDataHidden" hidden>
+                <!-- Suite Statistics -->
+                <div class="col canvas mb-5" id="suiteStatisticsCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                        id="suiteStatisticsGraphPercentages">Percentages</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="suiteStatisticsGraphAmount">Amount</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="suiteStatisticsGraphLine">Timeline</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="suiteStatisticsFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteStatisticsClose"
+                        hidden>Close</button>
+                    <canvas id="suiteStatisticsGraph"></canvas>
                 </div>
-                <div class="row collapse show" id="suiteStatisticsDurationCollapse">
-                    <div class="col canvas mb-5" id="suiteStatisticsCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="suiteStatisticsGraphPercentages">Percentages</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="suiteStatisticsGraphAmount">Amount</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="suiteStatisticsGraphLine">Timeline</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="suiteStatisticsFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteStatisticsClose"
-                            hidden>Close</button>
-                        <canvas id="suiteStatisticsGraph"></canvas>
-                    </div>
-                    <div class="col canvas mb-5" id="suiteDurationCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="suiteDurationGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteDurationGraphLine">Line
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="suiteDurationFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteDurationClose"
-                            hidden>Close</button>
-                        <canvas id="suiteDurationGraph"></canvas>
-                    </div>
+                <!-- Suite Duration -->
+                <div class="col canvas mb-5" id="suiteDurationCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="suiteDurationGraphBar">Bar
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteDurationGraphLine">Line
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="suiteDurationFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteDurationClose"
+                        hidden>Close</button>
+                    <canvas id="suiteDurationGraph"></canvas>
                 </div>
-                <div class="row" id="suiteMostFailedChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="suiteMostFailedButton" data-bs-toggle="collapse"
-                            data-bs-target="#suiteMostFailedCollapse" aria-arrowDown="true"
-                            aria-controls="suiteMostFailedCollapse"></div>
-                    </div>
-                    <div class="col">
-                        <h4>Most Failed</h4>
-                    </div>
+                <!-- Suite Most Failed -->
+                <div class="col canvas mb-5" id="suiteMostFailedCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="suiteMostFailedGraphBar">Bar
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteMostFailedGraphTimeline">Timeline
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="suiteMostFailedFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteMostFailedClose"
+                        hidden>Close</button>
+                    <canvas id="suiteMostFailedGraph"></canvas>
                 </div>
-                <div class="row collapse show" id="suiteMostFailedCollapse">
-                    <div class="col canvas mb-5" id="suiteMostFailedCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="suiteMostFailedGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="suiteMostFailedGraphTimeline">Timeline View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="suiteMostFailedFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteMostFailedClose"
-                            hidden>Close</button>
-                        <canvas id="suiteMostFailedGraph"></canvas>
-                    </div>
-                </div>
-                <div class="row" id="suiteTableChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary collapsed" id="suiteTableButton" data-bs-toggle="collapse"
-                            data-bs-target="#suiteTableCollapse" aria-arrowDown="true"
-                            aria-controls="suiteTableCollapse"></div>
-                    </div>
-                    <div class="col">
-                        <h4>Table</h4>
-                    </div>
-                </div>
-                <div class="row collapse" id="suiteTableCollapse">
-                    <div class="col">
-                        <table class="table table-striped" id="suiteTable"></table>
-                    </div>
+                <!-- Suite Table -->
+                <div class="col" id="suiteTableCanvas">
+                    <table class="table table-striped" id="suiteTable"></table>
                 </div>
             </div>
+            <div class="card-body collapse show" id="suiteData"></div>
         </div>
 
         <div class="card" id="testStatisticsSection">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
-                        <div class="btn btn-sm btn-secondary" id="testDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#testDetails" aria-arrowDown="true" aria-controls="testDetails"></div>
+                        <div class="btn btn-sm btn-secondary collapse-icon" id="testDetailsButton"
+                            data-bs-toggle="collapse" data-bs-target="#testData" aria-expanded="true"
+                            aria-controls="testData"></div>
                     </div>
                     <div class="col-4">
                         <h2 id="testTitle">Test Statistics</h2>
@@ -417,166 +372,118 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body collapse show" id="testDetails">
-                <div class="row" id="testStatisticsChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="testStatisticsDurationButton"
-                            data-bs-toggle="collapse" data-bs-target="#testStatisticsDurationCollapse"
-                            aria-arrowDown="true" aria-controls="testStatisticsDurationCollapse"></div>
-                    </div>
-                    <div class="col">
-                        <h4>Statistics & Duration</h4>
-                    </div>
-                </div>
-                <div class="row collapse show" id="testStatisticsDurationCollapse">
-                    <div class="col canvas canvas-vertical" id="testStatisticsCanvas">
-                        <div id="testStatisticsVertical">
-                            <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                                id="testStatisticsFullscreen">Fullscreen</button>
-                            <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testStatisticsClose"
-                                hidden>Close</button>
-                            <canvas id="testStatisticsGraph"></canvas>
-                        </div>
-                    </div>
-                    <div class="col canvas mb-5" id="testDurationCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="testDurationGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationGraphLine">Line
-                            View</button>
+            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card keywordData -->
+            <div id="testDataHiddenTemp" hidden></div>
+            <div id="testDataHidden" hidden>
+                <!-- Test Statistics -->
+                <div class="col canvas canvas-vertical" id="testStatisticsCanvas">
+                    <div id="testStatisticsVertical">
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="testDurationFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationClose"
+                            id="testStatisticsFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testStatisticsClose"
                             hidden>Close</button>
-                        <canvas id="testDurationGraph"></canvas>
+                        <canvas id="testStatisticsGraph"></canvas>
                     </div>
                 </div>
-                <div class="row" id="testDurationDeviationChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="testDurationDeviationButton" data-bs-toggle="collapse"
-                            data-bs-target="#testDurationDeviationCollapse" aria-arrowDown="true"
-                            aria-controls="testDurationDeviationCollapse"></div>
-                    </div>
-                    <div class="col">
-                        <h4>Duration Deviation</h4>
-                    </div>
+                <!-- Test Duration -->
+                <div class="col canvas mb-5" id="testDurationCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="testDurationGraphBar">Bar
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationGraphLine">Line
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="testDurationFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationClose"
+                        hidden>Close</button>
+                    <canvas id="testDurationGraph"></canvas>
                 </div>
-                <div class="row collapse show" id="testDurationDeviationCollapse">
-                    <div class="col canvas mb-5" id="testDurationDeviationCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="testDurationDeviationGraphBar">Boxplot
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="testDurationDeviationFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationDeviationClose"
-                            hidden>Close</button>
-                        <canvas id="testDurationDeviationGraph"></canvas>
-                    </div>
+                <!-- Test Duration Deviation -->
+                <div class="col canvas mb-5" id="testDurationDeviationCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                        id="testDurationDeviationGraphBar">Boxplot
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="testDurationDeviationFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationDeviationClose"
+                        hidden>Close</button>
+                    <canvas id="testDurationDeviationGraph"></canvas>
                 </div>
-                <div class="row" id="testMostFlakyChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="testMostFlakyButton" data-bs-toggle="collapse"
-                            data-bs-target="#testMostFlakyCollapse" aria-arrowDown="true"
-                            aria-controls="testMostFlakyCollapse"></div>
+                <!-- Test Most Flaky -->
+                <div class="col canvas mb-5" id="testMostFlakyCanvas">
+                    <div class="btn-group me-1">
+                        <label class="form-check-label mb-2" for="ignoreSkips">Ignore Skips</label>
                     </div>
-                    <div class="col">
-                        <h4>Most Flaky & Recent Most Flaky</h4>
+                    <div class="btn-group form-switch me-1">
+                        <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkips">
                     </div>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                        id="testMostFlakyGraphTimeline">Timeline View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyFullscreen"
+                        style="margin-right:56px;">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose" hidden
+                        style="margin-right:56px;">Close</button>
+                    <canvas id="testMostFlakyGraph"></canvas>
                 </div>
-                <div class="row collapse show" id="testMostFlakyCollapse">
-                    <div class="col canvas mb-5" id="testMostFlakyCanvas">
-                        <div class="btn-group me-1">
-                            <label class="form-check-label mb-2" for="ignoreSkips">Ignore Skips</label>
-                        </div>
-                        <div class="btn-group form-switch me-1">
-                            <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkips">
-                        </div>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="testMostFlakyGraphTimeline">Timeline View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyFullscreen"
-                            style="margin-right:56px;">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose" hidden
-                            style="margin-right:56px;">Close</button>
-                        <canvas id="testMostFlakyGraph"></canvas>
+                <!-- Test Recent Most Flaky -->
+                <div class="col canvas mb-5" id="testRecentMostFlakyCanvas">
+                    <div class="btn-group me-1">
+                        <label class="form-check-label mb-2" for="ignoreSkipsRecent">Ignore Skips</label>
                     </div>
-                    <div class="col canvas mb-5" id="testRecentMostFlakyCanvas">
-                        <div class="btn-group me-1">
-                            <label class="form-check-label mb-2" for="ignoreSkipsRecent">Ignore Skips</label>
-                        </div>
-                        <div class="btn-group form-switch me-1">
-                            <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkipsRecent">
-                        </div>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="testRecentMostFlakyGraphTimeline">Timeline View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyFullscreen"
-                            style="margin-right:56px;">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyClose" hidden
-                            style="margin-right:56px;">Close</button>
-                        <canvas id="testRecentMostFlakyGraph"></canvas>
+                    <div class="btn-group form-switch me-1">
+                        <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkipsRecent">
                     </div>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyGraphBar">Bar
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                        id="testRecentMostFlakyGraphTimeline">Timeline View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyFullscreen"
+                        style="margin-right:56px;">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyClose" hidden
+                        style="margin-right:56px;">Close</button>
+                    <canvas id="testRecentMostFlakyGraph"></canvas>
                 </div>
-                <div class="row" id="testMostFailedChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="testMostFailedMessagesButton"
-                            data-bs-toggle="collapse" data-bs-target="#testMostFailedMessagesCollapse"
-                            aria-arrowDown="true" aria-controls="testMostFailedMessagesCollapse"></div>
-                    </div>
-                    <div class="col">
-                        <h4>Most Failed & Messages</h4>
-                    </div>
+                <!-- Test Most Failed -->
+                <div class="col canvas mb-5" id="testMostFailedCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedGraphBar">Bar
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                        id="testMostFailedGraphTimeline">Timeline View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="testMostFailedFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedClose"
+                        hidden>Close</button>
+                    <canvas id="testMostFailedGraph"></canvas>
                 </div>
-                <div class="row collapse show" id="testMostFailedMessagesCollapse">
-                    <div class="col canvas mb-5" id="testMostFailedCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="testMostFailedGraphTimeline">Timeline View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="testMostFailedFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedClose"
-                            hidden>Close</button>
-                        <canvas id="testMostFailedGraph"></canvas>
-                    </div>
-                    <div class="col canvas mb-5" id="testMessagesCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="testMessagesGraphTimeline">Timeline
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="testMessagesFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesClose"
-                            hidden>Close</button>
-                        <canvas id="testMessagesGraph"></canvas>
-                    </div>
+                <!-- Test Messages -->
+                <div class="col canvas mb-5" id="testMessagesCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                        id="testMessagesGraphTimeline">Timeline
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="testMessagesFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesClose"
+                        hidden>Close</button>
+                    <canvas id="testMessagesGraph"></canvas>
                 </div>
-                <div class="row" id="testTableChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary collapsed" id="testTableButton" data-bs-toggle="collapse"
-                            data-bs-target="#testTableCollapse" aria-arrowDown="true" aria-controls="testTableCollapse">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <h4>Table</h4>
-                    </div>
-                </div>
-                <div class="row collapse" id="testTableCollapse">
-                    <div class="col">
-                        <table class="table table-striped" id="testTable"></table>
-                    </div>
+                <!-- Test Table -->
+                <div class="col" id="testTableCanvas">
+                    <table class="table table-striped" id="testTable"></table>
                 </div>
             </div>
+            <div class="card-body collapse show" id="testData"></div>
         </div>
 
         <div class="card" id="keywordStatisticsSection">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
-                        <div class="btn btn-sm btn-secondary" id="keywordDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#keywordDetails" aria-arrowDown="true" aria-controls="keywordDetails"></div>
+                        <div class="btn btn-sm btn-secondary collapse-icon" id="keywordDetailsButton"
+                            data-bs-toggle="collapse" data-bs-target="#keywordData" aria-expanded="true"
+                            aria-controls="keywordData"></div>
                     </div>
                     <div class="col-4">
                         <h2 id="keywordTitle">Keyword Statistics</h2>
@@ -591,138 +498,103 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body collapse show" id="keywordDetails">
-                <div class="row" id="keywordStatisticsChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="keywordStatisticsTimesRunButton"
-                            data-bs-toggle="collapse" data-bs-target="#keywordStatisticsTimesRunCollapse"
-                            aria-arrowDown="true" aria-controls="keywordStatisticsTimesRunCollapse"></div>
-                    </div>
-                    <div class="col">
-                        <h4>Statistics & Times Run</h4>
-                    </div>
+            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card keywordData -->
+            <div id="keywordDataHiddenTemp" hidden></div>
+            <div id="keywordDataHidden" hidden>
+                <!-- Keyword Statistics -->
+                <div class="col canvas mb-5" id="keywordStatisticsCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                        id="keywordStatisticsGraphPercentages">Percentages</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="keywordStatisticsGraphAmount">Amount</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="keywordStatisticsGraphLine">Timeline</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="keywordStatisticsFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordStatisticsClose"
+                        hidden>Close</button>
+                    <canvas id="keywordStatisticsGraph"></canvas>
                 </div>
-                <div class="row collapse show" id="keywordStatisticsTimesRunCollapse">
-                    <div class="col canvas mb-5" id="keywordStatisticsCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="keywordStatisticsGraphPercentages">Percentages</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordStatisticsGraphAmount">Amount</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordStatisticsGraphLine">Timeline</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordStatisticsFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordStatisticsClose"
-                            hidden>Close</button>
-                        <canvas id="keywordStatisticsGraph"></canvas>
-                    </div>
-                    <div class="col canvas mb-5" id="keywordTimesRunCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="keywordTimesRunGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTimesRunGraphLine">Line
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordTimesRunFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTimesRunClose"
-                            hidden>Close</button>
-                        <canvas id="keywordTimesRunGraph"></canvas>
-                    </div>
+                <!-- Keyword Times Run -->
+                <div class="col canvas mb-5" id="keywordTimesRunCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled" id="keywordTimesRunGraphBar">Bar
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTimesRunGraphLine">Line
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="keywordTimesRunFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTimesRunClose"
+                        hidden>Close</button>
+                    <canvas id="keywordTimesRunGraph"></canvas>
                 </div>
-                <div class="row" id="keywordTotalDurationChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="keywordTotalAverageButton" data-bs-toggle="collapse"
-                            data-bs-target="#keywordTotalAverageCollapse" aria-arrowDown="true"
-                            aria-controls="keywordTotalAverageCollapse"></div>
-                    </div>
-                    <div class="col">
-                        <h4>Total Duration & Average Duration</h4>
-                    </div>
+                <!-- Keyword Total Duration -->
+                <div class="col canvas mb-5" id="keywordTotalDurationCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                        id="keywordTotalDurationGraphBar">Bar View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalDurationGraphLine">Line
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="keywordTotalDurationFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalDurationClose"
+                        hidden>Close</button>
+                    <canvas id="keywordTotalDurationGraph"></canvas>
                 </div>
-                <div class="row collapse show" id="keywordTotalAverageCollapse">
-                    <div class="col canvas mb-5" id="keywordTotalDurationCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="keywordTotalDurationGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalDurationGraphLine">Line
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordTotalDurationFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalDurationClose"
-                            hidden>Close</button>
-                        <canvas id="keywordTotalDurationGraph"></canvas>
-                    </div>
-                    <div class="col canvas mb-5" id="keywordAverageDurationCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="keywordAverageDurationGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordAverageDurationGraphLine">Line
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordAverageDurationFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageDurationClose"
-                            hidden>Close</button>
-                        <canvas id="keywordAverageDurationGraph"></canvas>
-                    </div>
+                <!-- Keyword Average Duration -->
+                <div class="col canvas mb-5" id="keywordAverageDurationCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                        id="keywordAverageDurationGraphBar">Bar View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageDurationGraphLine">Line
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="keywordAverageDurationFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageDurationClose"
+                        hidden>Close</button>
+                    <canvas id="keywordAverageDurationGraph"></canvas>
                 </div>
-                <div class="row" id="keywordMinDurationChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary" id="keywordMinMaxButton" data-bs-toggle="collapse"
-                            data-bs-target="#keywordMinMaxCollapse" aria-arrowDown="true"
-                            aria-controls="keywordMinMaxCollapse"></div>
-                    </div>
-                    <div class="col">
-                        <h4>Min Duration & Max Duration</h4>
-                    </div>
+                <!-- Keyword Min Duration -->
+                <div class="col canvas mb-5" id="keywordMinDurationCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                        id="keywordMinDurationGraphBar">Bar View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMinDurationGraphLine">Line
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="keywordMinDurationFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMinDurationClose"
+                        hidden>Close</button>
+                    <canvas id="keywordMinDurationGraph"></canvas>
                 </div>
-                <div class="row collapse show" id="keywordMinMaxCollapse">
-                    <div class="col canvas mb-5" id="keywordMinDurationCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="keywordMinDurationGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMinDurationGraphLine">Line
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordMinDurationFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMinDurationClose"
-                            hidden>Close</button>
-                        <canvas id="keywordMinDurationGraph"></canvas>
-                    </div>
-                    <div class="col canvas mb-5" id="keywordMaxDurationCanvas">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
-                            id="keywordMaxDurationGraphBar">Bar View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMaxDurationGraphLine">Line
-                            View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                            id="keywordMaxDurationFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMaxDurationClose"
-                            hidden>Close</button>
-                        <canvas id="keywordMaxDurationGraph"></canvas>
-                    </div>
+                <!-- Keyword Max Duration -->
+                <div class="col canvas mb-5" id="keywordMaxDurationCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1 disabled"
+                        id="keywordMaxDurationGraphBar">Bar View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMaxDurationGraphLine">Line
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="keywordMaxDurationFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMaxDurationClose"
+                        hidden>Close</button>
+                    <canvas id="keywordMaxDurationGraph"></canvas>
                 </div>
-                <div class="row" id="keywordTableChevronRow">
-                    <div class="col-auto mt-1">
-                        <div class="btn btn-sm btn-secondary collapsed" id="keywordTableButton"
-                            data-bs-toggle="collapse" data-bs-target="#keywordTableCollapse" aria-arrowDown="true"
-                            aria-controls="keywordTableCollapse"></div>
-                    </div>
-                    <div class="col">
-                        <h4>Table</h4>
-                    </div>
-                </div>
-                <div class="row collapse" id="keywordTableCollapse">
-                    <div class="col">
-                        <table class="table table-striped" id="keywordTable"></table>
-                    </div>
+                <!-- Keyword Table -->
+                <div class="col" id="keywordTableCanvas">
+                    <table class="table table-striped" id="keywordTable"></table>
                 </div>
             </div>
+            <div class="card-body collapse show" id="keywordData"></div>
         </div>
 
         <!-- Modal for hiding graphs/sections -->
-        <div class="modal fade" id="hideModal" tabindex="-1" aria-labelledby="hideModalLabel">
+        <div class="modal fade" id="hideModal" tabindex="-1" aria-labelledby="hideModalLabel" data-bs-backdrop="static">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title" id="hideModalLabel">Customize View</h1>
-                        <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-dismiss="modal"
-                            id="saveHide">Save</button>
+                        <div>
+                            <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-dismiss="modal"
+                                id="resetView">Reset View</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm mt-auto ms-3"
+                                data-bs-dismiss="modal" id="saveHide">Save</button>
+                        </div>
                     </div>
                     <div class="modal-body">
                         <div class="row justify-content-evenly">
@@ -778,6 +650,10 @@
     </div>
 
     <script>
+        /////////////////////////////
+        // GLOBAL VARIABLE SECTION //
+        /////////////////////////////
+
         // collapse/expand buttons icons/svgs
         const arrowRight =
             '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
@@ -787,22 +663,12 @@
             '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
         const arrowDownSmall =
             '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
-        const arrowLeftSmall =
+        const arrowLeft =
             '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g transform="scale(-1,1) translate(-52,0)"><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"/></g></svg>';
         const arrowDownVerySmall =
             '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
         const arrowUpVerySmall =
             '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52" transform="matrix(-1,1.2246467991473532e-16,-1.2246467991473532e-16,-1,0,0)"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"></path></svg>';
-
-        // theme function based on browser/machine color scheme
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            Chart.defaults.color = "#e2e1d7";
-            Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
-            Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
-            Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
-        } else {
-            document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "light");
-        }
 
         // colors
         const passedBackgroundBorderColor = "#97bd61";
@@ -822,283 +688,6 @@
         var message_config = '"placeholder_message_config"'
         if (!message_config.includes('placeholder_message_config')) { message_config = JSON.parse(message_config) }
         const use_run_aliases = false
-
-        // set default values
-        document.getElementById("stats").innerHTML = `<i><a href="https://github.com/timdegroot1996/robotframework-dashboard" target="_blank">Robotdashboard 0.6.8</a></i><br>
-        <b>Database Summary</b><br>
-        Runs: ${runs.length}<br>
-        Suites: ${suites.length}<br>
-        Tests: ${tests.length}<br>
-        Keywords: ${keywords.length}`;
-
-        // Map the arrow actions and associated operations
-        const arrowMappings = {
-            'sectionRight': { from: 'sectionShow', to: 'sectionHide', content: arrowRight },
-            'sectionLeft': { from: 'sectionHide', to: 'sectionShow', content: arrowLeftSmall },
-            'graphRight': { from: 'graphShow', to: 'graphHide', content: arrowRight },
-            'graphLeft': { from: 'graphHide', to: 'graphShow', content: arrowLeftSmall }
-        };
-
-        // Initialize arrows with their respective functionality and content
-        for (let arrow in arrowMappings) {
-            const { from, to, content } = arrowMappings[arrow];
-            // Update button content based on direction
-            update_arrow_button(arrow, content);
-            // Add event listener to each arrow button
-            document.getElementById(arrow).addEventListener("click", () => {
-                moveItems(from, to);
-            });
-        }
-
-        // Function to update arrow button content
-        function update_arrow_button(id, content) {
-            document.getElementById(id).innerHTML = content;
-        }
-
-        // add items in hide modal
-        var hideSections = [
-            'Run Statistics',
-            'Suite Statistics',
-            'Test Statistics',
-            'Keyword Statistics',
-        ]
-        var hideGraphs = [
-            'Run Statistics',
-            'Run Duration',
-            'Run Table',
-            'Suite Statistics',
-            'Suite Duration',
-            'Suite Most Failed',
-            'Suite Table',
-            'Test Statistics',
-            'Test Duration',
-            'Test Duration Deviation',
-            'Test Most Flaky',
-            'Test Recent Most Flaky',
-            'Test Most Failed',
-            'Test Messages',
-            'Test Table',
-            'Keyword Statistics',
-            'Keyword Times Run',
-            'Keyword Total Duration',
-            'Keyword Average Duration',
-            'Keyword Min Duration',
-            'Keyword Max Duration',
-            'Keyword Table'
-        ]
-        var hideItem = `<li class="hideItem list-group-item list-group-item-action d-flex {type}">
-            <div class="hideItemText">{value}</div>
-            <button class="btn btn-sm btn-secondary moveDown"></button>
-            <button class="btn btn-sm btn-secondary moveUp"></button>
-            </li>`
-        var sectionShowItems = ''
-        var sectionHideItems = ''
-        var graphShowItems = ''
-        var graphHideItems = ''
-        function add_section(section) {
-            const element = hideItem.replaceAll('{value}', section).replaceAll('{type}', 'section')
-            var hidden = localStorage.getItem('sectionHide')
-            var adminHidden = "placeholder_admin_section_hide"
-            if (hidden == null) { // first load to create a string
-                localStorage.setItem('sectionHide', '')
-            }
-            if (hidden == '' && adminHidden.includes(',')) { // override empty config with admin config if exists
-                localStorage.setItem('sectionHide', adminHidden)
-            }
-            hidden = localStorage.getItem('sectionHide')
-            if (hidden.includes(`'${section}'`)) {
-                const identifier = section.split(' ')[0]
-                disable_graphs_in_customize_view(true, identifier)
-                sectionHideItems += element
-            } else {
-                sectionShowItems += element
-            }
-        }
-        function add_graph(graph) {
-            const element = hideItem.replaceAll('{value}', graph).replaceAll('{type}', 'graph')
-            var hidden = localStorage.getItem('graphHide')
-            var adminHidden = "placeholder_admin_graph_hide"
-            if (hidden == null) { // first load to create a string
-                localStorage.setItem('graphHide', '')
-            }
-            if (hidden == '' && adminHidden.includes(',')) { // override empty config with admin config if exists
-                localStorage.setItem('graphHide', adminHidden)
-            }
-            hidden = localStorage.getItem('graphHide')
-            if (hidden.includes(`'${graph}'`)) {
-                graphHideItems += element
-            } else {
-                graphShowItems += element
-            }
-        }
-        // GRAPHS FIRST TO BE ABLE TO DISABLE THEM BASED ON SECTIONS LATER!
-        // create the graphs in the correct order if sectionshow is set
-        if (localStorage.getItem('graphShow') != null && localStorage.getItem('graphShow') != '') {
-            for (let graph of localStorage.getItem('graphShow').split(',')) {
-                if (graph == '') { continue }
-                graph = graph.replaceAll('\'', '')
-                hideGraphs = hideGraphs.filter(hiddenGraph => hiddenGraph !== graph)
-                add_graph(graph)
-            }
-        } else {
-            localStorage.setItem('graphShow', '')
-        }
-        // use the default order for the remaining items
-        for (let graph of hideGraphs) {  
-            add_graph(graph.replaceAll('\'', ''))
-        }
-        // create the sections in the correct order if sectionShow is set
-        if (localStorage.getItem('sectionShow') != null && localStorage.getItem('sectionShow') != '') {
-            for (let section of localStorage.getItem('sectionShow').split(',')) {
-                if (section == '') { continue }
-                section = section.replaceAll('\'', '')
-                hideSections = hideSections.filter(hiddenSection => hiddenSection !== section)
-                add_section(section)
-            }
-        } else {
-            localStorage.setItem('sectionShow', '')
-        }
-        // use the default order for the remaining items
-        for (let section of hideSections) {
-            add_section(section.replaceAll('\'', ''))
-        }
-        document.getElementById('sectionShow').innerHTML = sectionShowItems
-        document.getElementById('sectionHide').innerHTML = sectionHideItems
-        document.getElementById('graphShow').innerHTML = graphShowItems
-        document.getElementById('graphHide').innerHTML = graphHideItems
-        // eventlisteners for the section up and down buttons
-        document.querySelectorAll('.section .moveUp').forEach(item => {
-            item.innerHTML = arrowUpVerySmall
-            item.addEventListener('click', function (event) {
-                before = $(this).parent().prev();
-                $(this).parent().insertBefore(before)
-                event.stopPropagation();
-            });
-        });
-        document.querySelectorAll('.section .moveDown').forEach(item => {
-            item.innerHTML = arrowDownVerySmall
-            item.addEventListener('click', function (event) {
-                after = $(this).parent().next();
-                $(this).parent().insertAfter(after)
-                event.stopPropagation();
-            });
-        });
-        // eventlisteners for the graph up and down buttons
-        document.querySelectorAll('.graph .moveUp').forEach(item => {
-            item.innerHTML = arrowUpVerySmall
-            item.addEventListener('click', function (event) {
-                event.stopPropagation();
-                before = $(this).parent().prev();
-                if (before[0] == undefined || $(this).parent().children()[0].innerText.split(' ')[0] != before[0].innerText.split(' ')[0]) {
-                    return
-                }
-                $(this).parent().insertBefore(before)
-            });
-        });
-        document.querySelectorAll('.graph .moveDown').forEach(item => {
-            item.innerHTML = arrowDownVerySmall
-            item.addEventListener('click', function (event) {
-                event.stopPropagation();
-                after = $(this).parent().next();
-                if (after[0] == undefined || $(this).parent().children()[0].innerText.split(' ')[0] != after[0].innerText.split(' ')[0]) {
-                    return
-                }
-                $(this).parent().insertAfter(after)
-            });
-        });
-
-        // function to add/remove disabled to the graphs in the customize view popup
-        function disable_graphs_in_customize_view(disable, identifier) {
-            const relatedGraphs1 = document.getElementById("graphShow").querySelectorAll(".hideItemText")
-            const relatedGraphs2 = document.getElementById("graphHide").querySelectorAll(".hideItemText")
-            const relatedGraphs = [...relatedGraphs1, ...relatedGraphs2]
-            for (const graph of relatedGraphs) {
-                if (graph.innerText.startsWith(identifier)) {
-                    if (disable) {
-                        graph.parentElement.classList.add('disabled');
-                    } else {
-                        graph.parentElement.classList.remove('disabled');
-                    }
-                }
-            }
-        }
-
-        // function to move the items from showing to hidden
-        function moveItems(fromId, toId) {
-            console.log(fromId, toId)
-            const fromBox = document.getElementById(fromId);
-            const toBox = document.getElementById(toId);
-            const selectedItems = fromBox.querySelectorAll('.active');
-
-            if (toId.includes('Hide')) {
-                for (let item of selectedItems) {
-                    var hidden = localStorage.getItem(toId)
-                    hidden += `'${item.innerText}',`
-                    localStorage.setItem(toId, hidden)
-                }
-                if (toId.includes('section')) {
-                    for (let item of selectedItems) {
-                        const identifier = item.innerText.split(" ")[0]
-                        disable_graphs_in_customize_view(true, identifier)
-                    }
-                }
-            } else {
-                for (let item of selectedItems) {
-                    var hidden = localStorage.getItem(fromId)
-                    hidden = hidden.replaceAll(`'${item.innerText}',`, '')
-                    localStorage.setItem(fromId, hidden)
-                }
-                if (toId.includes('section')) {
-                    for (let item of selectedItems) {
-                        const identifier = item.innerText.split(" ")[0]
-                        disable_graphs_in_customize_view(false, identifier)
-                    }
-                }
-            }
-
-            if (toId != 'graphShow') {
-                selectedItems.forEach(item => {
-                    item.classList.remove('active');
-                    toBox.appendChild(item);
-                });
-            } else {
-                selectedItems.forEach(item => {
-                    item.classList.remove('active');
-                    const section = item.querySelector('div').innerText.split(' ')[0]
-                    const listItems = document.getElementById('graphShow').querySelectorAll('.hideItem')
-                    var lastMatchingItem = Array.from(listItems).reverse().find(li => {
-                        const div = li.querySelector('div');
-                        return div.innerText.startsWith(section)
-                    });
-                    if (lastMatchingItem == undefined) {
-                        lastMatchingItem = listItems[listItems.length - 1]
-                    }
-                    lastMatchingItem.after(item);
-                });
-            }
-        }
-
-        // set which sections and graphs are shown and fill the modal
-        document.querySelectorAll('.hideItem').forEach(item => {
-            item.addEventListener('click', function () {
-                this.classList.toggle('active');
-            });
-        });
-
-        // update all graphs based on new hidden graphs/sections
-        document.getElementById('saveHide').addEventListener('click', function () {
-            var sectionShow = ''
-            var graphShow = ''
-            document.getElementById('sectionShow').querySelectorAll('.hideItem').forEach(item => {
-                sectionShow += `'${item.innerText}',`
-            });
-            document.getElementById('graphShow').querySelectorAll('.hideItem').forEach(item => {
-                graphShow += `'${item.innerText}',`
-            });
-            localStorage.setItem('sectionShow', sectionShow)
-            localStorage.setItem('graphShow', graphShow)
-            update_all_graphs()
-        });
 
         // create graphs
         var runStatisticsGraph;
@@ -1151,297 +740,351 @@
         var showOnlySelectedtestStatistics = false;
         var ignoreSkips = false; // test most flaky graph
         var ignoreSkipsRecent = false; // test recent most flaky graph
+        let showingRunTags = false; // used to keep track if the runtags popup is showing and determine if it should be closed when clicked outside
 
-        // initialize all collapsables by adding the eventlisteners to the buttonIds
-        const collapsables = [
-            "runDetailsButton",
-            "runStatisticsDurationButton",
-            "runTableButton",
-            "suiteDetailsButton",
-            "suiteStatisticsDurationButton",
-            "suiteMostFailedButton",
-            "suiteTableButton",
-            "testDetailsButton",
-            "testStatisticsDurationButton",
-            "testDurationDeviationButton",
-            "testMostFlakyButton",
-            "testMostFailedMessagesButton",
-            "testTableButton",
-            "keywordDetailsButton",
-            "keywordStatisticsTimesRunButton",
-            "keywordTotalAverageButton",
-            "keywordMinMaxButton",
-            "keywordTableButton"
+        // add items in hide modal
+        const hideSections = [
+            'Run Statistics',
+            'Suite Statistics',
+            'Test Statistics',
+            'Keyword Statistics',
         ]
-        for (let collapsable of collapsables) {
-            update_collapse_button(collapsable);
-            document.getElementById(collapsable).addEventListener("click", (e) => {
-                update_collapse_button(collapsable);
-            });
-        }
-        // function that handles the setting of the correct icon when expanding/collapsing sections
-        function update_collapse_button(id) {
-            if (document.getElementById(id).className.includes("collapsed")) {
-                if (id.includes('Details')) {
-                    document.getElementById(id).innerHTML = arrowRight;
-                } else {
-                    document.getElementById(id).innerHTML = arrowRightSmall;
-                }
+        const hideGraphs = [
+            'Run Statistics',
+            'Run Duration',
+            'Run Table',
+            'Suite Statistics',
+            'Suite Duration',
+            'Suite Most Failed',
+            'Suite Table',
+            'Test Statistics',
+            'Test Duration',
+            'Test Duration Deviation',
+            'Test Most Flaky',
+            'Test Recent Most Flaky',
+            'Test Most Failed',
+            'Test Messages',
+            'Test Table',
+            'Keyword Statistics',
+            'Keyword Times Run',
+            'Keyword Total Duration',
+            'Keyword Average Duration',
+            'Keyword Min Duration',
+            'Keyword Max Duration',
+            'Keyword Table'
+        ]
+        var hideItem = `<li class="hideItem list-group-item list-group-item-action d-flex {type}">
+            <div class="hideItemText">{value}</div>
+            <button class="btn btn-sm btn-secondary moveDown"></button>
+            <button class="btn btn-sm btn-secondary moveUp"></button>
+            </li>`
+
+        /////////////////////////////
+        // GENERIC SETUP FUNCTIONS //
+        /////////////////////////////
+
+        // theme function based on browser/machine color scheme
+        function setup_theme() {
+            if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                Chart.defaults.color = "#e2e1d7";
+                Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
+                Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
+                Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
             } else {
-                if (id.includes('Details')) {
-                    document.getElementById(id).innerHTML = arrowDown;
-                } else {
-                    document.getElementById(id).innerHTML = arrowDownSmall;
-                }
+                document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "light");
             }
         }
 
-        // eventlisteners for filters (runTags is done separately because of different usage)
-        const filters = ["runs", "fromDate", "fromTime", "toDate", "toTime"]
-        for (let f of filters) {
-            document.getElementById(f).addEventListener("change", update_data_and_all_graphs);
+        // set default values
+        function setup_stats() {
+            document.getElementById("stats").innerHTML = `<i><a href="https://github.com/timdegroot1996/robotframework-dashboard" target="_blank">Robotdashboard 0.6.8</a></i><br>
+            <b>Database Summary</b><br>
+            Runs: ${runs.length}<br>
+            Suites: ${suites.length}<br>
+            Tests: ${tests.length}<br>
+            Keywords: ${keywords.length}`;
         }
 
-        // eventlisteners for fullscreen buttons
-        const fullscreenButtons = ["runStatistics", "runDuration", "suiteStatistics",
-            "suiteDuration", "suiteMostFailed", "testStatistics", "testDuration",
-            "testMostFlaky", "testRecentMostFlaky", "testDurationDeviation", "testMostFailed", "testMessages",
-            "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
-            "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration"]
-        for (let fullscreenButton of fullscreenButtons) {
-            document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", (e) => {
-                document.getElementById(`${fullscreenButton}Canvas`).classList.add("fullscreen");
-                document.getElementById(`${fullscreenButton}Close`).hidden = false
-                document.getElementById(`${fullscreenButton}Fullscreen`).hidden = true
-                document.body.style.overflow = 'hidden';
-            });
-            document.getElementById(`${fullscreenButton}Close`).addEventListener("click", (e) => {
-                document.getElementById(`${fullscreenButton}Canvas`).classList.remove("fullscreen");
-                document.getElementById(`${fullscreenButton}Close`).hidden = true
-                document.getElementById(`${fullscreenButton}Fullscreen`).hidden = false
-                document.body.style.overflow = 'auto';
-            });
-        }
-
-        // eventlisteners for buttons to change graph views
-        const graphChangeButtons = {
-            'run_statistics': 'Percentages,Line,Amount',
-            'run_duration': 'Bar,Line',
-            'suite_statistics': 'Percentages,Line,Amount',
-            'suite_duration': 'Bar,Line',
-            'suite_most_failed': 'Bar,Timeline',
-            'test_duration': 'Bar,Line',
-            'test_most_flaky': 'Bar,Timeline',
-            'test_recent_most_flaky': 'Bar,Timeline',
-            'test_duration_deviation': 'Boxplot',
-            'test_most_failed': 'Bar,Timeline',
-            'test_messages': 'Bar,Timeline',
-            'keyword_statistics': 'Percentages,Line,Amount',
-            'keyword_times_run': 'Bar,Line',
-            'keyword_total_duration': 'Bar,Line',
-            'keyword_average_duration': 'Bar,Line',
-            'keyword_min_duration': 'Bar,Line',
-            'keyword_max_duration': 'Bar,Line',
-        };
-
-        function underscoreToCamelcase(str) {
-            return str.replace(/_(.)/g, (match, group) => group.toUpperCase());
-        }
-
-        function handleGraphButtonClick(graphChangeButton, graphType, camelButtonName) {
-            // Dynamically trigger the graph creation function
-            window[`create_${graphChangeButton}_graph`](graphType);
-            // Update the UI to enable/disable buttons accordingly
-            const buttons = ['Bar', 'Line', 'Timeline', 'Percentages', 'Amount']; // All possible button types
-            buttons.forEach(button => {
-                const buttonId = `${camelButtonName}Graph${button}`;
-                if (document.getElementById(buttonId)) {
-                    if (button.toLowerCase() === graphType.toLowerCase()) {
-                        document.getElementById(buttonId).classList.add("disabled");
+        // function to setup all collapse buttons and icons
+        function setup_collapsables() {
+            // initialize all collapsables by adding the eventlisteners to the buttons
+            const collapsables = document.querySelectorAll('.collapse-icon')
+            for (let collapsable of collapsables) {
+                update_collapse_button(collapsable);
+                collapsable.addEventListener("click", (e) => {
+                    update_collapse_button(collapsable);
+                });
+            }
+            // function that handles the setting of the correct icon when expanding/collapsing sections
+            function update_collapse_button(element) {
+                if (element.className.includes("collapsed")) {
+                    if (element.id.includes('Details')) {
+                        element.innerHTML = arrowRight;
                     } else {
-                        document.getElementById(buttonId).classList.remove("disabled");
+                        element.innerHTML = arrowRightSmall;
+                    }
+                } else {
+                    if (element.id.includes('Details')) {
+                        element.innerHTML = arrowDown;
+                    } else {
+                        element.innerHTML = arrowDownSmall;
                     }
                 }
-            });
-        }
-
-        function addGraphEventListeners(graphChangeButton, buttonTypes) {
-            const camelButtonName = underscoreToCamelcase(graphChangeButton);
-            const graphTypes = buttonTypes.split(',');
-            graphTypes.forEach((graphType, index) => {
-                const buttonId = `${camelButtonName}Graph${graphType}`;
-                if (document.getElementById(buttonId)) {
-                    document.getElementById(buttonId).addEventListener("click", (e) => {
-                        handleGraphButtonClick(graphChangeButton, graphType.toLowerCase(), camelButtonName);
-                    });
-                }
-            });
-        }
-
-        // Iterate over the graphChangeButtons object to attach event listeners
-        Object.entries(graphChangeButtons).forEach(([graphChangeButton, buttonTypes]) => {
-            addGraphEventListeners(graphChangeButton, buttonTypes);
-        });
-
-        // eventlistener for run tags selection
-        document.getElementById("selectRunTags").addEventListener("click", show_checkboxes);
-        // eventlistener for reset filter button
-        document.getElementById("resetFilters").addEventListener("click", reset_filters);
-        // eventlistener for all selection boxes and their respective graphs that should be updated
-        document.getElementById("suiteSelectSuites").addEventListener("change", (e) => {
-            create_suite_duration_graph();
-            create_suite_statistics_graph();
-        });
-        document.getElementById("showOnlySelectedtestStatistics").addEventListener("change", (e) => {
-            showOnlySelectedtestStatistics = !showOnlySelectedtestStatistics;
-            create_test_statistics_graph();
-        });
-        document.getElementById("ignoreSkips").addEventListener("change", (e) => {
-            ignoreSkips = !ignoreSkips;
-            create_test_most_flaky_graph();
-        });
-        document.getElementById("ignoreSkipsRecent").addEventListener("change", (e) => {
-            ignoreSkipsRecent = !ignoreSkipsRecent;
-            create_test_recent_most_flaky_graph();
-        });
-        document.getElementById("suiteSelectTests").addEventListener("change", (e) => {
-            add_testtags_in_select();
-            add_tests_in_select();
-            create_test_statistics_graph();
-            create_test_duration_graph();
-            create_test_duration_deviation_graph();
-        });
-        document.getElementById("testTagsSelect").addEventListener("change", (e) => {
-            add_tests_in_select();
-            create_test_statistics_graph();
-            create_test_duration_graph();
-            create_test_duration_deviation_graph();
-        });
-        document.getElementById("testSelect").addEventListener("change", (e) => {
-            if (showOnlySelectedtestStatistics) {
-                create_test_statistics_graph();
-            }
-            create_test_duration_graph();
-            create_test_duration_deviation_graph();
-        });
-        document.getElementById("keywordSelect").addEventListener("change", (e) => {
-            create_keyword_statistics_graph();
-            create_keyword_times_run_graph();
-            create_keyword_total_duration_graph();
-            create_keyword_average_duration_graph();
-            create_keyword_min_duration_graph();
-            create_keyword_max_duration_graph();
-        });
-
-        // set initial filters and fill selects based on provided data
-        set_lowest_highest_dates();
-        add_runs_in_select();
-        add_runtags_in_select();
-
-        //initialize all data and graphs on load of the dashboard.html
-        update_data_and_all_graphs();
-
-        // function that initializes the from date/time and to date/time selection boxes in the filters
-        function set_lowest_highest_dates() {
-            var dates = [];
-            for (run of runs) {
-                dates.push(new Date(run.run_start));
-            }
-            if (dates.length == 0) {
-                document.getElementById("fromDate").value = "1900-01-01";
-                document.getElementById("fromTime").value = "00:00";
-                document.getElementById("toDate").value = "9999-12-31";
-                document.getElementById("toTime").value = "23:59";
-                return
-            }
-            var lowest = new Date(Math.min.apply(null, dates));
-            var highest = new Date(Math.max.apply(null, dates));
-            var tzoffset = new Date().getTimezoneOffset() * 60000;
-            lowest = new Date(new Date(lowest - tzoffset).getTime() + -1 * 60000); // this is to account for seconds in the initial filter value
-            highest = new Date(new Date(highest - tzoffset).getTime() + 1 * 60000); // this is to account for seconds in the initial filter value
-            lowest.setTime(lowest.getTime() - 1 * 60 * 60 * 1000) // minus 1 hour to account for possible daylight saving time switches of 1 hour!
-            highest.setTime(highest.getTime() + 1 * 60 * 60 * 1000) // plus 1 hour to account for possible daylight saving time switches of 1 hour!
-            document.getElementById("fromDate").value = lowest.toISOString().split("T")[0];
-            document.getElementById("fromTime").value = lowest.toISOString().split("T")[1].substring(0, 5);
-            document.getElementById("toDate").value = highest.toISOString().split("T")[0];
-            document.getElementById("toTime").value = highest.toISOString().split("T")[1].substring(0, 5);
-        }
-
-        // generic function to update all graph data, function is called when updating filters and when the page loads
-        function update_data_and_all_graphs() {
-            update_filtered_data();
-            update_all_graphs();
-        }
-
-        // function updates the data in the graphs whenever filters are updated
-        function update_filtered_data() {
-            // filter run data
-            filteredRuns = filter_runs(runs);
-            filteredRuns = filter_runtags(filteredRuns);
-            filteredRuns = filter_dates(filteredRuns);
-            // filter suites and tests based on filtered runs
-            filteredSuites = filter_data("suites");
-            filteredTests = filter_data("tests");
-            filteredKeywords = filter_data("keywords");
-            // set titles with amount of filtered items
-            document.getElementById("runTitle").innerText = `Run Statistics (${Object.keys(filteredRuns).length})`;
-            document.getElementById("suiteTitle").innerText = `Suite Statistics (${Object.keys(filteredSuites).length})`;
-            document.getElementById("testTitle").innerText = `Test Statistics (${Object.keys(filteredTests).length})`;
-            document.getElementById("keywordTitle").innerText = `Keyword Statistics (${Object.keys(filteredKeywords).length})`;
-            // update tests select based on filtered runs
-            add_suites_in_selects();
-            add_testtags_in_select();
-            add_tests_in_select();
-            add_keywords_in_select();
-        }
-
-        // function that updates all graphs based on the new filtered data and hidden choices
-        function update_all_graphs() {
-            order_sections()
-            create_run_statistics_graph();
-            create_run_duration_graph();
-            create_run_table();
-            create_suite_statistics_graph();
-            create_suite_duration_graph();
-            create_suite_most_failed_graph();
-            create_suite_table();
-            create_test_statistics_graph();
-            create_test_duration_graph();
-            create_test_duration_deviation_graph();
-            create_test_most_flaky_graph();
-            create_test_recent_most_flaky_graph();
-            create_test_most_failed_graph();
-            create_test_messages_graph();
-            create_test_table();
-            create_keyword_statistics_graph();
-            create_keyword_times_run_graph();
-            create_keyword_total_duration_graph();
-            create_keyword_average_duration_graph();
-            create_keyword_min_duration_graph();
-            create_keyword_max_duration_graph();
-            create_keyword_table();
-            set_hidden_sections_and_graphs();
-        }
-
-        function order_sections() {
-            const sections = localStorage.getItem("sectionShow")
-            var prevId = '#filterSection'
-            for (let section of sections.split(',')) {
-                section = section.replaceAll('\'', '')
-                var nextId = `#${spaceToCamelCase(section + ' Section')}`
-                $(nextId).insertAfter(prevId)
-                prevId = nextId
             }
         }
 
         // function to convert to camelcase
-        function spaceToCamelCase(string) {
+        function space_to_camel_case(string) {
             return string.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
                 return index === 0 ? word.toLowerCase() : word.toUpperCase();
             }).replace(/\s+/g, '');
         }
 
+        //////////////////////////////
+        // CUSTOMIZE VIEW FUNCTIONS //
+        //////////////////////////////
+
+        // function to update the arrows in the customize modal
+        function setup_customize_view_modal_arrows() {
+            // function to move the items from showing to hidden
+            function move_items(fromId, toId) {
+                const fromBox = document.getElementById(fromId);
+                const toBox = document.getElementById(toId);
+                const selectedItems = fromBox.querySelectorAll('.active');
+
+                if (toId.includes('Hide')) {
+                    for (let item of selectedItems) {
+                        var hidden = localStorage.getItem(toId)
+                        hidden += `'${item.children[0].innerText}',`
+                        localStorage.setItem(toId, hidden)
+                    }
+                    if (toId.includes('section')) {
+                        for (let item of selectedItems) {
+                            const identifier = item.children[0].innerText.split(" ")[0]
+                            disable_graphs_in_customize_view(true, identifier)
+                        }
+                    }
+                } else {
+                    for (let item of selectedItems) {
+                        var hidden = localStorage.getItem(fromId)
+                        hidden = hidden.replaceAll(`'${item.children[0].innerText}',`, '')
+                        localStorage.setItem(fromId, hidden)
+                    }
+                    if (toId.includes('section')) {
+                        for (let item of selectedItems) {
+                            const identifier = item.children[0].innerText.split(" ")[0]
+                            disable_graphs_in_customize_view(false, identifier)
+                        }
+                    }
+                }
+
+                if (toId != 'graphShow') {
+                    selectedItems.forEach(item => {
+                        item.classList.remove('active');
+                        toBox.appendChild(item);
+                    });
+                } else {
+                    selectedItems.forEach(item => {
+                        item.classList.remove('active');
+                        const section = item.children[0].innerText.split(' ')[0]
+                        const listItems = document.getElementById('graphShow').querySelectorAll('.hideItem')
+                        var lastMatchingItem = Array.from(listItems).reverse().find(li => {
+                            const div = li.children[0];
+                            return div.innerText.startsWith(section)
+                        });
+                        if (lastMatchingItem == undefined) {
+                            lastMatchingItem = listItems[listItems.length - 1]
+                        }
+                        lastMatchingItem.after(item);
+                    });
+                }
+            }
+
+            // Map the arrow actions and associated operations
+            const arrowMappings = {
+                'sectionRight': { from: 'sectionShow', to: 'sectionHide', content: arrowRight },
+                'sectionLeft': { from: 'sectionHide', to: 'sectionShow', content: arrowLeft },
+                'graphRight': { from: 'graphShow', to: 'graphHide', content: arrowRight },
+                'graphLeft': { from: 'graphHide', to: 'graphShow', content: arrowLeft }
+            };
+
+            // Initialize arrows with their respective functionality and content
+            for (let arrow in arrowMappings) {
+                const { from, to, content } = arrowMappings[arrow];
+                // Update button content based on direction
+                update_arrow_button(arrow, content);
+                // Add event listener to each arrow button
+                document.getElementById(arrow).addEventListener("click", () => {
+                    move_items(from, to);
+                });
+            }
+
+            // Function to update arrow button content
+            function update_arrow_button(id, content) {
+                document.getElementById(id).innerHTML = content;
+            }
+        }
+
+        // function to handle the setting of the localstorge for customized view
+        function setup_local_storage() {
+            // on first load update the sectionHide, sectionShow, graphHide, graphShow based on admin config
+            const adminSectionHide = "placeholder_admin_section_hide"
+            const adminSectionShow = "placeholder_admin_section_show"
+            const adminGraphHide = "placeholder_admin_graph_hide"
+            const adminGraphShow = "placeholder_admin_graph_show"
+            // first load to create a string
+            if (localStorage.getItem('sectionHide') == null) { localStorage.setItem('sectionHide', '') }
+            if (localStorage.getItem('sectionShow') == null) { localStorage.setItem('sectionShow', '') }
+            if (localStorage.getItem('graphHide') == null) { localStorage.setItem('graphHide', '') }
+            if (localStorage.getItem('graphShow') == null) { localStorage.setItem('graphShow', '') }
+            // override empty config with admin config if exists
+            if (localStorage.getItem('sectionHide') == '' && localStorage.getItem('sectionShow') == '' && localStorage.getItem('graphHide') == '' && localStorage.getItem('graphShow') == '') {
+                localStorage.setItem('sectionHide', adminSectionHide)
+                localStorage.setItem('sectionShow', adminSectionShow)
+                localStorage.setItem('graphHide', adminGraphHide)
+                localStorage.setItem('graphShow', adminGraphShow)
+            }
+        }
+
+        // create the modal with the correct layout based on localstorage
+        function setup_modal_items() {
+            // function that adds the graph to the correct box
+            function add_graph(graph) {
+                const element = hideItem.replaceAll('{value}', graph).replaceAll('{type}', 'graph')
+                const hidden = localStorage.getItem('graphHide')
+                if (hidden.includes(`'${graph}'`)) {
+                    graphHideItems += element
+                } else {
+                    graphShowItems += element
+                }
+            }
+
+            // GRAPHS FIRST TO BE ABLE TO DISABLE THEM BASED ON SECTIONS LATER!
+            // create the graphs in the correct order if sectionshow is set
+            var hideGraphsCopy = hideGraphs
+            var graphShowItems = ''
+            var graphHideItems = ''
+            if (localStorage.getItem('graphShow') != '') {
+                for (let graph of localStorage.getItem('graphShow').split(',')) {
+                    if (graph == '') { continue }
+                    graph = graph.replaceAll('\'', '')
+                    hideGraphsCopy = hideGraphsCopy.filter(hiddenGraph => hiddenGraph !== graph)
+                    add_graph(graph)
+                }
+            }
+            // use the default order for the remaining items
+            for (let graph of hideGraphsCopy) {
+                add_graph(graph.replaceAll('\'', ''))
+            }
+            document.getElementById('graphShow').innerHTML = graphShowItems
+            document.getElementById('graphHide').innerHTML = graphHideItems
+
+            // function that adds the section to the correct box
+            function add_section(section) {
+                const element = hideItem.replaceAll('{value}', section).replaceAll('{type}', 'section')
+                const hidden = localStorage.getItem('sectionHide')
+                if (hidden.includes(`'${section}'`)) {
+                    const identifier = section.split(' ')[0]
+                    disable_graphs_in_customize_view(true, identifier)
+                    sectionHideItems += element
+                } else {
+                    sectionShowItems += element
+                }
+            }
+
+            // SECTIONS SECOND TO BE ABLE TO DISABLE THE ITEMS CORRECTLY
+            // create the sections in the correct order if sectionShow is set
+            var hideSectionsCopy = hideSections
+            var sectionShowItems = ''
+            var sectionHideItems = ''
+            if (localStorage.getItem('sectionShow') != '') {
+                for (let section of localStorage.getItem('sectionShow').split(',')) {
+                    if (section == '') { continue }
+                    section = section.replaceAll('\'', '')
+                    hideSectionsCopy = hideSectionsCopy.filter(hiddenSection => hiddenSection !== section)
+                    add_section(section)
+                }
+            }
+            // use the default order for the remaining items
+            for (let section of hideSectionsCopy) {
+                add_section(section.replaceAll('\'', ''))
+            }
+            document.getElementById('sectionShow').innerHTML = sectionShowItems
+            document.getElementById('sectionHide').innerHTML = sectionHideItems
+
+            // eventlisteners for the section up buttons
+            document.querySelectorAll('.section .moveUp').forEach(item => {
+                item.innerHTML = arrowUpVerySmall
+                item.addEventListener('click', function (event) {
+                    before = $(this).parent().prev();
+                    $(this).parent().insertBefore(before)
+                    event.stopPropagation();
+                });
+            });
+
+            // eventlisteners for the section down buttons
+            document.querySelectorAll('.section .moveDown').forEach(item => {
+                item.innerHTML = arrowDownVerySmall
+                item.addEventListener('click', function (event) {
+                    after = $(this).parent().next();
+                    $(this).parent().insertAfter(after)
+                    event.stopPropagation();
+                });
+            });
+
+            // eventlisteners for the graph up buttons
+            document.querySelectorAll('.graph .moveUp').forEach(item => {
+                item.innerHTML = arrowUpVerySmall
+                item.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    before = $(this).parent().prev();
+                    if (before[0] == undefined || $(this).parent().children()[0].innerText.split(' ')[0] != before[0].innerText.split(' ')[0]) {
+                        return
+                    }
+                    $(this).parent().insertBefore(before)
+                });
+            });
+
+            // eventlisteners for the graph down buttons
+            document.querySelectorAll('.graph .moveDown').forEach(item => {
+                item.innerHTML = arrowDownVerySmall
+                item.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    after = $(this).parent().next();
+                    if (after[0] == undefined || $(this).parent().children()[0].innerText.split(' ')[0] != after[0].innerText.split(' ')[0]) {
+                        return
+                    }
+                    $(this).parent().insertAfter(after)
+                });
+            });
+
+            // eventlistener on all items in the modal to trigger active
+            document.querySelectorAll('.hideItem').forEach(item => {
+                item.addEventListener('click', function () {
+                    this.classList.toggle('active');
+                });
+            });
+        }
+
+        // function to add/remove disabled to the graphs in the customize view popup
+        function disable_graphs_in_customize_view(disable, identifier) {
+            const relatedGraphs1 = document.getElementById("graphShow").querySelectorAll(".hideItemText")
+            const relatedGraphs2 = document.getElementById("graphHide").querySelectorAll(".hideItemText")
+            const relatedGraphs = [...relatedGraphs1, ...relatedGraphs2]
+            for (const graph of relatedGraphs) {
+                if (graph.innerText.startsWith(identifier)) {
+                    if (disable) {
+                        graph.parentElement.classList.add('disabled');
+                    } else {
+                        graph.parentElement.classList.remove('disabled');
+                    }
+                }
+            }
+        }
+
+        // function to hide graphs based on the configured localstorage
         function set_hidden_sections_and_graphs() {
+            /// THIS HAS TO BE CHANGED COMPLETELY
             const hiddenSections = localStorage.getItem("sectionHide");
             const hiddenGraphs = localStorage.getItem("graphHide");
             // function to show or hide elements
@@ -1452,15 +1095,15 @@
             // function to handle a section
             function handleSection(sectionId, graphs) {
                 const isSectionHidden = hiddenSections.includes(sectionId);
-                toggleElement(spaceToCamelCase(sectionId.toLowerCase() + 'Section'), isSectionHidden);
+                toggleElement(space_to_camel_case(sectionId.toLowerCase() + 'Section'), isSectionHidden);
                 if (!isSectionHidden) {
                     graphs.forEach(({ id, dependencies }) => {
                         const isGraphHidden = hiddenGraphs.includes(id);
-                        toggleElement(spaceToCamelCase(id + ' Canvas'), isGraphHidden);
+                        toggleElement(space_to_camel_case(id + ' Canvas'), isGraphHidden);
 
                         if (dependencies) {
                             const areDependenciesHidden = dependencies.every(dep => hiddenGraphs.includes(dep));
-                            toggleElement(spaceToCamelCase(id + ' ChevronRow'), areDependenciesHidden);
+                            toggleElement(space_to_camel_case(id + ' ChevronRow'), areDependenciesHidden);
                         }
                     });
                 } else {
@@ -1497,6 +1140,383 @@
                 { id: 'Keyword Table', dependencies: ['Keyword Table'] }
             ]);
         }
+
+        /////////////////////////////
+        // EVENTLISTENER FUNCTIONS //
+        /////////////////////////////
+
+        // function to create customized view eventlisteners
+        function setup_eventlisteners_customized_view_buttons() {
+            // function to update show local storage
+            function update_local_storage_show() {
+                var sectionShow = ''
+                var graphShow = ''
+                document.getElementById('sectionShow').querySelectorAll('.hideItemText').forEach(item => {
+                    sectionShow += `'${item.innerText}',`
+                });
+                document.getElementById('graphShow').querySelectorAll('.hideItemText').forEach(item => {
+                    graphShow += `'${item.innerText}',`
+                });
+                localStorage.setItem('sectionShow', sectionShow)
+                localStorage.setItem('graphShow', graphShow)
+            }
+
+            // update all graphs based on new hidden graphs/sections
+            document.getElementById('saveHide').addEventListener('click', function () {
+                update_local_storage_show()
+                setup_all_graphs()
+            });
+
+            // remove the entire customized view configuration
+            document.getElementById('resetView').addEventListener('click', function () {
+                localStorage.setItem('sectionHide', '')
+                localStorage.setItem('sectionShow', '')
+                localStorage.setItem('graphHide', '')
+                localStorage.setItem('graphShow', '')
+                setup_modal_items()
+                update_local_storage_show()
+                setup_all_graphs()
+            });
+        }
+
+        // function to setup eventlisteners for filter buttons
+        function setup_eventlisteners_filter_buttons() {
+            // eventlisteners for filters (runTags is done separately because of different usage)
+            const filters = ["runs", "fromDate", "fromTime", "toDate", "toTime"]
+            for (let f of filters) {
+                document.getElementById(f).addEventListener("change", setup_data_and_graphs);
+            }
+
+            // eventlisteners for fullscreen buttons
+            const fullscreenButtons = ["runStatistics", "runDuration", "suiteStatistics",
+                "suiteDuration", "suiteMostFailed", "testStatistics", "testDuration",
+                "testMostFlaky", "testRecentMostFlaky", "testDurationDeviation", "testMostFailed", "testMessages",
+                "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
+                "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration"]
+            for (let fullscreenButton of fullscreenButtons) {
+                document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", (e) => {
+                    document.getElementById(`${fullscreenButton}Canvas`).classList.add("fullscreen");
+                    document.getElementById(`${fullscreenButton}Close`).hidden = false
+                    document.getElementById(`${fullscreenButton}Fullscreen`).hidden = true
+                    document.body.style.overflow = 'hidden';
+                });
+                document.getElementById(`${fullscreenButton}Close`).addEventListener("click", (e) => {
+                    document.getElementById(`${fullscreenButton}Canvas`).classList.remove("fullscreen");
+                    document.getElementById(`${fullscreenButton}Close`).hidden = true
+                    document.getElementById(`${fullscreenButton}Fullscreen`).hidden = false
+                    document.body.style.overflow = 'auto';
+                });
+            }
+        }
+
+        // function to setup eventlisteners for changing the graph view buttons
+        function setup_eventlisteners_graph_view_buttons() {
+            // eventlisteners for buttons to change graph views
+            const graphChangeButtons = {
+                'run_statistics': 'Percentages,Line,Amount',
+                'run_duration': 'Bar,Line',
+                'suite_statistics': 'Percentages,Line,Amount',
+                'suite_duration': 'Bar,Line',
+                'suite_most_failed': 'Bar,Timeline',
+                'test_duration': 'Bar,Line',
+                'test_most_flaky': 'Bar,Timeline',
+                'test_recent_most_flaky': 'Bar,Timeline',
+                'test_duration_deviation': 'Boxplot',
+                'test_most_failed': 'Bar,Timeline',
+                'test_messages': 'Bar,Timeline',
+                'keyword_statistics': 'Percentages,Line,Amount',
+                'keyword_times_run': 'Bar,Line',
+                'keyword_total_duration': 'Bar,Line',
+                'keyword_average_duration': 'Bar,Line',
+                'keyword_min_duration': 'Bar,Line',
+                'keyword_max_duration': 'Bar,Line',
+            };
+
+            function underscoreToCamelcase(str) {
+                return str.replace(/_(.)/g, (match, group) => group.toUpperCase());
+            }
+
+            function handleGraphButtonClick(graphChangeButton, graphType, camelButtonName) {
+                // Dynamically trigger the graph creation function
+                window[`create_${graphChangeButton}_graph`](graphType);
+                // Update the UI to enable/disable buttons accordingly
+                const buttons = ['Bar', 'Line', 'Timeline', 'Percentages', 'Amount']; // All possible button types
+                buttons.forEach(button => {
+                    const buttonId = `${camelButtonName}Graph${button}`;
+                    if (document.getElementById(buttonId)) {
+                        if (button.toLowerCase() === graphType.toLowerCase()) {
+                            document.getElementById(buttonId).classList.add("disabled");
+                        } else {
+                            document.getElementById(buttonId).classList.remove("disabled");
+                        }
+                    }
+                });
+            }
+
+            function addGraphEventListeners(graphChangeButton, buttonTypes) {
+                const camelButtonName = underscoreToCamelcase(graphChangeButton);
+                const graphTypes = buttonTypes.split(',');
+                graphTypes.forEach((graphType, index) => {
+                    const buttonId = `${camelButtonName}Graph${graphType}`;
+                    if (document.getElementById(buttonId)) {
+                        document.getElementById(buttonId).addEventListener("click", (e) => {
+                            handleGraphButtonClick(graphChangeButton, graphType.toLowerCase(), camelButtonName);
+                        });
+                    }
+                });
+            }
+
+            // Iterate over the graphChangeButtons object to attach event listeners
+            Object.entries(graphChangeButtons).forEach(([graphChangeButton, buttonTypes]) => {
+                addGraphEventListeners(graphChangeButton, buttonTypes);
+            });
+        }
+
+        // function to handle the eventlisteners for all filter options in the sections
+        function setup_eventlisteners_section_filter_buttons() {
+            // function to keep track of the checkboxes for the runtags
+            function show_checkboxes() {
+                const checkboxes = document.getElementById("checkboxes");
+                showingRunTags = !showingRunTags;
+                checkboxes.style.display = showingRunTags ? "block" : "none";
+            }
+
+            // eventlistener for run tags selection
+            document.getElementById("selectRunTags").addEventListener("click", show_checkboxes);
+            // eventlistener for reset filter button
+            document.getElementById("resetFilters").addEventListener("click", function () {
+                document.getElementById("runs").value = "All";
+                document.getElementById("runTag").value = "All";
+                setup_lowest_highest_dates(runs);
+                setup_data_and_graphs();
+            });
+            // eventlistener for all selection boxes and their respective graphs that should be updated
+            document.getElementById("suiteSelectSuites").addEventListener("change", (e) => {
+                create_suite_duration_graph();
+                create_suite_statistics_graph();
+            });
+            document.getElementById("showOnlySelectedtestStatistics").addEventListener("change", (e) => {
+                showOnlySelectedtestStatistics = !showOnlySelectedtestStatistics;
+                create_test_statistics_graph();
+            });
+            document.getElementById("ignoreSkips").addEventListener("change", (e) => {
+                ignoreSkips = !ignoreSkips;
+                create_test_most_flaky_graph();
+            });
+            document.getElementById("ignoreSkipsRecent").addEventListener("change", (e) => {
+                ignoreSkipsRecent = !ignoreSkipsRecent;
+                create_test_recent_most_flaky_graph();
+            });
+            document.getElementById("suiteSelectTests").addEventListener("change", (e) => {
+                setup_testtags_in_select();
+                setup_tests_in_select();
+                create_test_statistics_graph();
+                create_test_duration_graph();
+                create_test_duration_deviation_graph();
+            });
+            document.getElementById("testTagsSelect").addEventListener("change", (e) => {
+                setup_tests_in_select();
+                create_test_statistics_graph();
+                create_test_duration_graph();
+                create_test_duration_deviation_graph();
+            });
+            document.getElementById("testSelect").addEventListener("change", (e) => {
+                if (showOnlySelectedtestStatistics) {
+                    create_test_statistics_graph();
+                }
+                create_test_duration_graph();
+                create_test_duration_deviation_graph();
+            });
+            document.getElementById("keywordSelect").addEventListener("change", (e) => {
+                create_keyword_statistics_graph();
+                create_keyword_times_run_graph();
+                create_keyword_total_duration_graph();
+                create_keyword_average_duration_graph();
+                create_keyword_min_duration_graph();
+                create_keyword_max_duration_graph();
+            });
+
+            const checkboxesElement = document.getElementById('checkboxes');
+            const runTagsSelectElement = document.getElementById('selectRunTags');
+            // listen for click events on body to hide the run checkboxes when clicking outside of the select/checkboxes elements
+            document.body.addEventListener('click', function (event) {
+                if (showingRunTags == true && !checkboxesElement.contains(event.target) && !runTagsSelectElement.contains(event.target)) {
+                    show_checkboxes()
+                }
+            });
+        }
+
+        /////////////////////////////////////
+        // FILTER BUTTON CONTENT FUNCTIONS //
+        /////////////////////////////////////
+
+        // function that initializes the from date/time and to date/time selection boxes in the filters
+        function setup_lowest_highest_dates() {
+            var dates = [];
+            for (run of runs) {
+                dates.push(new Date(run.run_start));
+            }
+            if (dates.length == 0) {
+                document.getElementById("fromDate").value = "1900-01-01";
+                document.getElementById("fromTime").value = "00:00";
+                document.getElementById("toDate").value = "9999-12-31";
+                document.getElementById("toTime").value = "23:59";
+                return
+            }
+            var lowest = new Date(Math.min.apply(null, dates));
+            var highest = new Date(Math.max.apply(null, dates));
+            var tzoffset = new Date().getTimezoneOffset() * 60000;
+            lowest = new Date(new Date(lowest - tzoffset).getTime() + -1 * 60000); // this is to account for seconds in the initial filter value
+            highest = new Date(new Date(highest - tzoffset).getTime() + 1 * 60000); // this is to account for seconds in the initial filter value
+            lowest.setTime(lowest.getTime() - 1 * 60 * 60 * 1000) // minus 1 hour to account for possible daylight saving time switches of 1 hour!
+            highest.setTime(highest.getTime() + 1 * 60 * 60 * 1000) // plus 1 hour to account for possible daylight saving time switches of 1 hour!
+            document.getElementById("fromDate").value = lowest.toISOString().split("T")[0];
+            document.getElementById("fromTime").value = lowest.toISOString().split("T")[1].substring(0, 5);
+            document.getElementById("toDate").value = highest.toISOString().split("T")[0];
+            document.getElementById("toTime").value = highest.toISOString().split("T")[1].substring(0, 5);
+        }
+
+        // function to update the available runs to select in the filters
+        function setup_runs_in_select_filter_buttons() {
+            // Use a Set to collect unique run names
+            const runOptions = new Set();
+            // Collect all unique run names
+            runs.forEach(run => runOptions.add(run.name));
+            // Build the options HTML (including "All" as the first option)
+            const optionsHtml = Array.from(runOptions)
+                .map(runName => `<option value="${runName}">${runName}</option>`)
+                .join('');
+            // Add the "All" option and append all other options
+            const runsSelect = document.getElementById("runs");
+            runsSelect.innerHTML = `<option value="All">All</option>` + optionsHtml;
+        }
+
+        // function to update the available runtags to select in the filters
+        function setup_runtags_in_select_filter_buttons() {
+            // Use a Set to collect unique tags
+            const tags = new Set();
+            // Collect all unique tags from the runs
+            runs.forEach(run => {
+                run.tags.split(",").forEach(tag => {
+                    if (tag) { // Avoid adding empty tags
+                        tags.add(tag);
+                    }
+                });
+            });
+            // Create the "Use OR" toggle item
+            const andOrTags = `
+                <li class="list-group-item d-flex small">
+                    <div class="btn-group form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="useOrTags" />
+                    </div>
+                    <div class="btn-group">
+                        <label class="form-check-label" for="orTags">Use OR (default AND)</label>
+                    </div>
+                </li>
+            `;
+            // Template for list items
+            const listItemTemplate = (value) => `
+                <li class="list-group-item list-group-item-action d-flex small" onclick="setup_data_and_graphs()">
+                    <input class="form-check-input me-1" type="checkbox" value="" id="${value}">
+                    <label class="form-check-label ms-2" for="${value}">${value}</label>
+                </li>
+            `;
+            // Build the list items for all tags and the "All" tag
+            const listItems = [listItemTemplate('All')].concat(
+                Array.from(tags).map(tag => listItemTemplate(tag))
+            ).join('');
+            // Insert the generated HTML into the DOM
+            const tagsSelect = document.getElementById("runTag");
+            tagsSelect.innerHTML = andOrTags + listItems;
+            // Set the "All" tag to be checked by default
+            document.getElementById("All").checked = true;
+        }
+
+        // function to update the available suites to select in the filters
+        // applies to the suite filter on the suite statistics level and the test statistics level
+        function setup_suites_in_selects() {
+            const suiteSelectTests = document.getElementById("suiteSelectTests");
+            const suiteSelectSuites = document.getElementById("suiteSelectSuites");
+            // Clear existing options
+            suiteSelectTests.innerHTML = "";
+            suiteSelectSuites.innerHTML = "";
+            // Extract and sort suite names
+            const suiteNames = [...new Set(filteredSuites.map(suite => suite.name))].sort();
+            // Add "All" as default
+            suiteSelectTests.options.add(new Option("All", "All"));
+            suiteSelectSuites.options.add(new Option("All", "All"));
+            // Add suite names to selects
+            suiteNames.forEach(suiteName => {
+                suiteSelectTests.options.add(new Option(suiteName, suiteName));
+                suiteSelectSuites.options.add(new Option(suiteName, suiteName));
+            });
+            // Set the default selection to the second option (All is default)
+            suiteSelectTests.selectedIndex = 1;
+            suiteSelectSuites.selectedIndex = 1;
+        }
+
+        // function to update the available tests to select in the filters
+        // applies to the test filter on the test statistics level
+        function setup_tests_in_select() {
+            const suiteSelect = document.getElementById("suiteSelectTests").value;
+            const testTagsSelect = document.getElementById("testTagsSelect").value;
+            const testSelect = document.getElementById("testSelect");
+            // Clear existing options
+            testSelect.innerHTML = "";
+            // Filter test names based on suite and tags
+            const testNames = filteredTests.reduce((names, test) => {
+                const isInSuite = test.full_name.includes(`.${suiteSelect}.${test.name}`) || suiteSelect === "All";
+                const hasTag = testTagsSelect === "All" || test.tags.includes(testTagsSelect);
+
+                if (isInSuite && hasTag && !names.includes(test.name)) {
+                    names.push(test.name);
+                }
+
+                return names;
+            }, []);
+            // Add "All" as default
+            testSelect.options.add(new Option("All", "All"));
+            // Add filtered test names to select
+            testNames.forEach(testName => testSelect.options.add(new Option(testName, testName)));
+        }
+
+        // function to update the available testtags to select in the filters
+        // applies to the testtag filter on the test statistics level
+        function setup_testtags_in_select() {
+            const suiteSelect = document.getElementById("suiteSelectTests").value;
+            const testTagsSelect = document.getElementById("testTagsSelect");
+            // Clear existing options
+            testTagsSelect.innerHTML = "";
+            // Extract unique tags for the selected suite
+            const testTags = [...new Set(filteredTests.reduce((tags, test) => {
+                if (test.full_name.includes(`.${suiteSelect}.${test.name}`) || suiteSelect === "All") {
+                    test.tags.replace(/\[|\]/g, '').split(',').forEach(tag => tags.push(tag.trim()));
+                }
+                return tags;
+            }, []))];
+            // Add "All" as default
+            testTagsSelect.options.add(new Option("All", "All"));
+            // Add tags to select
+            testTags.forEach(tag => testTagsSelect.options.add(new Option(tag, tag)));
+        }
+
+        // function to update the available keywords to select in the filters
+        // applies to the keyword filter on the keyword statistics level
+        function setup_keywords_in_select() {
+            const keywordSelect = document.getElementById("keywordSelect");
+            // Clear existing options
+            keywordSelect.innerHTML = "";
+            // Extract unique keyword names
+            const keywordNames = [...new Set(filteredKeywords.map(keyword => keyword.name))].sort();
+            // Add keywords to select
+            keywordNames.forEach(keywordName => keywordSelect.options.add(new Option(keywordName, keywordName)));
+            // Select the last keyword by default
+            keywordSelect.selectedIndex = keywordNames.length - 1;
+        }
+
+        ///////////////////////////
+        // DATA FILTER FUNCTIONS //
+        ///////////////////////////
 
         // function to filter run data based on the runs (aka run name) filter
         function filter_runs(runs) {
@@ -1573,169 +1593,9 @@
             return filteredData;
         }
 
-        // function to reset the filters at the top and update the graphs
-        function reset_filters() {
-            document.getElementById("runs").value = "All";
-            document.getElementById("runTag").value = "All";
-            set_lowest_highest_dates(runs);
-            update_data_and_all_graphs();
-        }
-
-        // function to update the available runs to select in the filters
-        function add_runs_in_select() {
-            // Use a Set to collect unique run names
-            const runOptions = new Set();
-            // Collect all unique run names
-            runs.forEach(run => runOptions.add(run.name));
-            // Build the options HTML (including "All" as the first option)
-            const optionsHtml = Array.from(runOptions)
-                .map(runName => `<option value="${runName}">${runName}</option>`)
-                .join('');
-            // Add the "All" option and append all other options
-            const runsSelect = document.getElementById("runs");
-            runsSelect.innerHTML = `<option value="All">All</option>` + optionsHtml;
-        }
-
-
-        // function to update the available runtags to select in the filters
-        function add_runtags_in_select() {
-            // Use a Set to collect unique tags
-            const tags = new Set();
-            // Collect all unique tags from the runs
-            runs.forEach(run => {
-                run.tags.split(",").forEach(tag => {
-                    if (tag) { // Avoid adding empty tags
-                        tags.add(tag);
-                    }
-                });
-            });
-            // Create the "Use OR" toggle item
-            const andOrTags = `
-                <li class="list-group-item d-flex small">
-                    <div class="btn-group form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="useOrTags" />
-                    </div>
-                    <div class="btn-group">
-                        <label class="form-check-label" for="orTags">Use OR (default AND)</label>
-                    </div>
-                </li>
-            `;
-            // Template for list items
-            const listItemTemplate = (value) => `
-                <li class="list-group-item list-group-item-action d-flex small" onclick="update_data_and_all_graphs()">
-                    <input class="form-check-input me-1" type="checkbox" value="" id="${value}">
-                    <label class="form-check-label ms-2" for="${value}">${value}</label>
-                </li>
-            `;
-            // Build the list items for all tags and the "All" tag
-            const listItems = [listItemTemplate('All')].concat(
-                Array.from(tags).map(tag => listItemTemplate(tag))
-            ).join('');
-            // Insert the generated HTML into the DOM
-            const tagsSelect = document.getElementById("runTag");
-            tagsSelect.innerHTML = andOrTags + listItems;
-            // Set the "All" tag to be checked by default
-            document.getElementById("All").checked = true;
-        }
-
-        const checkboxesElement = document.getElementById('checkboxes');
-        const runTagsSelectElement = document.getElementById('selectRunTags')
-        // listen for click events on body to hide the run checkboxes when clicking outside of the select/checkboxes elements
-        document.body.addEventListener('click', function (event) {
-            if (showingRunTags == true && !checkboxesElement.contains(event.target) && !runTagsSelectElement.contains(event.target)) {
-                show_checkboxes()
-            }
-        });
-
-        // var and function to keep track of the checkboxes for the runtags
-        let showingRunTags = false;
-        function show_checkboxes() {
-            const checkboxes = document.getElementById("checkboxes");
-            showingRunTags = !showingRunTags;
-            checkboxes.style.display = showingRunTags ? "block" : "none";
-        }
-
-        // function to update the available suites to select in the filters
-        // applies to the suite filter on the suite statistics level and the test statistics level
-        function add_suites_in_selects() {
-            const suiteSelectTests = document.getElementById("suiteSelectTests");
-            const suiteSelectSuites = document.getElementById("suiteSelectSuites");
-            // Clear existing options
-            suiteSelectTests.innerHTML = "";
-            suiteSelectSuites.innerHTML = "";
-            // Extract and sort suite names
-            const suiteNames = [...new Set(filteredSuites.map(suite => suite.name))].sort();
-            // Add "All" as default
-            suiteSelectTests.options.add(new Option("All", "All"));
-            suiteSelectSuites.options.add(new Option("All", "All"));
-            // Add suite names to selects
-            suiteNames.forEach(suiteName => {
-                suiteSelectTests.options.add(new Option(suiteName, suiteName));
-                suiteSelectSuites.options.add(new Option(suiteName, suiteName));
-            });
-            // Set the default selection to the second option (All is default)
-            suiteSelectTests.selectedIndex = 1;
-            suiteSelectSuites.selectedIndex = 1;
-        }
-
-        // function to update the available tests to select in the filters
-        // applies to the test filter on the test statistics level
-        function add_tests_in_select() {
-            const suiteSelect = document.getElementById("suiteSelectTests").value;
-            const testTagsSelect = document.getElementById("testTagsSelect").value;
-            const testSelect = document.getElementById("testSelect");
-            // Clear existing options
-            testSelect.innerHTML = "";
-            // Filter test names based on suite and tags
-            const testNames = filteredTests.reduce((names, test) => {
-                const isInSuite = test.full_name.includes(`.${suiteSelect}.${test.name}`) || suiteSelect === "All";
-                const hasTag = testTagsSelect === "All" || test.tags.includes(testTagsSelect);
-
-                if (isInSuite && hasTag && !names.includes(test.name)) {
-                    names.push(test.name);
-                }
-
-                return names;
-            }, []);
-            // Add "All" as default
-            testSelect.options.add(new Option("All", "All"));
-            // Add filtered test names to select
-            testNames.forEach(testName => testSelect.options.add(new Option(testName, testName)));
-        }
-
-        // function to update the available testtags to select in the filters
-        // applies to the testtag filter on the test statistics level
-        function add_testtags_in_select() {
-            const suiteSelect = document.getElementById("suiteSelectTests").value;
-            const testTagsSelect = document.getElementById("testTagsSelect");
-            // Clear existing options
-            testTagsSelect.innerHTML = "";
-            // Extract unique tags for the selected suite
-            const testTags = [...new Set(filteredTests.reduce((tags, test) => {
-                if (test.full_name.includes(`.${suiteSelect}.${test.name}`) || suiteSelect === "All") {
-                    test.tags.replace(/\[|\]/g, '').split(',').forEach(tag => tags.push(tag.trim()));
-                }
-                return tags;
-            }, []))];
-            // Add "All" as default
-            testTagsSelect.options.add(new Option("All", "All"));
-            // Add tags to select
-            testTags.forEach(tag => testTagsSelect.options.add(new Option(tag, tag)));
-        }
-
-        // function to update the available keywords to select in the filters
-        // applies to the keyword filter on the keyword statistics level
-        function add_keywords_in_select() {
-            const keywordSelect = document.getElementById("keywordSelect");
-            // Clear existing options
-            keywordSelect.innerHTML = "";
-            // Extract unique keyword names
-            const keywordNames = [...new Set(filteredKeywords.map(keyword => keyword.name))].sort();
-            // Add keywords to select
-            keywordNames.forEach(keywordName => keywordSelect.options.add(new Option(keywordName, keywordName)));
-            // Select the last keyword by default
-            keywordSelect.selectedIndex = keywordNames.length - 1;
-        }
+        //////////////////////////////////////
+        // GRAPH & TABLE CREATION FUNCTIONS //
+        //////////////////////////////////////
 
         // function to create run statistics graph in the run section
         function create_run_statistics_graph(type) {
@@ -2130,6 +1990,7 @@
             }
         }
 
+        // function to create test duration deviation graph in test section
         function create_test_duration_deviation_graph(type) {
             if (typeof type === "string") {
                 testDurationDeviationGraphType = type;
@@ -2435,6 +2296,10 @@
                 data: data,
             });
         }
+
+        ///////////////////////////////////
+        // GRAPH DATA & CONFIG FUNCTIONS //
+        ///////////////////////////////////
 
         // function to retrieve the required graph config for chartjs, based on the different type of graphs
         function get_graph_config(graphType, graphData, graphTitle, xTitle, yTitle, dataSets = true) {
@@ -3132,6 +2997,209 @@
                 document.getElementById(verticalId).style.height = `${newHeight}px`
             }
         }
+
+        ///////////////////////////////////
+        // RENDER DATA & GRAPH FUNCTIONS //
+        ///////////////////////////////////
+
+        // function to update all graph data, function is called when updating filters and when the page loads
+        function setup_data_and_graphs() {
+            setup_filtered_data_and_filters();
+            setup_all_graphs();
+        }
+
+        // function updates the data in the graphs whenever filters are updated
+        function setup_filtered_data_and_filters() {
+            // filter run data
+            filteredRuns = filter_runs(runs);
+            filteredRuns = filter_runtags(filteredRuns);
+            filteredRuns = filter_dates(filteredRuns);
+            // filter suites and tests based on filtered runs
+            filteredSuites = filter_data("suites");
+            filteredTests = filter_data("tests");
+            filteredKeywords = filter_data("keywords");
+            // set titles with amount of filtered items
+            document.getElementById("runTitle").innerText = `Run Statistics (${Object.keys(filteredRuns).length})`;
+            document.getElementById("suiteTitle").innerText = `Suite Statistics (${Object.keys(filteredSuites).length})`;
+            document.getElementById("testTitle").innerText = `Test Statistics (${Object.keys(filteredTests).length})`;
+            document.getElementById("keywordTitle").innerText = `Keyword Statistics (${Object.keys(filteredKeywords).length})`;
+            // update tests select based on filtered runs
+            setup_suites_in_selects();
+            setup_testtags_in_select();
+            setup_tests_in_select();
+            setup_keywords_in_select();
+        }
+
+        // function that updates all graphs based on the new filtered data and hidden choices
+        function setup_all_graphs() {
+            set_hidden_sections_and_graphs();
+            setup_section_order();
+            setup_graph_order();
+            setup_collapsables();
+            create_run_statistics_graph();
+            create_run_duration_graph();
+            create_run_table();
+            create_suite_statistics_graph();
+            create_suite_duration_graph();
+            create_suite_most_failed_graph();
+            create_suite_table();
+            create_test_statistics_graph();
+            create_test_duration_graph();
+            create_test_duration_deviation_graph();
+            create_test_most_flaky_graph();
+            create_test_recent_most_flaky_graph();
+            create_test_most_failed_graph();
+            create_test_messages_graph();
+            create_test_table();
+            create_keyword_statistics_graph();
+            create_keyword_times_run_graph();
+            create_keyword_total_duration_graph();
+            create_keyword_average_duration_graph();
+            create_keyword_min_duration_graph();
+            create_keyword_max_duration_graph();
+            create_keyword_table();
+        }
+
+        // function to order the sections according to the localstorage config
+        function setup_section_order() {
+            const sections = localStorage.getItem("sectionShow")
+            var prevId = '#filterSection'
+            for (let section of sections.split(',')) {
+                section = section.replaceAll('\'', '')
+                var nextId = `#${space_to_camel_case(section + ' Section')}`
+                $(nextId).insertAfter(prevId)
+                prevId = nextId
+            }
+        }
+
+        // function to order the grphs according to the localstorage config
+        function setup_graph_order() {
+            setup_graphs('Run')
+            setup_graphs('Suite')
+            setup_graphs('Test')
+            setup_graphs('Keyword')
+        }
+
+        function setup_graphs(section) {
+            const lowerCaseSection = section.toLowerCase()
+            const sectionDataElement = document.getElementById(lowerCaseSection + 'Data')
+            const sectionDataHiddenElement = document.getElementById(lowerCaseSection + 'DataHidden')
+            const sectionDataHiddenTempElement = document.getElementById(lowerCaseSection + 'DataHiddenTemp')
+            // first move all graphs from the {section}Data element to {section}DataHidden to have a clean start if it is not the first load
+            if (sectionDataElement.children.length > 0) {
+                sectionDataHiddenElement.innerHTML = sectionDataElement.innerHTML
+                sectionDataElement.innerHTML = ''
+                // also use the temphidden elements if it's not empty (they are placed there if they are hidden by the config)
+                if (sectionDataHiddenTempElement.children.length > 0) {
+                    while (sectionDataHiddenTempElement.children.length > 0) {
+                        sectionDataHiddenElement.appendChild(sectionDataHiddenTempElement.children[0]);
+                    }
+                }
+                // exception to handle tables because they are completely altered by the datatables module on creation
+                const sectionTableElement = document.getElementById(lowerCaseSection + 'TableCanvas')
+                sectionTableElement.innerHTML = `<table class="table table-striped" id="${lowerCaseSection}Table"></table>`
+            }
+
+            const chevronRow = `<div class="row" id="${lowerCaseSection}Chevron{index}">
+                                    <div class="col-auto mt-1">
+                                        <div class="btn btn-sm btn-secondary collapse-icon" id="${lowerCaseSection}ChevronButton{index}" data-bs-toggle="collapse"
+                                            data-bs-target="#${lowerCaseSection}Data{index}" aria-expanded="true" aria-controls="${lowerCaseSection}Data{index}">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <h4 class='sectionTitle'>{title}</h4>
+                                    </div>
+                                </div>`
+            const dataRow = `<div class="row collapse show" id="${lowerCaseSection}Data{index}">
+                                {canvas}
+                            </div>`
+
+            // helper function to create the chevron rows and data rows in the sections
+            function position_graph(graph) {
+                const camelCaseGraph = space_to_camel_case(graph)
+                const graphDataElement = document.getElementById(camelCaseGraph + 'Canvas')
+                const canvas = graphDataElement.outerHTML
+                graphDataElement.remove()
+                if (sectionDataElement.lastChild == null) {
+                    // there is no data row yet > create a new row
+                    if (graph.includes('Table')) {
+                        sectionDataElement.innerHTML = chevronRow.replaceAll('{index}', '1').replace('{title}', graph).replace('collapse-icon', 'collapse-icon collapsed')
+                        sectionDataElement.insertAdjacentHTML('beforeend', dataRow.replace('{index}', '1').replace('{canvas}', canvas).replace('collapse show', 'collapse'))
+                    } else {
+                        sectionDataElement.innerHTML = chevronRow.replaceAll('{index}', '1').replace('{title}', graph)
+                        sectionDataElement.insertAdjacentHTML('beforeend', dataRow.replace('{index}', '1').replace('{canvas}', canvas))
+                    }
+                } else {
+                    const index = parseInt(sectionDataElement.lastChild.id.match(/\d+/)[0], 10) + 1
+                    if (graph.includes('Table')) {
+                        // it's a table which automatically comes on a new row
+                        sectionDataElement.insertAdjacentHTML('beforeend', chevronRow.replaceAll('{index}', `${index}`).replace('{title}', graph).replace('collapse-icon', 'collapse-icon collapsed'))
+                        sectionDataElement.insertAdjacentHTML('beforeend', dataRow.replace('{index}', `${index}`).replace('{canvas}', canvas).replace('collapse show', 'collapse'))
+                    } else if (sectionDataElement.lastChild.children.length == 1) {
+                        // there is 1 canvas in the data row
+                        if (sectionDataElement.lastChild.children[0].id.includes('Table')) {
+                            // it's a table > create a new row
+                            sectionDataElement.insertAdjacentHTML('beforeend', chevronRow.replaceAll('{index}', `${index}`).replace('{title}', graph))
+                            sectionDataElement.insertAdjacentHTML('beforeend', dataRow.replace('{index}', `${index}`).replace('{canvas}', canvas))
+                        } else {
+                            // it's a graph > add it to the row
+                            sectionDataElement.lastChild.insertAdjacentHTML('beforeend', canvas)
+                            const titleElement = sectionDataElement.children[sectionDataElement.children.length - 2].querySelector('.sectionTitle')
+                            const oldTitle = titleElement.innerText
+                            titleElement.innerText = oldTitle + ` & ${graph}`
+                        }
+                    } else if (sectionDataElement.lastChild.children.length == 2) {
+                        // there are 2 canvasses in the data row > create a new row
+                        sectionDataElement.insertAdjacentHTML('beforeend', chevronRow.replaceAll('{index}', `${index}`).replace('{title}', graph))
+                        sectionDataElement.insertAdjacentHTML('beforeend', dataRow.replace('{index}', `${index}`).replace('{canvas}', canvas))
+                    }
+                }
+            }
+
+            // order the graphs correctly
+            for (let graph of localStorage.getItem('graphShow').split(',')) {
+                if (graph == '') { continue }
+                graph = graph.replaceAll('\'', '')
+                if (graph.startsWith(section)) {
+                    position_graph(graph)
+                }
+            }
+            // move the hidden items to temp hidden to keep the HTML available for reconfiguration
+            for (let graph of localStorage.getItem('graphHide').split(',')) {
+                if (graph == '') { continue }
+                graph = graph.replaceAll('\'', '')
+                if (graph.startsWith(section)) {
+                    const camelCaseGraph = space_to_camel_case(graph)
+                    const graphDataElement = document.getElementById(camelCaseGraph + 'Canvas')
+                    sectionDataHiddenTempElement.appendChild(graphDataElement)
+                }
+            }
+        }
+
+        ///////////////////////////
+        // MAIN FUNCTION ON LOAD //
+        ///////////////////////////
+
+        // function that triggers all functions that should be executed when the dashboard is loaded first
+        // in the correct order!
+        function main() {
+            setup_theme()
+            setup_stats()
+            setup_customize_view_modal_arrows();
+            setup_local_storage();
+            setup_modal_items();
+            setup_eventlisteners_customized_view_buttons();
+            setup_eventlisteners_filter_buttons();
+            setup_eventlisteners_graph_view_buttons();
+            setup_eventlisteners_section_filter_buttons();
+            setup_lowest_highest_dates();
+            setup_runs_in_select_filter_buttons();
+            setup_runtags_in_select_filter_buttons();
+            setup_data_and_graphs();
+        }
+
+        // trigger of first load
+        main()
     </script>
 </body>
 
