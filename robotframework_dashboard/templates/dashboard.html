@@ -1195,12 +1195,14 @@
         function setup_eventlisteners_customized_view_buttons() {
             // update all graphs based on new hidden graphs/sections
             document.getElementById('saveHide').addEventListener('click', function () {
+                document.getElementById('runs').focus()
                 update_local_storage_show()
                 setup_data_and_graphs()
             });
 
             // remove the entire customized view configuration
             document.getElementById('resetView').addEventListener('click', function () {
+                document.getElementById('runs').focus()
                 localStorage.setItem('sectionHide', '')
                 localStorage.setItem('sectionShow', '')
                 localStorage.setItem('graphHide', '')
@@ -3028,7 +3030,7 @@
                 setup_eventlisteners_graph_view_buttons();
                 setup_eventlisteners_filter_buttons();
                 setup_all_graphs();
-                setup_spinner(true); // presumably hides the spinner
+                setup_spinner(true);
             }, 0);
         }
 
@@ -3044,19 +3046,12 @@
             filteredTests = filter_data("tests");
             filteredKeywords = filter_data("keywords");
             // set titles with amount of filtered items
-            // if (Object.keys(filteredRuns).length < filteredAmount) {
             const runAmount = Object.keys(filteredRuns).length
             const message = `<h6>showing ${runAmount} of ${filteredAmount} runs<h6>`
             document.getElementById("runTitle").innerHTML = `Run Statistics (${runAmount}) ${message}`;
             document.getElementById("suiteTitle").innerHTML = `Suite Statistics (${Object.keys(filteredSuites).length}) ${message}`;
             document.getElementById("testTitle").innerHTML = `Test Statistics (${Object.keys(filteredTests).length}) ${message}`;
             document.getElementById("keywordTitle").innerHTML = `Keyword Statistics (${Object.keys(filteredKeywords).length}) ${message}`;
-            // } else {
-            //     document.getElementById("runTitle").innerHTML = `Run Statistics (${Object.keys(filteredRuns).length})`;
-            //     document.getElementById("suiteTitle").innerHTML = `Suite Statistics (${Object.keys(filteredSuites).length})`;
-            //     document.getElementById("testTitle").innerHTML = `Test Statistics (${Object.keys(filteredTests).length})`;
-            //     document.getElementById("keywordTitle").innerHTML = `Keyword Statistics (${Object.keys(filteredKeywords).length})`;
-            // }
             // update tests select based on filtered runs
             setup_suites_in_selects();
             setup_testtags_in_select();
@@ -3092,14 +3087,21 @@
 
         // function to order the sections according to the localstorage config
         function setup_section_order() {
-            const sections = localStorage.getItem("sectionShow")
+            const sectionShow = localStorage.getItem("sectionShow")
             var prevId = '#loading'
-            for (let section of sections.split(',')) {
+            for (let section of sectionShow.split(',')) {
                 section = section.replaceAll('\'', '')
                 if (section == '') { continue }
                 var nextId = `#${space_to_camelcase(section + ' Section')}`
+                document.getElementById(`${space_to_camelcase(section + ' Section')}`).hidden = false
                 $(nextId).insertAfter(prevId)
                 prevId = nextId
+            }
+            const sectionHide = localStorage.getItem("sectionHide")
+            for (let section of sectionHide.split(',')) {
+                section = section.replaceAll('\'', '')
+                if (section == '') { continue }
+                document.getElementById(`${space_to_camelcase(section + ' Section')}`).hidden = true
             }
         }
 
