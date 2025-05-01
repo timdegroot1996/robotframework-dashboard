@@ -1,7 +1,7 @@
 <html data-bs-theme="dark">
 
 <head>
-    <title>Robot Framework Dashboard - 2025-04-27 22:11:28</title>
+    <title>Robot Framework Dashboard - 2025-05-01 23:32:13</title>
     <!-- ChartJs import -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
@@ -37,7 +37,8 @@
                 background-color: #eee;
             }
 
-            .fullscreen {
+            .fullscreen,
+            .sticky-top {
                 background: #eee;
             }
         }
@@ -47,9 +48,14 @@
                 color-scheme: dark;
             }
 
-            .fullscreen {
+            .fullscreen,
+            .sticky-top {
                 background: #212529;
             }
+        }
+
+        #loading {
+            margin-bottom: 100%;
         }
 
         .canvas {
@@ -63,7 +69,12 @@
         }
 
         .card {
-            margin-bottom: 10px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .sticky-top {
+            padding-top: 6px;
         }
 
         .dt-container {
@@ -137,14 +148,14 @@
 </head>
 
 <body>
-    <div class="container-fluid mt-4">
-        <div class="card" id="filterSection">
+    <div class="container-fluid">
+        <div class="sticky-top" id="filterSection">
             <div class="card-body">
-                <div class="row">
+                <div class="row border-bottom pb-1">
                     <div class="col-10">
                         <div class="row">
                             <div class="col-auto">
-                                <h1>Robot Framework Dashboard - 2025-04-27 22:11:28</h1>
+                                <h1>Robot Framework Dashboard - 2025-05-01 23:32:13</h1>
                             </div>
                         </div>
                         <div class="row">
@@ -180,13 +191,21 @@
                                 <label class="form-label form-label-sm" for="toTime">To Time</label>
                                 <input class="form-control form-control-sm" id="toTime" type="time" />
                             </div>
+                            <div class="col-auto">
+                                <label class="form-label form-label-sm" for="amount"
+                                    title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">Run
+                                    Amount</label>
+                                <input class="form-control form-control-sm" type="number" min=0 id="amount"
+                                    title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
+                                    value="10">
+                            </div>
                             <div class="col-auto d-flex">
                                 <button class="btn btn-outline-primary btn-sm mt-auto" id="resetFilters">Reset
                                     Filters</button>
                             </div>
                             <div class="col-auto d-flex">
                                 <button type="button" class="btn btn-outline-primary btn-sm mt-auto"
-                                    data-bs-toggle="modal" data-bs-target="#hideModal">
+                                    data-bs-toggle="modal" data-bs-target="#hideModal" id="customizeView">
                                     Customize View
                                 </button>
                             </div>
@@ -206,7 +225,13 @@
             </div>
         </div>
 
-        <div class="card" id="runStatisticsSection">
+        <div class="text-center mt-5" id="loading" style="display: none;">
+            <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+
+        <div class="card" id="runStatisticsSection" style="display: none;">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
@@ -214,8 +239,8 @@
                             data-bs-toggle="collapse" data-bs-target="#runData" aria-expanded="true"
                             aria-controls="runData"></div>
                     </div>
-                    <div class="col-4">
-                        <h2 id="runTitle">Statistics</h2>
+                    <div class="col">
+                        <h3 id="runTitle">Statistics</h3>
                     </div>
                 </div>
             </div>
@@ -255,7 +280,7 @@
             <div class="card-body collapse show" id="runData"></div>
         </div>
 
-        <div class="card" id="suiteStatisticsSection">
+        <div class="card" id="suiteStatisticsSection" style="display: none;">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
@@ -264,7 +289,7 @@
                             aria-controls="suiteData"></div>
                     </div>
                     <div class="col-4">
-                        <h2 id="suiteTitle">Suite Statistics</h2>
+                        <h3 id="suiteTitle">Suite Statistics</h3>
                     </div>
                     <div class="col-auto">
                         <div class="btn-group">
@@ -325,7 +350,7 @@
             <div class="card-body collapse show" id="suiteData"></div>
         </div>
 
-        <div class="card" id="testStatisticsSection">
+        <div class="card" id="testStatisticsSection" style="display: none;">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
@@ -334,7 +359,7 @@
                             aria-controls="testData"></div>
                     </div>
                     <div class="col-4">
-                        <h2 id="testTitle">Test Statistics</h2>
+                        <h3 id="testTitle">Test Statistics</h3>
                     </div>
                     <div class="col-auto">
                         <div class="btn-group">
@@ -378,6 +403,9 @@
                 <!-- Test Statistics -->
                 <div class="col canvas canvas-vertical" id="testStatisticsCanvas">
                     <div id="testStatisticsVertical">
+                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
+                            id="testStatisticsGraphTimeline">Timeline
+                            View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="testStatisticsFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testStatisticsClose"
@@ -399,8 +427,7 @@
                 </div>
                 <!-- Test Duration Deviation -->
                 <div class="col canvas mb-5" id="testDurationDeviationCanvas">
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                        id="testDurationDeviationGraphBar">Boxplot
+                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testDurationDeviationGraphBar">Boxplot
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                         id="testDurationDeviationFullscreen">Fullscreen</button>
@@ -418,8 +445,8 @@
                     </div>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar
                         View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                        id="testMostFlakyGraphTimeline">Timeline View</button>
+                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testMostFlakyGraphTimeline">Timeline
+                        View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyFullscreen"
                         style="margin-right:56px;">Fullscreen</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose" hidden
@@ -448,8 +475,8 @@
                 <div class="col canvas mb-5" id="testMostFailedCanvas">
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedGraphBar">Bar
                         View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                        id="testMostFailedGraphTimeline">Timeline View</button>
+                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testMostFailedGraphTimeline">Timeline
+                        View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                         id="testMostFailedFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedClose"
@@ -460,8 +487,7 @@
                 <div class="col canvas mb-5" id="testMessagesCanvas">
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
                         View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                        id="testMessagesGraphTimeline">Timeline
+                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testMessagesGraphTimeline">Timeline
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                         id="testMessagesFullscreen">Fullscreen</button>
@@ -477,7 +503,7 @@
             <div class="card-body collapse show" id="testData"></div>
         </div>
 
-        <div class="card" id="keywordStatisticsSection">
+        <div class="card" id="keywordStatisticsSection" style="display: none;">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto mt-2">
@@ -486,7 +512,7 @@
                             aria-controls="keywordData"></div>
                     </div>
                     <div class="col-4">
-                        <h2 id="keywordTitle">Keyword Statistics</h2>
+                        <h3 id="keywordTitle">Keyword Statistics</h3>
                     </div>
                     <div class="col-auto">
                         <div class="btn-group">
@@ -531,8 +557,7 @@
                 <div class="col canvas mb-5" id="keywordTotalDurationCanvas">
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalDurationGraphBar">Bar
                         View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                        id="keywordTotalDurationGraphLine">Line
+                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordTotalDurationGraphLine">Line
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                         id="keywordTotalDurationFullscreen">Fullscreen</button>
@@ -544,8 +569,7 @@
                 <div class="col canvas mb-5" id="keywordAverageDurationCanvas">
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageDurationGraphBar">Bar
                         View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                        id="keywordAverageDurationGraphLine">Line
+                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordAverageDurationGraphLine">Line
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                         id="keywordAverageDurationFullscreen">Fullscreen</button>
@@ -555,8 +579,8 @@
                 </div>
                 <!-- Keyword Min Duration -->
                 <div class="col canvas mb-5" id="keywordMinDurationCanvas">
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                        id="keywordMinDurationGraphBar">Bar View</button>
+                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordMinDurationGraphBar">Bar
+                        View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMinDurationGraphLine">Line
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
@@ -567,8 +591,8 @@
                 </div>
                 <!-- Keyword Max Duration -->
                 <div class="col canvas mb-5" id="keywordMaxDurationCanvas">
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                        id="keywordMaxDurationGraphBar">Bar View</button>
+                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordMaxDurationGraphBar">Bar
+                        View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMaxDurationGraphLine">Line
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
@@ -693,43 +717,26 @@
 
         // create graphs
         var runStatisticsGraph;
-        var runStatisticsGraphType = "percentages";
         var runDurationGraph;
-        var runDurationGraphType = "line";
         var runTable;
         var suiteStatisticsGraph;
-        var suiteStatisticsGraphType = "percentages";
         var suiteDurationGraph;
-        var suiteDurationGraphType = "line";
         var suiteMostFailedGraph;
-        var suiteMostFailedGraphType = "bar";
         var suiteTable;
         var testStatisticsGraph;
         var testDurationGraph;
-        var testDurationGraphType = "line";
         var testMostFlakyGraph;
-        var testMostFlakyGraphType = "timeline"
         var testRecentMostFlakyGraph;
-        var testRecentMostFlakyGraphType = "timeline"
         var testDurationDeviationGraph;
-        var testDurationDeviationGraphType = "boxplot"
         var testMostFailedGraph;
-        var testMostFailedGraphType = "timeline";
         var testMessagesGraph
-        var testMessagesGraphType = "timeline";
         var testTable;
         var keywordStatisticsGraph;
-        var keywordStatisticsGraphType = "percentages";
         var keywordTimesRunGraph;
-        var keywordTimesRunGraphType = "bar";
         var keywordTotalDurationGraph;
-        var keywordTotalDurationGraphType = "line";
         var keywordAverageDurationGraph;
-        var keywordAverageDurationGraphType = "line";
         var keywordMinDurationGraph;
-        var keywordMinDurationGraphType = "bar";
         var keywordMaxDurationGraph;
-        var keywordMaxDurationGraphType = "bar";
         var keywordTable;
 
         // filtered data vars
@@ -743,6 +750,7 @@
         var ignoreSkips = false; // test most flaky graph
         var ignoreSkipsRecent = false; // test recent most flaky graph
         let showingRunTags = false; // used to keep track if the runtags popup is showing and determine if it should be closed when clicked outside
+        var filteredAmount = 20
 
         // add items in hide modal
         const hideSections = [
@@ -805,6 +813,8 @@
             Suites: ${suites.length}<br>
             Tests: ${tests.length}<br>
             Keywords: ${keywords.length}`;
+
+            document.getElementById('amount').value = filteredAmount
         }
 
         // function to setup all collapse buttons and icons
@@ -835,11 +845,33 @@
             }
         }
 
+        // function to add a spinner for slow loads
+        function setup_spinner(hide) {
+            if (hide) {
+                $('#loading').fadeOut(100)
+                $('#runStatisticsSection').fadeIn()
+                $('#suiteStatisticsSection').fadeIn()
+                $('#testStatisticsSection').fadeIn()
+                $('#keywordStatisticsSection').fadeIn()
+            } else {
+                $('#runStatisticsSection').hide()
+                $('#suiteStatisticsSection').hide()
+                $('#testStatisticsSection').hide()
+                $('#keywordStatisticsSection').hide()
+                $('#loading').show();
+            }
+        }
+
         // function to convert to camelcase
-        function space_to_camel_case(string) {
+        function space_to_camelcase(string) {
             return string.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
                 return index === 0 ? word.toLowerCase() : word.toUpperCase();
             }).replace(/\s+/g, '');
+        }
+
+        // function to convert to camelcase from underscores
+        function underscore_to_camelcase(str) {
+            return str.replace(/_(.)/g, (match, group) => group.toUpperCase());
         }
 
         //////////////////////////////
@@ -946,6 +978,66 @@
                 if (!adminGraphHide.includes('admin')) { localStorage.setItem('graphHide', adminGraphHide) }
                 if (!adminGraphShow.includes('admin')) { localStorage.setItem('graphShow', adminGraphShow) }
             }
+            // settings for the graphtypes in localstorage
+            const defaultGraphTypes = {
+                runStatisticsGraphType: "percentages",
+                runDurationGraphType: "line",
+                suiteStatisticsGraphType: "percentages",
+                suiteDurationGraphType: "line",
+                suiteMostFailedGraphType: "bar",
+                testStatisticsGraphType: "timeline",
+                testDurationGraphType: "line",
+                testMostFlakyGraphType: "timeline",
+                testRecentMostFlakyGraphType: "timeline",
+                testDurationDeviationGraphType: "bar",
+                testMostFailedGraphType: "timeline",
+                testMessagesGraphType: "timeline",
+                keywordStatisticsGraphType: "percentages",
+                keywordTimesRunGraphType: "bar",
+                keywordTotalDurationGraphType: "line",
+                keywordAverageDurationGraphType: "line",
+                keywordMinDurationGraphType: "bar",
+                keywordMaxDurationGraphType: "bar"
+            };
+            let storedTypes = localStorage.getItem("graphTypes");
+            if (!storedTypes) {
+                localStorage.setItem("graphTypes", JSON.stringify(defaultGraphTypes));
+                storedTypes = defaultGraphTypes;
+            } else {
+                storedTypes = JSON.parse(storedTypes);
+            }
+            // Assign to global variables and update the visual correctly
+            for (let key in storedTypes) {
+                window[key] = storedTypes[key];
+                update_button_selection(key.replace('GraphType', ''), storedTypes[key]);
+            }
+        }
+
+        // function to update the localstorage of the graphtypes
+        function update_graph_type(graph, type) {
+            const storedTypes = JSON.parse(localStorage.getItem("graphTypes") || '{}');
+            storedTypes[graph] = type;
+            localStorage.setItem("graphTypes", JSON.stringify(storedTypes));
+            // Also update global variable
+            window[graph] = type;
+        }
+
+        function update_button_selection(camelButtonName, graphType) {
+            const buttons = ['Bar', 'Line', 'Timeline', 'Percentages', 'Amount']; // All possible button types
+            buttons.forEach(button => {
+                const buttonId = `${camelButtonName}Graph${button}`;
+                if (document.getElementById(buttonId)) {
+                    if (button.toLowerCase() === graphType) {
+                        document.getElementById(buttonId).classList.add("disabled");
+                        document.getElementById(buttonId).classList.remove("btn-outline-primary");
+                        document.getElementById(buttonId).classList.add("btn-primary");
+                    } else {
+                        document.getElementById(buttonId).classList.remove("disabled");
+                        document.getElementById(buttonId).classList.remove("btn-primary");
+                        document.getElementById(buttonId).classList.add("btn-outline-primary");
+                    }
+                }
+            });
         }
 
         // create the modal with the correct layout based on localstorage
@@ -1126,7 +1218,7 @@
         // function to setup eventlisteners for filter buttons
         function setup_eventlisteners_filter_buttons() {
             // eventlisteners for filters (runTags is done separately because of different usage)
-            const filters = ["runs", "fromDate", "fromTime", "toDate", "toTime"]
+            const filters = ["runs", "fromDate", "fromTime", "toDate", "toTime", "amount"]
             for (let f of filters) {
                 document.getElementById(f).addEventListener("change", setup_data_and_graphs);
             }
@@ -1139,12 +1231,14 @@
                 "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration"]
             for (let fullscreenButton of fullscreenButtons) {
                 document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", (e) => {
+                    $('#filterSection').hide()
                     document.getElementById(`${fullscreenButton}Canvas`).classList.add("fullscreen");
                     document.getElementById(`${fullscreenButton}Close`).hidden = false
                     document.getElementById(`${fullscreenButton}Fullscreen`).hidden = true
                     document.body.style.overflow = 'hidden';
                 });
                 document.getElementById(`${fullscreenButton}Close`).addEventListener("click", (e) => {
+                    $('#filterSection').show()
                     document.getElementById(`${fullscreenButton}Canvas`).classList.remove("fullscreen");
                     document.getElementById(`${fullscreenButton}Close`).hidden = true
                     document.getElementById(`${fullscreenButton}Fullscreen`).hidden = false
@@ -1175,7 +1269,7 @@
                 'test_duration': 'Bar,Line',
                 'test_most_flaky': 'Bar,Timeline',
                 'test_recent_most_flaky': 'Bar,Timeline',
-                'test_duration_deviation': 'Boxplot',
+                'test_duration_deviation': 'Bar',
                 'test_most_failed': 'Bar,Timeline',
                 'test_messages': 'Bar,Timeline',
                 'keyword_statistics': 'Percentages,Line,Amount',
@@ -1186,39 +1280,22 @@
                 'keyword_max_duration': 'Bar,Line',
             };
 
-            function underscoreToCamelcase(str) {
-                return str.replace(/_(.)/g, (match, group) => group.toUpperCase());
-            }
-
-            function handleGraphButtonClick(graphChangeButton, graphType, camelButtonName) {
+            function handle_graph_button_click(graphChangeButton, graphType, camelButtonName) {
                 // Dynamically trigger the graph creation function
-                window[`create_${graphChangeButton}_graph`](graphType);
+                update_graph_type(`${camelButtonName}GraphType`, graphType)
+                window[`create_${graphChangeButton}_graph`]();
                 // Update the UI to enable/disable buttons accordingly
-                const buttons = ['Bar', 'Line', 'Timeline', 'Percentages', 'Amount']; // All possible button types
-                buttons.forEach(button => {
-                    const buttonId = `${camelButtonName}Graph${button}`;
-                    if (document.getElementById(buttonId)) {
-                        if (button.toLowerCase() === graphType.toLowerCase()) {
-                            document.getElementById(buttonId).classList.add("disabled");
-                            document.getElementById(buttonId).classList.remove("btn-outline-primary");
-                            document.getElementById(buttonId).classList.add("btn-primary");
-                        } else {
-                            document.getElementById(buttonId).classList.remove("disabled");
-                            document.getElementById(buttonId).classList.remove("btn-primary");
-                            document.getElementById(buttonId).classList.add("btn-outline-primary");
-                        }
-                    }
-                });
+                update_button_selection(camelButtonName, graphType)
             }
 
-            function addGraphEventListeners(graphChangeButton, buttonTypes) {
-                const camelButtonName = underscoreToCamelcase(graphChangeButton);
+            function add_graph_eventlisteners(graphChangeButton, buttonTypes) {
+                const camelButtonName = underscore_to_camelcase(graphChangeButton);
                 const graphTypes = buttonTypes.split(',');
                 graphTypes.forEach((graphType, index) => {
                     const buttonId = `${camelButtonName}Graph${graphType}`;
                     if (document.getElementById(buttonId)) {
                         document.getElementById(buttonId).addEventListener("click", (e) => {
-                            handleGraphButtonClick(graphChangeButton, graphType.toLowerCase(), camelButtonName);
+                            handle_graph_button_click(graphChangeButton, graphType.toLowerCase(), camelButtonName);
                         });
                     }
                 });
@@ -1226,7 +1303,7 @@
 
             // Iterate over the graphChangeButtons object to attach event listeners
             Object.entries(graphChangeButtons).forEach(([graphChangeButton, buttonTypes]) => {
-                addGraphEventListeners(graphChangeButton, buttonTypes);
+                add_graph_eventlisteners(graphChangeButton, buttonTypes);
             });
         }
 
@@ -1300,6 +1377,15 @@
         // FILTER BUTTON CONTENT FUNCTIONS //
         /////////////////////////////////////
 
+        // function to setup run 
+        function setup_run_amount_filter() {
+            document.getElementById('amount').setAttribute('max', runs.length)
+            if (runs.length < 10) {
+                document.getElementById('amount').value = runs.length
+            }
+        }
+
+
         // function that initializes the from date/time and to date/time selection boxes in the filters
         function setup_lowest_highest_dates() {
             var dates = [];
@@ -1355,12 +1441,12 @@
             });
             // Create the "Use OR" toggle item
             const andOrTags = `
-                <li class="list-group-item d-flex small">
+                <li class="list-group-item d-flex small" onclick="setup_data_and_graphs()">
                     <div class="btn-group form-switch">
                         <input class="form-check-input" type="checkbox" role="switch" id="useOrTags" />
                     </div>
                     <div class="btn-group">
-                        <label class="form-check-label" for="orTags">Use OR (default AND)</label>
+                        <label class="form-check-label" for="useOrTags">Use OR (default AND)</label>
                     </div>
                 </li>
             `;
@@ -1380,6 +1466,7 @@
             tagsSelect.innerHTML = andOrTags + listItems;
             // Set the "All" tag to be checked by default
             document.getElementById("All").checked = true;
+
         }
 
         // function to update the available suites to select in the filters
@@ -1473,9 +1560,11 @@
             const selectedRun = document.getElementById("runs").value;
             // If "All" is selected, return the original array of runs
             if (selectedRun === "All") {
-                return runs;
+                var selectedRuns = runs
+            } else {
+                var selectedRuns = Object.values(runs).filter(run => run.name === selectedRun)
             }
-            return Object.values(runs).filter(run => run.name === selectedRun);
+            return selectedRuns;
         }
 
         // function to filter run data based on the run tags filter
@@ -1528,6 +1617,35 @@
             });
         }
 
+        function filter_amount(filteredRuns) {
+            var selectedAmount = document.getElementById("amount").value;
+            // Handle weird selectedAmountValues:
+            if (selectedAmount == '') {
+                $("#amount").val(10).trigger('change.amount');
+                selectedAmount = document.getElementById("amount").value;
+            }
+            if (selectedAmount > runs.length) {
+                $("#amount").val(runs.length).trigger('change.amount');
+                selectedAmount = document.getElementById("amount").value;
+            }
+            if (selectedAmount < 0) {
+                $("#amount").val(0).trigger('change.amount');
+                selectedAmount = document.getElementById("amount").value;
+            }
+            if (selectedAmount.includes(',')) {
+                $("#amount").val(selectedAmount.split(',')[0]).trigger('change.amount');
+                selectedAmount = document.getElementById("amount").value;
+            }
+            if (selectedAmount.includes('.')) {
+                $("#amount").val(selectedAmount.split('.')[0]).trigger('change.amount');
+                selectedAmount = document.getElementById("amount").value;
+            }
+            filteredAmount = filteredRuns.length
+            if (selectedAmount == 0) { return [] }
+            filteredRuns = filteredRuns.slice(- selectedAmount)
+            return filteredRuns
+        }
+
         // function to filter suites/tests/keywords based on the already filtered runs
         function filter_data(dataType) {
             var validRunStarts = [];
@@ -1548,33 +1666,26 @@
         //////////////////////////////////////
 
         // function to create run statistics graph in the run section
-        function create_run_statistics_graph(type) {
-            if (typeof type === "string") {
-                runStatisticsGraphType = type;
-            }
+        function create_run_statistics_graph() {
             if (runStatisticsGraph) {
                 runStatisticsGraph.destroy();
             }
+            Chart.register(ChartDataLabels);
             var graphData = get_statistics_graph_data("run", runStatisticsGraphType, filteredRuns);
             if (runStatisticsGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Amount Of Tests (Line)", "Date", "amount", false);
                 runStatisticsGraph = new Chart("runStatisticsGraph", config);
             } else if (runStatisticsGraphType == "amount") {
-                Chart.register(ChartDataLabels);
                 var config = get_graph_config("bar", graphData, "Run Statistics (Bar)", "Run", "Amount Of Tests");
                 runStatisticsGraph = new Chart("runStatisticsGraph", config);
             } else if (runStatisticsGraphType == "percentages") {
-                Chart.register(ChartDataLabels);
                 var config = get_graph_config("bar", graphData, "Run Statistics (Bar)", "Run", "Percentage");
                 runStatisticsGraph = new Chart("runStatisticsGraph", config);
             }
         }
 
         // function to create run duration graph in the run section
-        function create_run_duration_graph(type) {
-            if (typeof type === "string") {
-                runDurationGraphType = type;
-            }
+        function create_run_duration_graph() {
             if (runDurationGraph) {
                 runDurationGraph.destroy();
             }
@@ -1632,33 +1743,26 @@
         }
 
         // function to create suite statistics graph in the suite section
-        function create_suite_statistics_graph(type) {
-            if (typeof type === "string") {
-                suiteStatisticsGraphType = type;
-            }
+        function create_suite_statistics_graph() {
             if (suiteStatisticsGraph) {
                 suiteStatisticsGraph.destroy();
             }
+            Chart.register(ChartDataLabels);
             var graphData = get_statistics_graph_data("suite", suiteStatisticsGraphType, filteredSuites);
             if (suiteStatisticsGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Amount Of Tests (Line)", "Date", "amount", false);
                 suiteStatisticsGraph = new Chart("suiteStatisticsGraph", config);
             } else if (suiteStatisticsGraphType == "amount") {
-                Chart.register(ChartDataLabels);
                 var config = get_graph_config("bar", graphData, "Suite Statistics (Bar)", "Run", "Amount Of Tests");
                 suiteStatisticsGraph = new Chart("suiteStatisticsGraph", config);
             } else if (suiteStatisticsGraphType == "percentages") {
-                Chart.register(ChartDataLabels);
                 var config = get_graph_config("bar", graphData, "Suite Statistics (Bar)", "Run", "Percentage");
                 suiteStatisticsGraph = new Chart("suiteStatisticsGraph", config);
             }
         }
 
         // function to create suite duration graph in the suite section
-        function create_suite_duration_graph(type) {
-            if (typeof type === "string") {
-                suiteDurationGraphType = type;
-            }
+        function create_suite_duration_graph() {
             if (suiteDurationGraph) {
                 suiteDurationGraph.destroy();
             }
@@ -1673,10 +1777,7 @@
         }
 
         // function to create suite most failed graph in the suite section
-        function create_suite_most_failed_graph(type) {
-            if (typeof type === "string") {
-                suiteMostFailedGraphType = type;
-            }
+        function create_suite_most_failed_graph() {
             if (suiteMostFailedGraph) {
                 suiteMostFailedGraph.destroy();
             }
@@ -1845,10 +1946,7 @@
         }
 
         // function to create test duration graph in the test section
-        function create_test_duration_graph(type) {
-            if (typeof type === "string") {
-                testDurationGraphType = type;
-            }
+        function create_test_duration_graph() {
             if (testDurationGraph) {
                 testDurationGraph.destroy();
             }
@@ -1863,10 +1961,7 @@
         }
 
         // function to create test most flaky graph in test section
-        function create_test_most_flaky_graph(type) {
-            if (typeof type === "string") {
-                testMostFlakyGraphType = type;
-            }
+        function create_test_most_flaky_graph() {
             if (testMostFlakyGraph) {
                 testMostFlakyGraph.destroy();
             }
@@ -1902,10 +1997,7 @@
         }
 
         // function to create test recent most flaky graph in test section
-        function create_test_recent_most_flaky_graph(type) {
-            if (typeof type === "string") {
-                testRecentMostFlakyGraphType = type;
-            }
+        function create_test_recent_most_flaky_graph() {
             if (testRecentMostFlakyGraph) {
                 testRecentMostFlakyGraph.destroy();
             }
@@ -1941,10 +2033,7 @@
         }
 
         // function to create test duration deviation graph in test section
-        function create_test_duration_deviation_graph(type) {
-            if (typeof type === "string") {
-                testDurationDeviationGraphType = type;
-            }
+        function create_test_duration_deviation_graph() {
             if (testDurationDeviationGraph) {
                 testDurationDeviationGraph.destroy();
             }
@@ -1955,7 +2044,7 @@
         }
 
         // function to create test most failed graph in the test section
-        function create_test_most_failed_graph(type) {
+        function create_test_most_failed_graph() {
             if (typeof type === "string") {
                 testMostFailedGraphType = type;
             }
@@ -2001,10 +2090,7 @@
         }
 
         // function to create test messages graph in the test section
-        function create_test_messages_graph(type) {
-            if (typeof type === "string") {
-                testMessagesGraphType = type;
-            }
+        function create_test_messages_graph() {
             if (testMessagesGraph) {
                 testMessagesGraph.destroy();
             }
@@ -2092,33 +2178,26 @@
         }
 
         // function to keyword statistics graph in the keyword section
-        function create_keyword_statistics_graph(type) {
-            if (typeof type === "string") {
-                keywordStatisticsGraphType = type;
-            }
+        function create_keyword_statistics_graph() {
             if (keywordStatisticsGraph) {
                 keywordStatisticsGraph.destroy();
             }
+            Chart.register(ChartDataLabels);
             var graphData = get_statistics_graph_data("keyword", keywordStatisticsGraphType, filteredKeywords);
             if (keywordStatisticsGraphType == "line") {
                 var config = get_graph_config("line", graphData, "Keyword Statistics (Line)", "Date", "Amount", false);
                 keywordStatisticsGraph = new Chart("keywordStatisticsGraph", config);
             } else if (keywordStatisticsGraphType == "amount") {
-                Chart.register(ChartDataLabels);
                 var config = get_graph_config("bar", graphData, "Keyword Statistics (Bar)", "Run", "Amount");
                 keywordStatisticsGraph = new Chart("keywordStatisticsGraph", config);
             } else if (keywordStatisticsGraphType == "percentages") {
-                Chart.register(ChartDataLabels);
                 var config = get_graph_config("bar", graphData, "Keyword Statistics (Bar)", "Run", "Percentage");
                 keywordStatisticsGraph = new Chart("keywordStatisticsGraph", config);
             }
         }
 
         // function to keyword times run graph in the keyword section
-        function create_keyword_times_run_graph(type) {
-            if (typeof type === "string") {
-                keywordTimesRunGraphType = type;
-            }
+        function create_keyword_times_run_graph() {
             if (keywordTimesRunGraph) {
                 keywordTimesRunGraph.destroy();
             }
@@ -2133,7 +2212,7 @@
         }
 
         // function to keyword total time graph in the keyword section
-        function create_keyword_total_duration_graph(type) {
+        function create_keyword_total_duration_graph() {
             if (typeof type === "string") {
                 keywordTotalDurationGraphType = type;
             }
@@ -2151,10 +2230,7 @@
         }
 
         // function to keyword average time graph in the keyword section
-        function create_keyword_average_duration_graph(type) {
-            if (typeof type === "string") {
-                keywordAverageDurationGraphType = type;
-            }
+        function create_keyword_average_duration_graph() {
             if (keywordAverageDurationGraph) {
                 keywordAverageDurationGraph.destroy();
             }
@@ -2169,10 +2245,7 @@
         }
 
         // function to keyword min time graph in the keyword section
-        function create_keyword_min_duration_graph(type) {
-            if (typeof type === "string") {
-                keywordMinDurationGraphType = type;
-            }
+        function create_keyword_min_duration_graph() {
             if (keywordMinDurationGraph) {
                 keywordMinDurationGraph.destroy();
             }
@@ -2187,10 +2260,7 @@
         }
 
         // function to keyword max time graph in the keyword section
-        function create_keyword_max_duration_graph(type) {
-            if (typeof type === "string") {
-                keywordMaxDurationGraphType = type;
-            }
+        function create_keyword_max_duration_graph() {
             if (keywordMaxDurationGraph) {
                 keywordMaxDurationGraph.destroy();
             }
@@ -2550,46 +2620,43 @@
             const testTagsSelect = document.getElementById("testTagsSelect").value;
             // Use a Map to store data for better performance and management
             const data = new Map();
-            // Only process if graphType is 'boxplot'
-            if (graphType === 'boxplot') {
-                // Iterate over filteredData to collect elapsed times
-                for (const value of filteredData) {
-                    // Apply filtering based on user selections
-                    if (dataType === "test") {
-                        if (suiteSelectTests !== "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name !== `${suiteSelectTests}.${value.name}`) {
-                            continue;
-                        }
-                        if (testSelect !== "All" && value.name !== testSelect) {
-                            continue;
-                        }
-                        if (testTagsSelect !== "All" && !value.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
-                            continue;
-                        }
+            // Iterate over filteredData to collect elapsed times
+            for (const value of filteredData) {
+                // Apply filtering based on user selections
+                if (dataType === "test") {
+                    if (suiteSelectTests !== "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name !== `${suiteSelectTests}.${value.name}`) {
+                        continue;
                     }
-                    // Add elapsed time data to the Map, grouping by test name
-                    if (data.has(value.name)) {
-                        data.get(value.name).push(value.elapsed_s);
-                    } else {
-                        data.set(value.name, [value.elapsed_s]);
+                    if (testSelect !== "All" && value.name !== testSelect) {
+                        continue;
+                    }
+                    if (testTagsSelect !== "All" && !value.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
+                        continue;
                     }
                 }
-                // Prepare the data for the graph (labels and datasets)
-                const labels = [];
-                const datasets = [];
-                // Iterate over the Map and construct graph data
-                for (const [testName, elapsedTimes] of data.entries()) {
-                    labels.push(testName);
-                    datasets.push(elapsedTimes);
+                // Add elapsed time data to the Map, grouping by test name
+                if (data.has(value.name)) {
+                    data.get(value.name).push(value.elapsed_s);
+                } else {
+                    data.set(value.name, [value.elapsed_s]);
                 }
-                // Return the graph data object
-                return {
-                    labels,
-                    datasets: [{
-                        itemRadius: 3,
-                        data: datasets
-                    }],
-                };
             }
+            // Prepare the data for the graph (labels and datasets)
+            const labels = [];
+            const datasets = [];
+            // Iterate over the Map and construct graph data
+            for (const [testName, elapsedTimes] of data.entries()) {
+                labels.push(testName);
+                datasets.push(elapsedTimes);
+            }
+            // Return the graph data object
+            return {
+                labels,
+                datasets: [{
+                    itemRadius: 3,
+                    data: datasets
+                }],
+            };
         }
 
         // function to prepare the data in the correct format for (recent) most flaky test graph
@@ -2954,13 +3021,19 @@
 
         // function to update all graph data, function is called when updating filters and when the page loads
         function setup_data_and_graphs() {
-            setup_filtered_data_and_filters();
-            setup_section_order();
-            setup_graph_order();
-            setup_collapsables();
-            setup_eventlisteners_graph_view_buttons();
-            setup_eventlisteners_filter_buttons();
-            setup_all_graphs();
+            setup_spinner(false)
+
+            // Let the browser render before continuing
+            setTimeout(() => {
+                setup_filtered_data_and_filters();
+                setup_section_order();
+                setup_graph_order();
+                setup_collapsables();
+                setup_eventlisteners_graph_view_buttons();
+                setup_eventlisteners_filter_buttons();
+                setup_all_graphs();
+                setup_spinner(true); // presumably hides the spinner
+            }, 0);
         }
 
         // function updates the data in the graphs whenever filters are updated
@@ -2969,15 +3042,25 @@
             filteredRuns = filter_runs(runs);
             filteredRuns = filter_runtags(filteredRuns);
             filteredRuns = filter_dates(filteredRuns);
+            filteredRuns = filter_amount(filteredRuns);
             // filter suites and tests based on filtered runs
             filteredSuites = filter_data("suites");
             filteredTests = filter_data("tests");
             filteredKeywords = filter_data("keywords");
             // set titles with amount of filtered items
-            document.getElementById("runTitle").innerText = `Run Statistics (${Object.keys(filteredRuns).length})`;
-            document.getElementById("suiteTitle").innerText = `Suite Statistics (${Object.keys(filteredSuites).length})`;
-            document.getElementById("testTitle").innerText = `Test Statistics (${Object.keys(filteredTests).length})`;
-            document.getElementById("keywordTitle").innerText = `Keyword Statistics (${Object.keys(filteredKeywords).length})`;
+            // if (Object.keys(filteredRuns).length < filteredAmount) {
+            const runAmount = Object.keys(filteredRuns).length
+            const message = `<h6>showing ${runAmount} of ${filteredAmount} runs<h6>`
+            document.getElementById("runTitle").innerHTML = `Run Statistics (${runAmount}) ${message}`;
+            document.getElementById("suiteTitle").innerHTML = `Suite Statistics (${Object.keys(filteredSuites).length}) ${message}`;
+            document.getElementById("testTitle").innerHTML = `Test Statistics (${Object.keys(filteredTests).length}) ${message}`;
+            document.getElementById("keywordTitle").innerHTML = `Keyword Statistics (${Object.keys(filteredKeywords).length}) ${message}`;
+            // } else {
+            //     document.getElementById("runTitle").innerHTML = `Run Statistics (${Object.keys(filteredRuns).length})`;
+            //     document.getElementById("suiteTitle").innerHTML = `Suite Statistics (${Object.keys(filteredSuites).length})`;
+            //     document.getElementById("testTitle").innerHTML = `Test Statistics (${Object.keys(filteredTests).length})`;
+            //     document.getElementById("keywordTitle").innerHTML = `Keyword Statistics (${Object.keys(filteredKeywords).length})`;
+            // }
             // update tests select based on filtered runs
             setup_suites_in_selects();
             setup_testtags_in_select();
@@ -3014,10 +3097,11 @@
         // function to order the sections according to the localstorage config
         function setup_section_order() {
             const sections = localStorage.getItem("sectionShow")
-            var prevId = '#filterSection'
+            var prevId = '#loading'
             for (let section of sections.split(',')) {
                 section = section.replaceAll('\'', '')
-                var nextId = `#${space_to_camel_case(section + ' Section')}`
+                if (section == '') { continue }
+                var nextId = `#${space_to_camelcase(section + ' Section')}`
                 $(nextId).insertAfter(prevId)
                 prevId = nextId
             }
@@ -3058,7 +3142,7 @@
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <h4 class='sectionTitle'>{title}</h4>
+                                        <h5 class='sectionTitle'>{title}</h5>
                                     </div>
                                 </div>`
             const dataRow = `<div class="row collapse show" id="${lowerCaseSection}Data{index}">
@@ -3067,7 +3151,7 @@
 
             // helper function to create the chevron rows and data rows in the sections
             function position_graph(graph) {
-                const camelCaseGraph = space_to_camel_case(graph)
+                const camelCaseGraph = space_to_camelcase(graph)
                 const graphDataElement = document.getElementById(camelCaseGraph + 'Canvas')
                 const canvas = graphDataElement.outerHTML
                 graphDataElement.remove()
@@ -3120,7 +3204,7 @@
                 if (graph == '') { continue }
                 graph = graph.replaceAll('\'', '')
                 if (graph.startsWith(section)) {
-                    const camelCaseGraph = space_to_camel_case(graph)
+                    const camelCaseGraph = space_to_camelcase(graph)
                     const graphDataElement = document.getElementById(camelCaseGraph + 'Canvas')
                     sectionDataHiddenTempElement.appendChild(graphDataElement)
                 }
@@ -3136,11 +3220,12 @@
         function main() {
             setup_theme()
             setup_stats()
-            setup_customize_view_modal_arrows();
             setup_local_storage();
+            setup_customize_view_modal_arrows();
             setup_modal_items();
             setup_eventlisteners_customized_view_buttons();
             setup_eventlisteners_section_filter_buttons();
+            setup_run_amount_filter();
             setup_lowest_highest_dates();
             setup_runs_in_select_filter_buttons();
             setup_runtags_in_select_filter_buttons();
