@@ -1,5 +1,6 @@
 import argparse
 from datetime import datetime
+from sys import exit
 from re import split
 from os import getcwd
 from os.path import join, exists
@@ -114,11 +115,17 @@ class ArgumentParser:
             default=False,
         )
         parser.add_argument(
-            "-l",
-            "--listruns",
-            help="`boolean` Specifies if the runs should be listed. \
-                Default is True, override if you only require the database.",
-            default=True,
+            "-m",
+            "--messageconfig",
+            help="`path` Specifies the path to a config file that contains lines of messages with placeholders to 'bundle' test messages. \
+                Example lines can be 'The test has failed on date: ${date}' or 'Expected ${x} but received: ${y}'. Placeholders match everything and the content is irrelevant.",
+            default=None,
+        )
+        parser.add_argument(
+            "-q",
+            "--quantity",
+            help="`integer` Specifies the default amount (Amount Filter) of runs that are shown in the dashboard on first load.",
+            default=None,
         )
         parser.add_argument(
             "-g",
@@ -128,11 +135,11 @@ class ArgumentParser:
             default=True,
         )
         parser.add_argument(
-            "-m",
-            "--messageconfig",
-            help="`path` Specifies the path to a config file that contains lines of messages with placeholders to 'bundle' test messages. \
-                Example lines can be 'The test has failed on date: ${date}' or 'Expected ${x} but received: ${y}'. Placeholders match everything and the content is irrelevant.",
-            default=None,
+            "-l",
+            "--listruns",
+            help="`boolean` Specifies if the runs should be listed. \
+                Default is True, override if you only require the database.",
+            default=True,
         )
         parser.add_argument(
             "-c",
@@ -265,6 +272,13 @@ class ArgumentParser:
         else:
             start_server = False
 
+        # handles the quantity argument
+        quantity = arguments.quantity
+        if quantity == None:
+            quantity = 20
+        else:
+            int(quantity)
+
         # return all provided arguments
         provided_args = {
             "outputs": outputs,
@@ -283,5 +297,6 @@ class ArgumentParser:
             "server_host": server_host,
             "server_port": server_port,
             "message_config": message_config,
+            "quantity": quantity,
         }
         return dotdict(provided_args)

@@ -25,6 +25,7 @@ class RobotDashboard:
         database_class: Path,
         use_run_aliases: bool,
         message_config: list,
+        quantity: int
     ):
         """Sets the parameters provided in the command line"""
         self.database_path = database_path
@@ -37,6 +38,7 @@ class RobotDashboard:
         self.database_class = database_class
         self.use_run_aliases = use_run_aliases
         self.message_config = message_config
+        self.quantity = quantity
         self.server = False
         self.database = None
 
@@ -206,6 +208,7 @@ class RobotDashboard:
                 self.server,
                 self.use_run_aliases,
                 self.message_config,
+                self.quantity,
             )
             end = time()
             console += self._print_console(

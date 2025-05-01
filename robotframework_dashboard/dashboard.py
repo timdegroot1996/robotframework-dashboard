@@ -18,6 +18,7 @@ class DashboardGenerator:
         server: bool,
         use_run_aliases: bool,
         message_config: list,
+        quantity: int,
     ):
         """Function that generates the dashboard"""
         # update the dashboard data to exclude milliseconds if needed
@@ -57,6 +58,9 @@ class DashboardGenerator:
             )
             dashboard_data = dashboard_data.replace(
                 '"placeholder_keywords"', dumps(data["keywords"])
+            )
+            dashboard_data = dashboard_data.replace(
+                '"placeholder_amount"', str(quantity)
             )
             if dashboard_title != "":
                 dashboard_data = dashboard_data.replace(

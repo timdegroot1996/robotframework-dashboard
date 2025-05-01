@@ -31,6 +31,7 @@ def main():
         arguments.database_class,
         arguments.use_run_aliases,
         arguments.message_config,
+        arguments.quantity,
     )
     # If arguments.start_server is provided override some required args
     if arguments.start_server:
