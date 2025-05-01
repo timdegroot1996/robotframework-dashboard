@@ -1,4 +1,4 @@
-<html data-bs-theme="dark">
+<html data-bs-theme="dark" >
 
 <head>
     <title>"placeholder_dashboard_title"</title>
@@ -28,10 +28,6 @@
         href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==" />
 
     <style>
-        html {
-            overflow-y: scroll;
-        }
-
         :root {
             font-family: Helvetica, sans-serif;
         }
@@ -193,7 +189,7 @@
                             </div>
                             <div class="col-auto">
                                 <label class="form-label form-label-sm" for="amount"
-                                    title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">Amount</label>
+                                    title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">Run Amount</label>
                                 <input class="form-control form-control-sm" type="number" min=0 id="amount"
                                     title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
                                     value="10">
@@ -204,7 +200,7 @@
                             </div>
                             <div class="col-auto d-flex">
                                 <button type="button" class="btn btn-outline-primary btn-sm mt-auto"
-                                    data-bs-toggle="modal" data-bs-target="#hideModal">
+                                    data-bs-toggle="modal" data-bs-target="#hideModal" id="customizeView">
                                     Customize View
                                 </button>
                             </div>
@@ -239,7 +235,7 @@
                             aria-controls="runData"></div>
                     </div>
                     <div class="col">
-                        <h2 id="runTitle">Statistics</h2>
+                        <h3 id="runTitle">Statistics</h3>
                     </div>
                 </div>
             </div>
@@ -288,7 +284,7 @@
                             aria-controls="suiteData"></div>
                     </div>
                     <div class="col-4">
-                        <h2 id="suiteTitle">Suite Statistics</h2>
+                        <h3 id="suiteTitle">Suite Statistics</h3>
                     </div>
                     <div class="col-auto">
                         <div class="btn-group">
@@ -358,7 +354,7 @@
                             aria-controls="testData"></div>
                     </div>
                     <div class="col-4">
-                        <h2 id="testTitle">Test Statistics</h2>
+                        <h3 id="testTitle">Test Statistics</h3>
                     </div>
                     <div class="col-auto">
                         <div class="btn-group">
@@ -508,7 +504,7 @@
                             aria-controls="keywordData"></div>
                     </div>
                     <div class="col-4">
-                        <h2 id="keywordTitle">Keyword Statistics</h2>
+                        <h3 id="keywordTitle">Keyword Statistics</h3>
                     </div>
                     <div class="col-auto">
                         <div class="btn-group">
@@ -1580,7 +1576,7 @@
             });
         }
 
-        function filter_amount(filteredRuns){
+        function filter_amount(filteredRuns) {
             var selectedAmount = document.getElementById("amount").value;
             // Handle weird selectedAmountValues:
             if (selectedAmount == '') {
@@ -3156,7 +3152,7 @@
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <h4 class='sectionTitle'>{title}</h4>
+                                        <h5 class='sectionTitle'>{title}</h5>
                                     </div>
                                 </div>`
             const dataRow = `<div class="row collapse show" id="${lowerCaseSection}Data{index}">
