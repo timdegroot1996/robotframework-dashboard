@@ -1547,7 +1547,6 @@
             }
             return runs.filter(run => {
                 const runTags = run.tags.split(",");
-                console.log(runTags)
                 // Use AND logic: the run must contain all selected tags
                 if (!useOrTags) {
                     return selectedTags.every(selectedTag => runTags.includes(selectedTag));
