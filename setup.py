@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="robotframework-dashboard",
-    version="0.7.0",
+    version="0.7.1",
     description="Output processor and dashboard generator for Robot Framework output files",
     long_description="""# Robot Framework Dashboard
 
@@ -155,6 +155,11 @@ message_config.txt
 ```
 Expected ${x} but received: ${y}
 The test Normal Test ${number} has failed for some strange reason
+```
+- Set the default amount of runs shown in the amount filter when opening the dashboard. This improves load times with a lot of runs and can help read graphs better. The default value is 20.
+```
+robotdashboard -q 7
+robotdashboard --quantity 50
 ```
 - Make use of a custom DatabaseProcessor class see also the Custom Database Class section for examples and more details of the requirements.
 ```

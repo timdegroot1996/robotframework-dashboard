@@ -9,8 +9,8 @@
 usage: robotdashboard [[]-v[]] [[]-h[]] [[]-o [[]OUTPUTPATH ...[]][]] [[]-f OUTPUTFOLDERPATH[]]
                       [[]-r [[]REMOVERUNS ...[]][]] [[]-d DATABASEPATH[]]
                       [[]-n NAMEDASHBOARD[]] [[]-t DASHBOARDTITLE[]]
-                      [[]-e EXCLUDEMILLISECONDS[]] [[]-a ALIASES[]] [[]-l LISTRUNS[]]
-                      [[]-g GENERATEDASHBOARD[]] [[]-m MESSAGECONFIG[]]
+                      [[]-e EXCLUDEMILLISECONDS[]] [[]-a ALIASES[]] [[]-m MESSAGECONFIG[]]
+                      [[]-q QUANTITY[]] [[]-g GENERATEDASHBOARD[]] [[]-l LISTRUNS[]]
                       [[]-c DATABASECLASS[]] [[]-s SERVER[]]
 
 options:
@@ -56,14 +56,6 @@ options:
                         convert to alias: 'run_name_1'. 'output_' and '.xml'
                         are removed, and everything that remains will be the
                         run alias.
-  -l LISTRUNS, --listruns LISTRUNS
-                        `boolean` Specifies if the runs should be listed.
-                        Default is True, override if you only require the
-                        database.
-  -g GENERATEDASHBOARD, --generatedashboard GENERATEDASHBOARD
-                        `boolean` Specifies if you want to generate the HTML
-                        dashboard. Default is True, override if you only
-                        require the database.
   -m MESSAGECONFIG, --messageconfig MESSAGECONFIG
                         `path` Specifies the path to a config file that
                         contains lines of messages with placeholders to
@@ -71,6 +63,17 @@ options:
                         has failed on date: ${date}' or 'Expected ${x} but
                         received: ${y}'. Placeholders match everything and the
                         content is irrelevant.
+  -q QUANTITY, --quantity QUANTITY
+                        `integer` Specifies the default amount (Amount Filter)
+                        of runs that are shown in the dashboard on first load.
+  -g GENERATEDASHBOARD, --generatedashboard GENERATEDASHBOARD
+                        `boolean` Specifies if you want to generate the HTML
+                        dashboard. Default is True, override if you only
+                        require the database.
+  -l LISTRUNS, --listruns LISTRUNS
+                        `boolean` Specifies if the runs should be listed.
+                        Default is True, override if you only require the
+                        database.
   -c DATABASECLASS, --databaseclass DATABASECLASS
                         `path` Specifies the path to your implementation of
                         the databaseclass. If nothing is provided default

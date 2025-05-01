@@ -158,6 +158,11 @@ message_config.txt
 Expected ${x} but received: ${y}
 The test Normal Test ${number} has failed for some strange reason
 ```
+- Set the default amount of runs shown in the amount filter when opening the dashboard. This improves load times with a lot of runs and can help read graphs better. The default value is 20.
+```
+robotdashboard -q 7
+robotdashboard --quantity 50
+```
 - Make use of a custom DatabaseProcessor class, see also [Custom Database Class](#Custom-Database-Class) for examples and more details of the requirements.
 ```
 robotdashboard -c ./path/to/custom_class.py

@@ -15,6 +15,7 @@ Close Browser
 
 Open Dashboard
     New Page    url=${CURDIR}/../../../robot_dashboard.html
+    Wait For Elements State    selector=id=loading    state=hidden
 
 Close Dashboard
     Close Page
@@ -56,6 +57,8 @@ Validate Table
 Validate Run Filter
     [Arguments]    ${option}
     Select Options By    id=runs    value    ${option}
+    Wait For Elements State    selector=id=loading    state=hidden
+    Sleep    200ms
     Take Screenshot    filename=filterRuns${option}    fullPage=${True}
     Validate Screenshot    screenshot=filterRuns${option}    reference=filterRuns${option}
 
