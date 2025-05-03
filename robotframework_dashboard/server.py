@@ -129,10 +129,10 @@ class ApiServer:
         self.robotdashboard: RobotDashboard
         self.server_host = server_host
         self.server_port = server_port
-        self.admin_section_hide = ""
-        self.admin_graph_hide = ""
-        self.admin_section_show = ""
-        self.admin_graph_show = ""
+        self.admin_section_hide = '[]'
+        self.admin_graph_hide = '[]'
+        self.admin_section_show = '[]'
+        self.admin_graph_show = '[]'
 
         @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
         async def admin_page():
@@ -148,10 +148,10 @@ class ApiServer:
         async def dashboard_page():
             """Serve robotdashboard HTML endpoint function"""
             robot_dashboard_html = open("robot_dashboard.html", "r").read()
-            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_section_hide"', f'"{self.admin_section_hide}"')
-            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_graph_hide"', f'"{self.admin_graph_hide}"')
-            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_section_show"', f'"{self.admin_section_show}"')
-            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_graph_show"', f'"{self.admin_graph_show}"')
+            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_section_hide"', self.admin_section_hide)
+            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_graph_hide"', self.admin_graph_hide)
+            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_section_show"', self.admin_section_show)
+            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_graph_show"', self.admin_graph_show)
             return robot_dashboard_html
         
         @self.app.get("/get-customized-view-config", include_in_schema=False)
