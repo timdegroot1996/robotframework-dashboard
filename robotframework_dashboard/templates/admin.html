@@ -265,7 +265,7 @@
                         <h1 class="modal-title" id="hideModalLabel">Customize View</h1>
                         <div>
                             <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-dismiss="modal"
-                                id="resetView">Reset View</button>
+                                id="resetHide">Reset View</button>
                             <button class="btn btn-outline-primary btn-sm mt-auto ms-3" id="saveHide"
                                 data-bs-dismiss="modal" type="button">Save
                                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
@@ -366,34 +366,34 @@
             '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52" transform="matrix(-1,1.2246467991473532e-16,-1.2246467991473532e-16,-1,0,0)"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"></path></svg>';
 
         const hideSections = [
-            'Run Statistics',
-            'Suite Statistics',
-            'Test Statistics',
-            'Keyword Statistics',
+            "Run Statistics",
+            "Suite Statistics",
+            "Test Statistics",
+            "Keyword Statistics",
         ]
         const hideGraphs = [
-            'Run Statistics',
-            'Run Duration',
-            'Run Table',
-            'Suite Statistics',
-            'Suite Duration',
-            'Suite Most Failed',
-            'Suite Table',
-            'Test Statistics',
-            'Test Duration',
-            'Test Duration Deviation',
-            'Test Most Flaky',
-            'Test Recent Most Flaky',
-            'Test Most Failed',
-            'Test Messages',
-            'Test Table',
-            'Keyword Statistics',
-            'Keyword Times Run',
-            'Keyword Total Duration',
-            'Keyword Average Duration',
-            'Keyword Min Duration',
-            'Keyword Max Duration',
-            'Keyword Table'
+            "Run Statistics",
+            "Run Duration",
+            "Run Table",
+            "Suite Statistics",
+            "Suite Duration",
+            "Suite Most Failed",
+            "Suite Table",
+            "Test Statistics",
+            "Test Duration",
+            "Test Duration Deviation",
+            "Test Most Flaky",
+            "Test Recent Most Flaky",
+            "Test Most Failed",
+            "Test Messages",
+            "Test Table",
+            "Keyword Statistics",
+            "Keyword Times Run",
+            "Keyword Total Duration",
+            "Keyword Average Duration",
+            "Keyword Min Duration",
+            "Keyword Max Duration",
+            "Keyword Table"
         ]
         var hideItem = `<li class="hideItem list-group-item list-group-item-action d-flex {type}">
             <div class="hideItemText">{value}</div>
@@ -414,35 +414,31 @@
             }
         }
 
-        // function to add eventlisteners
-        function setup_eventlisteners() {
+        function setup_output_button_eventlisteners() {
             // add eventlisteners to all buttons
-            document.getElementById('addOutputPath').addEventListener('click', add_output_path)
-            document.getElementById('addOutputData').addEventListener('click', add_output_data)
-            document.getElementById('addOutputFolderPath').addEventListener('click', add_output_folder_path)
-            document.getElementById('removeOutputs').addEventListener('click', remove_outputs)
+            document.getElementById('addOutputPath').addEventListener('click', add_output_path);
+            document.getElementById('addOutputData').addEventListener('click', add_output_data);
+            document.getElementById('addOutputFolderPath').addEventListener('click', add_output_folder_path);
+            document.getElementById('removeOutputs').addEventListener('click', remove_outputs);
+
+        }
+
+        // function to add eventlisteners
+        function setup_customize_view_button_eventlisteners() {
             document.getElementById('saveHide').addEventListener('click', function () {
-                var sectionShow = ''
-                var graphShow = ''
-                document.getElementById('adminSectionShow').querySelectorAll('.hideItemText').forEach(item => {
-                    sectionShow += `'${item.innerText}',`
-                });
-                document.getElementById('adminGraphShow').querySelectorAll('.hideItemText').forEach(item => {
-                    graphShow += `'${item.innerText}',`
-                });
-                localStorage.setItem('adminSectionShow', sectionShow)
-                localStorage.setItem('adminGraphShow', graphShow)
-                set_customized_view_config()
+                update_customize_view_local_storage();
+                set_customized_view_config();
             });
 
             // remove the entire customized view configuration
-            document.getElementById('resetView').addEventListener('click', function () {
-                localStorage.setItem('adminSectionHide', '')
-                localStorage.setItem('adminSectionShow', '')
-                localStorage.setItem('adminGraphHide', '')
-                localStorage.setItem('adminGraphShow', '')
-                setup_modal_items()
-                set_customized_view_config()
+            document.getElementById('resetHide').addEventListener('click', function () {
+                localStorage.setItem('adminSectionHide', JSON.stringify([])); // Reset as empty array
+                localStorage.setItem('adminGraphHide', JSON.stringify([])); // Reset as empty array
+                localStorage.setItem('adminSectionShow', JSON.stringify(hideSections))
+                localStorage.setItem('adminGraphShow', JSON.stringify(hideGraphs))
+                setup_customize_view_content(); // Re-initialize the modal items
+                update_customize_view_local_storage();
+                set_customized_view_config();
             });
         }
 
@@ -569,10 +565,10 @@
 
         // function to set the customized view config
         function set_customized_view_config(notifications = true) {
-            const adminSectionHide = localStorage.getItem('adminSectionHide') ?? '';
-            const adminGraphHide = localStorage.getItem('adminGraphHide') ?? '';
-            const adminSectionShow = localStorage.getItem('adminSectionShow') ?? '';
-            const adminGraphShow = localStorage.getItem('adminGraphShow') ?? '';
+            const adminSectionHide = localStorage.getItem('adminSectionHide');
+            const adminGraphHide = localStorage.getItem('adminGraphHide');
+            const adminSectionShow = localStorage.getItem('adminSectionShow');
+            const adminGraphShow = localStorage.getItem('adminGraphShow');
             document.getElementById('saveHideSpinner').hidden = false
             const body = JSON.stringify({
                 admin_section_hide: adminSectionHide,
@@ -591,18 +587,26 @@
             xhr.onload = () => {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     const config = JSON.parse(xhr.responseText)
-                    const adminSectionHide = localStorage.getItem('adminSectionHide')
-                    const adminGraphHide = localStorage.getItem('adminGraphHide')
-                    const adminSectionShow = localStorage.getItem('adminSectionShow')
-                    const adminGraphShow = localStorage.getItem('adminGraphShow')
-                    if (adminSectionHide == '' && adminGraphHide == '' && adminSectionShow == '' && adminGraphShow == '') {
-                        localStorage.setItem('adminSectionHide', config.admin_section_hide)
-                        localStorage.setItem('adminGraphHide', config.admin_graph_hide)
-                        localStorage.setItem('adminSectionShow', config.admin_section_show)
-                        localStorage.setItem('adminGraphShow', config.admin_graph_show)
+                    const adminSectionHide = JSON.parse(localStorage.getItem('adminSectionHide'))
+                    const adminGraphHide = JSON.parse(localStorage.getItem('adminGraphHide'))
+                    const adminSectionShow = JSON.parse(localStorage.getItem('adminSectionShow'))
+                    const adminGraphShow = JSON.parse(localStorage.getItem('adminGraphShow'))
+                    if (adminSectionHide.length == 0 && adminGraphHide.length == 0 && adminSectionShow.length == 0 && adminGraphShow.length == 0) {
+                        if (config.admin_section_hide.length > 2 && config.admin_graph_hide.length > 2 && config.admin_section_show.length > 2 && config.admin_graph_show.length > 2) {
+                            // if the admin config is not empty use the server side admin config
+                            localStorage.setItem('adminSectionHide', JSON.stringify(JSON.parse(config.admin_section_hide)))
+                            localStorage.setItem('adminGraphHide', JSON.stringify(JSON.parse(config.admin_graph_hide)))
+                            localStorage.setItem('adminSectionShow', JSON.stringify(JSON.parse(config.admin_section_show)))
+                            localStorage.setItem('adminGraphShow', JSON.stringify(JSON.parse(config.admin_graph_show)))
+                        } else {
+                            // if the admin config is empty add the default values
+                            localStorage.setItem('adminSectionShow', JSON.stringify(hideSections))
+                            localStorage.setItem('adminGraphShow', JSON.stringify(hideGraphs))
+                        }
+
                     }
                     // 2 functions below should alwyas be here to make sure the server side config is actually present
-                    setup_modal_items() // fill the modal with the correct content
+                    setup_customize_view_content() // fill the modal with the correct content
                     set_customized_view_config(false) // if there is a local storage already in place update that on server side
                 } else {
                     add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, 'danger')
@@ -646,63 +650,69 @@
         // CUSTOMIZE VIEW FUNCTIONS //
         //////////////////////////////
 
-        // function to update the arrows in the customize modal
-        function setup_customize_view_modal_arrows() {
+        // Updated localStorage setup with backward compatibility
+        function setup_customize_view_local_storage() {
+            const keys = [
+                'adminSectionShow', 'adminSectionHide',
+                'adminGraphShow', 'adminGraphHide'
+            ];
+
+            keys.forEach(key => {
+                const value = localStorage.getItem(key);
+                if (value === null) {
+                    localStorage.setItem(key, JSON.stringify([]));
+                } else if (!value.trim().startsWith('[')) {
+                    // Convert old comma-separated string to JSON array
+                    const parsed = value.split(',')
+                        .map(s => s.trim().replace(/^'|'$/g, ''))
+                        .filter(Boolean);
+                    localStorage.setItem(key, JSON.stringify(parsed));
+                }
+            });
+        }
+
+        function setup_customize_view_arrow_eventlisteners() {
             // function to move the items from showing to hidden
             function move_items(fromId, toId) {
                 const fromBox = document.getElementById(fromId);
                 const toBox = document.getElementById(toId);
                 const selectedItems = fromBox.querySelectorAll('.active');
 
-                if (toId.includes('Hide')) {
-                    for (let item of selectedItems) {
-                        var hidden = localStorage.getItem(toId)
-                        hidden += `'${item.children[0].innerText}',`
-                        localStorage.setItem(toId, hidden)
-                    }
-                    if (toId.includes('Section')) {
-                        for (let item of selectedItems) {
-                            const identifier = item.children[0].innerText.split(" ")[0]
-                            disable_graphs_in_customize_view(true, identifier)
-                        }
-                    }
-                } else {
-                    for (let item of selectedItems) {
-                        var hidden = localStorage.getItem(fromId)
-                        hidden = hidden.replaceAll(`'${item.children[0].innerText}',`, '')
-                        localStorage.setItem(fromId, hidden)
-                    }
-                    if (toId.includes('Section')) {
-                        for (let item of selectedItems) {
-                            const identifier = item.children[0].innerText.split(" ")[0]
-                            disable_graphs_in_customize_view(false, identifier)
-                        }
+                const fromStorage = JSON.parse(localStorage.getItem(fromId));
+                const toStorage = JSON.parse(localStorage.getItem(toId));
+
+                for (let item of selectedItems) {
+                    const val = item.children[0].innerText;
+                    if (toId.includes('Hide')) {
+                        if (!toStorage.includes(val)) toStorage.push(val);
+                        const identifier = val.split(" ")[0];
+                        if (toId.includes('Section')) disable_graphs_in_customize_view(true, identifier);
+                    } else {
+                        const index = fromStorage.indexOf(val);
+                        if (index !== -1) fromStorage.splice(index, 1);
+                        const identifier = val.split(" ")[0];
+                        if (toId.includes('Section')) disable_graphs_in_customize_view(false, identifier);
                     }
                 }
 
-                if (toId != 'adminGraphShow') {
-                    selectedItems.forEach(item => {
-                        item.classList.remove('active');
+                localStorage.setItem(fromId, JSON.stringify(fromStorage));
+                localStorage.setItem(toId, JSON.stringify(toStorage));
+
+                selectedItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (toId === 'adminGraphShow') {
+                        const section = item.children[0].innerText.split(' ')[0];
+                        const listItems = document.getElementById('adminGraphShow').querySelectorAll('.hideItem');
+                        let lastMatchingItem = Array.from(listItems).reverse().find(li => {
+                            return li.children[0].innerText.startsWith(section);
+                        }) || listItems[listItems.length - 1];
+                        lastMatchingItem?.after(item);
+                    } else {
                         toBox.appendChild(item);
-                    });
-                } else {
-                    selectedItems.forEach(item => {
-                        item.classList.remove('active');
-                        const section = item.children[0].innerText.split(' ')[0]
-                        const listItems = document.getElementById('adminGraphShow').querySelectorAll('.hideItem')
-                        var lastMatchingItem = Array.from(listItems).reverse().find(li => {
-                            const div = li.children[0];
-                            return div.innerText.startsWith(section)
-                        });
-                        if (lastMatchingItem == undefined) {
-                            lastMatchingItem = listItems[listItems.length - 1]
-                        }
-                        lastMatchingItem.after(item);
-                    });
-                }
+                    }
+                });
             }
 
-            // Map the arrow actions and associated operations
             const arrowMappings = {
                 'sectionRight': { from: 'adminSectionShow', to: 'adminSectionHide', content: arrowRight },
                 'sectionLeft': { from: 'adminSectionHide', to: 'adminSectionShow', content: arrowLeft },
@@ -710,38 +720,21 @@
                 'graphLeft': { from: 'adminGraphHide', to: 'adminGraphShow', content: arrowLeft }
             };
 
-            // Initialize arrows with their respective functionality and content
             for (let arrow in arrowMappings) {
                 const { from, to, content } = arrowMappings[arrow];
-                // Update button content based on direction
                 update_arrow_button(arrow, content);
-                // Add event listener to each arrow button
-                document.getElementById(arrow).addEventListener("click", () => {
-                    move_items(from, to);
-                });
+                document.getElementById(arrow).addEventListener("click", () => move_items(from, to));
             }
 
-            // Function to update arrow button content
             function update_arrow_button(id, content) {
                 document.getElementById(id).innerHTML = content;
             }
         }
 
-        // function to handle the setting of the localstorge for customized view
-        function setup_local_storage() {
-            // first load to create a string
-            if (localStorage.getItem('adminSectionHide') == null) { localStorage.setItem('adminSectionHide', '') }
-            if (localStorage.getItem('adminSectionShow') == null) { localStorage.setItem('adminSectionShow', '') }
-            if (localStorage.getItem('adminGraphHide') == null) { localStorage.setItem('adminGraphHide', '') }
-            if (localStorage.getItem('adminGraphShow') == null) { localStorage.setItem('adminGraphShow', '') }
-        }
-
-        // function to add/remove disabled to the graphs in the customize view popup
         function disable_graphs_in_customize_view(disable, identifier) {
-            const relatedGraphs1 = document.getElementById("adminGraphShow").querySelectorAll(".hideItemText")
-            const relatedGraphs2 = document.getElementById("adminGraphHide").querySelectorAll(".hideItemText")
-            const relatedGraphs = [...relatedGraphs1, ...relatedGraphs2]
-            for (const graph of relatedGraphs) {
+            const allGraphs = [...document.getElementById("adminGraphShow").querySelectorAll(".hideItemText"),
+            ...document.getElementById("adminGraphHide").querySelectorAll(".hideItemText")];
+            for (const graph of allGraphs) {
                 if (graph.innerText.startsWith(identifier)) {
                     if (disable) {
                         graph.parentElement.classList.add('disabled');
@@ -752,136 +745,74 @@
             }
         }
 
-        // function to fill the customize view modal
-        function setup_modal_items() {
-            // function that adds the graph to the correct box
-            function add_graph(graph) {
-                const element = hideItem.replaceAll('{value}', graph).replaceAll('{type}', 'graph')
-                var hidden = localStorage.getItem('adminGraphHide')
-                if (hidden.includes(`'${graph}'`)) {
-                    graphHideItems += element
+        function setup_customize_view_content() {
+            const graphShow = JSON.parse(localStorage.getItem('adminGraphShow'));
+            const graphHide = JSON.parse(localStorage.getItem('adminGraphHide'));
+            const sectionShow = JSON.parse(localStorage.getItem('adminSectionShow'));
+            const sectionHide = JSON.parse(localStorage.getItem('adminSectionHide'));
+
+            let graphShowItems = '', graphHideItems = '';
+            let sectionShowItems = '', sectionHideItems = '';
+
+            for (let graph of [...graphShow, ...graphHide]) {
+                const element = hideItem.replaceAll('{value}', graph).replaceAll('{type}', 'graph');
+                if (graphHide.includes(graph)) {
+                    graphHideItems += element;
                 } else {
-                    graphShowItems += element
+                    graphShowItems += element;
                 }
             }
+            document.getElementById('adminGraphShow').innerHTML = graphShowItems;
+            document.getElementById('adminGraphHide').innerHTML = graphHideItems;
 
-            // GRAPHS FIRST TO BE ABLE TO DISABLE THEM BASED ON SECTIONS LATER!
-            // create the graphs in the correct order if sectionshow is set
-            var hideGraphsCopy = hideGraphs
-            var graphShowItems = ''
-            var graphHideItems = ''
-            if (localStorage.getItem('adminGraphShow') != '') {
-                for (let graph of localStorage.getItem('adminGraphShow').split(',')) {
-                    if (graph == '') { continue }
-                    graph = graph.replaceAll('\'', '')
-                    hideGraphsCopy = hideGraphsCopy.filter(hiddenGraph => hiddenGraph !== graph)
-                    add_graph(graph)
-                }
-            }
-            // use the default order for the remaining items
-            for (let graph of hideGraphsCopy) {
-                add_graph(graph.replaceAll('\'', ''))
-            }
-            document.getElementById('adminGraphShow').innerHTML = graphShowItems
-            document.getElementById('adminGraphHide').innerHTML = graphHideItems
-
-            // function that adds the section to the correct box
-            function add_section(section) {
-                const element = hideItem.replaceAll('{value}', section).replaceAll('{type}', 'section')
-                var hidden = localStorage.getItem('adminSectionHide')
-                if (hidden.includes(`'${section}'`)) {
-                    const identifier = section.split(' ')[0]
-                    disable_graphs_in_customize_view(true, identifier)
-                    sectionHideItems += element
+            for (let section of [...sectionShow, ...sectionHide]) {
+                const element = hideItem.replaceAll('{value}', section).replaceAll('{type}', 'section');
+                if (sectionHide.includes(section)) {
+                    const identifier = section.split(' ')[0];
+                    disable_graphs_in_customize_view(true, identifier);
+                    sectionHideItems += element;
                 } else {
-                    sectionShowItems += element
+                    sectionShowItems += element;
                 }
             }
+            document.getElementById('adminSectionShow').innerHTML = sectionShowItems;
+            document.getElementById('adminSectionHide').innerHTML = sectionHideItems;
 
-            // SECTIONS SECOND TO BE ABLE TO DISABLE THE ITEMS CORRECTLY
-            // create the sections in the correct order if sectionShow is set
-            var hideSectionsCopy = hideSections
-            var sectionShowItems = ''
-            var sectionHideItems = ''
-            if (localStorage.getItem('adminSectionShow') != '') {
-                for (let section of localStorage.getItem('adminSectionShow').split(',')) {
-                    if (section == '') { continue }
-                    section = section.replaceAll('\'', '')
-                    hideSectionsCopy = hideSectionsCopy.filter(hiddenSection => hiddenSection !== section)
-                    add_section(section)
-                }
-            }
-            // use the default order for the remaining items
-            for (let section of hideSectionsCopy) {
-                add_section(section.replaceAll('\'', ''))
-            }
-            document.getElementById('adminSectionShow').innerHTML = sectionShowItems
-            document.getElementById('adminSectionHide').innerHTML = sectionHideItems
-
-            // eventlisteners for the section up buttons
-            document.querySelectorAll('.section .moveUp').forEach(item => {
-                item.innerHTML = arrowUpVerySmall
+            document.querySelectorAll('.graph .moveUp, .section .moveUp').forEach(item => {
+                item.innerHTML = arrowUpVerySmall;
                 item.addEventListener('click', function (event) {
-                    before = $(this).parent().prev();
-                    $(this).parent().insertBefore(before)
+                    const before = $(this).parent().prev();
+                    if (before.length) $(this).parent().insertBefore(before);
                     event.stopPropagation();
                 });
             });
 
-            // eventlisteners for the section down buttons
-            document.querySelectorAll('.section .moveDown').forEach(item => {
-                item.innerHTML = arrowDownVerySmall
+            document.querySelectorAll('.graph .moveDown, .section .moveDown').forEach(item => {
+                item.innerHTML = arrowDownVerySmall;
                 item.addEventListener('click', function (event) {
-                    after = $(this).parent().next();
-                    $(this).parent().insertAfter(after)
+                    const after = $(this).parent().next();
+                    if (after.length) $(this).parent().insertAfter(after);
                     event.stopPropagation();
                 });
             });
 
-            // eventlisteners for the graph up buttons
-            document.querySelectorAll('.graph .moveUp').forEach(item => {
-                item.innerHTML = arrowUpVerySmall
-                item.addEventListener('click', function (event) {
-                    event.stopPropagation();
-                    before = $(this).parent().prev();
-                    if (before[0] == undefined || $(this).parent().children()[0].innerText.split(' ')[0] != before[0].innerText.split(' ')[0]) {
-                        return
-                    }
-                    $(this).parent().insertBefore(before)
-                });
-            });
-
-            // eventlisteners for the graph down buttons
-            document.querySelectorAll('.graph .moveDown').forEach(item => {
-                item.innerHTML = arrowDownVerySmall
-                item.addEventListener('click', function (event) {
-                    event.stopPropagation();
-                    after = $(this).parent().next();
-                    if (after[0] == undefined || $(this).parent().children()[0].innerText.split(' ')[0] != after[0].innerText.split(' ')[0]) {
-                        return
-                    }
-                    $(this).parent().insertAfter(after)
-                });
-            });
-
-            // set which sections and graphs are shown and fill the modal
             document.querySelectorAll('.hideItem').forEach(item => {
                 item.addEventListener('click', function () {
                     this.classList.toggle('active');
                 });
             });
 
-            // set adminSectionShow and adminGraphShow local storage 
-            var sectionShow = ''
-            var graphShow = ''
-            document.getElementById('adminSectionShow').querySelectorAll('.hideItem').forEach(item => {
-                sectionShow += `'${item.children[0].innerText}',`
-            });
-            document.getElementById('adminGraphShow').querySelectorAll('.hideItem').forEach(item => {
-                graphShow += `'${item.children[0].innerText}',`
-            });
-            localStorage.setItem('adminSectionShow', sectionShow)
-            localStorage.setItem('adminGraphShow', graphShow)
+        }
+
+        function update_customize_view_local_storage() {
+            // Sync current order to localStorage
+            const sectionOrder = Array.from(document.getElementById('adminSectionShow').querySelectorAll('.hideItem'))
+                .map(item => item.children[0].innerText);
+            const graphOrder = Array.from(document.getElementById('adminGraphShow').querySelectorAll('.hideItem'))
+                .map(item => item.children[0].innerText);
+
+            localStorage.setItem('adminSectionShow', JSON.stringify(sectionOrder));
+            localStorage.setItem('adminGraphShow', JSON.stringify(graphOrder));
         }
 
         ///////////////////////////
@@ -891,11 +822,13 @@
         // function that triggers all functions that should be executed when the dashboard is loaded first
         // in the correct order!
         function main() {
-            setup_eventlisteners()
-            setup_customize_view_modal_arrows()
-            setup_local_storage()
-            get_customized_view_config() // get server side config if it exists and update local storage (if it is not already filled) and the modal
-            get_outputs()
+            setup_theme();
+            setup_output_button_eventlisteners();
+            setup_customize_view_button_eventlisteners();
+            setup_customize_view_arrow_eventlisteners();
+            setup_customize_view_local_storage();
+            get_customized_view_config(); // get server side config if it exists and update local storage (if it is not already filled) and the modal
+            get_outputs();
         }
 
         // trigger of first load

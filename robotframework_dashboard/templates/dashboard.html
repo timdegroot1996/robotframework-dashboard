@@ -613,7 +613,7 @@
                         <h1 class="modal-title" id="hideModalLabel">Customize View</h1>
                         <div>
                             <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-dismiss="modal"
-                                id="resetView">Reset View</button>
+                                id="resetHide">Reset View</button>
                             <button type="button" class="btn btn-outline-primary btn-sm mt-auto ms-3"
                                 data-bs-dismiss="modal" id="saveHide">Save</button>
                         </div>
@@ -750,34 +750,34 @@
 
         // add items in hide modal
         const hideSections = [
-            'Run Statistics',
-            'Suite Statistics',
-            'Test Statistics',
-            'Keyword Statistics',
+            "Run Statistics",
+            "Suite Statistics",
+            "Test Statistics",
+            "Keyword Statistics",
         ]
         const hideGraphs = [
-            'Run Statistics',
-            'Run Duration',
-            'Run Table',
-            'Suite Statistics',
-            'Suite Duration',
-            'Suite Most Failed',
-            'Suite Table',
-            'Test Statistics',
-            'Test Duration',
-            'Test Duration Deviation',
-            'Test Most Flaky',
-            'Test Recent Most Flaky',
-            'Test Most Failed',
-            'Test Messages',
-            'Test Table',
-            'Keyword Statistics',
-            'Keyword Times Run',
-            'Keyword Total Duration',
-            'Keyword Average Duration',
-            'Keyword Min Duration',
-            'Keyword Max Duration',
-            'Keyword Table'
+            "Run Statistics",
+            "Run Duration",
+            "Run Table",
+            "Suite Statistics",
+            "Suite Duration",
+            "Suite Most Failed",
+            "Suite Table",
+            "Test Statistics",
+            "Test Duration",
+            "Test Duration Deviation",
+            "Test Most Flaky",
+            "Test Recent Most Flaky",
+            "Test Most Failed",
+            "Test Messages",
+            "Test Table",
+            "Keyword Statistics",
+            "Keyword Times Run",
+            "Keyword Total Duration",
+            "Keyword Average Duration",
+            "Keyword Min Duration",
+            "Keyword Max Duration",
+            "Keyword Table"
         ]
         var hideItem = `<li class="hideItem list-group-item list-group-item-action d-flex {type}">
             <div class="hideItemText">{value}</div>
@@ -875,59 +875,46 @@
         //////////////////////////////
 
         // function to update the arrows in the customize modal
-        function setup_customize_view_modal_arrows() {
+        function setup_customize_view_arrow_eventlisteners() {
             // function to move the items from showing to hidden
             function move_items(fromId, toId) {
                 const fromBox = document.getElementById(fromId);
                 const toBox = document.getElementById(toId);
                 const selectedItems = fromBox.querySelectorAll('.active');
 
-                if (toId.includes('Hide')) {
-                    for (let item of selectedItems) {
-                        var hidden = localStorage.getItem(toId)
-                        hidden += `'${item.children[0].innerText}',`
-                        localStorage.setItem(toId, hidden)
-                    }
-                    if (toId.includes('section')) {
-                        for (let item of selectedItems) {
-                            const identifier = item.children[0].innerText.split(" ")[0]
-                            disable_graphs_in_customize_view(true, identifier)
-                        }
-                    }
-                } else {
-                    for (let item of selectedItems) {
-                        var hidden = localStorage.getItem(fromId)
-                        hidden = hidden.replaceAll(`'${item.children[0].innerText}',`, '')
-                        localStorage.setItem(fromId, hidden)
-                    }
-                    if (toId.includes('section')) {
-                        for (let item of selectedItems) {
-                            const identifier = item.children[0].innerText.split(" ")[0]
-                            disable_graphs_in_customize_view(false, identifier)
-                        }
+                const fromStorage = JSON.parse(localStorage.getItem(fromId));
+                const toStorage = JSON.parse(localStorage.getItem(toId));
+
+                for (let item of selectedItems) {
+                    const val = item.children[0].innerText;
+                    if (toId.includes('Hide')) {
+                        if (!toStorage.includes(val)) toStorage.push(val);
+                        const identifier = val.split(" ")[0];
+                        if (toId.includes('section')) disable_graphs_in_customize_view(true, identifier);
+                    } else {
+                        const index = fromStorage.indexOf(val);
+                        if (index !== -1) fromStorage.splice(index, 1);
+                        const identifier = val.split(" ")[0];
+                        if (toId.includes('section')) disable_graphs_in_customize_view(false, identifier);
                     }
                 }
 
-                if (toId != 'graphShow') {
-                    selectedItems.forEach(item => {
-                        item.classList.remove('active');
+                localStorage.setItem(fromId, JSON.stringify(fromStorage));
+                localStorage.setItem(toId, JSON.stringify(toStorage));
+
+                selectedItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (toId === 'graphShow') {
+                        const section = item.children[0].innerText.split(' ')[0];
+                        const listItems = document.getElementById('graphShow').querySelectorAll('.hideItem');
+                        let lastMatchingItem = Array.from(listItems).reverse().find(li => {
+                            return li.children[0].innerText.startsWith(section);
+                        }) || listItems[listItems.length - 1];
+                        lastMatchingItem?.after(item);
+                    } else {
                         toBox.appendChild(item);
-                    });
-                } else {
-                    selectedItems.forEach(item => {
-                        item.classList.remove('active');
-                        const section = item.children[0].innerText.split(' ')[0]
-                        const listItems = document.getElementById('graphShow').querySelectorAll('.hideItem')
-                        var lastMatchingItem = Array.from(listItems).reverse().find(li => {
-                            const div = li.children[0];
-                            return div.innerText.startsWith(section)
-                        });
-                        if (lastMatchingItem == undefined) {
-                            lastMatchingItem = listItems[listItems.length - 1]
-                        }
-                        lastMatchingItem.after(item);
-                    });
-                }
+                    }
+                });
             }
 
             // Map the arrow actions and associated operations
@@ -956,25 +943,75 @@
         }
 
         // function to handle the setting of the localstorge for customized view
-        function setup_local_storage() {
-            // on first load update the sectionHide, sectionShow, graphHide, graphShow based on admin config
-            const adminSectionHide = "placeholder_admin_section_hide"
-            const adminSectionShow = "placeholder_admin_section_show"
-            const adminGraphHide = "placeholder_admin_graph_hide"
-            const adminGraphShow = "placeholder_admin_graph_show"
-            // first load to create a string
-            if (localStorage.getItem('sectionHide') == null) { localStorage.setItem('sectionHide', '') }
-            if (localStorage.getItem('sectionShow') == null) { localStorage.setItem('sectionShow', '') }
-            if (localStorage.getItem('graphHide') == null) { localStorage.setItem('graphHide', '') }
-            if (localStorage.getItem('graphShow') == null) { localStorage.setItem('graphShow', '') }
-            // override empty config with admin config if exists
-            if (localStorage.getItem('sectionHide') == '' && localStorage.getItem('sectionShow') == '' && localStorage.getItem('graphHide') == '' && localStorage.getItem('graphShow') == '') {
-                if (!adminSectionHide.includes('admin')) { localStorage.setItem('sectionHide', adminSectionHide) }
-                if (!adminSectionShow.includes('admin')) { localStorage.setItem('sectionShow', adminSectionShow) }
-                if (!adminGraphHide.includes('admin')) { localStorage.setItem('graphHide', adminGraphHide) }
-                if (!adminGraphShow.includes('admin')) { localStorage.setItem('graphShow', adminGraphShow) }
+        function setup_customize_view_local_storage() {
+            const adminDefaults = {
+                sectionHide: "placeholder_admin_section_hide",
+                sectionShow: "placeholder_admin_section_show",
+                graphHide: "placeholder_admin_graph_hide",
+                graphShow: "placeholder_admin_graph_show"
+            };
+
+            const keys = Object.keys(adminDefaults);
+
+            // Helper: Convert legacy "'item1','item2'" string into array
+            function migrate_legacy_string(value) {
+                if (typeof value === 'string') {
+                    return value.split(',')
+                        .map(v => v.trim().replace(/^'+|'+$/g, '')) // strip surrounding single quotes
+                        .filter(v => v !== '');
+                }
+                return [];
             }
-            // settings for the graphtypes in localstorage
+
+            // Handle migration or init of all keys
+            keys.forEach(key => {
+                let raw = localStorage.getItem(key);
+
+                if (raw === null) {
+                    // Not present at all → store empty array
+                    localStorage.setItem(key, JSON.stringify([]));
+                } else {
+                    try {
+                        // Try parsing as JSON array (new format)
+                        const parsed = JSON.parse(raw);
+                        if (!Array.isArray(parsed)) throw new Error('Not an array');
+                    } catch (e) {
+                        // Legacy format → migrate to array
+                        const migrated = migrate_legacy_string(raw);
+                        localStorage.setItem(key, JSON.stringify(migrated));
+                    }
+                }
+            });
+
+            // Apply admin defaults only if all are still empty arrays
+            const allEmpty = keys.every(key => {
+                const val = JSON.parse(localStorage.getItem(key));
+                return Array.isArray(val) && val.length === 0;
+            });
+
+            // Actually set the defaults, either admin or normal
+            if (allEmpty) {
+                if (
+                    !adminDefaults.sectionHide.includes('placeholder_admin') &&
+                    (
+                        adminDefaults.sectionShow.length > 0 ||
+                        adminDefaults.graphShow.length > 0 ||
+                        adminDefaults.sectionHide.length > 0 ||
+                        adminDefaults.graphHide.length > 0
+                    )
+                ) {
+                    // the admin defaults are set
+                    keys.forEach(key => {
+                        localStorage.setItem(key, JSON.stringify(adminDefaults[key]));
+                    });
+                } else {
+                    // there is no admin defaults so use the regular defaults
+                    localStorage.setItem('sectionShow', JSON.stringify(hideSections))
+                    localStorage.setItem('graphShow', JSON.stringify(hideGraphs))
+                }
+            }
+
+            // Graph type defaults (unchanged)
             const defaultGraphTypes = {
                 runStatisticsGraphType: "percentages",
                 runDurationGraphType: "line",
@@ -995,6 +1032,7 @@
                 keywordMinDurationGraphType: "bar",
                 keywordMaxDurationGraphType: "bar"
             };
+
             let storedTypes = localStorage.getItem("graphTypes");
             if (!storedTypes) {
                 localStorage.setItem("graphTypes", JSON.stringify(defaultGraphTypes));
@@ -1002,7 +1040,7 @@
             } else {
                 storedTypes = JSON.parse(storedTypes);
             }
-            // Assign to global variables and update the visual correctly
+
             for (let key in storedTypes) {
                 window[key] = storedTypes[key];
                 update_button_selection(key.replace('GraphType', ''), storedTypes[key]);
@@ -1037,124 +1075,62 @@
         }
 
         // create the modal with the correct layout based on localstorage
-        function setup_modal_items() {
-            // function that adds the graph to the correct box
-            function add_graph(graph) {
-                const element = hideItem.replaceAll('{value}', graph).replaceAll('{type}', 'graph')
-                const hidden = localStorage.getItem('graphHide')
-                if (hidden.includes(`'${graph}'`)) {
-                    graphHideItems += element
+        function setup_customize_view_content() {
+            const graphShow = JSON.parse(localStorage.getItem('graphShow'));
+            const graphHide = JSON.parse(localStorage.getItem('graphHide'));
+            const sectionShow = JSON.parse(localStorage.getItem('sectionShow'));
+            const sectionHide = JSON.parse(localStorage.getItem('sectionHide'));
+
+            let graphShowItems = '', graphHideItems = '';
+            let sectionShowItems = '', sectionHideItems = '';
+
+            for (let graph of [...graphShow, ...graphHide]) {
+                const element = hideItem.replaceAll('{value}', graph).replaceAll('{type}', 'graph');
+                if (graphHide.includes(graph)) {
+                    graphHideItems += element;
                 } else {
-                    graphShowItems += element
+                    graphShowItems += element;
                 }
             }
+            document.getElementById('graphShow').innerHTML = graphShowItems;
+            document.getElementById('graphHide').innerHTML = graphHideItems;
 
-            // GRAPHS FIRST TO BE ABLE TO DISABLE THEM BASED ON SECTIONS LATER!
-            // create the graphs in the correct order if sectionshow is set
-            var hideGraphsCopy = hideGraphs
-            var graphShowItems = ''
-            var graphHideItems = ''
-            if (localStorage.getItem('graphShow') != '') {
-                for (let graph of localStorage.getItem('graphShow').split(',')) {
-                    if (graph == '') { continue }
-                    graph = graph.replaceAll('\'', '')
-                    hideGraphsCopy = hideGraphsCopy.filter(hiddenGraph => hiddenGraph !== graph)
-                    add_graph(graph)
-                }
-            }
-            // use the default order for the remaining items
-            for (let graph of hideGraphsCopy) {
-                add_graph(graph.replaceAll('\'', ''))
-            }
-            document.getElementById('graphShow').innerHTML = graphShowItems
-            document.getElementById('graphHide').innerHTML = graphHideItems
-
-            // function that adds the section to the correct box
-            function add_section(section) {
-                const element = hideItem.replaceAll('{value}', section).replaceAll('{type}', 'section')
-                const hidden = localStorage.getItem('sectionHide')
-                if (hidden.includes(`'${section}'`)) {
-                    const identifier = section.split(' ')[0]
-                    disable_graphs_in_customize_view(true, identifier)
-                    sectionHideItems += element
+            for (let section of [...sectionShow, ...sectionHide]) {
+                const element = hideItem.replaceAll('{value}', section).replaceAll('{type}', 'section');
+                if (sectionHide.includes(section)) {
+                    const identifier = section.split(' ')[0];
+                    disable_graphs_in_customize_view(true, identifier);
+                    sectionHideItems += element;
                 } else {
-                    sectionShowItems += element
+                    sectionShowItems += element;
                 }
             }
+            document.getElementById('sectionShow').innerHTML = sectionShowItems;
+            document.getElementById('sectionHide').innerHTML = sectionHideItems;
 
-            // SECTIONS SECOND TO BE ABLE TO DISABLE THE ITEMS CORRECTLY
-            // create the sections in the correct order if sectionShow is set
-            var hideSectionsCopy = hideSections
-            var sectionShowItems = ''
-            var sectionHideItems = ''
-            if (localStorage.getItem('sectionShow') != '') {
-                for (let section of localStorage.getItem('sectionShow').split(',')) {
-                    if (section == '') { continue }
-                    section = section.replaceAll('\'', '')
-                    hideSectionsCopy = hideSectionsCopy.filter(hiddenSection => hiddenSection !== section)
-                    add_section(section)
-                }
-            }
-            // use the default order for the remaining items
-            for (let section of hideSectionsCopy) {
-                add_section(section.replaceAll('\'', ''))
-            }
-            document.getElementById('sectionShow').innerHTML = sectionShowItems
-            document.getElementById('sectionHide').innerHTML = sectionHideItems
-
-            // eventlisteners for the section up buttons
-            document.querySelectorAll('.section .moveUp').forEach(item => {
-                item.innerHTML = arrowUpVerySmall
+            document.querySelectorAll('.graph .moveUp, .section .moveUp').forEach(item => {
+                item.innerHTML = arrowUpVerySmall;
                 item.addEventListener('click', function (event) {
-                    before = $(this).parent().prev();
-                    $(this).parent().insertBefore(before)
+                    const before = $(this).parent().prev();
+                    if (before.length) $(this).parent().insertBefore(before);
                     event.stopPropagation();
                 });
             });
 
-            // eventlisteners for the section down buttons
-            document.querySelectorAll('.section .moveDown').forEach(item => {
-                item.innerHTML = arrowDownVerySmall
+            document.querySelectorAll('.graph .moveDown, .section .moveDown').forEach(item => {
+                item.innerHTML = arrowDownVerySmall;
                 item.addEventListener('click', function (event) {
-                    after = $(this).parent().next();
-                    $(this).parent().insertAfter(after)
+                    const after = $(this).parent().next();
+                    if (after.length) $(this).parent().insertAfter(after);
                     event.stopPropagation();
                 });
             });
 
-            // eventlisteners for the graph up buttons
-            document.querySelectorAll('.graph .moveUp').forEach(item => {
-                item.innerHTML = arrowUpVerySmall
-                item.addEventListener('click', function (event) {
-                    event.stopPropagation();
-                    before = $(this).parent().prev();
-                    if (before[0] == undefined || $(this).parent().children()[0].innerText.split(' ')[0] != before[0].innerText.split(' ')[0]) {
-                        return
-                    }
-                    $(this).parent().insertBefore(before)
-                });
-            });
-
-            // eventlisteners for the graph down buttons
-            document.querySelectorAll('.graph .moveDown').forEach(item => {
-                item.innerHTML = arrowDownVerySmall
-                item.addEventListener('click', function (event) {
-                    event.stopPropagation();
-                    after = $(this).parent().next();
-                    if (after[0] == undefined || $(this).parent().children()[0].innerText.split(' ')[0] != after[0].innerText.split(' ')[0]) {
-                        return
-                    }
-                    $(this).parent().insertAfter(after)
-                });
-            });
-
-            // eventlistener on all items in the modal to trigger active
             document.querySelectorAll('.hideItem').forEach(item => {
                 item.addEventListener('click', function () {
                     this.classList.toggle('active');
                 });
             });
-            update_local_storage_show();
         }
 
         // function to add/remove disabled to the graphs in the customize view popup
@@ -1173,18 +1149,15 @@
             }
         }
 
-        // function to update show local storage
-        function update_local_storage_show() {
-            var sectionShow = ''
-            var graphShow = ''
-            document.getElementById('sectionShow').querySelectorAll('.hideItemText').forEach(item => {
-                sectionShow += `'${item.innerText}',`
-            });
-            document.getElementById('graphShow').querySelectorAll('.hideItemText').forEach(item => {
-                graphShow += `'${item.innerText}',`
-            });
-            localStorage.setItem('sectionShow', sectionShow)
-            localStorage.setItem('graphShow', graphShow)
+        function update_customize_view_local_storage() {
+            // Sync current order to localStorage
+            const sectionOrder = Array.from(document.getElementById('sectionShow').querySelectorAll('.hideItem'))
+                .map(item => item.children[0].innerText);
+            const graphOrder = Array.from(document.getElementById('graphShow').querySelectorAll('.hideItem'))
+                .map(item => item.children[0].innerText);
+
+            localStorage.setItem('sectionShow', JSON.stringify(sectionOrder));
+            localStorage.setItem('graphShow', JSON.stringify(graphOrder));
         }
 
         /////////////////////////////
@@ -1192,24 +1165,23 @@
         /////////////////////////////
 
         // function to create customized view eventlisteners
-        function setup_eventlisteners_customized_view_buttons() {
+        function setup_customize_view_button_eventlisteners() {
             // update all graphs based on new hidden graphs/sections
             document.getElementById('saveHide').addEventListener('click', function () {
-                document.getElementById('runs').focus()
-                update_local_storage_show()
-                setup_data_and_graphs()
+                update_customize_view_local_storage();
+                setup_data_and_graphs();
             });
 
             // remove the entire customized view configuration
-            document.getElementById('resetView').addEventListener('click', function () {
+            document.getElementById('resetHide').addEventListener('click', function () {
                 document.getElementById('runs').focus()
-                localStorage.setItem('sectionHide', '')
-                localStorage.setItem('sectionShow', '')
-                localStorage.setItem('graphHide', '')
-                localStorage.setItem('graphShow', '')
-                setup_modal_items()
-                update_local_storage_show()
-                setup_data_and_graphs()
+                localStorage.setItem('sectionHide', JSON.stringify([]));
+                localStorage.setItem('graphHide', JSON.stringify([]));
+                localStorage.setItem('sectionShow', JSON.stringify(hideSections));
+                localStorage.setItem('graphShow', JSON.stringify(hideGraphs));
+                setup_customize_view_content();
+                update_customize_view_local_storage();
+                setup_data_and_graphs();
             });
         }
 
@@ -1378,9 +1350,6 @@
         // function to setup run 
         function setup_run_amount_filter() {
             document.getElementById('amount').setAttribute('max', runs.length)
-            if (runs.length < 10) {
-                document.getElementById('amount').value = runs.length
-            }
         }
 
 
@@ -3087,20 +3056,16 @@
 
         // function to order the sections according to the localstorage config
         function setup_section_order() {
-            const sectionShow = localStorage.getItem("sectionShow")
             var prevId = '#loading'
-            for (let section of sectionShow.split(',')) {
-                section = section.replaceAll('\'', '')
-                if (section == '') { continue }
+            const sectionShowList = JSON.parse(localStorage.getItem('sectionShow'));
+            for (let section of sectionShowList) {
                 var nextId = `#${space_to_camelcase(section + ' Section')}`
                 document.getElementById(`${space_to_camelcase(section + ' Section')}`).hidden = false
                 $(nextId).insertAfter(prevId)
                 prevId = nextId
             }
-            const sectionHide = localStorage.getItem("sectionHide")
-            for (let section of sectionHide.split(',')) {
-                section = section.replaceAll('\'', '')
-                if (section == '') { continue }
+            const sectionHideList = JSON.parse(localStorage.getItem('sectionHide'));
+            for (let section of sectionHideList) {
                 document.getElementById(`${space_to_camelcase(section + ' Section')}`).hidden = true
             }
         }
@@ -3190,17 +3155,15 @@
             }
 
             // order the graphs correctly
-            for (let graph of localStorage.getItem('graphShow').split(',')) {
-                if (graph == '') { continue }
-                graph = graph.replaceAll('\'', '')
+            const graphShowList = JSON.parse(localStorage.getItem('graphShow'));
+            for (let graph of graphShowList) {
                 if (graph.startsWith(section)) {
                     position_graph(graph)
                 }
             }
             // move the hidden items to temp hidden to keep the HTML available for reconfiguration
-            for (let graph of localStorage.getItem('graphHide').split(',')) {
-                if (graph == '') { continue }
-                graph = graph.replaceAll('\'', '')
+            const graphHideList = JSON.parse(localStorage.getItem('graphHide'));
+            for (let graph of graphHideList) {
                 if (graph.startsWith(section)) {
                     const camelCaseGraph = space_to_camelcase(graph)
                     const graphDataElement = document.getElementById(camelCaseGraph + 'Canvas')
@@ -3216,12 +3179,13 @@
         // function that triggers all functions that should be executed when the dashboard is loaded first
         // in the correct order!
         function main() {
-            setup_theme()
-            setup_stats()
-            setup_local_storage();
-            setup_customize_view_modal_arrows();
-            setup_modal_items();
-            setup_eventlisteners_customized_view_buttons();
+            setup_theme();
+            setup_stats();
+            setup_customize_view_button_eventlisteners();
+            setup_customize_view_arrow_eventlisteners();
+            setup_customize_view_local_storage();
+            setup_customize_view_content();
+            update_customize_view_local_storage();
             setup_eventlisteners_section_filter_buttons();
             setup_run_amount_filter();
             setup_lowest_highest_dates();
