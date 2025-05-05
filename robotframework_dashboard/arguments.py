@@ -128,6 +128,15 @@ class ArgumentParser:
             default=None,
         )
         parser.add_argument(
+            "-u",
+            "--userlogfolder",
+            help="`path` Specifies a path to a folder in which your log files are located. Providing this argument makes runs/suites/tests/keywords clickable.\
+                The click will open the respective log file in a new tab. This feature uses aliases (generated based on output file names) to determine the log file name. \
+                For those aliases output_ and .xml are stripped away. For this feature 'output' should still be in the alias to be replaced with 'log'\
+                Example: alias: 'output-20250313-002134' should have 'log-20250313-002134.html' in the folder that is provided, alias: '01-output' expects a '01-log.html' etc.",
+            default=None,
+        )
+        parser.add_argument(
             "-g",
             "--generatedashboard",
             help="`boolean` Specifies if you want to generate the HTML \
@@ -193,7 +202,7 @@ class ArgumentParser:
 
         # handles the processing of --removeruns
         remove_runs = None
-        if arguments.removeruns != None:
+        if arguments.removeruns:
             remove_runs = []
             for runs in arguments.removeruns:
                 parts = str(runs[0]).split(",")
@@ -235,7 +244,7 @@ class ArgumentParser:
 
         # handles the custom test message handling
         message_config = []
-        if arguments.messageconfig != None:
+        if arguments.messageconfig:
             with open(arguments.messageconfig) as file:
                 for line in file:
                     message_config.append(line.strip())
@@ -264,7 +273,7 @@ class ArgumentParser:
         # handles the server argument
         server_host = "127.0.0.1"
         server_port = 8543
-        if arguments.server != None:
+        if arguments.server:
             start_server = True
             if arguments.server != "default":
                 server_host, server_port = arguments.server.split(":")
@@ -278,6 +287,17 @@ class ArgumentParser:
             quantity = 20
         else:
             int(quantity)
+
+        # handles the userlogfolder argument
+        user_log_folder = None
+        if arguments.userlogfolder:
+            user_log_folder = join(getcwd(), arguments.userlogfolder).replace(
+                "\\.\\", "\\"
+            )
+            if not exists(user_log_folder):
+                raise Exception(
+                    f"  ERROR: the provided output folder did not exist in the expected path: {user_log_folder}"
+                )
 
         # return all provided arguments
         provided_args = {
@@ -298,5 +318,6 @@ class ArgumentParser:
             "server_port": server_port,
             "message_config": message_config,
             "quantity": quantity,
+            "user_log_folder": user_log_folder,
         }
         return dotdict(provided_args)

@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from uvicorn import run
 from os.path import join, abspath, dirname
 from os import remove
+from pathlib import Path
 from .version import __version__
 
 
@@ -31,6 +32,7 @@ class ResponseMessage(BaseModel):
             ]
         }
     }
+
 
 class CustomizedViewConfig(BaseModel):
     admin_section_hide: str
@@ -123,16 +125,17 @@ class RemoveOutputs(BaseModel):
 class ApiServer:
     """Robot Dashboard server implementation, this class handles the admin page and all functions related to the server"""
 
-    def __init__(self, server_host: str, server_port: int):
+    def __init__(self, server_host: str, server_port: int, user_log_folder: Path):
         """Init function that starts up the fastapi app and initializes all the vars and endpoints"""
         self.app = FastAPI()
         self.robotdashboard: RobotDashboard
         self.server_host = server_host
         self.server_port = server_port
-        self.admin_section_hide = '[]'
-        self.admin_graph_hide = '[]'
-        self.admin_section_show = '[]'
-        self.admin_graph_show = '[]'
+        self.user_log_folder = user_log_folder
+        self.admin_section_hide = "[]"
+        self.admin_graph_hide = "[]"
+        self.admin_section_show = "[]"
+        self.admin_graph_show = "[]"
 
         @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
         async def admin_page():
@@ -148,12 +151,41 @@ class ApiServer:
         async def dashboard_page():
             """Serve robotdashboard HTML endpoint function"""
             robot_dashboard_html = open("robot_dashboard.html", "r").read()
-            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_section_hide"', self.admin_section_hide)
-            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_graph_hide"', self.admin_graph_hide)
-            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_section_show"', self.admin_section_show)
-            robot_dashboard_html = robot_dashboard_html.replace('"placeholder_admin_graph_show"', self.admin_graph_show)
+            robot_dashboard_html = robot_dashboard_html.replace(
+                '"placeholder_admin_section_hide"', self.admin_section_hide
+            )
+            robot_dashboard_html = robot_dashboard_html.replace(
+                '"placeholder_admin_graph_hide"', self.admin_graph_hide
+            )
+            robot_dashboard_html = robot_dashboard_html.replace(
+                '"placeholder_admin_section_show"', self.admin_section_show
+            )
+            robot_dashboard_html = robot_dashboard_html.replace(
+                '"placeholder_admin_graph_show"', self.admin_graph_show
+            )
             return robot_dashboard_html
-        
+
+        @self.app.get("/log", response_class=HTMLResponse, include_in_schema=False)
+        async def log_page(file: str):
+            """Serve log HTML endpoint function"""
+            log_file = join(self.user_log_folder, file)
+            try:
+                log_html = open(log_file, "r", encoding="utf-8").read()
+            except Exception as error:
+                log_html = f"""<!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                    <meta charset="UTF-8">
+                    <title>404 - File Not Found</title>
+                    </head>
+                    <body>
+                    <h1>404 - File Not Found</h1>
+                    <p>The file you are looking for ({log_file}) could not be found on the server!</p>
+                    </body>
+                    </html>
+                """
+            return log_html
+
         @self.app.get("/get-customized-view-config", include_in_schema=False)
         async def get_customized_view_config() -> CustomizedViewConfig:
             response = {
@@ -163,9 +195,11 @@ class ApiServer:
                 "admin_graph_show": self.admin_graph_show,
             }
             return response
-        
+
         @self.app.post("/set-customized-view-config", include_in_schema=False)
-        async def set_customized_view_config(config: CustomizedViewConfig) -> ResponseMessage:
+        async def set_customized_view_config(
+            config: CustomizedViewConfig,
+        ) -> ResponseMessage:
             """Adds the config to the class variables for use when generating the dashboard"""
             console = "no console output"
             try:
@@ -182,10 +216,10 @@ class ApiServer:
                 }
                 return response
             response = {
-                    "success": "1",
-                    "message": f"SUCCESS: set the new config and generated the report",
-                    "console": console,
-                }
+                "success": "1",
+                "message": f"SUCCESS: set the new config and generated the report",
+                "console": console,
+            }
             return response
 
         @self.app.get("/get-outputs")
@@ -196,7 +230,12 @@ class ApiServer:
             outputs = []
             for run, name, alias, tag in zip(runs, names, aliases, tags):
                 outputs.append(
-                    {"run_start": str(run), "name": str(name), "alias": str(alias), "tags": str(tag)}
+                    {
+                        "run_start": str(run),
+                        "name": str(name),
+                        "alias": str(alias),
+                        "tags": str(tag),
+                    }
                 )
             return outputs
 

@@ -148,6 +148,17 @@ robotdashboard --aliases true --outputpath output-20250313-002257.xml         # 
 robotdashboard --aliases True --outputpath output_.xml                        # alias will be: Alias 1   (this is automatically generated to prevent dupes)
 robotdashboard --aliases True --outputpath ./folder/output_My Cool Name.xml   # alias will be: My Cool Name   (only file basename is used)
 ```
+- Enable the automatic opening of log.html files from the dashboard graphs (runs/suites/test/keywords) when clicked on specified elements
+```
+robotdashboard -u path/to/logs_folder
+robotdashboard --userlogfolder results/last_week/log_files/
+```
+IMPORTANT PREREQUISITES FOR LOG FILE USAGE:
+1. This feature uses aliases to determine the log.html file name
+2. Aliases are created by taking the output.xml name that you provided and stripping 'output_' and '.xml' to generate the alias
+3. The prerequisite to use this feature is that the alias should contain 'output' somewhere and that the log file has a similar name
+4. Examples: 'output-123.xml' has 'log-123.html', 'output-20250313-002134.xml' should have 'log-20250313-002134.html'
+5. When using '--aliases true' it is recommended to create outputs and logs like 'output_cooloutput.xml' and 'coollog.html'
 - Create message config file that can be loaded to match similar test error messages as "the same" the ${...} variables will be regex matched like * to match any possible character of any length.
 ```
 robotdashboard -m message_config.txt

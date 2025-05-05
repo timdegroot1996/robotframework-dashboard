@@ -207,9 +207,7 @@
                             </div>
                             <div class="col-auto mt-auto">
                                 <a href="/">
-                                    <button class="btn btn-outline-primary btn-sm" id="openDashboard"
-                                        hidden="placeholder_server_admin_page">Open
-                                        Admin Page</button>
+                                    <button class="btn btn-outline-primary btn-sm" id="openDashboard" hidden>Open Admin Page</button>
                                 </a>
                             </div>
                         </div>
@@ -708,8 +706,10 @@
         var tests = "placeholder_tests".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var keywords = "placeholder_keywords".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var message_config = '"placeholder_message_config"'
+        const user_log_folder = "placeholder_user_log_folder"
+        const use_run_aliases = "placeholder_use_run_aliases"
+        const server = "placeholder_server"
         if (!message_config.includes('placeholder_message_config')) { message_config = JSON.parse(message_config) }
-        const use_run_aliases = false
 
         // create graphs
         var runStatisticsGraph;
@@ -811,6 +811,9 @@
             Keywords: ${keywords.length}`;
 
             document.getElementById('amount').value = filteredAmount
+            if (server) {
+                document.getElementById('openDashboard').hidden = false
+            }
         }
 
         // function to setup all collapse buttons and icons
@@ -868,6 +871,20 @@
         // function to convert to camelcase from underscores
         function underscore_to_camelcase(str) {
             return str.replace(/_(.)/g, (match, group) => group.toUpperCase());
+        }
+
+        // function to convert a date object to the desired string format
+        function format_date_to_string(date) {
+            const pad = (n) => n.toString().padStart(2, '0');
+
+            const year = date.getFullYear();
+            const month = pad(date.getMonth() + 1); // Months are 0-indexed
+            const day = pad(date.getDate());
+            const hours = pad(date.getHours());
+            const minutes = pad(date.getMinutes());
+            const seconds = pad(date.getSeconds());
+
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         }
 
         //////////////////////////////
@@ -1250,7 +1267,7 @@
                 'keyword_max_duration': 'Bar,Line',
             };
 
-            function handle_graph_button_click(graphChangeButton, graphType, camelButtonName) {
+            function handle_graph_change_type_button_click(graphChangeButton, graphType, camelButtonName) {
                 // Dynamically trigger the graph creation function
                 update_graph_type(`${camelButtonName}GraphType`, graphType)
                 window[`create_${graphChangeButton}_graph`]();
@@ -1265,7 +1282,7 @@
                     const buttonId = `${camelButtonName}Graph${graphType}`;
                     if (document.getElementById(buttonId)) {
                         document.getElementById(buttonId).addEventListener("click", (e) => {
-                            handle_graph_button_click(graphChangeButton, graphType.toLowerCase(), camelButtonName);
+                            handle_graph_change_type_button_click(graphChangeButton, graphType.toLowerCase(), camelButtonName);
                         });
                     }
                 });
@@ -1351,7 +1368,6 @@
         function setup_run_amount_filter() {
             document.getElementById('amount').setAttribute('max', runs.length)
         }
-
 
         // function that initializes the from date/time and to date/time selection boxes in the filters
         function setup_lowest_highest_dates() {
@@ -1762,6 +1778,8 @@
                         },
                     },
                 };
+                // no onClick on the bar chart
+                delete config.options.onClick
                 suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
             } else if (suiteMostFailedGraphType == "timeline") {
                 var config = get_graph_config("timeline", graphData, "Top 10 Most Failed Suites");
@@ -1782,7 +1800,13 @@
                         },
                     },
                 };
-                suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
+                // overwrite the click callback to use the callbackData
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData)
+                    }
+                },
+                    suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
             }
         }
 
@@ -1908,7 +1932,13 @@
                     },
                 },
             };
-            testStatisticsGraph = new Chart("testStatisticsGraph", config);
+            // overwrite the click callback to use the callbackData
+            config.options.onClick = (event, chartElement) => {
+                if (chartElement.length) {
+                    open_log_file(event, chartElement, runStarts)
+                }
+            },
+                testStatisticsGraph = new Chart("testStatisticsGraph", config);
             update_height('testStatisticsVertical', testStatisticsGraph)
         }
 
@@ -1939,6 +1969,8 @@
                 var config = get_graph_config("bar", graphData, "Top 10 Most Flaky Tests (most status flips)", "Test Name", "Times Status Flipped");
                 // disable lenged in bar graph
                 config.options.plugins.legend = false
+                // no onClick on the bar chart
+                delete config.options.onClick
                 testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
             } else if (testMostFlakyGraphType == "timeline") {
                 var config = get_graph_config("timeline", graphData, "Top 10 Most Flaky Tests (most status flips)");
@@ -1959,7 +1991,13 @@
                         },
                     },
                 };
-                testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
+                // overwrite the click callback to use the callbackData
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData)
+                    }
+                },
+                    testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
             }
         }
 
@@ -1975,6 +2013,8 @@
                 var config = get_graph_config("bar", graphData, "Top 10 Recent Most Flaky Tests (most status flips)", "Test Name", "Times Status Flipped");
                 // disable lenged in bar graph
                 config.options.plugins.legend = false
+                // no onClick on the bar chart
+                delete config.options.onClick
                 testRecentMostFlakyGraph = new Chart("testRecentMostFlakyGraph", config);
             } else if (testRecentMostFlakyGraphType == "timeline") {
                 var config = get_graph_config("timeline", graphData, "Top 10 Recent Most Flaky Tests (most status flips)");
@@ -1995,7 +2035,13 @@
                         },
                     },
                 };
-                testRecentMostFlakyGraph = new Chart("testRecentMostFlakyGraph", config);
+                // overwrite the click callback to use the callbackData
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData)
+                    }
+                },
+                    testRecentMostFlakyGraph = new Chart("testRecentMostFlakyGraph", config);
             }
         }
 
@@ -2007,6 +2053,8 @@
 
             var graphData = get_duration_deviation_data("test", testDurationDeviationGraphType, filteredTests)
             var config = get_graph_config("boxplot", graphData, "Duration Deviation", "Test Name", "Duration");
+            // no onClick on the boxplot chart
+            delete config.options.onClick
             testDurationDeviationGraph = new Chart("testDurationDeviationGraph", config);
         }
 
@@ -2032,6 +2080,8 @@
                         },
                     },
                 };
+                // no onClick on the bar chart
+                delete config.options.onClick
                 testMostFailedGraph = new Chart("testMostFailedGraph", config);
             } else if (testMostFailedGraphType == "timeline") {
                 var config = get_graph_config("timeline", graphData, "Top 10 Most Failed Tests");
@@ -2052,7 +2102,13 @@
                         },
                     },
                 };
-                testMostFailedGraph = new Chart("testMostFailedGraph", config);
+                // overwrite the click callback to use the callbackData
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData)
+                    }
+                },
+                    testMostFailedGraph = new Chart("testMostFailedGraph", config);
             }
         }
 
@@ -2084,6 +2140,8 @@
                         },
                     },
                 };
+                // no onClick on the bar chart
+                delete config.options.onClick
                 testMessagesGraph = new Chart("testMessagesGraph", config);
             } else if (testMessagesGraphType == "timeline") {
                 var config = get_graph_config("timeline", graphData, "Top 10 Fail Messages");
@@ -2104,11 +2162,17 @@
                         },
                     },
                 };
-                config.options.scales.y.ticks = {
-                    callback: function (value, index, ticks) {
-                        return this.getLabelForValue(value).slice(0, 40);
-                    },
-                };
+                // overwrite the click callback to use the callbackData
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData)
+                    }
+                },
+                    config.options.scales.y.ticks = {
+                        callback: function (value, index, ticks) {
+                            return this.getLabelForValue(value).slice(0, 40);
+                        },
+                    };
                 testMessagesGraph = new Chart("testMessagesGraph", config);
             }
         }
@@ -2288,10 +2352,36 @@
         // GRAPH DATA & CONFIG FUNCTIONS //
         ///////////////////////////////////
 
+        function open_log_file(event, chartElement, callBackData = undefined) {
+            if (user_log_folder.includes('placeholder') && !server) { return }
+            const graphType = event.chart.config._config.type
+            const graphId = event.chart.canvas.id
+            var runStart = ''
+            if (callBackData) {
+                const index = chartElement[0].element.$context.raw.x[0]
+                runStart = callBackData[index]
+            } else if (graphType == 'line' && !graphId.includes('Statistics')) {
+                runStart = format_date_to_string(new Date(chartElement[0].element.$context.raw.x))
+            } else {
+                const index = chartElement[0].index
+                runStart = event.chart.data.labels[index]
+            }
+            var output = runs.find(run => run.run_start === runStart)
+            const alias = use_run_aliases && !output ? runStart : output?.run_alias;
+            const file = `${alias.replaceAll('output', 'log')}.html`
+            const fileUrl = !server ? `file:///${user_log_folder}${file}` : `/log?file=${file}`
+            window.open(fileUrl, '_blank')
+        }
+
         // function to retrieve the required graph config for chartjs, based on the different type of graphs
         function get_graph_config(graphType, graphData, graphTitle, xTitle, yTitle, dataSets = true) {
             // Common base config to reduce repetition
             const baseConfig = {
+                onClick: (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement)
+                    }
+                },
                 normalized: true,
                 animation: false,
                 responsive: true,
@@ -2443,13 +2533,13 @@
             // Initialize arrays to store the data
             const passed = [], failed = [], skipped = [], labels = [], aliases = [];
             // Helper function to calculate percentages
-            const calculatePercentage = (value, total) => Math.round((value / total) * 100 * 100) / 100;
+            const calculate_percentage = (value, total) => Math.round((value / total) * 100 * 100) / 100;
             // Helper function to process each value for graph data
-            const processValue = (value) => {
+            const process_value = (value) => {
                 const total = value.passed + value.failed + value.skipped;
-                const passedPercentage = calculatePercentage(value.passed, total);
-                const failedPercentage = calculatePercentage(value.failed, total);
-                const skippedPercentage = calculatePercentage(value.skipped, total);
+                const passedPercentage = calculate_percentage(value.passed, total);
+                const failedPercentage = calculate_percentage(value.failed, total);
+                const skippedPercentage = calculate_percentage(value.skipped, total);
                 passed.push(passedPercentage);
                 failed.push(failedPercentage);
                 skipped.push(skippedPercentage);
@@ -2464,10 +2554,10 @@
                 if (graphType === "percentages") {
                     if (dataType === "keyword") {
                         if (value.name === keywordSelect) {
-                            processValue(value);
+                            process_value(value);
                         }
                     } else {
-                        processValue(value);
+                        process_value(value);
                     }
                 } else {
                     // Process raw count data
@@ -2479,9 +2569,9 @@
                 }
             }
             // Determine if we need to use aliases for labels
-            const finalLabels = use_run_aliases ? aliases : labels;
+            const finalLabels = graphType !== "line" ? (use_run_aliases ? aliases : labels) : labels;
             // Common dataset construction logic
-            const createDataset = (label, data, backgroundColor, borderColor) => ({
+            const create_data_set = (label, data, backgroundColor, borderColor) => ({
                 label,
                 data,
                 backgroundColor,
@@ -2493,9 +2583,9 @@
             const statisticsData = {
                 labels: finalLabels,
                 datasets: [
-                    createDataset("Failed", failed, failedBackgroundColor, failedBackgroundBorderColor),
-                    createDataset("Skipped", skipped, skippedBackgroundColor, skippedBackgroundBorderColor),
-                    createDataset("Passed", passed, passedBackgroundColor, passedBackgroundBorderColor),
+                    create_data_set("Failed", failed, failedBackgroundColor, failedBackgroundBorderColor),
+                    create_data_set("Skipped", skipped, skippedBackgroundColor, skippedBackgroundBorderColor),
+                    create_data_set("Passed", passed, passedBackgroundColor, passedBackgroundBorderColor),
                 ],
             };
             return statisticsData;
@@ -2510,7 +2600,7 @@
             const testTagsSelect = document.getElementById("testTagsSelect").value;
             const keywordSelect = document.getElementById("keywordSelect").value;
             // Helper function for filtering based on selection criteria
-            const shouldInclude = (value) => {
+            const should_include = (value) => {
                 if (dataType === "keyword" && value.name !== keywordSelect) return false;
                 if (dataType === "suite" && suiteSelectSuites !== "All" && value.name !== suiteSelectSuites) return false;
                 if (dataType === "test" && suiteSelectTests !== "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name !== `${suiteSelectTests}.${value.name}`) return false;
@@ -2524,7 +2614,7 @@
                 const data = new Map();
                 const aliases = [];
                 for (const value of filteredData) {
-                    if (!shouldInclude(value)) continue;
+                    if (!should_include(value)) continue;
                     labels.push(value.run_start);
                     aliases.push(value.run_alias);
                     const roundedValue = Math.round(value[objectDataAttribute] * 100) / 100;
@@ -2558,7 +2648,7 @@
                 const labels = [];
                 const sets = new Map();
                 for (const value of filteredData) {
-                    if (!shouldInclude(value)) continue;
+                    if (!should_include(value)) continue;
                     const name = value.name;
                     const run_start = new Date(value.run_start);
                     const roundedValue = Math.round(value[objectDataAttribute] * 100) / 100;

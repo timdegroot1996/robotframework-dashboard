@@ -32,6 +32,7 @@ def main():
         arguments.use_run_aliases,
         arguments.message_config,
         arguments.quantity,
+        arguments.user_log_folder,
     )
     # If arguments.start_server is provided override some required args
     if arguments.start_server:
@@ -51,6 +52,6 @@ def main():
     robotdashboard.create_dashboard()
     # If required start the server, this will happen after the first normal run
     if arguments.start_server:
-        server = ApiServer(arguments.server_host, arguments.server_port)
+        server = ApiServer(arguments.server_host, arguments.server_port, arguments.user_log_folder)
         server.set_robotdashboard(robotdashboard)
         server.run()

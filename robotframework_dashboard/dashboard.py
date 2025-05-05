@@ -19,6 +19,7 @@ class DashboardGenerator:
         use_run_aliases: bool,
         message_config: list,
         quantity: int,
+        user_log_folder: Path,
     ):
         """Function that generates the dashboard"""
         # update the dashboard data to exclude milliseconds if needed
@@ -71,20 +72,28 @@ class DashboardGenerator:
                     '"placeholder_dashboard_title"',
                     f"Robot Framework Dashboard - {str(generation_datetime)[:-7]}",
                 )
-            if server:
+            if use_run_aliases:
                 dashboard_data = dashboard_data.replace(
-                    'hidden="placeholder_server_admin_page"', ""
+                    '"placeholder_use_run_aliases"', "true"
                 )
             else:
                 dashboard_data = dashboard_data.replace(
-                    'hidden="placeholder_server_admin_page"', "hidden"
+                    '"placeholder_use_run_aliases"', "false"
                 )
-            if use_run_aliases:
-                dashboard_data = dashboard_data.replace(
-                    "const use_run_aliases = false", "const use_run_aliases = true"
-                )
+            if server:
+                dashboard_data = dashboard_data.replace('"placeholder_server"', "true")
+            else:
+                dashboard_data = dashboard_data.replace('"placeholder_server"', "false")
             if message_config:
-                dashboard_data = dashboard_data.replace('"placeholder_message_config"', str(message_config).replace("'",'"'))
+                dashboard_data = dashboard_data.replace(
+                    '"placeholder_message_config"',
+                    str(message_config).replace("'", '"'),
+                )
+            if user_log_folder and not server:
+                user_log_folder = str(user_log_folder).replace("\\", "/")
+                dashboard_data = dashboard_data.replace(
+                    '"placeholder_user_log_folder"', f'"{user_log_folder}"'
+                )
 
         # handle possible subdirectories
         path = Path(name_dashboard)
