@@ -103,3 +103,21 @@ Validate robotdahboard a
 
 Validate robotdahboard aliases
     Validate CLI    command=robotdashboard --aliases True    expected=aliases
+
+Validate robotdashboard m
+    Validate CLI    command=robotdashboard -m ./example/messageconfig.txt    expected=messageconfig
+
+Validate robotdashboard messageconfig
+    Validate CLI    command=robotdashboard --messageconfig ./example/messageconfig.txt    expected=messageconfig
+
+Validate robotdashboard q
+    Validate CLI    command=robotdashboard -q -25    expected=quantity
+
+Validate robotdashboard quantity
+    Validate CLI    command=robotdashboard --quantity 100    expected=quantity
+
+Validate robotdashboard u
+    Validate CLI    command=robotdashboard -u true    expected=uselogs
+
+Validate robotdashboard uselogs
+    Validate CLI    command=robotdashboard --uselogs false    expected=uselogs

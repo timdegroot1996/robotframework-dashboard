@@ -4,10 +4,155 @@ from fastapi.responses import HTMLResponse
 from typing import Annotated
 from pydantic import BaseModel
 from uvicorn import run
-from os.path import join, abspath, dirname
-from os import remove
-from pathlib import Path
+from os.path import join, abspath, dirname, exists
+from os import remove, getcwd, mkdir
 from .version import __version__
+
+response_message_model_config = {
+    "json_schema_extra": {
+        "examples": [
+            {
+                "success": "1",
+                "message": "SUCCESS: processed C:\\docs\\output.xml, see the browser console for more details!",
+                "console": """2. Processing output XML(s)
+  Processing output XML 'output.xml'
+  Processed output XML 'output' in 0.0 seconds
+======================================================================================
+ 5. Creating dashboard HTML
+  created dashboard 'C:\\docs\\robot_dashboard.html' in 0.02 seconds""",
+            }
+        ]
+    }
+}
+get_output_model_config = {
+    "json_schema_extra": {
+        "examples": [
+            {
+                "run_start": "2024-10-14 22:32:59.580309",
+                "name": "RobotFramework-Dashboard",
+                "alias": "cool_run_alias",
+                "tags": "prod,tag1,nightly",
+            }
+        ]
+    }
+}
+add_output_model_config = {
+    "json_schema_extra": {
+        "examples": [
+            {
+                "output_path": "C:\\users\\docs\\output.xml",
+                "output_tags": ["tag1", "cool-tag2", "production_tag"],
+            },
+            {
+                "output_data": """<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.2.2 (Python 3.12.9 on win32)" generated="2025-02-19T17:25:58.443716" rpa="false" schemaversion="5">
+<suite id="s1" name="Scripts" source="C:\docs">
+<suite id="s1-s1" name="Google" source="C:\docs\google.robot">
+<test id="s1-s1-t1" name="Test 01" line="6">... etc""",
+                "output_tags": [],
+                "output_alias": "some_cool_alias",
+            },
+            {
+                "output_path": "C:\\users\\docs\\prod-outputs",
+                "output_tags": ["production-run"],
+            },
+        ]
+    }
+}
+remove_outputs_model_config = {
+    "json_schema_extra": {
+        "examples": [
+            {"indexes": ["0", "-1", "5", "10"]},
+            {
+                "run_starts": [
+                    "2024-10-14 12:32:59.123456",
+                    "2024-10-14 22:32:59.580309",
+                ]
+            },
+            {
+                "aliases": ["alias1", "alias2"],
+                "indexes": ["0", "-1"],
+                "tags": ["tag1", "tag2", "tag3"],
+            },
+        ]
+    }
+}
+add_outputs_openapi_examples = {
+    "output path": {
+        "summary": "When using an absolute path of an output.xml",
+        "description": "When using an absolute path of an output.xml",
+        "value": {
+            "output_path": "C:\\users\\docs\\output.xml",
+            "output_tags": ["tag1", "cool-tag2", "production_tag"],
+        },
+    },
+    "output xml data": {
+        "summary": "When using the raw data of the output.xml and sending that directly",
+        "description": "When using the raw data of the output.xml and sending that directly",
+        "value": {
+            "output_data": """<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.2.2 (Python 3.12.9 on win32)" generated="2025-02-19T17:25:58.443716" rpa="false" schemaversion="5">
+<suite id="s1" name="Scripts" source="C:\docs">
+<suite id="s1-s1" name="Google" source="C:\docs\google.robot">
+<test id="s1-s1-t1" name="Test 01" line="6">... etc""",
+            "output_tags": [],
+            "output_alias": "some_cool_alias",
+        },
+    },
+    "output folder path": {
+        "summary": "When using an absolute folder path that contains output.xml's",
+        "description": "When using an absolute folder path that contains output.xml's",
+        "value": {
+            "output_path": "C:\\users\\docs\\prod-outputs",
+            "output_tags": ["production-run"],
+        },
+    },
+}
+remove_outputs_openapi_examples = {
+    "indexes": {
+        "summary": "When removing outputs based on indexes",
+        "description": "when removing outputs based on indexes",
+        "value": {"indexes": ["0", "-1", "5", "10"]},
+    },
+    "run_starts": {
+        "summary": "When removing outputs based on run_starts",
+        "description": "When removing outputs based on run_starts",
+        "value": {
+            "run_starts": [
+                "2024-10-14 12:32:59.123456",
+                "2024-10-14 22:32:59.580309",
+            ]
+        },
+    },
+    "aliases, indexes and tags": {
+        "summary": "When removing outputs based on multiple types: aliases, indexes and tags",
+        "description": "When removing outputs based on multiple types: aliases, indexes and tags",
+        "value": {
+            "aliases": ["alias1", "alias2"],
+            "indexes": ["0", "-1"],
+            "tags": ["tag1", "tag2", "tag3"],
+        },
+    },
+}
+add_log_model_config = {
+    "json_schema_extra": {
+        "examples": [
+            {
+                "log_name": "log-20250219-172527.html",
+                "log_data": """<!DOCTYPE html><html lang="en"><head>...etc""",
+            }
+        ]
+    }
+}
+remove_log_model_config = {
+    "json_schema_extra": {
+        "examples": [
+            {
+                "log_name": "log-20250219-172527.html",
+            }
+        ]
+    }
+}
 
 
 class ResponseMessage(BaseModel):
@@ -16,22 +161,7 @@ class ResponseMessage(BaseModel):
     success: str
     message: str
     console: str
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
-                {
-                    "success": "1",
-                    "message": "SUCCESS: processed C:\\docs\\output.xml, see the browser console for more details!",
-                    "console": """2. Processing output XML(s)
-  Processing output XML 'output.xml'
-  Processed output XML 'output' in 0.0 seconds
-======================================================================================
- 5. Creating dashboard HTML
-  created dashboard 'C:\\docs\\robot_dashboard.html' in 0.02 seconds""",
-                }
-            ]
-        }
-    }
+    model_config = response_message_model_config
 
 
 class CustomizedViewConfig(BaseModel):
@@ -48,18 +178,7 @@ class GetOutput(BaseModel):
     name: str
     alias: str
     tags: str
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
-                {
-                    "run_start": "2024-10-14 22:32:59.580309",
-                    "name": "RobotFramework-Dashboard",
-                    "alias": "cool_run_alias",
-                    "tags": "prod,tag1,nightly",
-                }
-            ]
-        }
-    }
+    model_config = get_output_model_config
 
 
 class AddOutput(BaseModel):
@@ -70,29 +189,7 @@ class AddOutput(BaseModel):
     output_folder_path: str = None
     output_tags: list[str] = None
     output_alias: str = None
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
-                {
-                    "output_path": "C:\\users\\docs\\output.xml",
-                    "output_tags": ["tag1", "cool-tag2", "production_tag"],
-                },
-                {
-                    "output_data": """<?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 7.2.2 (Python 3.12.9 on win32)" generated="2025-02-19T17:25:58.443716" rpa="false" schemaversion="5">
-<suite id="s1" name="Scripts" source="C:\docs">
-<suite id="s1-s1" name="Google" source="C:\docs\google.robot">
-<test id="s1-s1-t1" name="Test 01" line="6">... etc""",
-                    "output_tags": [],
-                    "output_alias": "some_cool_alias",
-                },
-                {
-                    "output_path": "C:\\users\\docs\\prod-outputs",
-                    "output_tags": ["production-run"],
-                },
-            ]
-        }
-    }
+    model_config = add_output_model_config
 
 
 class RemoveOutputs(BaseModel):
@@ -102,40 +199,38 @@ class RemoveOutputs(BaseModel):
     indexes: list[str] = None
     aliases: list[str] = None
     tags: list[str] = None
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
-                {"indexes": ["0", "-1", "5", "10"]},
-                {
-                    "run_starts": [
-                        "2024-10-14 12:32:59.123456",
-                        "2024-10-14 22:32:59.580309",
-                    ]
-                },
-                {
-                    "aliases": ["alias1", "alias2"],
-                    "indexes": ["0", "-1"],
-                    "tags": ["tag1", "tag2", "tag3"],
-                },
-            ]
-        }
-    }
+    model_config = remove_outputs_model_config
+
+
+class AddLog(BaseModel):
+    """The model to add log files to the server"""
+
+    log_data: str
+    log_name: str
+    model_config = add_log_model_config
+
+
+class RemoveLog(BaseModel):
+    """The model to remove log files from the server"""
+
+    log_name: str
+    model_config = remove_log_model_config
 
 
 class ApiServer:
     """Robot Dashboard server implementation, this class handles the admin page and all functions related to the server"""
 
-    def __init__(self, server_host: str, server_port: int, user_log_folder: Path):
+    def __init__(self, server_host: str, server_port: int):
         """Init function that starts up the fastapi app and initializes all the vars and endpoints"""
         self.app = FastAPI()
         self.robotdashboard: RobotDashboard
         self.server_host = server_host
         self.server_port = server_port
-        self.user_log_folder = user_log_folder
         self.admin_section_hide = "[]"
         self.admin_graph_hide = "[]"
         self.admin_section_show = "[]"
         self.admin_graph_show = "[]"
+        self.log_dir = "robot_logs"
 
         @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
         async def admin_page():
@@ -166,21 +261,21 @@ class ApiServer:
             return robot_dashboard_html
 
         @self.app.get("/log", response_class=HTMLResponse, include_in_schema=False)
-        async def log_page(file: str):
+        async def log_page(path: str):
             """Serve log HTML endpoint function"""
-            log_file = join(self.user_log_folder, file)
             try:
-                log_html = open(log_file, "r", encoding="utf-8").read()
+                log_html = open(path, "r", encoding="utf-8").read()
             except Exception as error:
                 log_html = f"""<!DOCTYPE html>
                     <html lang="en">
                     <head>
                     <meta charset="UTF-8">
                     <title>404 - File Not Found</title>
+                    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==" />
                     </head>
                     <body>
                     <h1>404 - File Not Found</h1>
-                    <p>The file you are looking for ({log_file}) could not be found on the server!</p>
+                    <p>The file you are looking for ({path}) could not be found on the server!</p>
                     </body>
                     </html>
                 """
@@ -244,37 +339,7 @@ class ApiServer:
             add_output: Annotated[
                 AddOutput,
                 Body(
-                    openapi_examples={
-                        "output path": {
-                            "summary": "When using an absolute path of an output.xml",
-                            "description": "When using an absolute path of an output.xml",
-                            "value": {
-                                "output_path": "C:\\users\\docs\\output.xml",
-                                "output_tags": ["tag1", "cool-tag2", "production_tag"],
-                            },
-                        },
-                        "output xml data": {
-                            "summary": "When using the raw data of the output.xml and sending that directly",
-                            "description": "When using the raw data of the output.xml and sending that directly",
-                            "value": {
-                                "output_data": """<?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 7.2.2 (Python 3.12.9 on win32)" generated="2025-02-19T17:25:58.443716" rpa="false" schemaversion="5">
-<suite id="s1" name="Scripts" source="C:\docs">
-<suite id="s1-s1" name="Google" source="C:\docs\google.robot">
-<test id="s1-s1-t1" name="Test 01" line="6">... etc""",
-                                "output_tags": [],
-                                "output_alias": "some_cool_alias",
-                            },
-                        },
-                        "output folder path": {
-                            "summary": "When using an absolute folder path that contains output.xml's",
-                            "description": "When using an absolute folder path that contains output.xml's",
-                            "value": {
-                                "output_path": "C:\\users\\docs\\prod-outputs",
-                                "output_tags": ["production-run"],
-                            },
-                        },
-                    },
+                    openapi_examples=add_outputs_openapi_examples,
                 ),
             ],
         ) -> ResponseMessage:
@@ -349,32 +414,7 @@ class ApiServer:
             remove_output: Annotated[
                 RemoveOutputs,
                 Body(
-                    openapi_examples={
-                        "indexes": {
-                            "summary": "When removing outputs based on indexes",
-                            "description": "when removing outputs based on indexes",
-                            "value": {"indexes": ["0", "-1", "5", "10"]},
-                        },
-                        "run_starts": {
-                            "summary": "When removing outputs based on run_starts",
-                            "description": "When removing outputs based on run_starts",
-                            "value": {
-                                "run_starts": [
-                                    "2024-10-14 12:32:59.123456",
-                                    "2024-10-14 22:32:59.580309",
-                                ]
-                            },
-                        },
-                        "aliases, indexes and tags": {
-                            "summary": "When removing outputs based on multiple types: aliases, indexes and tags",
-                            "description": "When removing outputs based on multiple types: aliases, indexes and tags",
-                            "value": {
-                                "aliases": ["alias1", "alias2"],
-                                "indexes": ["0", "-1"],
-                                "tags": ["tag1", "tag2", "tag3"],
-                            },
-                        },
-                    },
+                    openapi_examples=remove_outputs_openapi_examples,
                 ),
             ],
         ) -> ResponseMessage:
@@ -408,6 +448,65 @@ class ApiServer:
             except Exception as error:
                 message = f"Something went wrong while processing {remove_output}, ERROR: {error}, see the browser console for more details!"
                 response = {"success": "0", "message": message, "console": console}
+            return response
+
+        @self.app.post("/add-log")
+        async def add_log(add_log: AddLog) -> ResponseMessage:
+            """Adds the log file to a folder and updates the database for the required output
+            IMPORTANT! The log_name that is provided should be similar to the output.xml that has been uploaded
+            If you added 'output-123.xml' then the log should be 'log-123.html', otherwise the database won't update correctly!
+            """
+            console = ""
+            try:
+                if not exists(self.log_dir):
+                    mkdir(self.log_dir)
+                log_path = join(self.log_dir, add_log.log_name)
+                log_file = open(log_path, "w", encoding="utf-8")
+                log_file.write(add_log.log_data)
+                log_file.close()
+                console += f"Added {add_log.log_name} to the folder {self.log_dir}\n"
+                console += "======================================================================================\n"
+                console += self.robotdashboard.update_output_path(log_path)
+                console += "======================================================================================\n"
+                console += self.robotdashboard.create_dashboard()
+                if "ERROR" in console:
+                    raise Exception('A problem occurred while adding the log file, check the console message!')
+            except Exception as error:
+                response = {
+                    "success": "0",
+                    "message": f"ERROR: something went wrong while adding the log file or updating the database: {error}",
+                    "console": console,
+                }
+                return response
+            response = {
+                "success": "1",
+                "message": f"SUCCESS: the log file has been placed and the database was updated",
+                "console": console,
+            }
+            return response
+
+        @self.app.delete("/remove-log")
+        async def remove_log(remove_log: RemoveLog) -> ResponseMessage:
+            """Removes the log file from the folder on the server"""
+            console = ""
+            try:
+                log_path = join(self.log_dir, remove_log.log_name)
+                remove(log_path)
+                console += f"Removed {remove_log.log_name} from the folder {self.log_dir}\n"
+                console += "======================================================================================\n"
+                console += self.robotdashboard.create_dashboard()
+            except Exception as error:
+                response = {
+                    "success": "0",
+                    "message": f"ERROR: something went wrong while removing the log file: {error}",
+                    "console": console,
+                }
+                return response
+            response = {
+                "success": "1",
+                "message": f"SUCCESS: the log file has been removed from the local folder",
+                "console": console,
+            }
             return response
 
     def set_robotdashboard(self, robotdashboard: RobotDashboard):

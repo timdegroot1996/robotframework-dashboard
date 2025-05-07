@@ -27,15 +27,27 @@ class DatabaseProcessor:
         # check to see if the tables already exist
         table_list = self.connection.cursor().execute(RUN_TABLE_EXISTS).fetchall()
         if len(table_list) > 0:
-            # run_alias was added in 0.6.0
-            table_length = len(
+            # test: tags added in 0.4.3
+            # run/suite/test/keyword: run_alias added in 0.6.0
+            # run: path added in 0.8.1
+            run_table_length = len(
                 self.connection.cursor().execute(RUN_TABLE_LENGTH).fetchall()
             )
-            if table_length == 10:
-                self.connection.cursor().execute(RUN_TABLE_UPDATE)
+            test_table_length = len(
+                self.connection.cursor().execute(TEST_TABLE_LENGTH).fetchall()
+            )
+            if test_table_length == 9:
+                self.connection.cursor().execute(TEST_TABLE_UPDATE_TAGS)
+                self.connection.commit()
+            if run_table_length == 10:
+                self.connection.cursor().execute(RUN_TABLE_UPDATE_ALIAS)
+                self.connection.cursor().execute(RUN_TABLE_UPDATE_PATH)
                 self.connection.cursor().execute(SUITE_TABLE_UPDATE)
                 self.connection.cursor().execute(TEST_TABLE_UPDATE)
                 self.connection.cursor().execute(KEYWORD_TABLE_UPDATE)
+                self.connection.commit()
+            if run_table_length == 11:
+                self.connection.cursor().execute(RUN_TABLE_UPDATE_PATH)
                 self.connection.commit()
         else:
             self.connection.cursor().execute(CREATE_RUNS)
@@ -48,10 +60,10 @@ class DatabaseProcessor:
         """This function is called to close the connection to the database"""
         self.connection.close()
 
-    def insert_output_data(self, output_data: dict, tags: list, run_alias: str):
+    def insert_output_data(self, output_data: dict, tags: list, run_alias: str, path: Path):
         """This function inserts the data of an output file into the database"""
         try:
-            self._insert_runs(output_data["runs"], tags, run_alias)
+            self._insert_runs(output_data["runs"], tags, run_alias, path)
             self._insert_suites(output_data["suites"], run_alias)
             self._insert_tests(output_data["tests"], run_alias)
             self._insert_keywords(output_data["keywords"], run_alias)
@@ -60,12 +72,13 @@ class DatabaseProcessor:
                 f"   ERROR: you are probably trying to add the same output again, {error}"
             )
 
-    def _insert_runs(self, runs: list, tags: list, run_alias: str):
+    def _insert_runs(self, runs: list, tags: list, run_alias: str, path: Path):
         """Helper function to insert the run data with the run tags"""
         full_runs = []
         for run in runs:
             run += (",".join(tags),)
             run += (run_alias,)
+            run += (str(path),)
             full_runs.append(run)
         self.connection.executemany(INSERT_INTO_RUNS, full_runs)
         self.connection.commit()
@@ -119,6 +132,9 @@ class DatabaseProcessor:
                     counter += 1
                 else:
                     aliases[row["run_start"]] = row["run_alias"]
+            # exception made from versions before 0.8.1 without path
+            if row["path"] == None:
+                row["path"] = ""
             runs.append(row)
         data["runs"] = runs
         # Get suites from run table
@@ -133,6 +149,8 @@ class DatabaseProcessor:
         for test_row in test_rows:
             row = self._dict_from_row(test_row)
             row["run_alias"] = aliases[row["run_start"]]
+            if row["tags"] == None:
+                row["tags"] = ""
             tests.append(row)
         data["tests"] = tests
         # Get keywords from run table
@@ -235,3 +253,21 @@ class DatabaseProcessor:
             DELETE_FROM_KEYWORDS.format(run_start=run_start)
         )
         self.connection.commit()
+
+    def update_output_path(self, log_path):
+        """Function to update the output_path using the log path that the server has used"""
+        console = ""
+        log_name = log_path[11:]
+        output_name = log_name.replace('log', 'output').replace('.html','.xml')
+        data = self.connection.cursor().execute(SELECT_FROM_RUNS).fetchall()
+        for entry in data:
+            entry = self._dict_from_row(entry)
+            if output_name in entry['path'] or log_name in entry['path']:
+                query = UPDATE_RUN_PATH.format(path=log_path, run_start=entry['run_start'])
+                console = f"Executed query: {query}\n"
+                self.connection.cursor().execute(query)
+                self.connection.commit()
+                break
+        if console == "":
+            console = f'ERROR: There was no output with the name {output_name} or {log_name} in any of the existing outputs in the database!\n'
+        return console

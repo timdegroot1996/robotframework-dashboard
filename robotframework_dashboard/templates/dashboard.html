@@ -207,7 +207,8 @@
                             </div>
                             <div class="col-auto mt-auto">
                                 <a href="/">
-                                    <button class="btn btn-outline-primary btn-sm" id="openDashboard" hidden>Open Admin Page</button>
+                                    <button class="btn btn-outline-primary btn-sm" id="openDashboard" hidden>Open Admin
+                                        Page</button>
                                 </a>
                             </div>
                         </div>
@@ -706,7 +707,7 @@
         var tests = "placeholder_tests".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var keywords = "placeholder_keywords".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var message_config = '"placeholder_message_config"'
-        const user_log_folder = "placeholder_user_log_folder"
+        const use_logs = "placeholder_use_logs"
         const use_run_aliases = "placeholder_use_run_aliases"
         const server = "placeholder_server"
         if (!message_config.includes('placeholder_message_config')) { message_config = JSON.parse(message_config) }
@@ -885,6 +886,21 @@
             const seconds = pad(date.getSeconds());
 
             return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+
+        function transform_file_path(filePath) {
+            // Normalize path separators to handle both '\\' and '/'
+            const normalizedPath = filePath.replace(/\\/g, '/');
+            // Split the path into segments
+            const pathSegments = normalizedPath.split('/');
+            // Extract the filename
+            const filename = pathSegments.pop();
+            // Replace 'output' with 'log' in the filename
+            const updatedFilename = filename.replace(/output/g, 'log').replace(/\.xml$/i, '.html');
+            // Reconstruct the path with the updated filename
+            const updatedPath = [...pathSegments, updatedFilename].join('/');
+            // Restore original path separators if the original path used backslashes
+            return filePath.includes('\\') ? updatedPath.replace(/\//g, '\\') : updatedPath;
         }
 
         //////////////////////////////
@@ -2353,7 +2369,7 @@
         ///////////////////////////////////
 
         function open_log_file(event, chartElement, callBackData = undefined) {
-            if (user_log_folder.includes('placeholder') && !server) { return }
+            if (!use_logs) { return }
             const graphType = event.chart.config._config.type
             const graphId = event.chart.canvas.id
             var runStart = ''
@@ -2367,9 +2383,12 @@
                 runStart = event.chart.data.labels[index]
             }
             var output = runs.find(run => run.run_start === runStart)
-            const alias = use_run_aliases && !output ? runStart : output?.run_alias;
-            const file = `${alias.replaceAll('output', 'log')}.html`
-            const fileUrl = !server ? `file:///${user_log_folder}${file}` : `/log?file=${file}`
+            const path = output ? transform_file_path(output.path) : transform_file_path(runs.find(run => run.run_alias === runStart).path)
+            if (path == "") {
+                alert("Log file error: this output didn't have a path in the database so the log file cannot be found!");
+                return
+            }
+            const fileUrl = !server ? `file:///${path}` : `/log?path=${path}`
             window.open(fileUrl, '_blank')
         }
 

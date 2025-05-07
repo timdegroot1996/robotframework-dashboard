@@ -247,6 +247,52 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
+                    <h2>Add/Remove log.html In The Server</h2>
+                    <p>IMPORTANT! The log_name that is provided should be similar to the output.xml that has been uploaded
+                        If you added 'output-123.xml' then the log should be 'log-123.html', otherwise the database won't update correctly!</p>
+                </div>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">log.html</p>
+                    </div>
+                    <div class="col-5">
+                        <label class="form-label form-label-sm mt-1" for="logData">HTML Data (copy paste the
+                            log.html
+                            here)</label>
+                        <textarea class="form-control form-control-sm" id="logData" rows="10"></textarea>
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label form-label-sm mt-1" for="logName">Log Name</label>
+                        <input class="form-control form-control-sm" id="logName"></input>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-outline-primary btn-sm" style="margin-top:36px"
+                            id="addLogData">Add&nbsp;
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="addLogDataSpinner" hidden></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">log.html to remove by name</p>
+                    </div>
+                    <div class="col-8">
+                        <label class="form-label form-label-sm mt-1" for="removeLog">E.g. 'log-20250219-172535.html'</label>
+                        <input class="form-control form-control-sm" id="removeLog"></input>
+                    </div>
+                    <div class="col-2 d-flex">
+                        <button class="btn btn-outline-primary btn-sm mt-auto" id="removeLogData">Remove&nbsp;
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="removeLogDataSpinner" hidden></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
                     <h2>Runs In The Database</h2>
                     <p>Use 'Run ID' or 'Run Start' to remove runs from the database.</p>
                 </div>
@@ -420,6 +466,8 @@
             document.getElementById('addOutputData').addEventListener('click', add_output_data);
             document.getElementById('addOutputFolderPath').addEventListener('click', add_output_folder_path);
             document.getElementById('removeOutputs').addEventListener('click', remove_outputs);
+            document.getElementById('addLogData').addEventListener('click', add_log);
+            document.getElementById('removeLogData').addEventListener('click', remove_log);
 
         }
 
@@ -556,8 +604,10 @@
                         table += `<tr><td>${index}</td><td>${run.run_start}</td><td>${run.name}</td><td>${run.alias}</td><td>${run.tags}</td></tr>`
                     }
                     document.getElementById('runTable').innerHTML = table
+                    window.scrollTo(0, 0);
                 } else {
                     add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, 'danger')
+                    window.scrollTo(0, 0);
                 }
             };
             xhr.send();
@@ -608,8 +658,10 @@
                     // 2 functions below should alwyas be here to make sure the server side config is actually present
                     setup_customize_view_content() // fill the modal with the correct content
                     set_customized_view_config(false) // if there is a local storage already in place update that on server side
+                    window.scrollTo(0, 0);
                 } else {
                     add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, 'danger')
+                    window.scrollTo(0, 0);
                 }
             };
             xhr.send();
@@ -638,12 +690,40 @@
                         console.log(response.console)
                     }
                     get_outputs()
+                    window.scrollTo(0, 0);
                 } else {
                     document.getElementById(spinner).hidden = true
                     add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, 'danger')
+                    window.scrollTo(0, 0);
                 }
             };
             xhr.send(body);
+        }
+
+        // function to add a logs raw data to the server and update the database
+        function add_log() {
+            document.getElementById('addLogDataSpinner').hidden = false
+            const logData = document.getElementById('logData').value
+            const logName = document.getElementById('logName').value
+            document.getElementById('logData').value = ''
+            document.getElementById('logName').value = ''
+
+            const body = JSON.stringify({
+                log_data: logData,
+                log_name: logName,
+            });
+            send_request("POST", "/add-log", body, 'addLogDataSpinner')
+        }
+
+        // function to remove outputs from the database
+        function remove_log() {
+            document.getElementById('removeLogDataSpinner').hidden = false
+            const removeLog = document.getElementById('removeLog').value
+            document.getElementById('removeLog').value = ''
+            const body = JSON.stringify({
+                log_name: removeLog,
+            });
+            send_request("DELETE", "/remove-log", body, 'removeLogDataSpinner')
         }
 
         //////////////////////////////

@@ -2,7 +2,7 @@ from .processors import OutputProcessor
 from .database import DatabaseProcessor
 from .dashboard import DashboardGenerator
 from os.path import basename, exists, join, abspath
-from os import walk
+from os import walk, getcwd
 from time import time
 from pathlib import Path
 from datetime import datetime
@@ -26,7 +26,7 @@ class RobotDashboard:
         use_run_aliases: bool,
         message_config: list,
         quantity: int,
-        user_log_folder: Path
+        use_logs: bool,
     ):
         """Sets the parameters provided in the command line"""
         self.database_path = database_path
@@ -40,7 +40,7 @@ class RobotDashboard:
         self.use_run_aliases = use_run_aliases
         self.message_config = message_config
         self.quantity = quantity
-        self.user_log_folder = user_log_folder
+        self.use_logs = use_logs
         self.server = False
         self.database = None
 
@@ -85,26 +85,27 @@ class RobotDashboard:
             if outputs:
                 for output in outputs:
                     try:
-                        output_path = output[0]
+                        output_path = join(getcwd(), output[0])
+                        output_basename = basename(output_path)
                         tags = output[1]
                         start = time()
                         console += self._print_console(
-                            f"  Processing output XML '{basename(output_path)}'"
+                            f"  Processing output XML '{output_basename}'"
                         )
                         output_data = OutputProcessor().get_output_data(output_path)
                         run_alias = (
-                            str(basename(output_path))
+                            str(output_basename)
                             .replace("output_", "")
                             .replace(".xml", "")
                         )
-                        self.database.insert_output_data(output_data, tags, run_alias)
+                        self.database.insert_output_data(output_data, tags, run_alias, output_path)
                         end = time()
                         console += self._print_console(
-                            f"  Processed output XML '{basename(output_path)}' in {round(end-start, 2)} seconds"
+                            f"  Processed output XML '{output_basename}' in {round(end-start, 2)} seconds"
                         )
                     except Exception as error:
                         console += self._print_console(
-                            f"  ERROR: Could not process output XML '{basename(output_path)}', error: {error}"
+                            f"  ERROR: Could not process output XML '{output_basename}', error: {error}"
                         )
             if output_folder_path:
                 if exists(output_folder_path[0]):
@@ -113,23 +114,21 @@ class RobotDashboard:
                             try:
                                 if "output" in file and ".xml" in file:
                                     start = time()
-                                    console += self._print_console(
-                                        f"  Processing output XML '{join(subdir, file)}'"
-                                    )
-                                    output_data = OutputProcessor().get_output_data(
-                                        join(subdir, file)
-                                    )
+                                    output_path = join(getcwd(), subdir, file)
+                                    output_basename = basename(output_path)
+                                    console += self._print_console(f"  Processing output XML '{output_basename}'")
+                                    output_data = OutputProcessor().get_output_data(output_path)
                                     run_alias = (
                                         str(basename(file))
                                         .replace("output_", "")
                                         .replace(".xml", "")
                                     )
                                     self.database.insert_output_data(
-                                        output_data, output_folder_path[1], run_alias
+                                        output_data, output_folder_path[1], run_alias, output_path
                                     )
                                     end = time()
                                     console += self._print_console(
-                                        f"  Processed output XML '{join(subdir, file)}' in {round(end-start, 2)} seconds"
+                                        f"  Processed output XML '{output_basename}' in {round(end-start, 2)} seconds"
                                     )
                             except Exception as error:
                                 console += self._print_console(
@@ -211,7 +210,7 @@ class RobotDashboard:
                 self.use_run_aliases,
                 self.message_config,
                 self.quantity,
-                self.user_log_folder,
+                self.use_logs,
             )
             end = time()
             console += self._print_console(
@@ -221,6 +220,13 @@ class RobotDashboard:
             console += self._print_console(
                 " 5. Creating dashboard HTML\n  skipping step"
             )
+        return console
+    
+    def update_output_path(self, log_path):
+        """Function to update the output_path using the log path that the server has used"""
+        self.database.open_database()
+        console = self.database.update_output_path(log_path)
+        self.database.close_database()
         return console
 
     def _print_console(self, message):

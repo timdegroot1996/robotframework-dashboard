@@ -129,12 +129,12 @@ class ArgumentParser:
         )
         parser.add_argument(
             "-u",
-            "--userlogfolder",
-            help="`path` Specifies a path to a folder in which your log files are located. Providing this argument makes runs/suites/tests/keywords clickable.\
-                The click will open the respective log file in a new tab. This feature uses aliases (generated based on output file names) to determine the log file name. \
-                For those aliases output_ and .xml are stripped away. For this feature 'output' should still be in the alias to be replaced with 'log'\
-                Example: alias: 'output-20250313-002134' should have 'log-20250313-002134.html' in the folder that is provided, alias: '01-output' expects a '01-log.html' etc.",
-            default=None,
+            "--uselogs",
+            help="`boolean` Whether to enable clicking on graphs will open the logs. Providing this argument makes runs/suites/tests/keywords clickable.\
+                The click will open the respective log file in a new tab. This feature uses the path to the output.xml file as a base to find the log.html files.\
+                The log.html should be in the same folder as the output.xml file and should have a similar name. 'output' is replaced by 'log' and 'xml' is replaced by 'html' \
+                Example: 'output-20250313-002134.xml' should have 'log-20250313-002134.html' in the same folder, '01-output.xml' expects '01-log.html' etc.",
+            default=False,
         )
         parser.add_argument(
             "-g",
@@ -239,6 +239,13 @@ class ArgumentParser:
         else:
             use_run_aliases = False
 
+        # handles the boolean handling of --uselogs
+        use_logs = None
+        if isinstance(arguments.uselogs, str) and arguments.uselogs.lower() == "true":
+            use_logs = True
+        else:
+            use_logs = False
+
         # generates the datetime used in the file dashboard name and the html title
         generation_datetime = datetime.now()
 
@@ -288,17 +295,6 @@ class ArgumentParser:
         else:
             int(quantity)
 
-        # handles the userlogfolder argument
-        user_log_folder = None
-        if arguments.userlogfolder:
-            user_log_folder = join(getcwd(), arguments.userlogfolder).replace(
-                "\\.\\", "\\"
-            )
-            if not exists(user_log_folder):
-                raise Exception(
-                    f"  ERROR: the provided output folder did not exist in the expected path: {user_log_folder}"
-                )
-
         # return all provided arguments
         provided_args = {
             "outputs": outputs,
@@ -318,6 +314,6 @@ class ArgumentParser:
             "server_port": server_port,
             "message_config": message_config,
             "quantity": quantity,
-            "user_log_folder": user_log_folder,
+            "use_logs": use_logs,
         }
         return dotdict(provided_args)

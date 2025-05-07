@@ -19,7 +19,7 @@ class DashboardGenerator:
         use_run_aliases: bool,
         message_config: list,
         quantity: int,
-        user_log_folder: Path,
+        use_logs: bool,
     ):
         """Function that generates the dashboard"""
         # update the dashboard data to exclude milliseconds if needed
@@ -89,11 +89,10 @@ class DashboardGenerator:
                     '"placeholder_message_config"',
                     str(message_config).replace("'", '"'),
                 )
-            if user_log_folder and not server:
-                user_log_folder = str(user_log_folder).replace("\\", "/")
-                dashboard_data = dashboard_data.replace(
-                    '"placeholder_user_log_folder"', f'"{user_log_folder}"'
-                )
+            if use_logs:
+                dashboard_data = dashboard_data.replace('"placeholder_use_logs"', "true")
+            else:
+                dashboard_data = dashboard_data.replace('"placeholder_use_logs"', "false")
 
         # handle possible subdirectories
         path = Path(name_dashboard)

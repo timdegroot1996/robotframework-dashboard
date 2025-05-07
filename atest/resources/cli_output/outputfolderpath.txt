@@ -10,36 +10,36 @@
   created database: 'robot_results.db'
 ======================================================================================
  2. Processing output XML(s)
-  Processing output XML '*/resources/outputs\output-20250313-002134.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002134.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-002151.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002151.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-002222.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002222.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-002257.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002257.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-002338.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002338.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-002400.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002400.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-002431.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002431.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-002457.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002457.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-002528.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002528.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-002549.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002549.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-002636.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002636.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-002703.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002703.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-002739.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002739.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-002915.xml'
-  Processed output XML '*/resources/outputs\output-20250313-002915.xml' in * seconds
-  Processing output XML '*/resources/outputs\output-20250313-003006.xml'
-  Processed output XML '*/resources/outputs\output-20250313-003006.xml' in * seconds
+  Processing output XML 'output-20250313-002134.xml'
+  Processed output XML 'output-20250313-002134.xml' in * seconds
+  Processing output XML 'output-20250313-002151.xml'
+  Processed output XML 'output-20250313-002151.xml' in * seconds
+  Processing output XML 'output-20250313-002222.xml'
+  Processed output XML 'output-20250313-002222.xml' in * seconds
+  Processing output XML 'output-20250313-002257.xml'
+  Processed output XML 'output-20250313-002257.xml' in * seconds
+  Processing output XML 'output-20250313-002338.xml'
+  Processed output XML 'output-20250313-002338.xml' in * seconds
+  Processing output XML 'output-20250313-002400.xml'
+  Processed output XML 'output-20250313-002400.xml' in * seconds
+  Processing output XML 'output-20250313-002431.xml'
+  Processed output XML 'output-20250313-002431.xml' in * seconds
+  Processing output XML 'output-20250313-002457.xml'
+  Processed output XML 'output-20250313-002457.xml' in * seconds
+  Processing output XML 'output-20250313-002528.xml'
+  Processed output XML 'output-20250313-002528.xml' in * seconds
+  Processing output XML 'output-20250313-002549.xml'
+  Processed output XML 'output-20250313-002549.xml' in * seconds
+  Processing output XML 'output-20250313-002636.xml'
+  Processed output XML 'output-20250313-002636.xml' in * seconds
+  Processing output XML 'output-20250313-002703.xml'
+  Processed output XML 'output-20250313-002703.xml' in * seconds
+  Processing output XML 'output-20250313-002739.xml'
+  Processed output XML 'output-20250313-002739.xml' in * seconds
+  Processing output XML 'output-20250313-002915.xml'
+  Processed output XML 'output-20250313-002915.xml' in * seconds
+  Processing output XML 'output-20250313-003006.xml'
+  Processed output XML 'output-20250313-003006.xml' in * seconds
 ======================================================================================
  3. Listing all available runs in the database
   Run 0   | 2025-03-13 00:21:34.707148 | Tests

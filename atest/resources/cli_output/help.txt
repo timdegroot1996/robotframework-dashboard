@@ -10,7 +10,7 @@ usage: robotdashboard [[]-v[]] [[]-h[]] [[]-o [[]OUTPUTPATH ...[]][]] [[]-f OUTP
                       [[]-r [[]REMOVERUNS ...[]][]] [[]-d DATABASEPATH[]]
                       [[]-n NAMEDASHBOARD[]] [[]-t DASHBOARDTITLE[]]
                       [[]-e EXCLUDEMILLISECONDS[]] [[]-a ALIASES[]] [[]-m MESSAGECONFIG[]]
-                      [[]-q QUANTITY[]] [[]-u USERLOGFOLDER[]] [[]-g GENERATEDASHBOARD[]]
+                      [[]-q QUANTITY[]] [[]-u USELOGS[]] [[]-g GENERATEDASHBOARD[]]
                       [[]-l LISTRUNS[]] [[]-c DATABASECLASS[]] [[]-s SERVER[]]
 
 options:
@@ -66,20 +66,19 @@ options:
   -q QUANTITY, --quantity QUANTITY
                         `integer` Specifies the default amount (Amount Filter)
                         of runs that are shown in the dashboard on first load.
-  -u USERLOGFOLDER, --userlogfolder USERLOGFOLDER
-                        `path` Specifies a path to a folder in which your log
-                        files are located. Providing this argument makes
+  -u USELOGS, --uselogs USELOGS
+                        `boolean` Whether to enable clicking on graphs will
+                        open the logs. Providing this argument makes
                         runs/suites/tests/keywords clickable. The click will
                         open the respective log file in a new tab. This
-                        feature uses aliases (generated based on output file
-                        names) to determine the log file name. For those
-                        aliases output_ and .xml are stripped away. For this
-                        feature 'output' should still be in the alias to be
-                        replaced with 'log' Example: alias:
-                        'output-20250313-002134' should have
-                        'log-20250313-002134.html' in the folder that is
-                        provided, alias: '01-output' expects a '01-log.html'
-                        etc.
+                        feature uses the path to the output.xml file as a base
+                        to find the log.html files. The log.html should be in
+                        the same folder as the output.xml file and should have
+                        a similar name. 'output' is replaced by 'log' and
+                        'xml' is replaced by 'html' Example:
+                        'output-20250313-002134.xml' should have
+                        'log-20250313-002134.html' in the same folder,
+                        '01-output.xml' expects a '01-log.html' etc.
   -g GENERATEDASHBOARD, --generatedashboard GENERATEDASHBOARD
                         `boolean` Specifies if you want to generate the HTML
                         dashboard. Default is True, override if you only
