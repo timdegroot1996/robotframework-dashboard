@@ -5,7 +5,7 @@ from typing import Annotated
 from pydantic import BaseModel
 from uvicorn import run
 from os.path import join, abspath, dirname, exists
-from os import remove, getcwd, mkdir
+from os import remove, mkdir, listdir
 from .version import __version__
 
 response_message_model_config = {
@@ -149,6 +149,9 @@ remove_log_model_config = {
         "examples": [
             {
                 "log_name": "log-20250219-172527.html",
+            },
+            {
+                "log_name": "all",
             }
         ]
     }
@@ -461,12 +464,14 @@ class ApiServer:
                 if not exists(self.log_dir):
                     mkdir(self.log_dir)
                 log_path = join(self.log_dir, add_log.log_name)
+                console += self.robotdashboard.update_output_path(log_path)
+                if "ERROR" in console:
+                    raise Exception('A problem occurred while adding the log file, check the console message!')
+                console += "======================================================================================\n"
                 log_file = open(log_path, "w", encoding="utf-8")
                 log_file.write(add_log.log_data)
                 log_file.close()
                 console += f"Added {add_log.log_name} to the folder {self.log_dir}\n"
-                console += "======================================================================================\n"
-                console += self.robotdashboard.update_output_path(log_path)
                 console += "======================================================================================\n"
                 console += self.robotdashboard.create_dashboard()
                 if "ERROR" in console:
@@ -490,9 +495,14 @@ class ApiServer:
             """Removes the log file from the folder on the server"""
             console = ""
             try:
-                log_path = join(self.log_dir, remove_log.log_name)
-                remove(log_path)
-                console += f"Removed {remove_log.log_name} from the folder {self.log_dir}\n"
+                if remove_log.log_name.lower() == 'all':
+                    for file in listdir(self.log_dir):
+                        remove(join(self.log_dir, file))
+                        console += f"Removed {file} from the folder {self.log_dir}\n"
+                else:
+                    log_path = join(self.log_dir, remove_log.log_name)
+                    remove(log_path)
+                    console += f"Removed {remove_log.log_name} from the folder {self.log_dir}\n"
                 console += "======================================================================================\n"
                 console += self.robotdashboard.create_dashboard()
             except Exception as error:

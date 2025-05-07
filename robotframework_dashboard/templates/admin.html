@@ -253,7 +253,7 @@
                 </div>
                 <div class="row">
                     <div class="col-2 d-flex">
-                        <p class="mt-auto">log.html</p>
+                        <p class="mt-4">log.html</p>
                     </div>
                     <div class="col-5">
                         <label class="form-label form-label-sm mt-1" for="logData">HTML Data (copy paste the
@@ -278,7 +278,7 @@
                         <p class="mt-auto">log.html to remove by name</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm mt-1" for="removeLog">E.g. 'log-20250219-172535.html'</label>
+                        <label class="form-label form-label-sm mt-1" for="removeLog">E.g. 'log-20250219-172535.html' or 'all' for everything</label>
                         <input class="form-control form-control-sm" id="removeLog"></input>
                     </div>
                     <div class="col-2 d-flex">
@@ -587,6 +587,10 @@
                 tags.push(removeTag)
             }
             if (tags.length > 0) { data['tags'] = tags }
+            document.getElementById('removeRunStarts').value = ''
+            document.getElementById('removeIndexes').value = ''
+            document.getElementById('removeAliases').value = ''
+            document.getElementById('removeTags').value = ''
             const body = JSON.stringify(data)
             send_request("DELETE", "/remove-outputs", body, 'removeSpinner')
         }

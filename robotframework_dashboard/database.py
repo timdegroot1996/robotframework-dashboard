@@ -197,8 +197,8 @@ class DatabaseProcessor:
                 if "run_start=" in run:
                     run_start = run.replace("run_start=", "")
                     if not run_start in run_starts:
-                        print(f"  ERROR: Could not find run to remove from the database: {run_start}")
-                        console += f"  ERROR: Could not find run to remove from the database: {run_start}\n"
+                        print(f"  ERROR: Could not find run to remove from the database: run_start={run_start}")
+                        console += f"  ERROR: Could not find run to remove from the database: run_start={run_start}\n"
                         continue
                     self._remove_run(run_start)
                     print(f"  Removed run from the database: run_start={run_start}")
