@@ -78,7 +78,7 @@ options:
                         'xml' is replaced by 'html' Example:
                         'output-20250313-002134.xml' should have
                         'log-20250313-002134.html' in the same folder,
-                        '01-output.xml' expects a '01-log.html' etc.
+                        '01-output.xml' expects '01-log.html' etc.
   -g GENERATEDASHBOARD, --generatedashboard GENERATEDASHBOARD
                         `boolean` Specifies if you want to generate the HTML
                         dashboard. Default is True, override if you only

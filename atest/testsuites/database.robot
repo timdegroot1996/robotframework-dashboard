@@ -10,6 +10,7 @@ Test Teardown    Run Keywords    Close Database Connection    Remove Database An
 
 *** Test Cases ***
 Validate Database Runs
+    [Tags]    test
     Validate Database    table=runs
 
 Validate Database Suites

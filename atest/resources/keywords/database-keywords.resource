@@ -1,5 +1,7 @@
 *** Settings ***
+Library    Collections
 Library    OperatingSystem
+Library    String
 Library    DatabaseLibrary
 
 
@@ -13,7 +15,18 @@ Close Database Connection
 Validate Database
     [Arguments]    ${table}
     ${result}    Query    select_statement=SELECT * FROM ${table}
-    ${result}    Convert To String    item=${result}
-    Log    ${result}
+    ${result}    Evaluate    [list(x) for x in $result]
+    VAR    @{new_result}    @{EMPTY}
+    IF    $table == 'runs'
+        FOR    ${row}    IN    @{result}
+            Log    ${row}[-1]
+            ${path}    Split String From Right    string=${row}[-1]    separator=\\    max_split=1
+            Set List Value    ${row}    index=-1    value=${path}[1]
+            Append To List    ${new_result}    ${row}
+        END
+    ELSE
+        VAR    ${new_result}    ${result}
+    END
+    ${new_result}    Convert To String    item=${new_result}
     ${expected}    Get File    path=${CURDIR}/../database_output/${table}.txt
-    Should Be Equal As Strings    first=${result}    second=${expected}
+    Should Be Equal As Strings    first=${new_result}    second=${expected}
