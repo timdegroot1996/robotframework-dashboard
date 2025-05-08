@@ -903,6 +903,39 @@
             return filePath.includes('\\') ? updatedPath.replace(/\//g, '\\') : updatedPath;
         }
 
+        // function used to combine paths to open the correct log file, used in combination with a file server
+        function combine_paths(baseUrlStr, relativePath) {
+            const baseUrl = new URL(baseUrlStr);
+            const baseParts = baseUrl.pathname.split('/');
+            if (relativePath.includes('\\')) {
+                relativePath = relativePath.replaceAll('\\', '/')
+            }
+            const relParts = relativePath.split('/');
+
+            // Find the LAST match of the first segment of the relative path
+            let matchIndex = -1;
+            for (let i = baseParts.length - 1; i >= 0; i--) {
+                console.log(baseParts[1], relParts[0])
+                if (baseParts[i] === relParts[0]) {
+                    matchIndex = i;
+                    break;
+                }
+            }
+
+            let newPath;
+            if (matchIndex !== -1) {
+                // Combine using the matching ancestor
+                const combinedParts = baseParts.slice(0, matchIndex).concat(relParts);
+                newPath = baseUrl.origin + combinedParts.join('/');
+            } else {
+                // If no common ancestor, just append
+                const combinedParts = baseParts.slice(0, -1).concat(relParts);
+                newPath = baseUrl.origin + combinedParts.join('/');
+            }
+
+            return newPath;
+        }
+
         //////////////////////////////
         // CUSTOMIZE VIEW FUNCTIONS //
         //////////////////////////////
@@ -2388,7 +2421,17 @@
                 alert("Log file error: this output didn't have a path in the database so the log file cannot be found!");
                 return
             }
-            const fileUrl = !server ? `file:///${path}` : `/log?path=${path}`
+            var fileUrl = ''
+            if (server) {
+                // server url
+                fileUrl = `/log?path=${path}`
+            } else if (window.location.href.includes('file:///')) {
+                // local machine url
+                fileUrl = `file:///${path}`
+            } else {
+                // remote machine file server
+                fileUrl = combine_paths(window.location.href, path)
+            }
             window.open(fileUrl, '_blank')
         }
 

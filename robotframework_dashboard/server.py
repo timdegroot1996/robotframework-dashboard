@@ -46,8 +46,8 @@ add_output_model_config = {
             {
                 "output_data": """<?xml version="1.0" encoding="UTF-8"?>
 <robot generator="Robot 7.2.2 (Python 3.12.9 on win32)" generated="2025-02-19T17:25:58.443716" rpa="false" schemaversion="5">
-<suite id="s1" name="Scripts" source="C:\docs">
-<suite id="s1-s1" name="Google" source="C:\docs\google.robot">
+<suite id="s1" name="Scripts" source="C:\\docs">
+<suite id="s1-s1" name="Google" source="C:\\docs\\google.robot">
 <test id="s1-s1-t1" name="Test 01" line="6">... etc""",
                 "output_tags": [],
                 "output_alias": "some_cool_alias",
@@ -92,8 +92,8 @@ add_outputs_openapi_examples = {
         "value": {
             "output_data": """<?xml version="1.0" encoding="UTF-8"?>
 <robot generator="Robot 7.2.2 (Python 3.12.9 on win32)" generated="2025-02-19T17:25:58.443716" rpa="false" schemaversion="5">
-<suite id="s1" name="Scripts" source="C:\docs">
-<suite id="s1-s1" name="Google" source="C:\docs\google.robot">
+<suite id="s1" name="Scripts" source="C:\\docs">
+<suite id="s1-s1" name="Google" source="C:\\docs\\google.robot">
 <test id="s1-s1-t1" name="Test 01" line="6">... etc""",
             "output_tags": [],
             "output_alias": "some_cool_alias",
