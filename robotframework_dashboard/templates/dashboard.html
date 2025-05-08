@@ -906,34 +906,41 @@
         // function used to combine paths to open the correct log file, used in combination with a file server
         function combine_paths(baseUrlStr, relativePath) {
             const baseUrl = new URL(baseUrlStr);
-            const baseParts = baseUrl.pathname.split('/');
-            if (relativePath.includes('\\')) {
-                relativePath = relativePath.replaceAll('\\', '/')
-            }
-            const relParts = relativePath.split('/');
+            const baseParts = baseUrl.pathname.split('/').filter(Boolean);
+            const relParts = relativePath.replaceAll('\\', '/').split('/').filter(Boolean);
 
-            // Find the LAST match of the first segment of the relative path
-            let matchIndex = -1;
-            for (let i = baseParts.length - 1; i >= 0; i--) {
-                console.log(baseParts[1], relParts[0])
-                if (baseParts[i] === relParts[0]) {
-                    matchIndex = i;
+            // Find the first matching folder name from the relative path in the base path
+            let match = null;
+            for (let i = 0; i < relParts.length; i++) {
+                const folder = relParts[i];
+                const baseMatchIndex = baseParts.lastIndexOf(folder);
+                if (baseMatchIndex !== -1) {
+                    match = { baseIndex: baseMatchIndex, relIndex: i };
                     break;
                 }
             }
 
-            let newPath;
-            if (matchIndex !== -1) {
-                // Combine using the matching ancestor
-                const combinedParts = baseParts.slice(0, matchIndex).concat(relParts);
-                newPath = baseUrl.origin + combinedParts.join('/');
+            let combinedParts;
+            if (match) {
+                const baseSlice = baseParts.slice(0, match.baseIndex);
+                const relSlice = relParts.slice(match.relIndex);
+                combinedParts = [...baseSlice, ...relSlice];
             } else {
-                // If no common ancestor, just append
-                const combinedParts = baseParts.slice(0, -1).concat(relParts);
-                newPath = baseUrl.origin + combinedParts.join('/');
+                combinedParts = relParts;
             }
 
-            return newPath;
+            // Resolve "." and ".."
+            const resolvedParts = [];
+            for (const part of combinedParts) {
+                if (part === '.') continue;
+                if (part === '..') {
+                    if (resolvedParts.length > 0) resolvedParts.pop();
+                } else {
+                    resolvedParts.push(part);
+                }
+            }
+
+            return baseUrl.origin + '/' + resolvedParts.join('/');
         }
 
         //////////////////////////////
