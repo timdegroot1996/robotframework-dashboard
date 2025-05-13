@@ -2516,7 +2516,6 @@
 
             for (let i = 0; i < ticks.length; i++) {
                 if (xCoor >= left + (right * i) && xCoor <= left + right + (right * i) && yCoor >= top && yCoor <= bottom) {
-                    console.log(data.labels[i])
                     var run = runs.find(run => run.run_start === data.labels[i])
                     if (run) {
                         const path = transform_file_path(run.path)
