@@ -1710,17 +1710,20 @@
                 runStatisticsGraph.destroy();
             }
             Chart.register(ChartDataLabels);
-            var graphData = get_statistics_graph_data("run", runStatisticsGraphType, filteredRuns);
+            const data = get_statistics_graph_data("run", runStatisticsGraphType, filteredRuns);
+            const graphData = data[0]
+            var config;
             if (runStatisticsGraphType == "line") {
-                var config = get_graph_config("line", graphData, "Amount Of Tests (Line)", "Date", "amount", false);
-                runStatisticsGraph = new Chart("runStatisticsGraph", config);
+                config = get_graph_config("line", graphData, "Amount Of Tests (Line)", "Date", "amount", false);
             } else if (runStatisticsGraphType == "amount") {
-                var config = get_graph_config("bar", graphData, "Run Statistics (Bar)", "Run", "Amount Of Tests");
-                runStatisticsGraph = new Chart("runStatisticsGraph", config);
+                config = get_graph_config("bar", graphData, "Run Statistics (Bar)", "Run", "Amount Of Tests");
             } else if (runStatisticsGraphType == "percentages") {
-                var config = get_graph_config("bar", graphData, "Run Statistics (Bar)", "Run", "Percentage");
-                runStatisticsGraph = new Chart("runStatisticsGraph", config);
+                config = get_graph_config("bar", graphData, "Run Statistics (Bar)", "Run", "Percentage");
             }
+            runStatisticsGraph = new Chart("runStatisticsGraph", config);
+            runStatisticsGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(runStatisticsGraph, event)
+            });
         }
 
         // function to create run duration graph in the run section
@@ -1729,13 +1732,16 @@
                 runDurationGraph.destroy();
             }
             var graphData = get_duration_graph_data("run", runDurationGraphType, "elapsed_s", filteredRuns);
+            var config;
             if (runDurationGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Run Duration (Bar) First 30 Bars Only", "Run", "Duration");
-                runDurationGraph = new Chart("runDurationGraph", config);
+                config = get_graph_config("bar", graphData, "Run Duration (Bar) First 30 Bars Only", "Run", "Duration");
             } else if (runDurationGraphType == "line") {
-                var config = get_graph_config("line", graphData, "Run Duration (Line)", "Date", "Duration");
-                runDurationGraph = new Chart("runDurationGraph", config);
+                config = get_graph_config("line", graphData, "Run Duration (Line)", "Date", "Duration");
             }
+            runDurationGraph = new Chart("runDurationGraph", config);
+            runDurationGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(runDurationGraph, event)
+            });
         }
 
         // function to create run table in the run section
@@ -1787,17 +1793,48 @@
                 suiteStatisticsGraph.destroy();
             }
             Chart.register(ChartDataLabels);
-            var graphData = get_statistics_graph_data("suite", suiteStatisticsGraphType, filteredSuites);
+            const data = get_statistics_graph_data("suite", suiteStatisticsGraphType, filteredSuites);
+            const graphData = data[0]
+            const callbackData = data[1]
+            var config;
             if (suiteStatisticsGraphType == "line") {
-                var config = get_graph_config("line", graphData, "Amount Of Tests (Line)", "Date", "amount", false);
-                suiteStatisticsGraph = new Chart("suiteStatisticsGraph", config);
+                config = get_graph_config("line", graphData, "Amount Of Tests (Line)", "Date", "amount", false);
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        title: function (tooltipItem) {
+                            return `${tooltipItem[0].label}: ${callbackData[tooltipItem[0].dataIndex]}`
+                        }
+                    }
+                }
             } else if (suiteStatisticsGraphType == "amount") {
-                var config = get_graph_config("bar", graphData, "Suite Statistics (Bar)", "Run", "Amount Of Tests");
-                suiteStatisticsGraph = new Chart("suiteStatisticsGraph", config);
+                config = get_graph_config("bar", graphData, "Suite Statistics (Bar)", "Run", "Amount Of Tests");
+                // overwrite tooltip title
+                const filter = config.options.plugins.tooltip.filter
+                config.options.plugins.tooltip = {
+                    filter,
+                    callbacks: {
+                        title: function (tooltipItem) {
+                            return `${tooltipItem[0].label}: ${callbackData[tooltipItem[0].dataIndex]}`
+                        }
+                    }
+                }
             } else if (suiteStatisticsGraphType == "percentages") {
-                var config = get_graph_config("bar", graphData, "Suite Statistics (Bar)", "Run", "Percentage");
-                suiteStatisticsGraph = new Chart("suiteStatisticsGraph", config);
+                config = get_graph_config("bar", graphData, "Suite Statistics (Bar)", "Run", "Percentage");
+                // overwrite tooltip title
+                const filter = config.options.plugins.tooltip.filter
+                config.options.plugins.tooltip = {
+                    filter,
+                    callbacks: {
+                        title: function (tooltipItem) {
+                            return `${tooltipItem[0].label}: ${callbackData[tooltipItem[0].dataIndex]}`
+                        }
+                    }
+                }
             }
+            suiteStatisticsGraph = new Chart("suiteStatisticsGraph", config);
+            suiteStatisticsGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(suiteStatisticsGraph, event)
+            });
         }
 
         // function to create suite duration graph in the suite section
@@ -1805,14 +1842,17 @@
             if (suiteDurationGraph) {
                 suiteDurationGraph.destroy();
             }
-            var graphData = get_duration_graph_data("suite", suiteDurationGraphType, "elapsed_s", filteredSuites);
+            const graphData = get_duration_graph_data("suite", suiteDurationGraphType, "elapsed_s", filteredSuites);
+            var config;
             if (suiteDurationGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Suite Duration (Bar) First 30 Bars Only", "Run", "Duration");
-                suiteDurationGraph = new Chart("suiteDurationGraph", config);
+                config = get_graph_config("bar", graphData, "Suite Duration (Bar) First 30 Bars Only", "Run", "Duration");
             } else if (suiteDurationGraphType == "line") {
-                var config = get_graph_config("line", graphData, "Suite Duration (Line)", "Date", "Duration");
-                suiteDurationGraph = new Chart("suiteDurationGraph", config);
+                config = get_graph_config("line", graphData, "Suite Duration (Line)", "Date", "Duration");
             }
+            suiteDurationGraph = new Chart("suiteDurationGraph", config);
+            suiteDurationGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(suiteDurationGraph, event)
+            });
         }
 
         // function to create suite most failed graph in the suite section
@@ -1820,11 +1860,12 @@
             if (suiteMostFailedGraph) {
                 suiteMostFailedGraph.destroy();
             }
-            var graphData = get_most_failed_data("suite", suiteMostFailedGraphType, filteredSuites);
-            var callbackData = graphData[0];
-            graphData = graphData[1];
+            const data = get_most_failed_data("suite", suiteMostFailedGraphType, filteredSuites);
+            const graphData = data[0];
+            const callbackData = data[1];
+            var config;
             if (suiteMostFailedGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Top 10 Most Failed Suites", "Suite Name", "Times Failed");
+                config = get_graph_config("bar", graphData, "Top 10 Most Failed Suites", "Suite Name", "Times Failed");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -1836,9 +1877,8 @@
                 };
                 // no onClick on the bar chart
                 delete config.options.onClick
-                suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
             } else if (suiteMostFailedGraphType == "timeline") {
-                var config = get_graph_config("timeline", graphData, "Top 10 Most Failed Suites");
+                config = get_graph_config("timeline", graphData, "Top 10 Most Failed Suites");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -1861,9 +1901,12 @@
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
                     }
-                },
-                    suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
+                };
             }
+            suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
+            suiteMostFailedGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(suiteMostFailedGraph, event)
+            });
         }
 
         // function to create suite table in the suite section
@@ -1884,6 +1927,7 @@
                     suite.elapsed_s,
                     suite.start_time,
                     suite.run_alias,
+                    suite.id,
                 ]);
             }
             suiteTable = new DataTable("#suiteTable", {
@@ -1902,6 +1946,7 @@
                     { title: "elapsed_s" },
                     { title: "start_time" },
                     { title: "alias" },
+                    { title: "id" },
                 ],
                 data: data,
             });
@@ -1993,9 +2038,12 @@
                 if (chartElement.length) {
                     open_log_file(event, chartElement, runStarts)
                 }
-            },
-                testStatisticsGraph = new Chart("testStatisticsGraph", config);
+            };
+            testStatisticsGraph = new Chart("testStatisticsGraph", config);
             update_height('testStatisticsVertical', testStatisticsGraph)
+            testStatisticsGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(testStatisticsGraph, event)
+            });
         }
 
         // function to create test duration graph in the test section
@@ -2004,13 +2052,16 @@
                 testDurationGraph.destroy();
             }
             var graphData = get_duration_graph_data("test", testDurationGraphType, "elapsed_s", filteredTests);
+            var config;
             if (testDurationGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Test Duration (Bar) First 30 Bars Only", "Run", "Duration");
-                testDurationGraph = new Chart("testDurationGraph", config);
+                config = get_graph_config("bar", graphData, "Test Duration (Bar) First 30 Bars Only", "Run", "Duration");
             } else if (testDurationGraphType == "line") {
-                var config = get_graph_config("line", graphData, "Test Duration (Line)", "Date", "Duration");
-                testDurationGraph = new Chart("testDurationGraph", config);
+                config = get_graph_config("line", graphData, "Test Duration (Line)", "Date", "Duration");
             }
+            testDurationGraph = new Chart("testDurationGraph", config);
+            testDurationGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(testDurationGraph, event)
+            });
         }
 
         // function to create test most flaky graph in test section
@@ -2018,18 +2069,18 @@
             if (testMostFlakyGraph) {
                 testMostFlakyGraph.destroy();
             }
-            var graphData = get_most_flaky_data("test", testMostFlakyGraphType, filteredTests, ignoreSkips, false);
-            var callbackData = graphData[0];
-            graphData = graphData[1];
+            const data = get_most_flaky_data("test", testMostFlakyGraphType, filteredTests, ignoreSkips, false);
+            const graphData = data[0]
+            const callbackData = data[1];
+            var config;
             if (testMostFlakyGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Top 10 Most Flaky Tests (most status flips)", "Test Name", "Times Status Flipped");
+                config = get_graph_config("bar", graphData, "Top 10 Most Flaky Tests (most status flips)", "Test Name", "Times Status Flipped");
                 // disable lenged in bar graph
                 config.options.plugins.legend = false
                 // no onClick on the bar chart
                 delete config.options.onClick
-                testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
             } else if (testMostFlakyGraphType == "timeline") {
-                var config = get_graph_config("timeline", graphData, "Top 10 Most Flaky Tests (most status flips)");
+                config = get_graph_config("timeline", graphData, "Top 10 Most Flaky Tests (most status flips)");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2052,9 +2103,12 @@
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
                     }
-                },
-                    testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
+                }
             }
+            testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
+            testMostFlakyGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(testMostFlakyGraph, event)
+            });
         }
 
         // function to create test recent most flaky graph in test section
@@ -2062,18 +2116,18 @@
             if (testRecentMostFlakyGraph) {
                 testRecentMostFlakyGraph.destroy();
             }
-            var graphData = get_most_flaky_data("test", testRecentMostFlakyGraphType, filteredTests, ignoreSkipsRecent, true);
-            var callbackData = graphData[0];
-            graphData = graphData[1];
+            const data = get_most_flaky_data("test", testRecentMostFlakyGraphType, filteredTests, ignoreSkipsRecent, true);
+            const graphData = data[0];
+            const callbackData = data[1];
+            var config;
             if (testRecentMostFlakyGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Top 10 Recent Most Flaky Tests (most status flips)", "Test Name", "Times Status Flipped");
+                config = get_graph_config("bar", graphData, "Top 10 Recent Most Flaky Tests (most status flips)", "Test Name", "Times Status Flipped");
                 // disable lenged in bar graph
                 config.options.plugins.legend = false
                 // no onClick on the bar chart
                 delete config.options.onClick
-                testRecentMostFlakyGraph = new Chart("testRecentMostFlakyGraph", config);
             } else if (testRecentMostFlakyGraphType == "timeline") {
-                var config = get_graph_config("timeline", graphData, "Top 10 Recent Most Flaky Tests (most status flips)");
+                config = get_graph_config("timeline", graphData, "Top 10 Recent Most Flaky Tests (most status flips)");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2096,9 +2150,12 @@
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
                     }
-                },
-                    testRecentMostFlakyGraph = new Chart("testRecentMostFlakyGraph", config);
+                }
             }
+            testRecentMostFlakyGraph = new Chart("testRecentMostFlakyGraph", config);
+            testRecentMostFlakyGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(testRecentMostFlakyGraph, event)
+            });
         }
 
         // function to create test duration deviation graph in test section
@@ -2106,12 +2163,14 @@
             if (testDurationDeviationGraph) {
                 testDurationDeviationGraph.destroy();
             }
-
-            var graphData = get_duration_deviation_data("test", testDurationDeviationGraphType, filteredTests)
-            var config = get_graph_config("boxplot", graphData, "Duration Deviation", "Test Name", "Duration");
+            const graphData = get_duration_deviation_data("test", testDurationDeviationGraphType, filteredTests)
+            const config = get_graph_config("boxplot", graphData, "Duration Deviation", "Test Name", "Duration");
             // no onClick on the boxplot chart
             delete config.options.onClick
             testDurationDeviationGraph = new Chart("testDurationDeviationGraph", config);
+            testDurationDeviationGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(testDurationDeviationGraph, event)
+            });
         }
 
         // function to create test most failed graph in the test section
@@ -2122,11 +2181,12 @@
             if (testMostFailedGraph) {
                 testMostFailedGraph.destroy();
             }
-            var graphData = get_most_failed_data("test", testMostFailedGraphType, filteredTests);
-            var callbackData = graphData[0];
-            graphData = graphData[1];
+            const data = get_most_failed_data("test", testMostFailedGraphType, filteredTests);
+            const graphData = data[0]
+            const callbackData = data[1];
+            var config;
             if (testMostFailedGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Top 10 Most Failed Tests", "Test Name", "Times Failed");
+                config = get_graph_config("bar", graphData, "Top 10 Most Failed Tests", "Test Name", "Times Failed");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2138,9 +2198,8 @@
                 };
                 // no onClick on the bar chart
                 delete config.options.onClick
-                testMostFailedGraph = new Chart("testMostFailedGraph", config);
             } else if (testMostFailedGraphType == "timeline") {
-                var config = get_graph_config("timeline", graphData, "Top 10 Most Failed Tests");
+                config = get_graph_config("timeline", graphData, "Top 10 Most Failed Tests");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2163,9 +2222,12 @@
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
                     }
-                },
-                    testMostFailedGraph = new Chart("testMostFailedGraph", config);
+                }
             }
+            testMostFailedGraph = new Chart("testMostFailedGraph", config);
+            testMostFailedGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(testMostFailedGraph, event)
+            });
         }
 
         // function to create test messages graph in the test section
@@ -2173,11 +2235,12 @@
             if (testMessagesGraph) {
                 testMessagesGraph.destroy();
             }
-            var graphData = get_messages_data("test", testMessagesGraphType, filteredTests);
-            var callbackData = graphData[0];
-            graphData = graphData[1];
+            const data = get_messages_data("test", testMessagesGraphType, filteredTests);
+            const graphData = data[0];
+            const callbackData = data[1];
+            var config;
             if (testMessagesGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Top 10 Fail Messages", "Message", "Times");
+                config = get_graph_config("bar", graphData, "Top 10 Fail Messages", "Message", "Times");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2198,9 +2261,8 @@
                 };
                 // no onClick on the bar chart
                 delete config.options.onClick
-                testMessagesGraph = new Chart("testMessagesGraph", config);
             } else if (testMessagesGraphType == "timeline") {
-                var config = get_graph_config("timeline", graphData, "Top 10 Fail Messages");
+                config = get_graph_config("timeline", graphData, "Top 10 Fail Messages");
                 // overwrite tooltip and x and y scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2223,14 +2285,17 @@
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
                     }
-                },
-                    config.options.scales.y.ticks = {
-                        callback: function (value, index, ticks) {
-                            return this.getLabelForValue(value).slice(0, 40);
-                        },
-                    };
-                testMessagesGraph = new Chart("testMessagesGraph", config);
+                };
+                config.options.scales.y.ticks = {
+                    callback: function (value, index, ticks) {
+                        return this.getLabelForValue(value).slice(0, 40);
+                    },
+                };
             }
+            testMessagesGraph = new Chart("testMessagesGraph", config);
+            testMessagesGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(testMessagesGraph, event)
+            });
         }
 
         // function to create test table in the test section
@@ -2240,7 +2305,20 @@
             }
             data = [];
             for (test of filteredTests) {
-                data.push([test.run_start, test.full_name, test.name, test.passed, test.failed, test.skipped, test.elapsed_s, test.start_time, test.message, test.tags, test.run_alias]);
+                data.push([
+                    test.run_start,
+                    test.full_name,
+                    test.name,
+                    test.passed,
+                    test.failed,
+                    test.skipped,
+                    test.elapsed_s,
+                    test.start_time,
+                    test.message,
+                    test.tags,
+                    test.run_alias,
+                    test.id
+                ]);
             }
             testTable = new DataTable("#testTable", {
                 layout: {
@@ -2259,6 +2337,7 @@
                     { title: "message" },
                     { title: "tags" },
                     { title: "alias" },
+                    { title: "id" },
                 ],
                 data: data,
             });
@@ -2270,17 +2349,20 @@
                 keywordStatisticsGraph.destroy();
             }
             Chart.register(ChartDataLabels);
-            var graphData = get_statistics_graph_data("keyword", keywordStatisticsGraphType, filteredKeywords);
+            const data = get_statistics_graph_data("keyword", keywordStatisticsGraphType, filteredKeywords);
+            const graphData = data[0]
+            var config;
             if (keywordStatisticsGraphType == "line") {
-                var config = get_graph_config("line", graphData, "Keyword Statistics (Line)", "Date", "Amount", false);
-                keywordStatisticsGraph = new Chart("keywordStatisticsGraph", config);
+                config = get_graph_config("line", graphData, "Keyword Statistics (Line)", "Date", "Amount", false);
             } else if (keywordStatisticsGraphType == "amount") {
-                var config = get_graph_config("bar", graphData, "Keyword Statistics (Bar)", "Run", "Amount");
-                keywordStatisticsGraph = new Chart("keywordStatisticsGraph", config);
+                config = get_graph_config("bar", graphData, "Keyword Statistics (Bar)", "Run", "Amount");
             } else if (keywordStatisticsGraphType == "percentages") {
-                var config = get_graph_config("bar", graphData, "Keyword Statistics (Bar)", "Run", "Percentage");
-                keywordStatisticsGraph = new Chart("keywordStatisticsGraph", config);
+                config = get_graph_config("bar", graphData, "Keyword Statistics (Bar)", "Run", "Percentage");
             }
+            keywordStatisticsGraph = new Chart("keywordStatisticsGraph", config);
+            keywordStatisticsGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(keywordStatisticsGraph, event)
+            });
         }
 
         // function to keyword times run graph in the keyword section
@@ -2288,14 +2370,17 @@
             if (keywordTimesRunGraph) {
                 keywordTimesRunGraph.destroy();
             }
-            var graphData = get_duration_graph_data("keyword", keywordTimesRunGraphType, "times_run", filteredKeywords);
+            const graphData = get_duration_graph_data("keyword", keywordTimesRunGraphType, "times_run", filteredKeywords);
+            var config;
             if (keywordTimesRunGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Times Run (Bar) First 30 Bars Only", "Run", "Duration");
-                keywordTimesRunGraph = new Chart("keywordTimesRunGraph", config);
+                config = get_graph_config("bar", graphData, "Times Run (Bar) First 30 Bars Only", "Run", "Duration");
             } else if (keywordTimesRunGraphType == "line") {
-                var config = get_graph_config("line", graphData, "Times Run (Line)", "Date", "Duration");
-                keywordTimesRunGraph = new Chart("keywordTimesRunGraph", config);
+                config = get_graph_config("line", graphData, "Times Run (Line)", "Date", "Duration");
             }
+            keywordTimesRunGraph = new Chart("keywordTimesRunGraph", config);
+            keywordTimesRunGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(keywordTimesRunGraph, event)
+            });
         }
 
         // function to keyword total time graph in the keyword section
@@ -2306,14 +2391,17 @@
             if (keywordTotalDurationGraph) {
                 keywordTotalDurationGraph.destroy();
             }
-            var graphData = get_duration_graph_data("keyword", keywordTotalDurationGraphType, "total_time_s", filteredKeywords);
+            const graphData = get_duration_graph_data("keyword", keywordTotalDurationGraphType, "total_time_s", filteredKeywords);
+            var config;
             if (keywordTotalDurationGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Total Duration (Bar) First 30 Bars Only", "Run", "Duration");
-                keywordTotalDurationGraph = new Chart("keywordTotalDurationGraph", config);
+                config = get_graph_config("bar", graphData, "Total Duration (Bar) First 30 Bars Only", "Run", "Duration");
             } else if (keywordTotalDurationGraphType == "line") {
-                var config = get_graph_config("line", graphData, "Total Duration (Line)", "Date", "Duration");
-                keywordTotalDurationGraph = new Chart("keywordTotalDurationGraph", config);
+                config = get_graph_config("line", graphData, "Total Duration (Line)", "Date", "Duration");
             }
+            keywordTotalDurationGraph = new Chart("keywordTotalDurationGraph", config);
+            keywordTotalDurationGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(keywordTotalDurationGraph, event)
+            });
         }
 
         // function to keyword average time graph in the keyword section
@@ -2321,14 +2409,17 @@
             if (keywordAverageDurationGraph) {
                 keywordAverageDurationGraph.destroy();
             }
-            var graphData = get_duration_graph_data("keyword", keywordAverageDurationGraphType, "average_time_s", filteredKeywords);
+            const graphData = get_duration_graph_data("keyword", keywordAverageDurationGraphType, "average_time_s", filteredKeywords);
+            var config;
             if (keywordAverageDurationGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Average Duration (Bar) First 30 Bars Only", "Run", "Duration");
-                keywordAverageDurationGraph = new Chart("keywordAverageDurationGraph", config);
+                config = get_graph_config("bar", graphData, "Average Duration (Bar) First 30 Bars Only", "Run", "Duration");
             } else if (keywordAverageDurationGraphType == "line") {
-                var config = get_graph_config("line", graphData, "Average Duration (Line)", "Date", "Duration");
-                keywordAverageDurationGraph = new Chart("keywordAverageDurationGraph", config);
+                config = get_graph_config("line", graphData, "Average Duration (Line)", "Date", "Duration");
             }
+            keywordAverageDurationGraph = new Chart("keywordAverageDurationGraph", config);
+            keywordAverageDurationGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(keywordAverageDurationGraph, event)
+            });
         }
 
         // function to keyword min time graph in the keyword section
@@ -2336,14 +2427,17 @@
             if (keywordMinDurationGraph) {
                 keywordMinDurationGraph.destroy();
             }
-            var graphData = get_duration_graph_data("keyword", keywordMinDurationGraphType, "min_time_s", filteredKeywords);
+            const graphData = get_duration_graph_data("keyword", keywordMinDurationGraphType, "min_time_s", filteredKeywords);
+            var config;
             if (keywordMinDurationGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Min Duration (Bar) First 30 Bars Only", "Run", "Duration");
-                keywordMinDurationGraph = new Chart("keywordMinDurationGraph", config);
+                config = get_graph_config("bar", graphData, "Min Duration (Bar) First 30 Bars Only", "Run", "Duration");
             } else if (keywordMinDurationGraphType == "line") {
-                var config = get_graph_config("line", graphData, "Min Duration (Line)", "Date", "Duration");
-                keywordMinDurationGraph = new Chart("keywordMinDurationGraph", config);
+                config = get_graph_config("line", graphData, "Min Duration (Line)", "Date", "Duration");
             }
+            keywordMinDurationGraph = new Chart("keywordMinDurationGraph", config);
+            keywordMinDurationGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(keywordMinDurationGraph, event)
+            });
         }
 
         // function to keyword max time graph in the keyword section
@@ -2351,14 +2445,17 @@
             if (keywordMaxDurationGraph) {
                 keywordMaxDurationGraph.destroy();
             }
-            var graphData = get_duration_graph_data("keyword", keywordMaxDurationGraphType, "max_time_s", filteredKeywords);
+            const graphData = get_duration_graph_data("keyword", keywordMaxDurationGraphType, "max_time_s", filteredKeywords);
+            var config;
             if (keywordMaxDurationGraphType == "bar") {
-                var config = get_graph_config("bar", graphData, "Max Duration (Bar) First 30 Bars Only", "Run", "Duration");
-                keywordMaxDurationGraph = new Chart("keywordMaxDurationGraph", config);
+                config = get_graph_config("bar", graphData, "Max Duration (Bar) First 30 Bars Only", "Run", "Duration");
             } else if (keywordMaxDurationGraphType == "line") {
-                var config = get_graph_config("line", graphData, "Max Duration (Line)", "Date", "Duration");
-                keywordMaxDurationGraph = new Chart("keywordMaxDurationGraph", config);
+                config = get_graph_config("line", graphData, "Max Duration (Line)", "Date", "Duration");
             }
+            keywordMaxDurationGraph = new Chart("keywordMaxDurationGraph", config);
+            keywordMaxDurationGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(keywordMaxDurationGraph, event)
+            });
         }
 
         // function to keyword table in the keyword section
@@ -2408,14 +2505,85 @@
         // GRAPH DATA & CONFIG FUNCTIONS //
         ///////////////////////////////////
 
-        function open_log_file(event, chartElement, callBackData = undefined) {
+        function open_log_from_label(chart, click) {
+            if (!use_logs) { return }
+            let resetCoordinates = chart.canvas.getBoundingClientRect();
+            const xCoor = click.clientX - resetCoordinates.left;
+            const yCoor = click.clientY - resetCoordinates.top;
+
+            const { data, scales: { x: { top, bottom, left, height, width, ticks } } } = chart;
+            const right = width / ticks.length;
+
+            for (let i = 0; i < ticks.length; i++) {
+                if (xCoor >= left + (right * i) && xCoor <= left + right + (right * i) && yCoor >= top && yCoor <= bottom) {
+                    console.log(data.labels[i])
+                    var run = runs.find(run => run.run_start === data.labels[i])
+                    if (run) {
+                        const path = transform_file_path(run.path)
+                        if (path == "") {
+                            alert("Log file error: this output didn't have a path in the database so the log file cannot be found!");
+                            return
+                        }
+                        var fileUrl = ""
+                        if (server) { // server url
+                            fileUrl = `/log?path=${path}`
+                        } else if (window.location.href.includes('file:///')) { // local machine url
+                            fileUrl = `file:///${path}`
+                        } else { // remote machine file server
+                            fileUrl = combine_paths(window.location.href, path)
+                        }
+                        const win = window.open(fileUrl, '_blank')
+                    }
+                }
+            }
+        }
+
+        function update_log_path_with_id(path, graphId, chartElement, event) {
+            if (graphId.includes('run') || graphId.includes('keyword')) {
+                return transform_file_path(path)
+            } // can't select a run or keyword in the suite/log log.html
+            const graphType = event.chart.config._config.type
+            var name = ''
+            var id = ''
+            var runStart = runs.find(run => run.path === path).run_start
+            if (graphId.includes('suite')) {
+                if (graphId == 'suiteStatisticsGraph') {
+                    name = event.chart.tooltip.title[0].split(': ').pop()
+                } else if (graphId == 'suiteDurationGraph') {
+                    name = event.chart.tooltip.body[0].lines[0].split(': ')[0]
+                } else if (graphId == 'suiteMostFailedGraph') {
+                    name = chartElement[0].element.$context.raw.y
+                }
+                id = suites.find(suite => suite.name === name && suite.run_start === runStart)
+            } else { // it contains a test
+                if (graphId == 'testStatisticsGraph' || graphId == 'testMostFlakyGraph' || graphId == 'testRecentMostFlakyGraph' || graphId == 'testMostFailedGraph') {
+                    name = chartElement[0].element.$context.raw.y
+                } else if (graphId == 'testDurationGraph') {
+                    if (graphType == 'bar') {
+                        name = event.chart.tooltip.dataPoints[0].dataset.label
+                    } else {
+                        const datasetIndex = chartElement[0].datasetIndex
+                        name = event.chart.legend.legendItems[datasetIndex].text
+                    }
+                } else { // this exception is for the Test Messages graph as you can't tell which test it relates to (might be more than 1!)
+                    return transform_file_path(path)
+                }
+                id = tests.find(test => test.name === name && test.run_start === runStart)
+            }
+            if (id == undefined) {
+                return transform_file_path(path)
+            }
+            return `${transform_file_path(path)}#${id.id}`
+        }
+
+        function open_log_file(event, chartElement, callbackData = undefined) {
             if (!use_logs) { return }
             const graphType = event.chart.config._config.type
             const graphId = event.chart.canvas.id
             var runStart = ''
-            if (callBackData) {
+            if (callbackData) {
                 const index = chartElement[0].element.$context.raw.x[0]
-                runStart = callBackData[index]
+                runStart = callbackData[index]
             } else if (graphType == 'line' && !graphId.includes('Statistics')) {
                 runStart = format_date_to_string(new Date(chartElement[0].element.$context.raw.x))
             } else {
@@ -2423,23 +2591,21 @@
                 runStart = event.chart.data.labels[index]
             }
             var output = runs.find(run => run.run_start === runStart)
-            const path = output ? transform_file_path(output.path) : transform_file_path(runs.find(run => run.run_alias === runStart).path)
+            var path = output ? output.path : runs.find(run => run.run_alias === runStart).path
             if (path == "") {
                 alert("Log file error: this output didn't have a path in the database so the log file cannot be found!");
                 return
             }
-            var fileUrl = ''
-            if (server) {
-                // server url
+            path = update_log_path_with_id(path, graphId, chartElement, event)
+            var fileUrl = ""
+            if (server) { // server url
                 fileUrl = `/log?path=${path}`
-            } else if (window.location.href.includes('file:///')) {
-                // local machine url
+            } else if (window.location.href.includes('file:///')) { // local machine url
                 fileUrl = `file:///${path}`
-            } else {
-                // remote machine file server
+            } else { // remote machine file server
                 fileUrl = combine_paths(window.location.href, path)
             }
-            window.open(fileUrl, '_blank')
+            const win = window.open(fileUrl, '_blank')
         }
 
         // function to retrieve the required graph config for chartjs, based on the different type of graphs
@@ -2562,7 +2728,6 @@
                     },
                 };
             }
-
             // Configuration for 'boxplot' graph
             if (graphType === "boxplot") {
                 return {
@@ -2600,7 +2765,7 @@
             const keywordSelect = document.getElementById("keywordSelect").value;
             const suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
             // Initialize arrays to store the data
-            const passed = [], failed = [], skipped = [], labels = [], aliases = [];
+            const passed = [], failed = [], skipped = [], labels = [], aliases = [], names = [];
             // Helper function to calculate percentages
             const calculate_percentage = (value, total) => Math.round((value / total) * 100 * 100) / 100;
             // Helper function to process each value for graph data
@@ -2614,6 +2779,7 @@
                 skipped.push(skippedPercentage);
                 labels.push(value.run_start);
                 aliases.push(value.run_alias);
+                names.push(value.name)
             };
             // Loop through filtered data and process it based on the graph type
             for (const value of filteredData) {
@@ -2635,6 +2801,7 @@
                     skipped.push(value.skipped);
                     labels.push(value.run_start);
                     aliases.push(value.run_alias);
+                    names.push(value.name)
                 }
             }
             // Determine if we need to use aliases for labels
@@ -2657,7 +2824,7 @@
                     create_data_set("Passed", passed, passedBackgroundColor, passedBackgroundBorderColor),
                 ],
             };
-            return statisticsData;
+            return [statisticsData, names];
         }
 
         // function to prepare the data in the correct format for duration graphs
@@ -2861,7 +3028,7 @@
                         borderWidth: 1,
                     }],
                 };
-                return [data, graphData];
+                return [graphData, data];
             } else if (graphType == "timeline") {
                 var [labels, runStarts, count, run_aliases] = [[], [], 0, []];
                 for (key in sortedData) {
@@ -2926,7 +3093,7 @@
                     labels: labels,
                     datasets: datasets,
                 };
-                return [runStarts, graphData];
+                return [graphData, runStarts];
             }
         }
 
@@ -2970,7 +3137,8 @@
                         borderWidth: 1,
                     }],
                 };
-                return [Object.fromEntries(sortedData.map(([name, runs]) => [name, aliases.get(name)])), graphData];
+                const callbackData = Object.fromEntries(sortedData.map(([name, runs]) => [name, aliases.get(name)]));
+                return [graphData, callbackData];
             } else if (graphType === 'timeline') {
                 const labels = [];
                 const runStartsSet = new Set();
@@ -3010,7 +3178,7 @@
                     labels,
                     datasets,
                 };
-                return [runStartsArray, graphData];
+                return [graphData, runStartsArray];
             }
         }
 
@@ -3019,7 +3187,6 @@
             // Maps to store data and aliases
             const data = new Map();
             const aliases = new Map();
-
             // Build data and aliases
             for (const value of filteredData) {
                 if (value.message && (value.failed === 1 || value.skipped === 1)) {
@@ -3031,7 +3198,6 @@
                     aliases.get(value.message).push(value.run_alias);
                 }
             }
-
             // If there is a message config use that to merge the data
             if (!message_config.includes('placeholder_message_config')) {
                 function matches_message_config(str, rule) {
@@ -3039,7 +3205,6 @@
                     var escapeRegex = (str) => str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"); // escape the test messages to prevent regex mismatches
                     return new RegExp("^" + rule.split("*").map(escapeRegex).join(".*") + "$").test(str);
                 }
-
                 for (const config of message_config) {
                     for (const [message, runStarts] of data) {
                         if (message == config) { continue }
@@ -3083,7 +3248,8 @@
                         borderWidth: 1,
                     }],
                 };
-                return [Object.fromEntries(sortedData.map(([message, runs]) => [message, aliases.get(message)])), graphData];
+                const callbackData = Object.fromEntries(sortedData.map(([message, runs]) => [message, aliases.get(message)]));
+                return [graphData, callbackData];
             } else if (graphType === 'timeline') {
                 const labels = [];
                 const runStartsSet = new Set();
@@ -3128,7 +3294,7 @@
                     labels,
                     datasets,
                 };
-                return [runStartsArray, graphData];
+                return [graphData, runStartsArray];
             }
         }
 

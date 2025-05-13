@@ -30,25 +30,28 @@ class DatabaseProcessor:
             # test: tags added in 0.4.3
             # run/suite/test/keyword: run_alias added in 0.6.0
             # run: path added in 0.8.1
+            # suite/test: id was added in 0.8.4
             run_table_length = len(
                 self.connection.cursor().execute(RUN_TABLE_LENGTH).fetchall()
+            )
+            suite_table_length = len(
+                self.connection.cursor().execute(SUITE_TABLE_LENGTH).fetchall()
             )
             test_table_length = len(
                 self.connection.cursor().execute(TEST_TABLE_LENGTH).fetchall()
             )
-            if test_table_length == 9:
-                self.connection.cursor().execute(TEST_TABLE_UPDATE_TAGS)
-                self.connection.commit()
-            if run_table_length == 10:
-                self.connection.cursor().execute(RUN_TABLE_UPDATE_ALIAS)
-                self.connection.cursor().execute(RUN_TABLE_UPDATE_PATH)
-                self.connection.cursor().execute(SUITE_TABLE_UPDATE)
-                self.connection.cursor().execute(TEST_TABLE_UPDATE)
-                self.connection.cursor().execute(KEYWORD_TABLE_UPDATE)
-                self.connection.commit()
-            if run_table_length == 11:
-                self.connection.cursor().execute(RUN_TABLE_UPDATE_PATH)
-                self.connection.commit()
+            keyword_table_length = len(
+                self.connection.cursor().execute(KEYWORD_TABLE_LENGTH).fetchall()
+            )
+            if run_table_length == 10: self.connection.cursor().execute(RUN_TABLE_UPDATE_ALIAS)
+            if run_table_length == 11: self.connection.cursor().execute(RUN_TABLE_UPDATE_PATH)
+            if suite_table_length == 9: self.connection.cursor().execute(SUITE_TABLE_UPDATE_ALIAS)
+            if suite_table_length == 10: self.connection.cursor().execute(SUITE_TABLE_UPDATE_ID)
+            if test_table_length == 9: self.connection.cursor().execute(TEST_TABLE_UPDATE_TAGS)
+            if test_table_length == 10: self.connection.cursor().execute(TEST_TABLE_UPDATE_ALIAS)
+            if test_table_length == 11: self.connection.cursor().execute(TEST_TABLE_UPDATE_ID)
+            if keyword_table_length == 10: self.connection.cursor().execute(KEYWORD_TABLE_UPDATE_ALIAS)
+            self.connection.commit()
         else:
             self.connection.cursor().execute(CREATE_RUNS)
             self.connection.cursor().execute(CREATE_SUITES)
@@ -87,7 +90,9 @@ class DatabaseProcessor:
         """Helper function to insert the suite data"""
         full_suites = []
         for suite in suites:
-            suite += (run_alias,)
+            suite = list(suite)
+            suite.insert(9, run_alias)
+            suite = tuple(suite)
             full_suites.append(suite)
         self.connection.executemany(INSERT_INTO_SUITES, full_suites)
         self.connection.commit()
@@ -96,7 +101,9 @@ class DatabaseProcessor:
         """Helper function to insert the test data"""
         full_tests = []
         for test in tests:
-            test += (run_alias,)
+            test = list(test)
+            test.insert(10, run_alias)
+            test = tuple(test)
             full_tests.append(test)
         self.connection.executemany(INSERT_INTO_TESTS, full_tests)
         self.connection.commit()
@@ -142,6 +149,7 @@ class DatabaseProcessor:
         for suite_row in suite_rows:
             row = self._dict_from_row(suite_row)
             row["run_alias"] = aliases[row["run_start"]]
+            if row["id"] == None: row["id"] == ""
             suites.append(row)
         data["suites"] = suites
         # Get tests from run table
@@ -151,6 +159,7 @@ class DatabaseProcessor:
             row["run_alias"] = aliases[row["run_start"]]
             if row["tags"] == None:
                 row["tags"] = ""
+            if row["id"] == None: row["id"] == ""
             tests.append(row)
         data["tests"] = tests
         # Get keywords from run table

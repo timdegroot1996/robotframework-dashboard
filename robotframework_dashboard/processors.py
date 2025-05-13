@@ -165,6 +165,7 @@ class SuiteProcessor(ResultVisitor):
                     stats.skipped,
                     elapsed_time,
                     start_time,
+                    suite.id,
                 )
             )
 
@@ -203,6 +204,7 @@ class TestProcessor(ResultVisitor):
                 start_time,
                 test.message[:150],
                 str(test.tags).replace(" ", ""),
+                test.id,
             )
         )
 
