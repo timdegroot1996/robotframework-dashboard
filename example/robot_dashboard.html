@@ -1,7 +1,7 @@
 <html data-bs-theme="dark">
 
 <head>
-    <title>Robot Framework Dashboard - 2025-05-13 18:26:09</title>
+    <title>Robot Framework Dashboard - 2025-05-14 00:56:08</title>
     <!-- ChartJs import -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
@@ -151,7 +151,7 @@
                     <div class="col-10">
                         <div class="row">
                             <div class="col-auto">
-                                <h1>Robot Framework Dashboard - 2025-05-13 18:26:09</h1>
+                                <h1>Robot Framework Dashboard - 2025-05-14 00:56:08</h1>
                             </div>
                         </div>
                         <div class="row">
@@ -804,7 +804,7 @@
 
         // set default values
         function setup_stats() {
-            document.getElementById("stats").innerHTML = `<i><a href="https://github.com/timdegroot1996/robotframework-dashboard" target="_blank">Robotdashboard 0.8.4</a></i><br>
+            document.getElementById("stats").innerHTML = `<i><a href="https://github.com/timdegroot1996/robotframework-dashboard" target="_blank">Robotdashboard 0.8.5</a></i><br>
             <b>Database Summary</b><br>
             Runs: ${runs.length}<br>
             Suites: ${suites.length}<br>
@@ -1891,6 +1891,7 @@
                     ticks: {
                         minRotation: 45,
                         maxRotation: 45,
+                        stepSize: 1,
                         callback: function (value, index, ticks) {
                             return callbackData[this.getLabelForValue(value)];
                         },
@@ -2028,6 +2029,7 @@
                 ticks: {
                     minRotation: 45,
                     maxRotation: 45,
+                    stepSize: 1,
                     callback: function (value, index, ticks) {
                         return runStarts[this.getLabelForValue(value)];
                     },
@@ -2093,6 +2095,7 @@
                     ticks: {
                         minRotation: 45,
                         maxRotation: 45,
+                        stepSize: 1,
                         callback: function (value, index, ticks) {
                             return callbackData[this.getLabelForValue(value)];
                         },
@@ -2140,6 +2143,7 @@
                     ticks: {
                         minRotation: 45,
                         maxRotation: 45,
+                        stepSize: 1,
                         callback: function (value, index, ticks) {
                             return callbackData[this.getLabelForValue(value)];
                         },
@@ -2212,6 +2216,7 @@
                     ticks: {
                         minRotation: 45,
                         maxRotation: 45,
+                        stepSize: 1,
                         callback: function (value, index, ticks) {
                             return callbackData[this.getLabelForValue(value)];
                         },
@@ -2275,6 +2280,7 @@
                     ticks: {
                         minRotation: 45,
                         maxRotation: 45,
+                        stepSize: 1,
                         callback: function (value, index, ticks) {
                             return callbackData[this.getLabelForValue(value)];
                         },
@@ -2510,13 +2516,18 @@
             let resetCoordinates = chart.canvas.getBoundingClientRect();
             const xCoor = click.clientX - resetCoordinates.left;
             const yCoor = click.clientY - resetCoordinates.top;
-
             const { data, scales: { x: { top, bottom, left, height, width, ticks } } } = chart;
             const right = width / ticks.length;
 
             for (let i = 0; i < ticks.length; i++) {
                 if (xCoor >= left + (right * i) && xCoor <= left + right + (right * i) && yCoor >= top && yCoor <= bottom) {
-                    var run = runs.find(run => run.run_start === data.labels[i])
+                    var run
+                    const identifier = chart.config._config.options.indexAxis === 'y' ? Object.values(ticks).map(item => item.label) : data.labels // exception for timelines
+                    if (use_run_aliases) {
+                        run = runs.find(run => run.run_alias === identifier[i])
+                    } else {
+                        run = runs.find(run => run.run_start === identifier[i])
+                    }
                     if (run) {
                         const path = transform_file_path(run.path)
                         if (path == "") {
@@ -2714,7 +2725,9 @@
                         ...baseConfig,
                         indexAxis: "y",
                         scales: {
+                            ...commonScales,
                             y: {
+                                ...commonScales.y,
                                 stacked: true,
                             },
                         },
