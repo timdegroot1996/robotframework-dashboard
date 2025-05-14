@@ -283,7 +283,7 @@
                             data-bs-toggle="collapse" data-bs-target="#suiteData" aria-expanded="true"
                             aria-controls="suiteData"></div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
                         <h3 id="suiteTitle">Suite Statistics</h3>
                     </div>
                     <div class="col-auto">
@@ -292,6 +292,15 @@
                         </div>
                         <div class="btn-group">
                             <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="btn-group ms-1">
+                            <label class="form-check-label mt-2" for="useSuitePathsSuiteSection">Use Suite Paths</label>
+                        </div>
+                        <div class="btn-group form-switch ms-1">
+                            <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                id="useSuitePathsSuiteSection" />
                         </div>
                     </div>
                 </div>
@@ -353,7 +362,7 @@
                             data-bs-toggle="collapse" data-bs-target="#testData" aria-expanded="true"
                             aria-controls="testData"></div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
                         <h3 id="testTitle">Test Statistics</h3>
                     </div>
                     <div class="col-auto">
@@ -365,11 +374,12 @@
                         </div>
                     </div>
                     <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="testTagsSelect">Test Tags</label>
+                        <div class="btn-group ms-1">
+                            <label class="form-check-label mt-2" for="useSuitePathsTestSection">Use Suite Paths</label>
                         </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="testTagsSelect"></select>
+                        <div class="btn-group form-switch ms-1">
+                            <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                id="useSuitePathsTestSection" />
                         </div>
                     </div>
                     <div class="col-auto">
@@ -381,13 +391,11 @@
                         </div>
                     </div>
                     <div class="col-auto">
-                        <div class="btn-group ms-1">
-                            <label class="form-check-label mt-2" for="showOnlySelectedtestStatistics">Show Only
-                                Test</label>
+                        <div class="btn-group">
+                            <label class="form-label mt-2" for="testTagsSelect">Test Tags</label>
                         </div>
-                        <div class="btn-group form-switch ms-1">
-                            <input class="form-check-input mt-2" type="checkbox" role="switch"
-                                id="showOnlySelectedtestStatistics" />
+                        <div class="btn-group">
+                            <select class="form-select form-select-sm" id="testTagsSelect"></select>
                         </div>
                     </div>
                 </div>
@@ -429,6 +437,18 @@
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationDeviationClose"
                         hidden>Close</button>
                     <canvas id="testDurationDeviationGraph"></canvas>
+                </div>
+                <!-- Test Messages -->
+                <div class="col canvas mb-5" id="testMessagesCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
+                        View</button>
+                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testMessagesGraphTimeline">Timeline
+                        View</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        id="testMessagesFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesClose"
+                        hidden>Close</button>
+                    <canvas id="testMessagesGraph"></canvas>
                 </div>
                 <!-- Test Most Flaky -->
                 <div class="col canvas mb-5" id="testMostFlakyCanvas">
@@ -478,17 +498,18 @@
                         hidden>Close</button>
                     <canvas id="testMostFailedGraph"></canvas>
                 </div>
-                <!-- Test Messages -->
-                <div class="col canvas mb-5" id="testMessagesCanvas">
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
+                <!-- Test Recent Most Failed -->
+                <div class="col canvas mb-5" id="testRecentMostFailedCanvas">
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFailedGraphBar">Bar
                         View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testMessagesGraphTimeline">Timeline
+                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
+                        id="testRecentMostFailedGraphTimeline">Timeline
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                        id="testMessagesFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesClose"
+                        id="testRecentMostFailedFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFailedClose"
                         hidden>Close</button>
-                    <canvas id="testMessagesGraph"></canvas>
+                    <canvas id="testRecentMostFailedGraph"></canvas>
                 </div>
                 <!-- Test Table -->
                 <div class="col" id="testTableCanvas">
@@ -506,7 +527,7 @@
                             data-bs-toggle="collapse" data-bs-target="#keywordData" aria-expanded="true"
                             aria-controls="keywordData"></div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
                         <h3 id="keywordTitle">Keyword Statistics</h3>
                     </div>
                     <div class="col-auto">
@@ -707,6 +728,8 @@
         var tests = "placeholder_tests".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var keywords = "placeholder_keywords".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var message_config = '"placeholder_message_config"'
+        var filteredAmount = "placeholder_amount"
+        var filteredAmountDefault = 0
         const use_logs = "placeholder_use_logs"
         const use_run_aliases = "placeholder_use_run_aliases"
         const server = "placeholder_server"
@@ -722,11 +745,12 @@
         var suiteTable;
         var testStatisticsGraph;
         var testDurationGraph;
+        var testDurationDeviationGraph;
+        var testMessagesGraph
         var testMostFlakyGraph;
         var testRecentMostFlakyGraph;
-        var testDurationDeviationGraph;
         var testMostFailedGraph;
-        var testMessagesGraph
+        var testRecentMostFailedGraph;
         var testTable;
         var keywordStatisticsGraph;
         var keywordTimesRunGraph;
@@ -743,11 +767,11 @@
         var filteredKeywords;
 
         // var to keep track of the checkbox statuses
-        var showOnlySelectedtestStatistics = false;
+        var useSuitePathsSuiteSection = false;
+        var useSuitePathsTestSection = false;
         var ignoreSkips = false; // test most flaky graph
         var ignoreSkipsRecent = false; // test recent most flaky graph
         let showingRunTags = false; // used to keep track if the runtags popup is showing and determine if it should be closed when clicked outside
-        var filteredAmount = "placeholder_amount"
 
         // add items in hide modal
         const hideSections = [
@@ -767,10 +791,11 @@
             "Test Statistics",
             "Test Duration",
             "Test Duration Deviation",
+            "Test Messages",
             "Test Most Flaky",
             "Test Recent Most Flaky",
             "Test Most Failed",
-            "Test Messages",
+            "Test Recent Most Failed",
             "Test Table",
             "Keyword Statistics",
             "Keyword Times Run",
@@ -811,6 +836,7 @@
             Tests: ${tests.length}<br>
             Keywords: ${keywords.length}`;
 
+            filteredAmountDefault = filteredAmount
             document.getElementById('amount').value = filteredAmount
             if (server) {
                 document.getElementById('openDashboard').hidden = false
@@ -1093,11 +1119,12 @@
                 suiteMostFailedGraphType: "bar",
                 testStatisticsGraphType: "timeline",
                 testDurationGraphType: "line",
+                testDurationDeviationGraphType: "bar",
+                testMessagesGraphType: "timeline",
                 testMostFlakyGraphType: "timeline",
                 testRecentMostFlakyGraphType: "timeline",
-                testDurationDeviationGraphType: "bar",
                 testMostFailedGraphType: "timeline",
-                testMessagesGraphType: "timeline",
+                testRecentMostFailedGraphType: "timeline",
                 keywordStatisticsGraphType: "percentages",
                 keywordTimesRunGraphType: "bar",
                 keywordTotalDurationGraphType: "line",
@@ -1112,6 +1139,20 @@
                 storedTypes = defaultGraphTypes;
             } else {
                 storedTypes = JSON.parse(storedTypes);
+                // Below exception is created to handle problems when switching between old versions without graphs
+                // to newer versions with additional graphs. The view is completely reset to add all graphs again.
+                if (Object.keys(defaultGraphTypes).length != Object.keys(storedTypes).length) {
+                    for (const key in defaultGraphTypes) {
+                        if (!(key in storedTypes)) {
+                            storedTypes[key] = defaultGraphTypes[key];
+                        }
+                    }
+                    localStorage.setItem('sectionHide', JSON.stringify([]));
+                    localStorage.setItem('graphHide', JSON.stringify([]));
+                    localStorage.setItem('sectionShow', JSON.stringify(hideSections));
+                    localStorage.setItem('graphShow', JSON.stringify(hideGraphs));
+                    localStorage.setItem("graphTypes", JSON.stringify(defaultGraphTypes));
+                }
             }
 
             for (let key in storedTypes) {
@@ -1268,8 +1309,8 @@
 
             // eventlisteners for fullscreen buttons
             const fullscreenButtons = ["runStatistics", "runDuration", "suiteStatistics",
-                "suiteDuration", "suiteMostFailed", "testStatistics", "testDuration",
-                "testMostFlaky", "testRecentMostFlaky", "testDurationDeviation", "testMostFailed", "testMessages",
+                "suiteDuration", "suiteMostFailed", "testStatistics", "testDuration", "testDurationDeviation",
+                "testMessages", "testMostFlaky", "testRecentMostFlaky", "testMostFailed", "testRecentMostFailed",
                 "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
                 "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration"]
             for (let fullscreenButton of fullscreenButtons) {
@@ -1310,11 +1351,12 @@
                 'suite_duration': 'Bar,Line',
                 'suite_most_failed': 'Bar,Timeline',
                 'test_duration': 'Bar,Line',
+                'test_duration_deviation': 'Bar',
+                'test_messages': 'Bar,Timeline',
                 'test_most_flaky': 'Bar,Timeline',
                 'test_recent_most_flaky': 'Bar,Timeline',
-                'test_duration_deviation': 'Bar',
                 'test_most_failed': 'Bar,Timeline',
-                'test_messages': 'Bar,Timeline',
+                'test_recent_most_failed': 'Bar,Timeline',
                 'keyword_statistics': 'Percentages,Line,Amount',
                 'keyword_times_run': 'Bar,Line',
                 'keyword_total_duration': 'Bar,Line',
@@ -1367,15 +1409,20 @@
                 document.getElementById("runTag").value = "All";
                 setup_lowest_highest_dates(runs);
                 setup_data_and_graphs();
+                document.getElementById("amount").value = filteredAmountDefault;
             });
             // eventlistener for all selection boxes and their respective graphs that should be updated
             document.getElementById("suiteSelectSuites").addEventListener("change", (e) => {
                 create_suite_duration_graph();
                 create_suite_statistics_graph();
             });
-            document.getElementById("showOnlySelectedtestStatistics").addEventListener("change", (e) => {
-                showOnlySelectedtestStatistics = !showOnlySelectedtestStatistics;
-                create_test_statistics_graph();
+            document.getElementById("useSuitePathsSuiteSection").addEventListener("change", (e) => {
+                useSuitePathsSuiteSection = !useSuitePathsSuiteSection;
+                setup_suites_in_suite_select();
+                create_suite_statistics_graph();
+                create_suite_duration_graph();
+                create_suite_most_failed_graph();
+
             });
             document.getElementById("suiteSelectTests").addEventListener("change", (e) => {
                 setup_testtags_in_select();
@@ -1384,6 +1431,18 @@
                 create_test_duration_graph();
                 create_test_duration_deviation_graph();
             });
+            document.getElementById("useSuitePathsTestSection").addEventListener("change", (e) => {
+                useSuitePathsTestSection = !useSuitePathsTestSection;
+                setup_suites_in_test_select();
+                create_test_statistics_graph();
+                create_test_duration_graph();
+                create_test_duration_deviation_graph();
+                create_test_messages_graph();
+                create_test_most_flaky_graph();
+                create_test_recent_most_flaky_graph();
+                create_test_most_failed_graph();
+                create_test_recent_most_failed_graph();
+            });
             document.getElementById("testTagsSelect").addEventListener("change", (e) => {
                 setup_tests_in_select();
                 create_test_statistics_graph();
@@ -1391,9 +1450,7 @@
                 create_test_duration_deviation_graph();
             });
             document.getElementById("testSelect").addEventListener("change", (e) => {
-                if (showOnlySelectedtestStatistics) {
-                    create_test_statistics_graph();
-                }
+                create_test_statistics_graph();
                 create_test_duration_graph();
                 create_test_duration_deviation_graph();
             });
@@ -1508,40 +1565,57 @@
 
         }
 
-        // function to update the available suites to select in the filters
-        // applies to the suite filter on the suite statistics level and the test statistics level
-        function setup_suites_in_selects() {
-            const suiteSelectTests = document.getElementById("suiteSelectTests");
+        // function to update the available suites to select in the suite filters
+        function setup_suites_in_suite_select() {
             const suiteSelectSuites = document.getElementById("suiteSelectSuites");
             // Clear existing options
-            suiteSelectTests.innerHTML = "";
             suiteSelectSuites.innerHTML = "";
             // Extract and sort suite names
-            const suiteNames = [...new Set(filteredSuites.map(suite => suite.name))].sort();
+            const suiteNames = useSuitePathsSuiteSection
+                ? [...new Set(filteredSuites.map(suite => suite.full_name))].sort()
+                : [...new Set(filteredSuites.map(suite => suite.name))].sort();
             // Add "All" as default
-            suiteSelectTests.options.add(new Option("All", "All"));
             suiteSelectSuites.options.add(new Option("All", "All"));
             // Add suite names to selects
             suiteNames.forEach(suiteName => {
-                suiteSelectTests.options.add(new Option(suiteName, suiteName));
                 suiteSelectSuites.options.add(new Option(suiteName, suiteName));
             });
             // Set the default selection to the second option (All is default)
-            suiteSelectTests.selectedIndex = 1;
             suiteSelectSuites.selectedIndex = 1;
+        }
+
+        // function to update the available suites to select in the test filters
+        function setup_suites_in_test_select() {
+            const suiteSelectTests = document.getElementById("suiteSelectTests");
+            // Clear existing options
+            suiteSelectTests.innerHTML = "";
+            // Extract and sort suite names
+            const suiteNames = useSuitePathsTestSection
+                ? [...new Set(filteredSuites.map(suite => suite.full_name))].sort()
+                : [...new Set(filteredSuites.map(suite => suite.name))].sort();
+            // Add "All" as default
+            suiteSelectTests.options.add(new Option("All", "All"));
+            // Add suite names to selects
+            suiteNames.forEach(suiteName => {
+                suiteSelectTests.options.add(new Option(suiteName, suiteName));
+            });
+            // Set the default selection to the second option (All is default)
+            suiteSelectTests.selectedIndex = 1;
         }
 
         // function to update the available tests to select in the filters
         // applies to the test filter on the test statistics level
         function setup_tests_in_select() {
-            const suiteSelect = document.getElementById("suiteSelectTests").value;
+            const suiteSelectTests = document.getElementById("suiteSelectTests").value;
             const testTagsSelect = document.getElementById("testTagsSelect").value;
             const testSelect = document.getElementById("testSelect");
             // Clear existing options
             testSelect.innerHTML = "";
             // Filter test names based on suite and tags
             const testNames = filteredTests.reduce((names, test) => {
-                const isInSuite = test.full_name.includes(`.${suiteSelect}.${test.name}`) || suiteSelect === "All";
+                const isInSuite = useSuitePathsTestSection
+                    ? test.full_name.includes(`${suiteSelectTests}.${test.name}`) || suiteSelectTests === "All"
+                    : test.full_name.includes(`.${suiteSelectTests}.${test.name}`) || suiteSelectTests === "All"
                 const hasTag = testTagsSelect === "All" || test.tags.includes(testTagsSelect);
 
                 if (isInSuite && hasTag && !names.includes(test.name)) {
@@ -1559,17 +1633,23 @@
         // function to update the available testtags to select in the filters
         // applies to the testtag filter on the test statistics level
         function setup_testtags_in_select() {
-            const suiteSelect = document.getElementById("suiteSelectTests").value;
+            const suiteSelectTests = document.getElementById("suiteSelectTests").value;
             const testTagsSelect = document.getElementById("testTagsSelect");
             // Clear existing options
             testTagsSelect.innerHTML = "";
             // Extract unique tags for the selected suite
             const testTags = [...new Set(filteredTests.reduce((tags, test) => {
-                if (test.full_name.includes(`.${suiteSelect}.${test.name}`) || suiteSelect === "All") {
-                    test.tags.replace(/\[|\]/g, '').split(',').forEach(tag => tags.push(tag.trim()));
+                if (useSuitePathsTestSection) {
+                    if (test.full_name.includes(`${suiteSelectTests}.${test.name}`) || suiteSelectTests === "All") {
+                        test.tags.replace(/\[|\]/g, '').split(',').forEach(tag => tags.push(tag.trim()));
+                    }
+                } else {
+                    if (test.full_name.includes(`.${suiteSelectTests}.${test.name}`) || suiteSelectTests === "All") {
+                        test.tags.replace(/\[|\]/g, '').split(',').forEach(tag => tags.push(tag.trim()));
+                    }
                 }
                 return tags;
-            }, []))];
+            }, []))].filter(Boolean);
             // Add "All" as default
             testTagsSelect.options.add(new Option("All", "All"));
             // Add tags to select
@@ -1860,7 +1940,7 @@
             if (suiteMostFailedGraph) {
                 suiteMostFailedGraph.destroy();
             }
-            const data = get_most_failed_data("suite", suiteMostFailedGraphType, filteredSuites);
+            const data = get_most_failed_data("suite", suiteMostFailedGraphType, filteredSuites, false);
             const graphData = data[0];
             const callbackData = data[1];
             var config;
@@ -1963,10 +2043,16 @@
             const testTagsSelect = document.getElementById("testTagsSelect").value;
             var [labels, runStarts, datasets] = [[], [], []];
             for (test of filteredTests) {
-                if (suiteSelectTests != "All" && !test.full_name.includes(`.${suiteSelectTests}.${test.name}`) && test.full_name != `${suiteSelectTests}.${test.name}`) {
-                    continue;
+                if (useSuitePathsTestSection) {
+                    if (suiteSelectTests != "All" && test.full_name != `${suiteSelectTests}.${test.name}`) {
+                        continue;
+                    }
+                } else {
+                    if (suiteSelectTests != "All" && !test.full_name.includes(`.${suiteSelectTests}.${test.name}`) && test.full_name != `${suiteSelectTests}.${test.name}`) {
+                        continue;
+                    }
                 }
-                if (showOnlySelectedtestStatistics && testSelect != "All" && test.name != testSelect) {
+                if (testSelect != "All" && test.name != testSelect) {
                     continue;
                 }
                 if (testTagsSelect != "All" && !test.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
@@ -2012,6 +2098,7 @@
                     });
                 }
             }
+            datasets = convert_timeline_data(datasets)
             var graphData = {
                 labels: labels,
                 datasets: datasets,
@@ -2063,6 +2150,90 @@
             testDurationGraph = new Chart("testDurationGraph", config);
             testDurationGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testDurationGraph, event)
+            });
+        }
+
+        // function to create test messages graph in the test section
+        function create_test_messages_graph() {
+            if (testMessagesGraph) {
+                testMessagesGraph.destroy();
+            }
+            const data = get_messages_data("test", testMessagesGraphType, filteredTests);
+            const graphData = data[0];
+            const callbackData = data[1];
+            var config;
+            if (testMessagesGraphType == "bar") {
+                config = get_graph_config("bar", graphData, "Top 10 Fail Messages", "Message", "Times");
+                // overwrite legend and tooltip
+                config.options.plugins.legend = { display: false };
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return callbackData[tooltipItem.label];
+                        },
+                    },
+                };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 45,
+                        maxRotation: 45,
+                        callback: function (value, index) {
+                            return this.getLabelForValue(value).slice(0, 40);
+                        },
+                    },
+                };
+                // no onClick on the bar chart
+                delete config.options.onClick
+            } else if (testMessagesGraphType == "timeline") {
+                config = get_graph_config("timeline", graphData, "Top 10 Fail Messages");
+                // overwrite tooltip and x and y scale with callbacks
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (context) {
+                            return callbackData[context.raw.x[0]];
+                        },
+                    },
+                };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 45,
+                        maxRotation: 45,
+                        stepSize: 1,
+                        callback: function (value, index, ticks) {
+                            return callbackData[this.getLabelForValue(value)];
+                        },
+                    },
+                };
+                // overwrite the click callback to use the callbackData
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData)
+                    }
+                };
+                config.options.scales.y.ticks = {
+                    callback: function (value, index, ticks) {
+                        return this.getLabelForValue(value).slice(0, 40);
+                    },
+                };
+            }
+            testMessagesGraph = new Chart("testMessagesGraph", config);
+            testMessagesGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(testMessagesGraph, event)
+            });
+        }
+
+        // function to create test duration deviation graph in test section
+        function create_test_duration_deviation_graph() {
+            if (testDurationDeviationGraph) {
+                testDurationDeviationGraph.destroy();
+            }
+            const graphData = get_duration_deviation_data("test", testDurationDeviationGraphType, filteredTests)
+            const config = get_graph_config("boxplot", graphData, "Duration Deviation", "Test Name", "Duration");
+            // no onClick on the boxplot chart
+            delete config.options.onClick
+            testDurationDeviationGraph = new Chart("testDurationDeviationGraph", config);
+            testDurationDeviationGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(testDurationDeviationGraph, event)
             });
         }
 
@@ -2162,21 +2333,6 @@
             });
         }
 
-        // function to create test duration deviation graph in test section
-        function create_test_duration_deviation_graph() {
-            if (testDurationDeviationGraph) {
-                testDurationDeviationGraph.destroy();
-            }
-            const graphData = get_duration_deviation_data("test", testDurationDeviationGraphType, filteredTests)
-            const config = get_graph_config("boxplot", graphData, "Duration Deviation", "Test Name", "Duration");
-            // no onClick on the boxplot chart
-            delete config.options.onClick
-            testDurationDeviationGraph = new Chart("testDurationDeviationGraph", config);
-            testDurationDeviationGraph.canvas.addEventListener('click', (event) => {
-                open_log_from_label(testDurationDeviationGraph, event)
-            });
-        }
-
         // function to create test most failed graph in the test section
         function create_test_most_failed_graph() {
             if (typeof type === "string") {
@@ -2185,7 +2341,7 @@
             if (testMostFailedGraph) {
                 testMostFailedGraph.destroy();
             }
-            const data = get_most_failed_data("test", testMostFailedGraphType, filteredTests);
+            const data = get_most_failed_data("test", testMostFailedGraphType, filteredTests, false);
             const graphData = data[0]
             const callbackData = data[1];
             var config;
@@ -2235,17 +2391,20 @@
             });
         }
 
-        // function to create test messages graph in the test section
-        function create_test_messages_graph() {
-            if (testMessagesGraph) {
-                testMessagesGraph.destroy();
+        // function to create test recent most failed graph in the test section
+        function create_test_recent_most_failed_graph() {
+            if (typeof type === "string") {
+                testRecentMostFailedGraphType = type;
             }
-            const data = get_messages_data("test", testMessagesGraphType, filteredTests);
-            const graphData = data[0];
+            if (testRecentMostFailedGraph) {
+                testRecentMostFailedGraph.destroy();
+            }
+            const data = get_most_failed_data("test", testRecentMostFailedGraphType, filteredTests, true);
+            const graphData = data[0]
             const callbackData = data[1];
             var config;
-            if (testMessagesGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Top 10 Fail Messages", "Message", "Times");
+            if (testRecentMostFailedGraphType == "bar") {
+                config = get_graph_config("bar", graphData, "Top 10 Recent Most Failed Tests", "Test Name", "Times Failed");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2255,20 +2414,11 @@
                         },
                     },
                 };
-                config.options.scales.x = {
-                    ticks: {
-                        minRotation: 45,
-                        maxRotation: 45,
-                        callback: function (value, index) {
-                            return this.getLabelForValue(value).slice(0, 40);
-                        },
-                    },
-                };
                 // no onClick on the bar chart
                 delete config.options.onClick
-            } else if (testMessagesGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, "Top 10 Fail Messages");
-                // overwrite tooltip and x and y scale with callbacks
+            } else if (testRecentMostFailedGraphType == "timeline") {
+                config = get_graph_config("timeline", graphData, "Top 10 Recent Most Failed Tests");
+                // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -2291,16 +2441,11 @@
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
                     }
-                };
-                config.options.scales.y.ticks = {
-                    callback: function (value, index, ticks) {
-                        return this.getLabelForValue(value).slice(0, 40);
-                    },
-                };
+                }
             }
-            testMessagesGraph = new Chart("testMessagesGraph", config);
-            testMessagesGraph.canvas.addEventListener('click', (event) => {
-                open_log_from_label(testMessagesGraph, event)
+            testRecentMostFailedGraph = new Chart("testRecentMostFailedGraph", config);
+            testRecentMostFailedGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(testRecentMostFailedGraph, event)
             });
         }
 
@@ -2566,7 +2711,7 @@
                 }
                 id = suites.find(suite => suite.name === name && suite.run_start === runStart)
             } else { // it contains a test
-                if (graphId == 'testStatisticsGraph' || graphId == 'testMostFlakyGraph' || graphId == 'testRecentMostFlakyGraph' || graphId == 'testMostFailedGraph') {
+                if (graphId == 'testStatisticsGraph' || graphId == 'testMostFlakyGraph' || graphId == 'testRecentMostFlakyGraph' || graphId == 'testMostFailedGraph' || graphId == 'testRecentMostFailedGraph') {
                     name = chartElement[0].element.$context.raw.y
                 } else if (graphId == 'testDurationGraph') {
                     if (graphType == 'bar') {
@@ -2795,7 +2940,11 @@
             };
             // Loop through filtered data and process it based on the graph type
             for (const value of filteredData) {
-                if (dataType === "suite" && suiteSelectSuites !== "All" && value.name !== suiteSelectSuites) continue;
+                if (useSuitePathsSuiteSection) {
+                    if (dataType === "suite" && suiteSelectSuites !== "All" && value.full_name !== suiteSelectSuites) continue;
+                } else {
+                    if (dataType === "suite" && suiteSelectSuites !== "All" && value.name !== suiteSelectSuites) continue;
+                }
                 if (dataType === "keyword" && value.name !== keywordSelect) continue;
                 // Process percentage-based data
                 if (graphType === "percentages") {
@@ -2850,8 +2999,16 @@
             // Helper function for filtering based on selection criteria
             const should_include = (value) => {
                 if (dataType === "keyword" && value.name !== keywordSelect) return false;
-                if (dataType === "suite" && suiteSelectSuites !== "All" && value.name !== suiteSelectSuites) return false;
-                if (dataType === "test" && suiteSelectTests !== "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name !== `${suiteSelectTests}.${value.name}`) return false;
+                if (useSuitePathsSuiteSection) {
+                    if (dataType === "suite" && suiteSelectSuites !== "All" && value.full_name !== suiteSelectSuites) return false;
+                } else {
+                    if (dataType === "suite" && suiteSelectSuites !== "All" && value.name !== suiteSelectSuites) return false;
+                }
+                if (useSuitePathsTestSection) {
+                    if (dataType === "test" && suiteSelectTests !== "All" && value.full_name !== `${suiteSelectTests}.${value.name}`) return false;
+                } else {
+                    if (dataType === "test" && suiteSelectTests !== "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name !== `${suiteSelectTests}.${value.name}`) return false;
+                }
                 if (dataType === "test" && testSelect !== "All" && value.name !== testSelect) return false;
                 if (dataType === "test" && testTagsSelect !== "All" && !value.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) return false;
                 return true;
@@ -2929,8 +3086,14 @@
             for (const value of filteredData) {
                 // Apply filtering based on user selections
                 if (dataType === "test") {
-                    if (suiteSelectTests !== "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name !== `${suiteSelectTests}.${value.name}`) {
-                        continue;
+                    if (useSuitePathsTestSection) {
+                        if (suiteSelectTests !== "All" && value.full_name !== `${suiteSelectTests}.${value.name}`) {
+                            continue;
+                        }
+                    } else {
+                        if (suiteSelectTests !== "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name !== `${suiteSelectTests}.${value.name}`) {
+                            continue;
+                        }
                     }
                     if (testSelect !== "All" && value.name !== testSelect) {
                         continue;
@@ -3101,6 +3264,7 @@
                     runAxis += 1;
                 }
                 if (use_run_aliases) { runStarts = run_aliases }
+                datasets = convert_timeline_data(datasets)
                 var graphData = {
                     labels: labels,
                     datasets: datasets,
@@ -3110,7 +3274,7 @@
         }
 
         // function to prepare the data in the correct format for most failed graphs
-        function get_most_failed_data(dataType, graphType, filteredData) {
+        function get_most_failed_data(dataType, graphType, filteredData, recent) {
             // Maps to store data and aliases
             const data = new Map();
             const aliases = new Map();
@@ -3126,7 +3290,16 @@
                 }
             }
             // Sort the data based on the number of failures (descending order)
-            const sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length);
+            var sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length);
+            if (recent) { // do extra filtering to get most most failed tests at the top
+                sortedData = sortedData.slice().sort((a, b) => {
+                    const latestA = a[1][a[1].length - 1];
+                    const latestB = b[1][b[1].length - 1];
+                    if (latestA > latestB) return -1;
+                    if (latestA < latestB) return 1;
+                    return 0; // Preserve original order if equal (stable sort)
+                });
+            }
             if (graphType === 'bar') {
                 const datasets = [];
                 const labels = [];
@@ -3166,7 +3339,7 @@
                 // Convert set to sorted array
                 const runStarts = Array.from(runStartsSet).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
                 // Build datasets
-                const datasets = [];
+                var datasets = [];
                 let runAxis = 0;
                 for (const runStart of runStarts) {
                     for (const label of labels) {
@@ -3185,6 +3358,7 @@
                     }
                     runAxis++;
                 }
+                datasets = convert_timeline_data(datasets)
                 const runStartsArray = use_run_aliases ? Array.from(runAliasesSet) : runStarts;
                 const graphData = {
                     labels,
@@ -3277,7 +3451,7 @@
                 // Convert set to sorted array
                 const runStarts = Array.from(runStartsSet).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
                 // Build datasets
-                const datasets = [];
+                var datasets = [];
                 let runAxis = 0;
                 function check_label(message, label) {
                     return !message_config.includes('placeholder_message_config')
@@ -3301,6 +3475,7 @@
                     }
                     runAxis++;
                 }
+                datasets = convert_timeline_data(datasets)
                 const runStartsArray = use_run_aliases ? Array.from(runAliasesSet) : runStarts;
                 const graphData = {
                     labels,
@@ -3317,6 +3492,35 @@
                 var newHeight = 489 + (graph.data.labels.length - 10) * 25
                 document.getElementById(verticalId).style.height = `${newHeight}px`
             }
+        }
+
+        // function to convert timeline data to improve performance
+        function convert_timeline_data(oldDatasets) {
+            const grouped = {};
+
+            for (const dataset of oldDatasets) {
+                const segment = dataset.data[0]; // assumes 1 item per dataset
+                const status = `${dataset.label}:${dataset.backgroundColor}:${dataset.borderColor}`;
+
+                if (!grouped[status]) {
+                grouped[status] = [];
+                }
+                grouped[status].push({
+                    x: segment.x,
+                    y: segment.y,
+                });
+            }
+
+            return Object.entries(grouped)
+                .filter(([_, data]) => data.length > 0)
+                .map(([status, data]) => ({
+                    label: status.split(':')[0],
+                    data,
+                    backgroundColor: status.split(':')[1],
+                    borderColor: status.split(':')[2],
+                    borderWidth: 1,
+                    parsing: true
+                }));
         }
 
         ///////////////////////////////////
@@ -3358,8 +3562,9 @@
             document.getElementById("suiteTitle").innerHTML = `Suite Statistics (${Object.keys(filteredSuites).length}) ${message}`;
             document.getElementById("testTitle").innerHTML = `Test Statistics (${Object.keys(filteredTests).length}) ${message}`;
             document.getElementById("keywordTitle").innerHTML = `Keyword Statistics (${Object.keys(filteredKeywords).length}) ${message}`;
-            // update tests select based on filtered runs
-            setup_suites_in_selects();
+            // update filters based on data
+            setup_suites_in_suite_select();
+            setup_suites_in_test_select();
             setup_testtags_in_select();
             setup_tests_in_select();
             setup_keywords_in_select();
@@ -3370,17 +3575,18 @@
             create_run_statistics_graph();
             create_run_duration_graph();
             create_run_table();
-            create_suite_statistics_graph();
+            create_suite_statistics_graph();1
             create_suite_duration_graph();
             create_suite_most_failed_graph();
             create_suite_table();
             create_test_statistics_graph();
             create_test_duration_graph();
             create_test_duration_deviation_graph();
+            create_test_messages_graph();
             create_test_most_flaky_graph();
             create_test_recent_most_flaky_graph();
             create_test_most_failed_graph();
-            create_test_messages_graph();
+            create_test_recent_most_failed_graph();
             create_test_table();
             create_keyword_statistics_graph();
             create_keyword_times_run_graph();

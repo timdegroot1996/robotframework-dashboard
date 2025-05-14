@@ -428,10 +428,11 @@
             "Test Statistics",
             "Test Duration",
             "Test Duration Deviation",
+            "Test Messages",
             "Test Most Flaky",
             "Test Recent Most Flaky",
             "Test Most Failed",
-            "Test Messages",
+            "Test Recent Most Failed",
             "Test Table",
             "Keyword Statistics",
             "Keyword Times Run",
@@ -657,7 +658,15 @@
                             localStorage.setItem('adminSectionShow', JSON.stringify(hideSections))
                             localStorage.setItem('adminGraphShow', JSON.stringify(hideGraphs))
                         }
-
+                    } else {
+                        // Below exception is created to handle problems when switching between old versions without graphs
+                        // to newer versions with additional graphs. The view is completely reset to add all graphs again.
+                        if (hideGraphs.length != (Object.keys(adminGraphShow).length + Object.keys(adminGraphHide).length)) {
+                            localStorage.setItem('adminSectionHide', JSON.stringify([]));
+                            localStorage.setItem('adminGraphHide', JSON.stringify([]));
+                            localStorage.setItem('adminSectionShow', JSON.stringify(hideSections));
+                            localStorage.setItem('adminGraphShow', JSON.stringify(hideGraphs));
+                        }
                     }
                     // 2 functions below should alwyas be here to make sure the server side config is actually present
                     setup_customize_view_content() // fill the modal with the correct content

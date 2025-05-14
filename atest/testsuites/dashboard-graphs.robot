@@ -43,6 +43,10 @@ Validate dashboard testDuration
 Validate dashboard testDurationDeviation
     Validate Graph    canvas=testDurationDeviationCanvas    graphId=testDurationDeviation
 
+Validate dashboard testMessages
+    Validate Graph    canvas=testMessagesCanvas    graphId=testMessagesGraphTimeline
+    Validate Graph    canvas=testMessagesCanvas    graphId=testMessagesGraphBar    button=${true}
+
 Validate dashboard testMostFlaky
     Validate Graph    canvas=testMostFlakyCanvas    graphId=testMostFlakyGraphTimeline
     Validate Graph    canvas=testMostFlakyCanvas    graphId=testMostFlakyGraphBar    button=${true}
@@ -55,9 +59,9 @@ Validate dashboard testMostFailed
     Validate Graph    canvas=testMostFailedCanvas    graphId=testMostFailedGraphTimeline
     Validate Graph    canvas=testMostFailedCanvas    graphId=testMostFailedGraphBar    button=${true}
 
-Validate dashboard testMessages
-    Validate Graph    canvas=testMessagesCanvas    graphId=testMessagesGraphTimeline
-    Validate Graph    canvas=testMessagesCanvas    graphId=testMessagesGraphBar    button=${true}
+Validate dashboard testRecentMostFailed
+    Validate Graph    canvas=testRecentMostFailedCanvas    graphId=testRecentMostFailedGraphTimeline
+    Validate Graph    canvas=testRecentMostFailedCanvas    graphId=testRecentMostFailedGraphBar    button=${true}
 
 Validate dashboard keywordStatistics
     Validate Graph    canvas=keywordStatisticsCanvas    graphId=keywordStatisticsGraphPercentages
