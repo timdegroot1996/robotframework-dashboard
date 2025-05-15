@@ -37,8 +37,13 @@
                 background-color: #eee;
             }
 
+            .border-bottom {
+                border-color: rgba(0, 0, 0, 0.175) !important;
+            }
+
             .fullscreen,
-            .sticky-top {
+            .sticky-top,
+            body {
                 background: #eee;
             }
         }
@@ -48,25 +53,58 @@
                 color-scheme: dark;
             }
 
+            .canvas {
+                background: rgba(30, 41, 59, 0.9);
+            }
+
+            .border-bottom {
+                border-color: rgba(255, 255, 255, 0.15) !important;
+            }
+
             .fullscreen,
-            .sticky-top {
-                background: #212529;
+            .sticky-top,
+            .card,
+            body {
+                background: #0f172a;
+                color: #eee;
+            }
+
+            .list-group-item,
+            .form-label,
+            .form-control,
+            .form-select {
+                color: #eee !important;
             }
         }
+
 
         .canvas {
             width: 800px;
             height: 540px;
             text-align: center;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .canvas:not(.fullscreen) {
+            margin: 1rem;
         }
 
         .canvas-vertical {
             overflow-y: auto;
         }
 
+        .card-header,
+        .border-bottom {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
         .card {
-            margin-top: 5px;
-            margin-bottom: 5px;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            /* border-radius: 16px; */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
         .sticky-top {
@@ -146,76 +184,74 @@
 <body>
     <div class="container-fluid">
         <div class="sticky-top" id="filterSection">
-            <div class="card-body">
-                <div class="row border-bottom pb-1">
-                    <div class="col-10">
-                        <div class="row">
-                            <div class="col-auto">
-                                <h1>"placeholder_dashboard_title"</h1>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-auto">
-                                <label class="form-label form-label-sm" for="runs">Runs</label>
-                                <select class="form-select form-select-sm" id="runs"></select>
-                            </div>
-                            <div class="col-auto">
-                                <div class="selectBox" id="selectRunTags">
-                                    <label class="form-label form-label-sm" for="runTag">Run Tags</label>
-                                    <select class="form-select form-select-sm">
-                                        <option>Select Tags</option>
-                                    </select>
-                                    <div class="overSelect"></div>
-                                </div>
-                                <div id="checkboxes">
-                                    <ul class="list-group" id="runTag"></ul>
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label form-label-sm" for="fromDate">From Date</label>
-                                <input class="form-control form-control-sm" id="fromDate" type="date" />
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label form-label-sm" for="fromTime">From Time</label>
-                                <input class="form-control form-control-sm" id="fromTime" type="time" />
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label form-label-sm" for="toDate">To Date</label>
-                                <input class="form-control form-control-sm" id="toDate" type="date" />
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label form-label-sm" for="toTime">To Time</label>
-                                <input class="form-control form-control-sm" id="toTime" type="time" />
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label form-label-sm" for="amount"
-                                    title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">Run
-                                    Amount</label>
-                                <input class="form-control form-control-sm" type="number" min=0 id="amount"
-                                    title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
-                                    value="10">
-                            </div>
-                            <div class="col-auto d-flex">
-                                <button class="btn btn-outline-primary btn-sm mt-auto" id="resetFilters">Reset
-                                    Filters</button>
-                            </div>
-                            <div class="col-auto d-flex">
-                                <button type="button" class="btn btn-outline-primary btn-sm mt-auto"
-                                    data-bs-toggle="modal" data-bs-target="#hideModal" id="customizeView">
-                                    Customize View
-                                </button>
-                            </div>
-                            <div class="col-auto mt-auto">
-                                <a href="/">
-                                    <button class="btn btn-outline-primary btn-sm" id="openDashboard" hidden>Open Admin
-                                        Page</button>
-                                </a>
-                            </div>
+            <div class="row border-bottom pb-1">
+                <div class="col-10">
+                    <div class="row">
+                        <div class="col-auto">
+                            <h1>"placeholder_dashboard_title"</h1>
                         </div>
                     </div>
-                    <div class="col-2 stats">
-                        <span id="stats"></span>
+                    <div class="row">
+                        <div class="col-auto">
+                            <label class="form-label form-label-sm" for="runs">Runs</label>
+                            <select class="form-select form-select-sm" id="runs"></select>
+                        </div>
+                        <div class="col-auto">
+                            <div class="selectBox" id="selectRunTags">
+                                <label class="form-label form-label-sm" for="runTag">Run Tags</label>
+                                <select class="form-select form-select-sm">
+                                    <option>Select Tags</option>
+                                </select>
+                                <div class="overSelect"></div>
+                            </div>
+                            <div id="checkboxes">
+                                <ul class="list-group" id="runTag"></ul>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <label class="form-label form-label-sm" for="fromDate">From Date</label>
+                            <input class="form-control form-control-sm" id="fromDate" type="date" />
+                        </div>
+                        <div class="col-auto">
+                            <label class="form-label form-label-sm" for="fromTime">From Time</label>
+                            <input class="form-control form-control-sm" id="fromTime" type="time" />
+                        </div>
+                        <div class="col-auto">
+                            <label class="form-label form-label-sm" for="toDate">To Date</label>
+                            <input class="form-control form-control-sm" id="toDate" type="date" />
+                        </div>
+                        <div class="col-auto">
+                            <label class="form-label form-label-sm" for="toTime">To Time</label>
+                            <input class="form-control form-control-sm" id="toTime" type="time" />
+                        </div>
+                        <div class="col-auto">
+                            <label class="form-label form-label-sm" for="amount"
+                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">Run
+                                Amount</label>
+                            <input class="form-control form-control-sm" type="number" min=0 id="amount"
+                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
+                                value="10">
+                        </div>
+                        <div class="col-auto d-flex">
+                            <button class="btn btn-outline-primary btn-sm mt-auto" id="resetFilters">Reset
+                                Filters</button>
+                        </div>
+                        <div class="col-auto d-flex">
+                            <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-toggle="modal"
+                                data-bs-target="#hideModal" id="customizeView">
+                                Customize View
+                            </button>
+                        </div>
+                        <div class="col-auto mt-auto">
+                            <a href="/">
+                                <button class="btn btn-outline-primary btn-sm" id="openDashboard" hidden>Open Admin
+                                    Page</button>
+                            </a>
+                        </div>
                     </div>
+                </div>
+                <div class="col-2 stats">
+                    <span id="stats"></span>
                 </div>
             </div>
         </div>
@@ -243,7 +279,7 @@
             <div id="runDataHiddenTemp" hidden></div>
             <div id="runDataHidden" hidden>
                 <!-- Run Statistics -->
-                <div class="col canvas mb-5" id="runStatisticsCanvas">
+                <div class="col canvas pb-5" id="runStatisticsCanvas">
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
                         id="runStatisticsGraphPercentages">Percentages</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
@@ -256,8 +292,16 @@
                         hidden>Close</button>
                     <canvas id="runStatisticsGraph"></canvas>
                 </div>
+                <!-- Run Pie -->
+                <div class="col canvas pb-5" id="runPieCanvas">
+                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="runPieGraphPie">Pie</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runPieFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runPieClose" hidden>Close</button>
+                    <canvas id="runPieGraph"></canvas>
+                    <!-- <canvas id="runPieTotalGraph"></canvas> -->
+                </div>
                 <!-- Run Duration -->
-                <div class="col canvas mb-5" id="runDurationCanvas">
+                <div class="col canvas pb-5" id="runDurationCanvas">
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runDurationGraphBar">Bar
                         View</button>
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="runDurationGraphLine">Line
@@ -309,7 +353,7 @@
             <div id="suiteDataHiddenTemp" hidden></div>
             <div id="suiteDataHidden" hidden>
                 <!-- Suite Statistics -->
-                <div class="col canvas mb-5" id="suiteStatisticsCanvas">
+                <div class="col canvas pb-5" id="suiteStatisticsCanvas">
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
                         id="suiteStatisticsGraphPercentages">Percentages</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
@@ -323,7 +367,7 @@
                     <canvas id="suiteStatisticsGraph"></canvas>
                 </div>
                 <!-- Suite Duration -->
-                <div class="col canvas mb-5" id="suiteDurationCanvas">
+                <div class="col canvas pb-5" id="suiteDurationCanvas">
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteDurationGraphBar">Bar
                         View</button>
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="suiteDurationGraphLine">Line
@@ -335,7 +379,7 @@
                     <canvas id="suiteDurationGraph"></canvas>
                 </div>
                 <!-- Suite Most Failed -->
-                <div class="col canvas mb-5" id="suiteMostFailedCanvas">
+                <div class="col canvas pb-5" id="suiteMostFailedCanvas">
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="suiteMostFailedGraphBar">Bar
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteMostFailedGraphTimeline">Timeline
@@ -417,7 +461,7 @@
                     </div>
                 </div>
                 <!-- Test Duration -->
-                <div class="col canvas mb-5" id="testDurationCanvas">
+                <div class="col canvas pb-5" id="testDurationCanvas">
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationGraphBar">Bar
                         View</button>
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testDurationGraphLine">Line
@@ -429,7 +473,7 @@
                     <canvas id="testDurationGraph"></canvas>
                 </div>
                 <!-- Test Duration Deviation -->
-                <div class="col canvas mb-5" id="testDurationDeviationCanvas">
+                <div class="col canvas pb-5" id="testDurationDeviationCanvas">
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testDurationDeviationGraphBar">Boxplot
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
@@ -439,7 +483,7 @@
                     <canvas id="testDurationDeviationGraph"></canvas>
                 </div>
                 <!-- Test Messages -->
-                <div class="col canvas mb-5" id="testMessagesCanvas">
+                <div class="col canvas pb-5" id="testMessagesCanvas">
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
                         View</button>
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testMessagesGraphTimeline">Timeline
@@ -451,7 +495,7 @@
                     <canvas id="testMessagesGraph"></canvas>
                 </div>
                 <!-- Test Most Flaky -->
-                <div class="col canvas mb-5" id="testMostFlakyCanvas">
+                <div class="col canvas pb-5" id="testMostFlakyCanvas">
                     <div class="btn-group me-1">
                         <label class="form-check-label mb-2" for="ignoreSkips">Ignore Skips</label>
                     </div>
@@ -469,7 +513,7 @@
                     <canvas id="testMostFlakyGraph"></canvas>
                 </div>
                 <!-- Test Recent Most Flaky -->
-                <div class="col canvas mb-5" id="testRecentMostFlakyCanvas">
+                <div class="col canvas pb-5" id="testRecentMostFlakyCanvas">
                     <div class="btn-group me-1">
                         <label class="form-check-label mb-2" for="ignoreSkipsRecent">Ignore Skips</label>
                     </div>
@@ -487,7 +531,7 @@
                     <canvas id="testRecentMostFlakyGraph"></canvas>
                 </div>
                 <!-- Test Most Failed -->
-                <div class="col canvas mb-5" id="testMostFailedCanvas">
+                <div class="col canvas pb-5" id="testMostFailedCanvas">
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedGraphBar">Bar
                         View</button>
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testMostFailedGraphTimeline">Timeline
@@ -499,7 +543,7 @@
                     <canvas id="testMostFailedGraph"></canvas>
                 </div>
                 <!-- Test Recent Most Failed -->
-                <div class="col canvas mb-5" id="testRecentMostFailedCanvas">
+                <div class="col canvas pb-5" id="testRecentMostFailedCanvas">
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFailedGraphBar">Bar
                         View</button>
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
@@ -544,7 +588,7 @@
             <div id="keywordDataHiddenTemp" hidden></div>
             <div id="keywordDataHidden" hidden>
                 <!-- Keyword Statistics -->
-                <div class="col canvas mb-5" id="keywordStatisticsCanvas">
+                <div class="col canvas pb-5" id="keywordStatisticsCanvas">
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
                         id="keywordStatisticsGraphPercentages">Percentages</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
@@ -558,7 +602,7 @@
                     <canvas id="keywordStatisticsGraph"></canvas>
                 </div>
                 <!-- Keyword Times Run -->
-                <div class="col canvas mb-5" id="keywordTimesRunCanvas">
+                <div class="col canvas pb-5" id="keywordTimesRunCanvas">
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordTimesRunGraphBar">Bar
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTimesRunGraphLine">Line
@@ -570,7 +614,7 @@
                     <canvas id="keywordTimesRunGraph"></canvas>
                 </div>
                 <!-- Keyword Total Duration -->
-                <div class="col canvas mb-5" id="keywordTotalDurationCanvas">
+                <div class="col canvas pb-5" id="keywordTotalDurationCanvas">
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalDurationGraphBar">Bar
                         View</button>
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordTotalDurationGraphLine">Line
@@ -582,7 +626,7 @@
                     <canvas id="keywordTotalDurationGraph"></canvas>
                 </div>
                 <!-- Keyword Average Duration -->
-                <div class="col canvas mb-5" id="keywordAverageDurationCanvas">
+                <div class="col canvas pb-5" id="keywordAverageDurationCanvas">
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageDurationGraphBar">Bar
                         View</button>
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordAverageDurationGraphLine">Line
@@ -594,7 +638,7 @@
                     <canvas id="keywordAverageDurationGraph"></canvas>
                 </div>
                 <!-- Keyword Min Duration -->
-                <div class="col canvas mb-5" id="keywordMinDurationCanvas">
+                <div class="col canvas pb-5" id="keywordMinDurationCanvas">
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordMinDurationGraphBar">Bar
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMinDurationGraphLine">Line
@@ -606,7 +650,7 @@
                     <canvas id="keywordMinDurationGraph"></canvas>
                 </div>
                 <!-- Keyword Max Duration -->
-                <div class="col canvas mb-5" id="keywordMaxDurationCanvas">
+                <div class="col canvas pb-5" id="keywordMaxDurationCanvas">
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordMaxDurationGraphBar">Bar
                         View</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMaxDurationGraphLine">Line
@@ -719,8 +763,40 @@
         const skippedBackgroundColor = "rgba(254, 216, 79, 0.7)";
         const failedBackgroundBorderColor = "#ce3e01";
         const failedBackgroundColor = "rgba(206, 62, 1, 0.7)";
-        const greyBackgroundBorderColor = "#212529";
+        const greyBackgroundBorderColor = "#0f172a";
         const greyBackgroundColor = "rgba(33, 37, 41, 0.7)";
+
+        // bar config
+        const barConfig = {
+            borderSkipped: false,
+            borderRadius: {
+                topLeft: 8,
+                topRight: 8,
+                bottomLeft: 8,
+                bottomRight: 8,
+            },
+        }
+        const passedConfig = {
+            backgroundColor: passedBackgroundColor,
+            borderColor: passedBackgroundBorderColor,
+            ...barConfig,
+        }
+        const failedConfig = {
+            backgroundColor: failedBackgroundColor,
+            borderColor: failedBackgroundBorderColor,
+            ...barConfig,
+        }
+        const skippedConfig = {
+            backgroundColor: skippedBackgroundColor,
+            borderColor: skippedBackgroundBorderColor,
+            ...barConfig,
+        }
+        // line config
+        const lineConfig = {
+            tension: 0.2,
+            pointRadius: 4,
+            pointHoverRadius: 6
+        }
 
         // prepare input data
         var runs = "placeholder_runs".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
@@ -728,15 +804,16 @@
         var tests = "placeholder_tests".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var keywords = "placeholder_keywords".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var message_config = '"placeholder_message_config"'
-        var filteredAmount = "placeholder_amount"
+        var filteredAmount = 20
         var filteredAmountDefault = 0
-        const use_logs = "placeholder_use_logs"
-        const use_run_aliases = "placeholder_use_run_aliases"
-        const server = "placeholder_server"
+        const use_logs = false
+        const use_run_aliases = false
+        const server = false
         if (!message_config.includes('placeholder_message_config')) { message_config = JSON.parse(message_config) }
 
         // create graphs
         var runStatisticsGraph;
+        var runPieGraph;
         var runDurationGraph;
         var runTable;
         var suiteStatisticsGraph;
@@ -782,6 +859,7 @@
         ]
         const hideGraphs = [
             "Run Statistics",
+            "Run Pie",
             "Run Duration",
             "Run Table",
             "Suite Statistics",
@@ -807,8 +885,8 @@
         ]
         var hideItem = `<li class="hideItem list-group-item list-group-item-action d-flex {type}">
             <div class="hideItemText">{value}</div>
-            <button class="btn btn-sm btn-secondary moveDown"></button>
             <button class="btn btn-sm btn-secondary moveUp"></button>
+            <button class="btn btn-sm btn-secondary moveDown"></button>
             </li>`
 
         /////////////////////////////
@@ -818,10 +896,11 @@
         // theme function based on browser/machine color scheme
         function setup_theme() {
             if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                Chart.defaults.color = "#e2e1d7";
+                Chart.defaults.color = "#eee";
                 Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
                 Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
                 Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
+                document.documentElement.style.setProperty('--bs-body-bg', 'rgba(30, 41, 59, 0.9)');
             } else {
                 document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "light");
             }
@@ -829,7 +908,7 @@
 
         // set default values
         function setup_stats() {
-            document.getElementById("stats").innerHTML = `<i><a href="https://github.com/timdegroot1996/robotframework-dashboard" target="_blank">"placeholder_version"</a></i><br>
+            document.getElementById("stats").innerHTML = `<i><a href="https://github.com/timdegroot1996/robotframework-dashboard" target="_blank">Robotdashboard 0.8.6</a></i><br>
             <b>Database Summary</b><br>
             Runs: ${runs.length}<br>
             Suites: ${suites.length}<br>
@@ -903,29 +982,22 @@
         // function to convert a date object to the desired string format
         function format_date_to_string(date) {
             const pad = (n) => n.toString().padStart(2, '0');
-
             const year = date.getFullYear();
             const month = pad(date.getMonth() + 1); // Months are 0-indexed
             const day = pad(date.getDate());
             const hours = pad(date.getHours());
             const minutes = pad(date.getMinutes());
             const seconds = pad(date.getSeconds());
-
             return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         }
 
+        // function to transform an output.xml path to a log.html path
         function transform_file_path(filePath) {
-            // Normalize path separators to handle both '\\' and '/'
             const normalizedPath = filePath.replace(/\\/g, '/');
-            // Split the path into segments
             const pathSegments = normalizedPath.split('/');
-            // Extract the filename
             const filename = pathSegments.pop();
-            // Replace 'output' with 'log' in the filename
             const updatedFilename = filename.replace(/output/g, 'log').replace(/\.xml$/i, '.html');
-            // Reconstruct the path with the updated filename
             const updatedPath = [...pathSegments, updatedFilename].join('/');
-            // Restore original path separators if the original path used backslashes
             return filePath.includes('\\') ? updatedPath.replace(/\//g, '\\') : updatedPath;
         }
 
@@ -934,7 +1006,6 @@
             const baseUrl = new URL(baseUrlStr);
             const baseParts = baseUrl.pathname.split('/').filter(Boolean);
             const relParts = relativePath.replaceAll('\\', '/').split('/').filter(Boolean);
-
             // Find the first matching folder name from the relative path in the base path
             let match = null;
             for (let i = 0; i < relParts.length; i++) {
@@ -967,6 +1038,37 @@
             }
 
             return baseUrl.origin + '/' + resolvedParts.join('/');
+        }
+
+        // function to update the localstorage and graphs for the suitepath switches
+        function update_suite_path_local_storage(id, state, firstLoad = false) {
+            const storageState = JSON.parse(localStorage.getItem(id));
+            if (firstLoad) {
+                if (storageState) {
+                    console.log('setting', id, 'to', storageState)
+                    window[id] = storageState;
+                    document.getElementById(id).checked = true;
+                }
+            } else {
+                localStorage.setItem(id, JSON.stringify(state));
+            }
+            if (id == 'useSuitePathsSuiteSection') {
+                setup_suites_in_suite_select();
+                create_suite_statistics_graph();
+                create_suite_duration_graph();
+                create_suite_most_failed_graph();
+            }
+            if (id == 'useSuitePathsTestSection') {
+                setup_suites_in_test_select();
+                create_test_statistics_graph();
+                create_test_duration_graph();
+                create_test_duration_deviation_graph();
+                create_test_messages_graph();
+                create_test_most_flaky_graph();
+                create_test_recent_most_flaky_graph();
+                create_test_most_failed_graph();
+                create_test_recent_most_failed_graph();
+            }
         }
 
         //////////////////////////////
@@ -1113,6 +1215,7 @@
             // Graph type defaults (unchanged)
             const defaultGraphTypes = {
                 runStatisticsGraphType: "percentages",
+                runPieGraphType: "pie",
                 runDurationGraphType: "line",
                 suiteStatisticsGraphType: "percentages",
                 suiteDurationGraphType: "line",
@@ -1170,6 +1273,7 @@
             window[graph] = type;
         }
 
+        // function to change which button is highlighted styling wise
         function update_button_selection(camelButtonName, graphType) {
             const buttons = ['Bar', 'Line', 'Timeline', 'Percentages', 'Amount']; // All possible button types
             buttons.forEach(button => {
@@ -1308,7 +1412,7 @@
             }
 
             // eventlisteners for fullscreen buttons
-            const fullscreenButtons = ["runStatistics", "runDuration", "suiteStatistics",
+            const fullscreenButtons = ["runStatistics", "runPie", "runDuration", "suiteStatistics",
                 "suiteDuration", "suiteMostFailed", "testStatistics", "testDuration", "testDurationDeviation",
                 "testMessages", "testMostFlaky", "testRecentMostFlaky", "testMostFailed", "testRecentMostFailed",
                 "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
@@ -1346,6 +1450,7 @@
             // eventlisteners for buttons to change graph views
             const graphChangeButtons = {
                 'run_statistics': 'Percentages,Line,Amount',
+                'run_pie': 'Pie',
                 'run_duration': 'Bar,Line',
                 'suite_statistics': 'Percentages,Line,Amount',
                 'suite_duration': 'Bar,Line',
@@ -1418,11 +1523,7 @@
             });
             document.getElementById("useSuitePathsSuiteSection").addEventListener("change", (e) => {
                 useSuitePathsSuiteSection = !useSuitePathsSuiteSection;
-                setup_suites_in_suite_select();
-                create_suite_statistics_graph();
-                create_suite_duration_graph();
-                create_suite_most_failed_graph();
-
+                update_suite_path_local_storage("useSuitePathsSuiteSection", useSuitePathsSuiteSection);
             });
             document.getElementById("suiteSelectTests").addEventListener("change", (e) => {
                 setup_testtags_in_select();
@@ -1433,15 +1534,7 @@
             });
             document.getElementById("useSuitePathsTestSection").addEventListener("change", (e) => {
                 useSuitePathsTestSection = !useSuitePathsTestSection;
-                setup_suites_in_test_select();
-                create_test_statistics_graph();
-                create_test_duration_graph();
-                create_test_duration_deviation_graph();
-                create_test_messages_graph();
-                create_test_most_flaky_graph();
-                create_test_recent_most_flaky_graph();
-                create_test_most_failed_graph();
-                create_test_recent_most_failed_graph();
+                update_suite_path_local_storage("useSuitePathsTestSection", useSuitePathsTestSection);
             });
             document.getElementById("testTagsSelect").addEventListener("change", (e) => {
                 setup_tests_in_select();
@@ -1736,6 +1829,7 @@
             });
         }
 
+        // function to filter the amount of runs based on the filter
         function filter_amount(filteredRuns) {
             var selectedAmount = document.getElementById("amount").value;
             // Handle weird selectedAmountValues:
@@ -1794,7 +1888,7 @@
             const graphData = data[0]
             var config;
             if (runStatisticsGraphType == "line") {
-                config = get_graph_config("line", graphData, "Amount Of Tests (Line)", "Date", "amount", false);
+                config = get_graph_config("line", graphData, "Amount Of Tests (Line)", "Date", "Amount", false);
             } else if (runStatisticsGraphType == "amount") {
                 config = get_graph_config("bar", graphData, "Run Statistics (Bar)", "Run", "Amount Of Tests");
             } else if (runStatisticsGraphType == "percentages") {
@@ -1803,6 +1897,21 @@
             runStatisticsGraph = new Chart("runStatisticsGraph", config);
             runStatisticsGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(runStatisticsGraph, event)
+            });
+        }
+
+        // function to create run pie graph in the run section
+        function create_run_pie_graph() {
+            if (runPieGraph) {
+                runPieGraph.destroy();
+            }
+            Chart.register(ChartDataLabels);
+            const data = get_pie_graph_data("run", filteredRuns);
+            const graphData = data[0]
+            var config = get_graph_config("pie", graphData, "Last Run Status", "Run", "Amount", false);
+            runPieGraph = new Chart("runPieGraph", config);
+            runPieGraph.canvas.addEventListener('click', (event) => {
+                open_log_from_label(runPieGraph, event)
             });
         }
 
@@ -2076,25 +2185,19 @@
                     datasets.push({
                         label: test.name,
                         data: [{ x: [runAxis, runAxis + 1], y: test.name }],
-                        backgroundColor: passedBackgroundColor,
-                        borderColor: passedBackgroundBorderColor,
-                        borderWidth: 1,
+                        ...passedConfig,
                     });
                 } else if (test.failed == 1) {
                     datasets.push({
                         label: test.name,
                         data: [{ x: [runAxis, runAxis + 1], y: test.name }],
-                        backgroundColor: failedBackgroundColor,
-                        borderColor: failedBackgroundBorderColor,
-                        borderWidth: 1,
+                        ...failedConfig,
                     });
                 } else if (test.skipped == 1) {
                     datasets.push({
                         label: test.name,
                         data: [{ x: [runAxis, runAxis + 1], y: test.name }],
-                        backgroundColor: skippedBackgroundColor,
-                        borderColor: skippedBackgroundBorderColor,
-                        borderWidth: 1,
+                        ...skippedConfig,
                     });
                 }
             }
@@ -2656,6 +2759,7 @@
         // GRAPH DATA & CONFIG FUNCTIONS //
         ///////////////////////////////////
 
+        // function to open the log when clicking on the labels
         function open_log_from_label(chart, click) {
             if (!use_logs) { return }
             let resetCoordinates = chart.canvas.getBoundingClientRect();
@@ -2693,6 +2797,7 @@
             }
         }
 
+        // function to add the suite or test id to the log path url
         function update_log_path_with_id(path, graphId, chartElement, event) {
             if (graphId.includes('run') || graphId.includes('keyword')) {
                 return transform_file_path(path)
@@ -2731,6 +2836,7 @@
             return `${transform_file_path(path)}#${id.id}`
         }
 
+        // function to open the log files through the graphs
         function open_log_file(event, chartElement, callbackData = undefined) {
             if (!use_logs) { return }
             const graphType = event.chart.config._config.type
@@ -2773,9 +2879,17 @@
                     }
                 },
                 normalized: true,
-                animation: false,
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: {
+                    delay: (context) => {
+                        const dataLength = context.chart.data.datasets.reduce((largest, current) =>
+                            current.data.length > largest.data.length ? current : largest
+                        ).data.length;
+                        const delay = 1000 / dataLength;
+                        return context.dataIndex * delay;
+                    },
+                },
                 plugins: {
                     title: {
                         display: true,
@@ -2796,6 +2910,9 @@
                     ticks: {
                         minRotation: 45,
                         maxRotation: 45,
+                        callback: function (value, index) {
+                            return this.getLabelForValue(value).slice(0, 20);
+                        },
                     },
                 },
                 y: {
@@ -2803,7 +2920,13 @@
                         display: true,
                         text: yTitle,
                     },
+                    beginAtZero: true,
                     grace: "5%",
+                    ticks: {
+                        callback: function (value, index) {
+                            return this.getLabelForValue(value).slice(0, 20);
+                        },
+                    }
                 },
             };
             if (dataSets && graphType == "line") {
@@ -2823,6 +2946,7 @@
                                 type: "time",
                                 time: {
                                     tooltipFormat: "dd.MM.yyyy - HH:mm:ss.SSS",
+                                    // tooltipFormat: "dd.MM.yyyy",
                                 },
                             },
                         },
@@ -2899,16 +3023,40 @@
                                 ticks: {
                                     minRotation: 45,
                                     maxRotation: 45,
+                                    callback: function (value, index) {
+                                        return this.getLabelForValue(value).slice(0, 20);
+                                    },
                                 },
                             },
                         },
                         plugins: {
                             ...baseConfig.plugins,
                             tooltip: {
-                                enabled: false,
+                                enabled: true,
                             },
                             legend: {
                                 display: false,
+                            },
+                        },
+                    },
+                };
+            }
+            if (graphType == "pie") {
+                return {
+                    type: "doughnut",
+                    data: graphData,
+                    options: {
+                        ...baseConfig,
+                        radius: '80%',
+                        animation: false,
+                        plugins: {
+                            ...baseConfig.plugins,
+                            tooltip: {
+                                enabled: true,
+                            },
+                            legend: {
+                                display: true,
+                                // position: 'right'
                             },
                         },
                     },
@@ -2967,13 +3115,14 @@
             }
             // Determine if we need to use aliases for labels
             const finalLabels = graphType !== "line" ? (use_run_aliases ? aliases : labels) : labels;
+            const styling = graphType !== "line" ? barConfig : lineConfig;
             // Common dataset construction logic
             const create_data_set = (label, data, backgroundColor, borderColor) => ({
                 label,
                 data,
                 backgroundColor,
                 borderColor,
-                borderWidth: 1,
+                ...styling,
                 stack: graphType === "percentages" || "amount" ? "Stack 0" : undefined,
             });
             // Construct the statistics data based on the graph type
@@ -2986,6 +3135,43 @@
                 ],
             };
             return [statisticsData, names];
+        }
+
+        // function to prepare the data in the correct format for duration graphs
+        function get_pie_graph_data(dataType, filteredData) {
+            const latest = filteredData[Object.keys(filteredData)[Object.keys(filteredData).length - 1]]
+            var labels = [];
+            var datasets = [];
+            var backgroundColors = [];
+            var backgroundBorderColors = [];
+            if (latest.passed > 0) {
+                labels.push('Passed')
+                datasets.push(latest.passed)
+                backgroundColors.push(passedBackgroundColor)
+                backgroundBorderColors.push(passedBackgroundBorderColor)
+            }
+            if (latest.failed > 0) {
+                labels.push('Failed')
+                datasets.push(latest.failed)
+                backgroundColors.push(failedBackgroundColor)
+                backgroundBorderColors.push(failedBackgroundBorderColor)
+            }
+            if (latest.skipped > 0) {
+                labels.push('Skipped')
+                datasets.push(latest.skipped)
+                backgroundColors.push(skippedBackgroundColor)
+                backgroundBorderColors.push(skippedBackgroundBorderColor)
+            }
+            const graphData = {
+                labels: labels,
+                datasets: [{
+                    data: datasets,
+                    backgroundColor: backgroundColors,
+                    borderColor: backgroundBorderColors,
+                    hoverOffset: 4
+                }]
+            };
+            return [graphData, labels]
         }
 
         // function to prepare the data in the correct format for duration graphs
@@ -3041,9 +3227,10 @@
                 const graphData = {
                     labels,
                     datasets: Array.from(data.entries()).map(([label, dataset]) => ({
-                        label,
+                        label: label.slice(0, 25),
                         data: dataset,
                         stack: "Stack 0",
+                        ...barConfig,
                     })),
                 };
                 return graphData;
@@ -3066,9 +3253,10 @@
                 }
                 // Prepare graph data for line chart
                 const datasets = Array.from(sets.entries()).map(([key, values]) => ({
-                    label: key,
+                    label: key.slice(0, 25),
                     fill: false,
                     data: values,
+                    ...lineConfig,
                 }));
                 return datasets;
             }
@@ -3198,9 +3386,7 @@
                     labels,
                     datasets: [{
                         data: datasets,
-                        backgroundColor: failedBackgroundColor,
-                        borderColor: failedBackgroundBorderColor,
-                        borderWidth: 1,
+                        ...failedConfig,
                     }],
                 };
                 return [graphData, data];
@@ -3236,27 +3422,21 @@
                                 datasets.push({
                                     label: label,
                                     data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                    backgroundColor: passedBackgroundColor,
-                                    borderColor: passedBackgroundBorderColor,
-                                    borderWidth: 1,
+                                    ...passedConfig,
                                 });
                             }
                             else if (value.failed == 1) {
                                 datasets.push({
                                     label: label,
                                     data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                    backgroundColor: failedBackgroundColor,
-                                    borderColor: failedBackgroundBorderColor,
-                                    borderWidth: 1,
+                                    ...failedConfig,
                                 });
                             }
                             else if (value.skipped == 1) {
                                 datasets.push({
                                     label: label,
                                     data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                    backgroundColor: skippedBackgroundColor,
-                                    borderColor: skippedBackgroundBorderColor,
-                                    borderWidth: 1,
+                                    ...skippedConfig,
                                 });
                             }
                         }
@@ -3317,9 +3497,7 @@
                     labels,
                     datasets: [{
                         data: datasets,
-                        backgroundColor: failedBackgroundColor,
-                        borderColor: failedBackgroundBorderColor,
-                        borderWidth: 1,
+                        ...failedConfig,
                     }],
                 };
                 const callbackData = Object.fromEntries(sortedData.map(([name, runs]) => [name, aliases.get(name)]));
@@ -3349,9 +3527,7 @@
                             datasets.push({
                                 label: label,
                                 data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                backgroundColor: failedBackgroundColor,
-                                borderColor: failedBackgroundBorderColor,
-                                borderWidth: 1,
+                                ...failedConfig,
                             });
                             foundValues.forEach(value => runAliasesSet.add(value.run_alias));
                         }
@@ -3429,9 +3605,7 @@
                     labels,
                     datasets: [{
                         data: datasets,
-                        backgroundColor: failedBackgroundColor,
-                        borderColor: failedBackgroundBorderColor,
-                        borderWidth: 1,
+                        ...failedConfig,
                     }],
                 };
                 const callbackData = Object.fromEntries(sortedData.map(([message, runs]) => [message, aliases.get(message)]));
@@ -3466,9 +3640,7 @@
                             datasets.push({
                                 label: label,
                                 data: [{ x: [runAxis, runAxis + 1], y: label }],
-                                backgroundColor: failedBackgroundColor,
-                                borderColor: failedBackgroundBorderColor,
-                                borderWidth: 1,
+                                ...failedConfig,
                             });
                             foundValues.forEach(value => runAliasesSet.add(value.run_alias));
                         }
@@ -3497,13 +3669,11 @@
         // function to convert timeline data to improve performance
         function convert_timeline_data(oldDatasets) {
             const grouped = {};
-
             for (const dataset of oldDatasets) {
                 const segment = dataset.data[0]; // assumes 1 item per dataset
-                const status = `${dataset.label}:${dataset.backgroundColor}:${dataset.borderColor}`;
-
+                const status = `${dataset.label}:*:&:.:${dataset.backgroundColor}:*:&:.:${dataset.borderColor}`;
                 if (!grouped[status]) {
-                grouped[status] = [];
+                    grouped[status] = [];
                 }
                 grouped[status].push({
                     x: segment.x,
@@ -3514,11 +3684,11 @@
             return Object.entries(grouped)
                 .filter(([_, data]) => data.length > 0)
                 .map(([status, data]) => ({
-                    label: status.split(':')[0],
+                    label: status.split(':*:&:.:')[0],
                     data,
-                    backgroundColor: status.split(':')[1],
-                    borderColor: status.split(':')[2],
-                    borderWidth: 1,
+                    backgroundColor: status.split(':*:&:.:')[1],
+                    borderColor: status.split(':*:&:.:')[2],
+                    ...barConfig,
                     parsing: true
                 }));
         }
@@ -3573,9 +3743,10 @@
         // function that updates all graphs based on the new filtered data and hidden choices
         function setup_all_graphs() {
             create_run_statistics_graph();
+            create_run_pie_graph();
             create_run_duration_graph();
             create_run_table();
-            create_suite_statistics_graph();1
+            create_suite_statistics_graph(); 1
             create_suite_duration_graph();
             create_suite_most_failed_graph();
             create_suite_table();
@@ -3621,6 +3792,7 @@
             setup_graphs('Keyword')
         }
 
+        // function to order the graphs in the sections
         function setup_graphs(section) {
             const lowerCaseSection = section.toLowerCase()
             const sectionDataElement = document.getElementById(lowerCaseSection + 'Data')
@@ -3735,6 +3907,11 @@
             setup_runs_in_select_filter_buttons();
             setup_runtags_in_select_filter_buttons();
             setup_data_and_graphs();
+
+            setTimeout(() => { // let the browser render before continueing, this is because the data has to be filtered for this to take effect correctly
+                update_suite_path_local_storage("useSuitePathsSuiteSection", useSuitePathsSuiteSection, true);
+                update_suite_path_local_storage("useSuitePathsTestSection", useSuitePathsTestSection, true);
+            }, 0);
         }
 
         // trigger of first load
