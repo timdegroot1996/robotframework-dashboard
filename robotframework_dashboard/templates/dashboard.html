@@ -64,7 +64,9 @@
             .fullscreen,
             .sticky-top,
             .card,
-            body {
+
+            body,
+            .modal-dialog {
                 background: #0f172a;
                 color: #eee;
             }
@@ -77,9 +79,8 @@
             }
         }
 
-
         .canvas {
-            width: 800px;
+            width: 700px;
             height: 540px;
             text-align: center;
             padding: 1.5rem;
@@ -93,6 +94,10 @@
 
         .canvas-vertical {
             overflow-y: auto;
+        }
+
+        canvas {
+            padding-bottom: 1.5rem;
         }
 
         .card-header,
@@ -793,7 +798,7 @@
         }
         // line config
         const lineConfig = {
-            tension: 0.2,
+            tension: 0.1,
             pointRadius: 4,
             pointHoverRadius: 6
         }
@@ -804,11 +809,11 @@
         var tests = "placeholder_tests".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var keywords = "placeholder_keywords".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var message_config = '"placeholder_message_config"'
-        var filteredAmount = 20
+        var filteredAmount = "placeholder_amount"
         var filteredAmountDefault = 0
-        const use_logs = false
-        const use_run_aliases = false
-        const server = false
+        const use_logs = "placeholder_use_logs"
+        const use_run_aliases = "placeholder_use_run_aliases"
+        const server = "placeholder_server"
         if (!message_config.includes('placeholder_message_config')) { message_config = JSON.parse(message_config) }
 
         // create graphs
@@ -979,6 +984,14 @@
             return str.replace(/_(.)/g, (match, group) => group.toUpperCase());
         }
 
+        // function to convert camelcose to underscores
+        function camelcase_to_underscore(str) {
+            return str
+                .replace(/([A-Z]+)/g, '_$1')     // Prefix all capital groups with _
+                .replace(/^_/, '')               // Remove leading underscore if it appears
+                .toLowerCase();                  // Convert everything to lowercase
+        }
+
         // function to convert a date object to the desired string format
         function format_date_to_string(date) {
             const pad = (n) => n.toString().padStart(2, '0');
@@ -1045,7 +1058,6 @@
             const storageState = JSON.parse(localStorage.getItem(id));
             if (firstLoad) {
                 if (storageState) {
-                    console.log('setting', id, 'to', storageState)
                     window[id] = storageState;
                     document.getElementById(id).checked = true;
                 }
@@ -1424,6 +1436,7 @@
                     document.getElementById(`${fullscreenButton}Close`).hidden = false
                     document.getElementById(`${fullscreenButton}Fullscreen`).hidden = true
                     document.body.style.overflow = 'hidden';
+                    window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]()
                 });
                 document.getElementById(`${fullscreenButton}Close`).addEventListener("click", (e) => {
                     $('#filterSection').show()
@@ -1431,6 +1444,7 @@
                     document.getElementById(`${fullscreenButton}Close`).hidden = true
                     document.getElementById(`${fullscreenButton}Fullscreen`).hidden = false
                     document.body.style.overflow = 'auto';
+                    window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]()
                 });
             }
         }
@@ -1908,11 +1922,14 @@
             Chart.register(ChartDataLabels);
             const data = get_pie_graph_data("run", filteredRuns);
             const graphData = data[0]
-            var config = get_graph_config("pie", graphData, "Last Run Status", "Run", "Amount", false);
+            const callbackData = data[1]
+            var config = get_graph_config("pie", graphData, `Last Run Status (Pie): ${callbackData}`, "Run", "Amount", false);
+            config.options.onClick = (event, chartElement) => {
+                if (chartElement.length) {
+                    open_log_file(event, chartElement, callbackData)
+                }
+            };
             runPieGraph = new Chart("runPieGraph", config);
-            runPieGraph.canvas.addEventListener('click', (event) => {
-                open_log_from_label(runPieGraph, event)
-            });
         }
 
         // function to create run duration graph in the run section
@@ -2054,7 +2071,7 @@
             const callbackData = data[1];
             var config;
             if (suiteMostFailedGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Top 10 Most Failed Suites", "Suite Name", "Times Failed");
+                config = get_graph_config("bar", graphData, "Top 10 Most Failed Suites (Bar)", "Suite Name", "Times Failed");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2067,7 +2084,7 @@
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (suiteMostFailedGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, "Top 10 Most Failed Suites");
+                config = get_graph_config("timeline", graphData, "Top 10 Most Failed Suites (Timeline)");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2266,7 +2283,7 @@
             const callbackData = data[1];
             var config;
             if (testMessagesGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Top 10 Fail Messages", "Message", "Times");
+                config = get_graph_config("bar", graphData, "Top 10 Fail Messages (Bar)", "Message", "Times");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2288,7 +2305,7 @@
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testMessagesGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, "Top 10 Fail Messages");
+                config = get_graph_config("timeline", graphData, "Top 10 Fail Messages (Timeline)");
                 // overwrite tooltip and x and y scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2331,7 +2348,7 @@
                 testDurationDeviationGraph.destroy();
             }
             const graphData = get_duration_deviation_data("test", testDurationDeviationGraphType, filteredTests)
-            const config = get_graph_config("boxplot", graphData, "Duration Deviation", "Test Name", "Duration");
+            const config = get_graph_config("boxplot", graphData, "Duration Deviation (Boxplot)", "Test Name", "Duration");
             // no onClick on the boxplot chart
             delete config.options.onClick
             testDurationDeviationGraph = new Chart("testDurationDeviationGraph", config);
@@ -2350,13 +2367,13 @@
             const callbackData = data[1];
             var config;
             if (testMostFlakyGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Top 10 Most Flaky Tests (most status flips)", "Test Name", "Times Status Flipped");
+                config = get_graph_config("bar", graphData, "Top 10 Most Flaky Tests (Bar, most status flips)", "Test Name", "Times Status Flipped");
                 // disable lenged in bar graph
                 config.options.plugins.legend = false
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testMostFlakyGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, "Top 10 Most Flaky Tests (most status flips)");
+                config = get_graph_config("timeline", graphData, "Top 10 Most Flaky Tests (Timeline, most status flips)");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2398,13 +2415,13 @@
             const callbackData = data[1];
             var config;
             if (testRecentMostFlakyGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Top 10 Recent Most Flaky Tests (most status flips)", "Test Name", "Times Status Flipped");
+                config = get_graph_config("bar", graphData, "Top 10 Recent Most Flaky Tests (Bar, most status flips)", "Test Name", "Times Status Flipped");
                 // disable lenged in bar graph
                 config.options.plugins.legend = false
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testRecentMostFlakyGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, "Top 10 Recent Most Flaky Tests (most status flips)");
+                config = get_graph_config("timeline", graphData, "Top 10 Recent Most Flaky Tests (Timeline, most status flips)");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2449,7 +2466,7 @@
             const callbackData = data[1];
             var config;
             if (testMostFailedGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Top 10 Most Failed Tests", "Test Name", "Times Failed");
+                config = get_graph_config("bar", graphData, "Top 10 Most Failed Tests (Bar)", "Test Name", "Times Failed");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2462,7 +2479,7 @@
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testMostFailedGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, "Top 10 Most Failed Tests");
+                config = get_graph_config("timeline", graphData, "Top 10 Most Failed Tests (Timeline)");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2507,7 +2524,7 @@
             const callbackData = data[1];
             var config;
             if (testRecentMostFailedGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Top 10 Recent Most Failed Tests", "Test Name", "Times Failed");
+                config = get_graph_config("bar", graphData, "Top 10 Recent Most Failed Tests (Bar)", "Test Name", "Times Failed");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2520,7 +2537,7 @@
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testRecentMostFailedGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, "Top 10 Recent Most Failed Tests");
+                config = get_graph_config("timeline", graphData, "Top 10 Recent Most Failed Tests (Timeline)");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2842,7 +2859,9 @@
             const graphType = event.chart.config._config.type
             const graphId = event.chart.canvas.id
             var runStart = ''
-            if (callbackData) {
+            if (graphType == 'doughnut') {
+                runStart = callbackData
+            } else if (callbackData) {
                 const index = chartElement[0].element.$context.raw.x[0]
                 runStart = callbackData[index]
             } else if (graphType == 'line' && !graphId.includes('Statistics')) {
@@ -2903,6 +2922,7 @@
             // Common scales configuration
             const commonScales = {
                 x: {
+                    bounds: 'ticks',
                     title: {
                         display: true,
                         text: xTitle,
@@ -2911,7 +2931,7 @@
                         minRotation: 45,
                         maxRotation: 45,
                         callback: function (value, index) {
-                            return this.getLabelForValue(value).slice(0, 20);
+                            return this.getLabelForValue(value).slice(0, 40);
                         },
                     },
                 },
@@ -2924,9 +2944,9 @@
                     grace: "5%",
                     ticks: {
                         callback: function (value, index) {
-                            return this.getLabelForValue(value).slice(0, 20);
+                            return this.getLabelForValue(value).slice(0, 40);
                         },
-                    }
+                    },
                 },
             };
             if (dataSets && graphType == "line") {
@@ -2945,8 +2965,15 @@
                                 ...commonScales.x,
                                 type: "time",
                                 time: {
-                                    tooltipFormat: "dd.MM.yyyy - HH:mm:ss.SSS",
-                                    // tooltipFormat: "dd.MM.yyyy",
+                                    tooltipFormat: "dd.MM.yyyy HH:mm:ss",
+                                },
+                                ticks: {
+                                    maxTicksLimit: 10,
+                                    minRotation: 45,
+                                    maxRotation: 45,
+                                    callback: function (value, index) {
+                                        return this.getLabelForValue(value).slice(0, 40);
+                                    },
                                 },
                             },
                         },
@@ -3024,7 +3051,7 @@
                                     minRotation: 45,
                                     maxRotation: 45,
                                     callback: function (value, index) {
-                                        return this.getLabelForValue(value).slice(0, 20);
+                                        return this.getLabelForValue(value).slice(0, 40);
                                     },
                                 },
                             },
@@ -3047,16 +3074,29 @@
                     data: graphData,
                     options: {
                         ...baseConfig,
-                        radius: '80%',
-                        animation: false,
+                        radius: '70%',
                         plugins: {
                             ...baseConfig.plugins,
                             tooltip: {
-                                enabled: true,
+                                callbacks: {
+                                    title: function (tooltipItem) {
+                                        return tooltipItem[0].element.$datalabels[0]._model.lines[0];
+                                    }
+                                }
                             },
                             legend: {
                                 display: true,
-                                // position: 'right'
+                            },
+                            datalabels: {
+                                color: "#000000",
+                                align: "center",
+                                anchor: "center",
+                                formatter: function (value) {
+                                    if (value == 0) { return "" }
+                                    const total = graphData.datasets[0].data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${value} (${percentage}%)`;
+                                }
                             },
                         },
                     },
@@ -3072,7 +3112,7 @@
             // Initialize arrays to store the data
             const passed = [], failed = [], skipped = [], labels = [], aliases = [], names = [];
             // Helper function to calculate percentages
-            const calculate_percentage = (value, total) => Math.round((value / total) * 100 * 100) / 100;
+            const calculate_percentage = (value, total) => Math.round((value / total) * 100);
             // Helper function to process each value for graph data
             const process_value = (value) => {
                 const total = value.passed + value.failed + value.skipped;
@@ -3171,7 +3211,8 @@
                     hoverOffset: 4
                 }]
             };
-            return [graphData, labels]
+            const callBackData = use_run_aliases ? latest.run_alias : latest.run_start;
+            return [graphData, callBackData]
         }
 
         // function to prepare the data in the correct format for duration graphs
@@ -3227,7 +3268,7 @@
                 const graphData = {
                     labels,
                     datasets: Array.from(data.entries()).map(([label, dataset]) => ({
-                        label: label.slice(0, 25),
+                        label: label.slice(0, 40),
                         data: dataset,
                         stack: "Stack 0",
                         ...barConfig,
@@ -3253,7 +3294,7 @@
                 }
                 // Prepare graph data for line chart
                 const datasets = Array.from(sets.entries()).map(([key, values]) => ({
-                    label: key.slice(0, 25),
+                    label: key.slice(0, 40),
                     fill: false,
                     data: values,
                     ...lineConfig,
@@ -3709,8 +3750,12 @@
                 setup_collapsables();
                 setup_eventlisteners_graph_view_buttons();
                 setup_eventlisteners_filter_buttons();
-                setup_all_graphs();
                 setup_spinner(true);
+            }, 0);
+
+            // Let the browser render again to make the graph animations clean
+            setTimeout(() => {
+                setup_all_graphs();
             }, 0);
         }
 
