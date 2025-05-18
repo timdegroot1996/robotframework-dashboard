@@ -100,12 +100,18 @@
             margin: 1rem;
         }
 
-        .canvas-vertical, .canvas.fullscreen {
+        .canvas-vertical,
+        .canvas.fullscreen {
             overflow-y: auto;
         }
 
         canvas {
             padding-bottom: 1.5rem;
+        }
+
+        .canvas.fullscreen canvas,
+        .canvas.fullscreen .pie-charts {
+            height: calc(100% - 51px) !important;
         }
 
         .card-header,
@@ -398,15 +404,18 @@
                 </div>
                 <!-- Suite Most Failed -->
                 <div class="col canvas pb-5" id="suiteMostFailedCanvas">
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="suiteMostFailedGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteMostFailedGraphTimeline">Timeline
-                        View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                        id="suiteMostFailedFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteMostFailedClose"
-                        hidden>Close</button>
-                    <canvas id="suiteMostFailedGraph"></canvas>
+                    <div id="suiteMostFailedVertical">
+                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="suiteMostFailedGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                            id="suiteMostFailedGraphTimeline">Timeline
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                            id="suiteMostFailedFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteMostFailedClose"
+                            hidden>Close</button>
+                        <canvas id="suiteMostFailedGraph"></canvas>
+                    </div>
                 </div>
                 <!-- Suite Table -->
                 <div class="col" id="suiteTableCanvas">
@@ -505,7 +514,8 @@
                     <div id="testMessagesVertical">
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
                             View</button>
-                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testMessagesGraphTimeline">Timeline
+                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
+                            id="testMessagesGraphTimeline">Timeline
                             View</button>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
                             id="testMessagesFullscreen">Fullscreen</button>
@@ -516,64 +526,74 @@
                 </div>
                 <!-- Test Most Flaky -->
                 <div class="col canvas pb-5" id="testMostFlakyCanvas">
-                    <div class="btn-group me-1">
-                        <label class="form-check-label mb-2" for="ignoreSkips">Ignore Skips</label>
+                    <div id="testMostFlakyVertical">
+                        <div class="btn-group me-1">
+                            <label class="form-check-label mb-2" for="ignoreSkips">Ignore Skips</label>
+                        </div>
+                        <div class="btn-group form-switch me-1">
+                            <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkips">
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
+                            id="testMostFlakyGraphTimeline">Timeline
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyFullscreen"
+                            style="margin-right:56px;">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose" hidden
+                            style="margin-right:56px;">Close</button>
+                        <canvas id="testMostFlakyGraph"></canvas>
                     </div>
-                    <div class="btn-group form-switch me-1">
-                        <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkips">
-                    </div>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testMostFlakyGraphTimeline">Timeline
-                        View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyFullscreen"
-                        style="margin-right:56px;">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose" hidden
-                        style="margin-right:56px;">Close</button>
-                    <canvas id="testMostFlakyGraph"></canvas>
                 </div>
                 <!-- Test Recent Most Flaky -->
                 <div class="col canvas pb-5" id="testRecentMostFlakyCanvas">
-                    <div class="btn-group me-1">
-                        <label class="form-check-label mb-2" for="ignoreSkipsRecent">Ignore Skips</label>
+                    <div id="testRecentMostFlakyVertical">
+                        <div class="btn-group me-1">
+                            <label class="form-check-label mb-2" for="ignoreSkipsRecent">Ignore Skips</label>
+                        </div>
+                        <div class="btn-group form-switch me-1">
+                            <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkipsRecent">
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
+                            id="testRecentMostFlakyGraphTimeline">Timeline View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyFullscreen"
+                            style="margin-right:56px;">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyClose" hidden
+                            style="margin-right:56px;">Close</button>
+                        <canvas id="testRecentMostFlakyGraph"></canvas>
                     </div>
-                    <div class="btn-group form-switch me-1">
-                        <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkipsRecent">
-                    </div>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                        id="testRecentMostFlakyGraphTimeline">Timeline View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyFullscreen"
-                        style="margin-right:56px;">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyClose" hidden
-                        style="margin-right:56px;">Close</button>
-                    <canvas id="testRecentMostFlakyGraph"></canvas>
                 </div>
                 <!-- Test Most Failed -->
                 <div class="col canvas pb-5" id="testMostFailedCanvas">
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testMostFailedGraphTimeline">Timeline
-                        View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                        id="testMostFailedFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedClose"
-                        hidden>Close</button>
-                    <canvas id="testMostFailedGraph"></canvas>
+                    <div id="testMostFailedVertical">
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
+                            id="testMostFailedGraphTimeline">Timeline
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                            id="testMostFailedFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedClose"
+                            hidden>Close</button>
+                        <canvas id="testMostFailedGraph"></canvas>
+                    </div>
                 </div>
                 <!-- Test Recent Most Failed -->
                 <div class="col canvas pb-5" id="testRecentMostFailedCanvas">
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFailedGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                        id="testRecentMostFailedGraphTimeline">Timeline
-                        View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                        id="testRecentMostFailedFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFailedClose"
-                        hidden>Close</button>
-                    <canvas id="testRecentMostFailedGraph"></canvas>
+                    <div id="testRecentMostFailedVertical">
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFailedGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
+                            id="testRecentMostFailedGraphTimeline">Timeline
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                            id="testRecentMostFailedFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFailedClose"
+                            hidden>Close</button>
+                        <canvas id="testRecentMostFailedGraph"></canvas>
+                    </div>
                 </div>
                 <!-- Test Table -->
                 <div class="col" id="testTableCanvas">
@@ -2112,7 +2132,7 @@
             const graphData = data[0];
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen ? 50: 10;
             if (suiteMostFailedGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Suites (Bar)`, "Suite Name", "Times Failed");
                 // overwrite legend and tooltip
@@ -2154,6 +2174,7 @@
                 };
             }
             suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
+            update_height('suiteMostFailedVertical', suiteMostFailedGraph)
             suiteMostFailedGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(suiteMostFailedGraph, event)
             });
@@ -2266,7 +2287,7 @@
                 labels: labels,
                 datasets: datasets,
             };
-            var config = get_graph_config("timeline", graphData, "Test Statistics (Bar)");
+            var config = get_graph_config("timeline", graphData, "Test Statistics (Timeline)");
             // overwrite tooltip and x scale with callbacks
             config.options.plugins.tooltip = {
                 callbacks: {
@@ -2326,7 +2347,7 @@
             const graphData = data[0];
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen ? 50: 10;
             if (testMessagesGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit} Fail Messages (Bar)`, "Message", "Times");
                 // overwrite legend and tooltip
@@ -2412,7 +2433,7 @@
             const graphData = data[0]
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen ? 50: 10;
             if (testMostFlakyGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit} Most Flaky Tests (Bar) Most Status Flips`, "Test Name", "Times Status Flipped");
                 // disable lenged in bar graph
@@ -2447,6 +2468,7 @@
                 }
             }
             testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
+            update_height('testMostFlakyVertical', testMostFlakyGraph)
             testMostFlakyGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testMostFlakyGraph, event)
             });
@@ -2461,7 +2483,7 @@
             const graphData = data[0];
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen ? 50: 10;
             if (testRecentMostFlakyGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit} Recent Most Flaky Tests (Bar) Most Status Flips`, "Test Name", "Times Status Flipped");
                 // disable lenged in bar graph
@@ -2496,6 +2518,7 @@
                 }
             }
             testRecentMostFlakyGraph = new Chart("testRecentMostFlakyGraph", config);
+            update_height('testRecentMostFlakyVertical', testRecentMostFlakyGraph)
             testRecentMostFlakyGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testRecentMostFlakyGraph, event)
             });
@@ -2513,7 +2536,7 @@
             const graphData = data[0]
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen ? 50: 10;
             if (testMostFailedGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Tests (Bar)`, "Test Name", "Times Failed");
                 // overwrite legend and tooltip
@@ -2555,6 +2578,7 @@
                 }
             }
             testMostFailedGraph = new Chart("testMostFailedGraph", config);
+            update_height('testMostFailedVertical', testMostFailedGraph)
             testMostFailedGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testMostFailedGraph, event)
             });
@@ -2572,7 +2596,7 @@
             const graphData = data[0]
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen ? 50: 10;
             if (testRecentMostFailedGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit} Recent Most Failed Tests (Bar)`, "Test Name", "Times Failed");
                 // overwrite legend and tooltip
@@ -2614,6 +2638,7 @@
                 }
             }
             testRecentMostFailedGraph = new Chart("testRecentMostFailedGraph", config);
+            update_height('testRecentMostFailedVertical', testRecentMostFailedGraph)
             testRecentMostFailedGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testRecentMostFailedGraph, event)
             });
@@ -3509,7 +3534,7 @@
                     return new Date(b[1].failed_run_starts[b[1].failed_run_starts.length - 1]).getTime() - new Date(a[1].failed_run_starts[a[1].failed_run_starts.length - 1]).getTime()
                 })
             }
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen ? 50: 10;
             if (graphType == "bar") {
                 var [datasets, labels, count] = [[], [], 0];
                 for (key in sortedData) {
@@ -3618,7 +3643,7 @@
                     return 0; // Preserve original order if equal (stable sort)
                 });
             }
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen ? 50: 10;
             if (graphType === 'bar') {
                 const datasets = [];
                 const labels = [];
@@ -3726,7 +3751,7 @@
             }
 
             // Sort messages by failure count
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen ? 50: 10;
             const sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length);
             if (graphType === 'bar') {
                 const [datasets, labels] = [[], []];
@@ -3800,9 +3825,13 @@
         // function to update the height of the test statistics graph and enable scrolling
         function update_height(verticalId, graph) {
             document.getElementById(verticalId).style.height = `465px`
-            if (graph.data.labels.length > 10) {
+            if (graph.data.labels.length > 10 && !graph.config._config.options.plugins.title.text.includes('(Bar)')) {
+                // timeline view with more than 10 items -> update height
                 var newHeight = 465 + (graph.data.labels.length - 10) * 25
                 document.getElementById(verticalId).style.height = `${newHeight}px`
+            } else if (inFullscreen) {
+                // not more than 10 items, set the height to fullscreen without scrollbar
+                document.getElementById(verticalId).style.height = `calc(100% - 51px)`
             }
         }
 
