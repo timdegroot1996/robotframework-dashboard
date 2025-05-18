@@ -88,11 +88,19 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
+        .canvas:not(.fullscreen) .pie-charts {
+            height: 450px;
+        }
+
+        .canvas.fullscreen .pie-charts {
+            height: 100%;
+        }
+
         .canvas:not(.fullscreen) {
             margin: 1rem;
         }
 
-        .canvas-vertical {
+        .canvas-vertical, .canvas.fullscreen {
             overflow-y: auto;
         }
 
@@ -108,7 +116,6 @@
         .card {
             margin-top: 1rem;
             margin-bottom: 1rem;
-            /* border-radius: 16px; */
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
@@ -302,8 +309,14 @@
                     <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="runPieGraphPie">Pie</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runPieFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runPieClose" hidden>Close</button>
-                    <canvas id="runPieGraph"></canvas>
-                    <!-- <canvas id="runPieTotalGraph"></canvas> -->
+                    <div class="row pie-charts">
+                        <div class="col-md-6">
+                            <canvas id="runPieGraph" class="w-100 h-100"></canvas>
+                        </div>
+                        <div class="col-md-6">
+                            <canvas id="runPieTotalGraph" class="w-100 h-100"></canvas>
+                        </div>
+                    </div>
                 </div>
                 <!-- Run Duration -->
                 <div class="col canvas pb-5" id="runDurationCanvas">
@@ -489,15 +502,17 @@
                 </div>
                 <!-- Test Messages -->
                 <div class="col canvas pb-5" id="testMessagesCanvas">
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testMessagesGraphTimeline">Timeline
-                        View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                        id="testMessagesFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesClose"
-                        hidden>Close</button>
-                    <canvas id="testMessagesGraph"></canvas>
+                    <div id="testMessagesVertical">
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testMessagesGraphTimeline">Timeline
+                            View</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                            id="testMessagesFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesClose"
+                            hidden>Close</button>
+                        <canvas id="testMessagesGraph"></canvas>
+                    </div>
                 </div>
                 <!-- Test Most Flaky -->
                 <div class="col canvas pb-5" id="testMostFlakyCanvas">
@@ -819,6 +834,7 @@
         // create graphs
         var runStatisticsGraph;
         var runPieGraph;
+        var runPieTotalGraph;
         var runDurationGraph;
         var runTable;
         var suiteStatisticsGraph;
@@ -853,7 +869,8 @@
         var useSuitePathsTestSection = false;
         var ignoreSkips = false; // test most flaky graph
         var ignoreSkipsRecent = false; // test recent most flaky graph
-        let showingRunTags = false; // used to keep track if the runtags popup is showing and determine if it should be closed when clicked outside
+        var showingRunTags = false; // used to keep track if the runtags popup is showing and determine if it should be closed when clicked outside
+        var inFullscreen = false;
 
         // add items in hide modal
         const hideSections = [
@@ -1228,6 +1245,7 @@
             const defaultGraphTypes = {
                 runStatisticsGraphType: "percentages",
                 runPieGraphType: "pie",
+                runPieTotalGraphType: "pie",
                 runDurationGraphType: "line",
                 suiteStatisticsGraphType: "percentages",
                 suiteDurationGraphType: "line",
@@ -1431,20 +1449,28 @@
                 "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration"]
             for (let fullscreenButton of fullscreenButtons) {
                 document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", (e) => {
-                    $('#filterSection').hide()
+                    inFullscreen = !inFullscreen;
+                    $('#filterSection').hide();
                     document.getElementById(`${fullscreenButton}Canvas`).classList.add("fullscreen");
-                    document.getElementById(`${fullscreenButton}Close`).hidden = false
-                    document.getElementById(`${fullscreenButton}Fullscreen`).hidden = true
+                    document.getElementById(`${fullscreenButton}Close`).hidden = false;
+                    document.getElementById(`${fullscreenButton}Fullscreen`).hidden = true;
                     document.body.style.overflow = 'hidden';
-                    window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]()
+                    window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
+                    if (fullscreenButton == 'runPie') {
+                        window[`create_${camelcase_to_underscore(fullscreenButton)}_total_graph`]();
+                    }
                 });
                 document.getElementById(`${fullscreenButton}Close`).addEventListener("click", (e) => {
-                    $('#filterSection').show()
+                    inFullscreen = !inFullscreen;
+                    $('#filterSection').show();
                     document.getElementById(`${fullscreenButton}Canvas`).classList.remove("fullscreen");
-                    document.getElementById(`${fullscreenButton}Close`).hidden = true
-                    document.getElementById(`${fullscreenButton}Fullscreen`).hidden = false
+                    document.getElementById(`${fullscreenButton}Close`).hidden = true;
+                    document.getElementById(`${fullscreenButton}Fullscreen`).hidden = false;
                     document.body.style.overflow = 'auto';
-                    window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]()
+                    window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
+                    if (fullscreenButton == 'runPie') {
+                        window[`create_${camelcase_to_underscore(fullscreenButton)}_total_graph`]();
+                    }
                 });
             }
         }
@@ -1932,6 +1958,20 @@
             runPieGraph = new Chart("runPieGraph", config);
         }
 
+        // function to create run pie graph in the run section
+        function create_run_pie_total_graph() {
+            if (runPieTotalGraph) {
+                runPieTotalGraph.destroy();
+            }
+            Chart.register(ChartDataLabels);
+            const data = get_pie_total_graph_data("run", filteredRuns);
+            const graphData = data[0]
+            const callbackData = data[1]
+            var config = get_graph_config("pie", graphData, `Total Runs Status (Pie)`, "Run", "Amount", false);
+            delete config.options.onClick;
+            runPieTotalGraph = new Chart("runPieTotalGraph", config);
+        }
+
         // function to create run duration graph in the run section
         function create_run_duration_graph() {
             if (runDurationGraph) {
@@ -1940,7 +1980,8 @@
             var graphData = get_duration_graph_data("run", runDurationGraphType, "elapsed_s", filteredRuns);
             var config;
             if (runDurationGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Run Duration (Bar) First 30 Bars Only", "Run", "Duration");
+                const limit = inFullscreen ? 100 : 30;
+                config = get_graph_config("bar", graphData, `Run Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
             } else if (runDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "Run Duration (Line)", "Date", "Duration");
             }
@@ -2051,7 +2092,8 @@
             const graphData = get_duration_graph_data("suite", suiteDurationGraphType, "elapsed_s", filteredSuites);
             var config;
             if (suiteDurationGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Suite Duration (Bar) First 30 Bars Only", "Run", "Duration");
+                const limit = inFullscreen ? 100 : 30;
+                config = get_graph_config("bar", graphData, `Suite Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
             } else if (suiteDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "Suite Duration (Line)", "Date", "Duration");
             }
@@ -2070,8 +2112,9 @@
             const graphData = data[0];
             const callbackData = data[1];
             var config;
+            const limit = inFullscreen ? 50 : 10;
             if (suiteMostFailedGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Top 10 Most Failed Suites (Bar)", "Suite Name", "Times Failed");
+                config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Suites (Bar)`, "Suite Name", "Times Failed");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2084,7 +2127,7 @@
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (suiteMostFailedGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, "Top 10 Most Failed Suites (Timeline)");
+                config = get_graph_config("timeline", graphData, `Top ${limit} Most Failed Suites (Timeline)`);
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2263,7 +2306,8 @@
             var graphData = get_duration_graph_data("test", testDurationGraphType, "elapsed_s", filteredTests);
             var config;
             if (testDurationGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Test Duration (Bar) First 30 Bars Only", "Run", "Duration");
+                const limit = inFullscreen ? 100 : 30;
+                config = get_graph_config("bar", graphData, `Test Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
             } else if (testDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "Test Duration (Line)", "Date", "Duration");
             }
@@ -2282,8 +2326,9 @@
             const graphData = data[0];
             const callbackData = data[1];
             var config;
+            const limit = inFullscreen ? 50 : 10;
             if (testMessagesGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Top 10 Fail Messages (Bar)", "Message", "Times");
+                config = get_graph_config("bar", graphData, `Top ${limit} Fail Messages (Bar)`, "Message", "Times");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2305,7 +2350,7 @@
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testMessagesGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, "Top 10 Fail Messages (Timeline)");
+                config = get_graph_config("timeline", graphData, `Top ${limit} Fail Messages (Timeline)`);
                 // overwrite tooltip and x and y scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2337,6 +2382,7 @@
                 };
             }
             testMessagesGraph = new Chart("testMessagesGraph", config);
+            update_height('testMessagesVertical', testMessagesGraph)
             testMessagesGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testMessagesGraph, event)
             });
@@ -2366,14 +2412,15 @@
             const graphData = data[0]
             const callbackData = data[1];
             var config;
+            const limit = inFullscreen ? 50 : 10;
             if (testMostFlakyGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Top 10 Most Flaky Tests (Bar, most status flips)", "Test Name", "Times Status Flipped");
+                config = get_graph_config("bar", graphData, `Top ${limit} Most Flaky Tests (Bar) Most Status Flips`, "Test Name", "Times Status Flipped");
                 // disable lenged in bar graph
                 config.options.plugins.legend = false
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testMostFlakyGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, "Top 10 Most Flaky Tests (Timeline, most status flips)");
+                config = get_graph_config("timeline", graphData, `Top ${limit} Most Flaky Tests (Timeline) Most Status Flips`);
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2414,14 +2461,15 @@
             const graphData = data[0];
             const callbackData = data[1];
             var config;
+            const limit = inFullscreen ? 50 : 10;
             if (testRecentMostFlakyGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Top 10 Recent Most Flaky Tests (Bar, most status flips)", "Test Name", "Times Status Flipped");
+                config = get_graph_config("bar", graphData, `Top ${limit} Recent Most Flaky Tests (Bar) Most Status Flips`, "Test Name", "Times Status Flipped");
                 // disable lenged in bar graph
                 config.options.plugins.legend = false
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testRecentMostFlakyGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, "Top 10 Recent Most Flaky Tests (Timeline, most status flips)");
+                config = get_graph_config("timeline", graphData, `Top ${limit} Recent Most Flaky Tests (Timeline) Most Status Flips`);
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2465,8 +2513,9 @@
             const graphData = data[0]
             const callbackData = data[1];
             var config;
+            const limit = inFullscreen ? 50 : 10;
             if (testMostFailedGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Top 10 Most Failed Tests (Bar)", "Test Name", "Times Failed");
+                config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Tests (Bar)`, "Test Name", "Times Failed");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2479,7 +2528,7 @@
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testMostFailedGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, "Top 10 Most Failed Tests (Timeline)");
+                config = get_graph_config("timeline", graphData, `Top ${limit} Most Failed Tests (Timeline)`);
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2523,8 +2572,9 @@
             const graphData = data[0]
             const callbackData = data[1];
             var config;
+            const limit = inFullscreen ? 50 : 10;
             if (testRecentMostFailedGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Top 10 Recent Most Failed Tests (Bar)", "Test Name", "Times Failed");
+                config = get_graph_config("bar", graphData, `Top ${limit} Recent Most Failed Tests (Bar)`, "Test Name", "Times Failed");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2537,7 +2587,7 @@
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testRecentMostFailedGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, "Top 10 Recent Most Failed Tests (Timeline)");
+                config = get_graph_config("timeline", graphData, `Top ${limit} Recent Most Failed Tests (Timeline)`);
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2644,7 +2694,8 @@
             const graphData = get_duration_graph_data("keyword", keywordTimesRunGraphType, "times_run", filteredKeywords);
             var config;
             if (keywordTimesRunGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Times Run (Bar) First 30 Bars Only", "Run", "Duration");
+                const limit = inFullscreen ? 100 : 30;
+                config = get_graph_config("bar", graphData, `Times Run (Bar) Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordTimesRunGraphType == "line") {
                 config = get_graph_config("line", graphData, "Times Run (Line)", "Date", "Duration");
             }
@@ -2665,7 +2716,8 @@
             const graphData = get_duration_graph_data("keyword", keywordTotalDurationGraphType, "total_time_s", filteredKeywords);
             var config;
             if (keywordTotalDurationGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Total Duration (Bar) First 30 Bars Only", "Run", "Duration");
+                const limit = inFullscreen ? 100 : 30;
+                config = get_graph_config("bar", graphData, `Total Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordTotalDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "Total Duration (Line)", "Date", "Duration");
             }
@@ -2683,7 +2735,8 @@
             const graphData = get_duration_graph_data("keyword", keywordAverageDurationGraphType, "average_time_s", filteredKeywords);
             var config;
             if (keywordAverageDurationGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Average Duration (Bar) First 30 Bars Only", "Run", "Duration");
+                const limit = inFullscreen ? 100 : 30;
+                config = get_graph_config("bar", graphData, `Average Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordAverageDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "Average Duration (Line)", "Date", "Duration");
             }
@@ -2701,7 +2754,8 @@
             const graphData = get_duration_graph_data("keyword", keywordMinDurationGraphType, "min_time_s", filteredKeywords);
             var config;
             if (keywordMinDurationGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Min Duration (Bar) First 30 Bars Only", "Run", "Duration");
+                const limit = inFullscreen ? 100 : 30;
+                config = get_graph_config("bar", graphData, `Min Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordMinDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "Min Duration (Line)", "Date", "Duration");
             }
@@ -2719,7 +2773,8 @@
             const graphData = get_duration_graph_data("keyword", keywordMaxDurationGraphType, "max_time_s", filteredKeywords);
             var config;
             if (keywordMaxDurationGraphType == "bar") {
-                config = get_graph_config("bar", graphData, "Max Duration (Bar) First 30 Bars Only", "Run", "Duration");
+                const limit = inFullscreen ? 100 : 30;
+                config = get_graph_config("bar", graphData, `Max Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordMaxDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "Max Duration (Line)", "Date", "Duration");
             }
@@ -2905,7 +2960,7 @@
                         const dataLength = context.chart.data.datasets.reduce((largest, current) =>
                             current.data.length > largest.data.length ? current : largest
                         ).data.length;
-                        const delay = 1000 / dataLength;
+                        const delay = 1500 / dataLength;
                         return context.dataIndex * delay;
                     },
                 },
@@ -3074,7 +3129,10 @@
                     data: graphData,
                     options: {
                         ...baseConfig,
-                        radius: '70%',
+                        animation: {
+                            duration: 2000,
+                        },
+                        radius: '90%',
                         plugins: {
                             ...baseConfig.plugins,
                             tooltip: {
@@ -3216,6 +3274,43 @@
         }
 
         // function to prepare the data in the correct format for duration graphs
+        function get_pie_total_graph_data(dataType, filteredData) {
+            let passed = 0, failed = 0, skipped = 0;
+            const labels = [], backgroundColors = [], backgroundBorderColors = [];
+            for (const value of filteredData) {
+                if (value.passed > 0) {
+                    if (!labels.includes('Passed')) { labels.push('Passed') };
+                    if (!backgroundColors.includes(passedBackgroundColor)) { backgroundColors.push(passedBackgroundColor) };
+                    if (!backgroundBorderColors.includes(passedBackgroundBorderColor)) { backgroundBorderColors.push(passedBackgroundBorderColor) };
+                    passed = passed + value.passed;
+                }
+                if (value.failed > 0) {
+                    if (!labels.includes('Failed')) { labels.push('Failed') };
+                    if (!backgroundColors.includes(failedBackgroundColor)) { backgroundColors.push(failedBackgroundColor) };
+                    if (!backgroundBorderColors.includes(failedBackgroundBorderColor)) { backgroundBorderColors.push(failedBackgroundBorderColor) };
+                    failed = failed + value.failed;
+                }
+                if (value.skipped > 0) {
+                    if (!labels.includes('Skipped')) { labels.push('Skipped') };
+                    if (!backgroundColors.includes(skippedBackgroundColor)) { backgroundColors.push(skippedBackgroundColor) };
+                    if (!backgroundBorderColors.includes(skippedBackgroundBorderColor)) { backgroundBorderColors.push(skippedBackgroundBorderColor) };
+                    skipped = skipped + value.skipped;
+                }
+            }
+            const graphData = {
+                labels: labels,
+                datasets: [{
+                    data: [passed, failed, skipped],
+                    backgroundColor: backgroundColors,
+                    borderColor: backgroundBorderColors,
+                    hoverOffset: 4
+                }]
+            };
+            const callBackData = labels
+            return [graphData, callBackData]
+        }
+
+        // function to prepare the data in the correct format for duration graphs
         function get_duration_graph_data(dataType, graphType, objectDataAttribute, filteredData) {
             // Cache DOM elements once for performance
             const suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
@@ -3241,6 +3336,7 @@
                 return true;
             };
             // Bar graph construction
+            const limit = inFullscreen ? 100 : 30;
             if (graphType === "bar") {
                 const labels = [];
                 const data = new Map();
@@ -3258,7 +3354,7 @@
                         arr.push(roundedValue);
                         data.set(value.name, arr);
                     }
-                    if (labels.length > 30) break;
+                    if (labels.length > limit) break;
                 }
                 if (use_run_aliases) {
                     labels.length = 0;
@@ -3413,10 +3509,11 @@
                     return new Date(b[1].failed_run_starts[b[1].failed_run_starts.length - 1]).getTime() - new Date(a[1].failed_run_starts[a[1].failed_run_starts.length - 1]).getTime()
                 })
             }
+            const limit = inFullscreen ? 50 : 10;
             if (graphType == "bar") {
                 var [datasets, labels, count] = [[], [], 0];
                 for (key in sortedData) {
-                    if (count > 9) {
+                    if (count == limit) {
                         break;
                     }
                     labels.push(sortedData[key][0]);
@@ -3434,7 +3531,7 @@
             } else if (graphType == "timeline") {
                 var [labels, runStarts, count, run_aliases] = [[], [], 0, []];
                 for (key in sortedData) {
-                    if (count > 9) {
+                    if (count == limit) {
                         break;
                     }
                     labels.push(sortedData[key][0]);
@@ -3521,12 +3618,13 @@
                     return 0; // Preserve original order if equal (stable sort)
                 });
             }
+            const limit = inFullscreen ? 50 : 10;
             if (graphType === 'bar') {
                 const datasets = [];
                 const labels = [];
                 let count = 0;
                 for (const [name, runStarts] of sortedData) {
-                    if (count > 9) break;
+                    if (count == limit) break;
                     labels.push(name);
                     if (use_run_aliases) {
                         data.set(name, aliases.get(name));
@@ -3550,7 +3648,7 @@
                 let count = 0;
                 // Collect unique run starts and labels
                 for (const [name, runStarts] of sortedData) {
-                    if (count > 9) break;
+                    if (count == limit) break;
                     labels.push(name);
                     runStarts.forEach(runStart => runStartsSet.add(runStart));
                     count++;
@@ -3628,13 +3726,14 @@
             }
 
             // Sort messages by failure count
+            const limit = inFullscreen ? 50 : 10;
             const sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length);
             if (graphType === 'bar') {
                 const [datasets, labels] = [[], []];
                 let count = 0;
 
                 for (const [message, runStarts] of sortedData) {
-                    if (count > 9) break;
+                    if (count == limit) break;
                     labels.push(message);
                     datasets.push(runStarts.length);
                     if (use_run_aliases) {
@@ -3658,7 +3757,7 @@
                 let count = 0;
                 // Collect unique run starts and labels
                 for (const [message, runStarts] of sortedData) {
-                    if (count > 9) break;
+                    if (count == limit) break;
                     labels.push(message);
                     runStarts.forEach(runStart => runStartsSet.add(runStart));
                     count++;
@@ -3700,9 +3799,9 @@
 
         // function to update the height of the test statistics graph and enable scrolling
         function update_height(verticalId, graph) {
-            document.getElementById(verticalId).style.height = `489px`
+            document.getElementById(verticalId).style.height = `465px`
             if (graph.data.labels.length > 10) {
-                var newHeight = 489 + (graph.data.labels.length - 10) * 25
+                var newHeight = 465 + (graph.data.labels.length - 10) * 25
                 document.getElementById(verticalId).style.height = `${newHeight}px`
             }
         }
@@ -3721,8 +3820,7 @@
                     y: segment.y,
                 });
             }
-
-            return Object.entries(grouped)
+            const data = Object.entries(grouped)
                 .filter(([_, data]) => data.length > 0)
                 .map(([status, data]) => ({
                     label: status.split(':*:&:.:')[0],
@@ -3732,6 +3830,7 @@
                     ...barConfig,
                     parsing: true
                 }));
+            return data
         }
 
         ///////////////////////////////////
@@ -3789,6 +3888,7 @@
         function setup_all_graphs() {
             create_run_statistics_graph();
             create_run_pie_graph();
+            create_run_pie_total_graph();
             create_run_duration_graph();
             create_run_table();
             create_suite_statistics_graph(); 1
