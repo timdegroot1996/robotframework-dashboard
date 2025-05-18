@@ -55,3 +55,6 @@ def main():
         server = ApiServer(arguments.server_host, arguments.server_port)
         server.set_robotdashboard(robotdashboard)
         server.run()
+
+if __name__ == "__main__":
+    main()

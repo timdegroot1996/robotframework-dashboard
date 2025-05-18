@@ -114,7 +114,6 @@
             height: calc(100% - 51px) !important;
         }
 
-        .card-header,
         .border-bottom {
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
@@ -528,10 +527,10 @@
                 <div class="col canvas pb-5" id="testMostFlakyCanvas">
                     <div id="testMostFlakyVertical">
                         <div class="btn-group me-1">
-                            <label class="form-check-label mb-2" for="ignoreSkips">Ignore Skips</label>
+                            <label class="form-check-label mb-3" for="ignoreSkips">Ignore Skips</label>
                         </div>
                         <div class="btn-group form-switch me-1">
-                            <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkips">
+                            <input class="form-check-input mb-3" type="checkbox" role="switch" id="ignoreSkips">
                         </div>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar
                             View</button>
@@ -549,10 +548,10 @@
                 <div class="col canvas pb-5" id="testRecentMostFlakyCanvas">
                     <div id="testRecentMostFlakyVertical">
                         <div class="btn-group me-1">
-                            <label class="form-check-label mb-2" for="ignoreSkipsRecent">Ignore Skips</label>
+                            <label class="form-check-label mb-3" for="ignoreSkipsRecent">Ignore Skips</label>
                         </div>
                         <div class="btn-group form-switch me-1">
-                            <input class="form-check-input mb-2" type="checkbox" role="switch" id="ignoreSkipsRecent">
+                            <input class="form-check-input mb-3" type="checkbox" role="switch" id="ignoreSkipsRecent">
                         </div>
                         <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyGraphBar">Bar
                             View</button>
@@ -950,7 +949,7 @@
 
         // set default values
         function setup_stats() {
-            document.getElementById("stats").innerHTML = `<i><a href="https://github.com/timdegroot1996/robotframework-dashboard" target="_blank">Robotdashboard 0.8.6</a></i><br>
+            document.getElementById("stats").innerHTML = `<i><a style="color:white" href="https://github.com/timdegroot1996/robotframework-dashboard" target="_blank">Robotdashboard 0.8.7</a></i><br>
             <b>Database Summary</b><br>
             Runs: ${runs.length}<br>
             Suites: ${suites.length}<br>
@@ -1987,7 +1986,7 @@
             const data = get_pie_total_graph_data("run", filteredRuns);
             const graphData = data[0]
             const callbackData = data[1]
-            var config = get_graph_config("pie", graphData, `Total Runs Status (Pie)`, "Run", "Amount", false);
+            var config = get_graph_config("pie", graphData, `Total Status (Pie)`, "Run", "Amount", false);
             delete config.options.onClick;
             runPieTotalGraph = new Chart("runPieTotalGraph", config);
         }
@@ -2173,8 +2172,8 @@
                     }
                 };
             }
+            update_height('suiteMostFailedVertical', config.data.labels.length, config.options.plugins.title.text);
             suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
-            update_height('suiteMostFailedVertical', suiteMostFailedGraph)
             suiteMostFailedGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(suiteMostFailedGraph, event)
             });
@@ -2312,8 +2311,8 @@
                     open_log_file(event, chartElement, runStarts)
                 }
             };
+            update_height('testStatisticsVertical', config.data.labels.length, config.options.plugins.title.text);
             testStatisticsGraph = new Chart("testStatisticsGraph", config);
-            update_height('testStatisticsVertical', testStatisticsGraph)
             testStatisticsGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testStatisticsGraph, event)
             });
@@ -2402,8 +2401,8 @@
                     },
                 };
             }
+            update_height('testMessagesVertical', config.data.labels.length, config.options.plugins.title.text);
             testMessagesGraph = new Chart("testMessagesGraph", config);
-            update_height('testMessagesVertical', testMessagesGraph)
             testMessagesGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testMessagesGraph, event)
             });
@@ -2467,8 +2466,8 @@
                     }
                 }
             }
+            update_height('testMostFlakyVertical', config.data.labels.length, config.options.plugins.title.text);
             testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
-            update_height('testMostFlakyVertical', testMostFlakyGraph)
             testMostFlakyGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testMostFlakyGraph, event)
             });
@@ -2517,8 +2516,8 @@
                     }
                 }
             }
+            update_height('testRecentMostFlakyVertical', config.data.labels.length, config.options.plugins.title.text);
             testRecentMostFlakyGraph = new Chart("testRecentMostFlakyGraph", config);
-            update_height('testRecentMostFlakyVertical', testRecentMostFlakyGraph)
             testRecentMostFlakyGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testRecentMostFlakyGraph, event)
             });
@@ -2577,8 +2576,8 @@
                     }
                 }
             }
+            update_height('testMostFailedVertical', config.data.labels.length, config.options.plugins.title.text);
             testMostFailedGraph = new Chart("testMostFailedGraph", config);
-            update_height('testMostFailedVertical', testMostFailedGraph)
             testMostFailedGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testMostFailedGraph, event)
             });
@@ -2637,8 +2636,8 @@
                     }
                 }
             }
+            update_height('testRecentMostFailedVertical', config.data.labels.length, config.options.plugins.title.text);
             testRecentMostFailedGraph = new Chart("testRecentMostFailedGraph", config);
-            update_height('testRecentMostFailedVertical', testRecentMostFailedGraph)
             testRecentMostFailedGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testRecentMostFailedGraph, event)
             });
@@ -3823,15 +3822,25 @@
         }
 
         // function to update the height of the test statistics graph and enable scrolling
-        function update_height(verticalId, graph) {
-            document.getElementById(verticalId).style.height = `465px`
-            if (graph.data.labels.length > 10 && !graph.config._config.options.plugins.title.text.includes('(Bar)')) {
+        function update_height(verticalId, labels, title) {
+            const vertical = document.getElementById(verticalId)
+            vertical.style.height = `465px`
+            if (labels > 10 && !title.includes('(Bar)')) {
                 // timeline view with more than 10 items -> update height
-                var newHeight = 465 + (graph.data.labels.length - 10) * 25
-                document.getElementById(verticalId).style.height = `${newHeight}px`
-            } else if (inFullscreen) {
+                const newHeight = 465 + (labels - 10) * 35;
+                const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height) - 59;
+                if (inFullscreen && newHeight < parentHeight) {
+                    vertical.style.height = `${parentHeight}px`
+                } else {
+                    vertical.style.height = `${newHeight}px`
+                }
+            } else if (inFullscreen && !title.includes('(Bar)')) {
                 // not more than 10 items, set the height to fullscreen without scrollbar
-                document.getElementById(verticalId).style.height = `calc(100% - 51px)`
+                const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height) - 51;
+                vertical.style.height = `${parentHeight}px`
+            } else if (inFullscreen && title.includes('(Bar)')) {
+                const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height);
+                vertical.style.height = `${parentHeight}px`
             }
         }
 
@@ -3871,20 +3880,20 @@
             setup_spinner(false)
 
             // Let the browser render before continuing
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 setup_filtered_data_and_filters();
                 setup_section_order();
                 setup_graph_order();
                 setup_collapsables();
                 setup_eventlisteners_graph_view_buttons();
                 setup_eventlisteners_filter_buttons();
-                setup_spinner(true);
-            }, 0);
 
-            // Let the browser render again to make the graph animations clean
-            setTimeout(() => {
-                setup_all_graphs();
-            }, 0);
+                // Let the browser render again to make the graph animations clean
+                requestAnimationFrame(() => {
+                    setup_spinner(true);
+                    setup_all_graphs();
+                })
+            });
         }
 
         // function updates the data in the graphs whenever filters are updated
