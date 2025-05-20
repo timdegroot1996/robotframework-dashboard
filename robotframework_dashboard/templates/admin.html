@@ -13,22 +13,67 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon"
         href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==" />
-
     <style>
+        /* LIGHT MODE STYLING */
+        body {
+            background-color: #eee;
+        }
+
+        .border-bottom {
+            border-color: rgba(0, 0, 0, 0.175) !important;
+        }
+
+        .fullscreen,
+        .sticky-top,
+        body {
+            background-color: #eee;
+        }
+
+        #version {
+            color: black;
+        }
+
+        /* DARK MODE STYLING */
+        .dark-mode :root {
+            color-scheme: dark;
+        }
+
+        .dark-mode .canvas {
+            background: rgba(30, 41, 59, 0.9);
+        }
+
+        .dark-mode .border-bottom {
+            border-color: rgba(255, 255, 255, 0.15) !important;
+        }
+
+        .dark-mode .fullscreen,
+        .dark-mode .sticky-top,
+        .dark-mode .card,
+
+        .dark-mode body,
+        .dark-mode .modal-dialog {
+            background: #0f172a;
+            color: #eee;
+        }
+
+        .dark-mode .list-group-item,
+        .dark-mode .form-label,
+        .dark-mode .form-control,
+        .dark-mode .form-select,
+        .dark-mode #version {
+            color: #eee !important;
+        }
+
+        /* GENERAL STYLING */
         :root {
             font-family: Helvetica, sans-serif;
         }
 
-        @media (prefers-color-scheme: light) {
-            body {
-                background-color: #eee;
-            }
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                color-scheme: dark;
-            }
+        .sticky-top {
+            padding-top: 6px;
+            margin: 0 -0.75rem 0 -0.75rem;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
         }
 
         .stats {
@@ -39,7 +84,9 @@
         }
 
         .card {
-            margin-bottom: 10px;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
         .alert-container {
@@ -81,48 +128,46 @@
 </head>
 
 <body>
-    <div class="container-fluid mt-4">
-        <div class="position-relative alert-container">
-            <div class="position-absolute top-50 start-50 translate-middle" id="alertContainer"></div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-auto">
-                        <h1>Robot Framework Dashboard Admin Page</h1>
-                    </div>
-                    <div class="col-auto align-self-center">
-                        <a href="/docs">
-                            <button class="btn btn-outline-primary btn-sm mt-auto" id="openServerDocs">Open
-                                API Docs</button>
-                        </a>
-                    </div>
-                    <div class="col-auto align-self-center">
-                        <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-toggle="modal"
-                            data-bs-target="#hideModal">
-                            Customize Admin View
-                        </button>
-                    </div>
-                    <div class="col-auto align-self-center">
-                        <a href="/dashboard">
-                            <button class="btn btn-outline-primary btn-sm mt-auto" id="openDashboard">Open
-                                Dashboard</button>
-                        </a>
-                    </div>
-                    <div class="col-2 ms-auto stats">
-                        <span id="stats">
-                            <i><a href="https://github.com/timdegroot1996/robotframework-dashboard"
-                                    target="_blank">"placeholder_version"</a></i>
-                        </span>
-                    </div>
+    <div class="container-fluid">
+        <div class="sticky-top">
+            <div class="row border-bottom pb-1">
+                <div class="col-auto">
+                    <h1>Robot Framework Dashboard Admin Page</h1>
+                </div>
+                <div class="col-auto align-self-center">
+                    <a href="/docs">
+                        <button class="btn btn-outline-light btn-sm mt-auto" id="openServerDocs">Open
+                            API Docs</button>
+                    </a>
+                </div>
+                <div class="col-auto align-self-center">
+                    <button type="button" class="btn btn-outline-light btn-sm mt-auto" data-bs-toggle="modal"
+                        data-bs-target="#hideModal">
+                        Admin Settings
+                    </button>
+                </div>
+                <div class="col-auto align-self-center">
+                    <a href="/dashboard">
+                        <button class="btn btn-outline-light btn-sm mt-auto" id="openDashboard">Open
+                            Dashboard</button>
+                    </a>
+                </div>
+                <div class="col-2 ms-auto stats">
+                    <span id="stats">
+                        <i><a id="version" href="https://github.com/timdegroot1996/robotframework-dashboard"
+                                target="_blank">"placeholder_version"</a></i>
+                    </span>
+                </div>
+                <div class="position-relative alert-container">
+                    <div class="position-absolute top-20 start-50 translate-middle" id="alertContainer"></div>
                 </div>
             </div>
         </div>
         <div class="card">
+            <div class="card-header">
+                <h3>Add output.xml To Database</h3>
+            </div>
             <div class="card-body">
-                <div class="row">
-                    <h2>Add output.xml To Database</h2>
-                </div>
                 <div class="row">
                     <div class="col-2 d-flex">
                         <p class="mt-auto">output.xml</p>
@@ -137,7 +182,7 @@
                         <input class="form-control form-control-sm" id="outputTags"></input>
                     </div>
                     <div class="col-2 d-flex">
-                        <button class="btn btn-outline-primary btn-sm mt-auto" id="addOutputPath">Add&nbsp;
+                        <button class="btn btn-outline-light btn-sm mt-auto" id="addOutputPath">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addPathSpinner" hidden></span>
                         </button>
@@ -161,7 +206,7 @@
                         <input class="form-control form-control-sm" id="outputDataAlias"></input>
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-outline-primary btn-sm" style="margin-top:36px"
+                        <button class="btn btn-outline-light btn-sm" style="margin-top:36px"
                             id="addOutputData">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addDataSpinner" hidden></span>
@@ -183,7 +228,7 @@
                         <input class="form-control form-control-sm" id="outputFolderTags"></input>
                     </div>
                     <div class="col-2 d-flex">
-                        <button class="btn btn-outline-primary btn-sm mt-auto" id="addOutputFolderPath">Add&nbsp;
+                        <button class="btn btn-outline-light btn-sm mt-auto" id="addOutputFolderPath">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addFolderSpinner" hidden></span>
                         </button>
@@ -192,10 +237,10 @@
             </div>
         </div>
         <div class="card">
+            <div class="card-header">
+                <h3>Remove output.xml(s) From Database</h3>
+            </div>
             <div class="card-body">
-                <div class="row">
-                    <h2>Remove output.xml(s) From Database</h2>
-                </div>
                 <div class="row">
                     <div class="col-2 d-flex">
                         <p class="mt-auto">outputs to remove by run_start</p>
@@ -236,7 +281,7 @@
                         <input class="form-control form-control-sm" id="removeTags"></input>
                     </div>
                     <div class="col-2 d-flex">
-                        <button class="btn btn-outline-primary btn-sm mt-auto" id="removeOutputs">Remove&nbsp;
+                        <button class="btn btn-outline-light btn-sm mt-auto" id="removeOutputs">Remove&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="removeSpinner" hidden></span>
                         </button>
@@ -245,11 +290,15 @@
             </div>
         </div>
         <div class="card">
+            <div class="card-header">
+                <h3>Add/Remove log.html In The Server</h3>
+            </div>
             <div class="card-body">
                 <div class="row">
-                    <h2>Add/Remove log.html In The Server</h2>
-                    <p>IMPORTANT! The log_name that is provided should be similar to the output.xml that has been uploaded
-                        If you added 'output-123.xml' then the log should be 'log-123.html', otherwise the database won't update correctly!</p>
+                    <p>IMPORTANT! The log_name that is provided should be similar to the output.xml that has been
+                        uploaded
+                        If you added 'output-123.xml' then the log should be 'log-123.html', otherwise the database
+                        won't update correctly!</p>
                 </div>
                 <div class="row">
                     <div class="col-2 d-flex">
@@ -266,8 +315,7 @@
                         <input class="form-control form-control-sm" id="logName"></input>
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-outline-primary btn-sm" style="margin-top:36px"
-                            id="addLogData">Add&nbsp;
+                        <button class="btn btn-outline-light btn-sm" style="margin-top:36px" id="addLogData">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addLogDataSpinner" hidden></span>
                         </button>
@@ -278,11 +326,12 @@
                         <p class="mt-auto">log.html to remove by name</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm mt-1" for="removeLog">E.g. 'log-20250219-172535.html' or 'all' for everything</label>
+                        <label class="form-label form-label-sm mt-1" for="removeLog">E.g. 'log-20250219-172535.html' or
+                            'all' for everything</label>
                         <input class="form-control form-control-sm" id="removeLog"></input>
                     </div>
                     <div class="col-2 d-flex">
-                        <button class="btn btn-outline-primary btn-sm mt-auto" id="removeLogData">Remove&nbsp;
+                        <button class="btn btn-outline-light btn-sm mt-auto" id="removeLogData">Remove&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="removeLogDataSpinner" hidden></span>
                         </button>
@@ -291,14 +340,16 @@
             </div>
         </div>
         <div class="card">
+            <div class="card-header">
+                <h3>Runs In The Database</h3>
+            </div>
             <div class="card-body">
                 <div class="row">
-                    <h2>Runs In The Database</h2>
                     <p>Use 'Run ID' or 'Run Start' to remove runs from the database.</p>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <table class="table table-striped table-dark table-bordered" id="runTable"></table>
+                        <table class="table table-striped table-bordered" id="runTable"></table>
                     </div>
                 </div>
             </div>
@@ -308,11 +359,11 @@
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title" id="hideModalLabel">Customize View</h1>
+                        <h1 class="modal-title" id="hideModalLabel">Settings</h1>
                         <div>
-                            <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-dismiss="modal"
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto" data-bs-dismiss="modal"
                                 id="resetHide">Reset View</button>
-                            <button class="btn btn-outline-primary btn-sm mt-auto ms-3" id="saveHide"
+                            <button class="btn btn-outline-light btn-sm mt-auto ms-3" id="saveHide"
                                 data-bs-dismiss="modal" type="button">Save
                                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                     id="saveHideSpinner" hidden></span>
@@ -320,6 +371,20 @@
                         </div>
                     </div>
                     <div class="modal-body">
+                        <div class="row border-bottom">
+                            <h2>General</h2>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-4 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleTheme">Dark Mode</label>
+                            </div>
+                            <div class="col btn-group form-switch ms-2">
+                                <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleTheme" />
+                            </div>
+                        </div>
+                        <div class="row border-bottom pt-1">
+                            <h2>Customize View</h2>
+                        </div>
                         <h4>Admin custom view usage instructions</h4>
                         <ul>
                             <li>You can set which sections and graphs are hidden by default as admin</li>
@@ -338,17 +403,9 @@
                                 while it was open
                             </li>
                         </ul>
-                        <div class="row justify-content-evenly">
-                            <div class="col">
-                                <h2>Sections</h2>
-                            </div>
-                            <div class="col">
-                                <h2>Graphs</h2>
-                            </div>
-                        </div>
                         <div class="row mt-2">
                             <div class="col">
-                                <h4>Show</h4>
+                                <h4 class="ms-1">Show Sections</h4>
                                 <div class="border border-3 rounded-3">
                                     <ol id="adminSectionShow" class="list-group list-group-numbered"></ol>
                                 </div>
@@ -360,13 +417,13 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <h4>Hide</h4>
+                                <h4 class="ms-1">Hide Sections</h4>
                                 <div class="border border-3 rounded-3">
                                     <ol id="adminSectionHide" class="list-group"></ol>
                                 </div>
                             </div>
                             <div class="col">
-                                <h4>Show</h4>
+                                <h4 class="ms-1">Show Graphs</h4>
                                 <div class="border border-3 rounded-3">
                                     <ol id="adminGraphShow" class="list-group list-group-numbered"></ol>
                                 </div>
@@ -378,7 +435,7 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <h4>Hide</h4>
+                                <h4 class="ms-1">Hide Graphs</h4>
                                 <div class="border border-3 rounded-3">
                                     <ol id="adminGraphHide" class="list-group"></ol>
                                 </div>
@@ -452,12 +509,85 @@
         // GENERIC SETUP FUNCTIONS //
         /////////////////////////////
 
+        // function to update the theme when the button is clicked
+        function toggle_theme() {
+            if (document.documentElement.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+            }
+            setup_theme()
+        }
+
         // theme function based on browser/machine color scheme
         function setup_theme() {
-            if (!window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            function set_light_mode() {
+                // bootstrap dark-mode attribute
                 document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "light");
+                // bootstrap default color
+                document.documentElement.style.setProperty('--bs-body-bg', '#fff');
+                // bootstrap buttons light -> dark
+                const buttonsOutlineLight = document.querySelectorAll('.btn-outline-light')
+                const buttonsLight = document.querySelectorAll('.btn-light')
+                for (const button of buttonsOutlineLight) {
+                    button.classList.remove('btn-outline-light');
+                    button.classList.add('btn-outline-dark');
+                }
+                for (const button of buttonsLight) {
+                    button.classList.remove('btn-light');
+                    button.classList.add('btn-dark');
+                }
+                // set toggle in correct state if not already, needed on first load to set based on media or localstorage
+                if (document.getElementById('toggleTheme').checked) {
+                    document.getElementById('toggleTheme').checked = false
+                }
+                // set the table correctly
                 document.getElementById('runTable').classList.remove('table-dark')
                 document.getElementById('runTable').classList.add('table-light')
+            }
+
+            function set_dark_mode() {
+                // bootstrap dark-mode attribute
+                document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "dark");
+                // bootstrap light buttons -> dark
+                document.documentElement.style.setProperty('--bs-body-bg', 'rgba(30, 41, 59, 0.9)');
+                // bootstrap buttons dark -> light
+                const buttonsOutlineLight = document.querySelectorAll('.btn-outline-dark')
+                const buttonsLight = document.querySelectorAll('.btn-dark')
+                for (const button of buttonsOutlineLight) {
+                    button.classList.remove('btn-outline-dark');
+                    button.classList.add('btn-outline-light');
+                }
+                for (const button of buttonsLight) {
+                    button.classList.remove('btn-dark');
+                    button.classList.add('btn-light');
+                }
+                if (!document.getElementById('toggleTheme').checked) {
+                    document.getElementById('toggleTheme').checked = true
+                }
+                // set the table correctly
+                document.getElementById('runTable').classList.remove('table-light')
+                document.getElementById('runTable').classList.add('table-dark')
+            }
+
+            const theme = localStorage.getItem('theme');
+            const root = document.documentElement;
+            const isDark = root.classList.contains('dark-mode');
+            if (theme === 'light') {
+                if (isDark) root.classList.remove('dark-mode');
+                set_light_mode();
+            } else if (theme === 'dark') {
+                if (!isDark) root.classList.add('dark-mode');
+                set_dark_mode();
+            } else {
+                // No theme in localStorage, fall back to system preference
+                if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                    root.classList.add('dark-mode');
+                    set_dark_mode();
+                } else {
+                    root.classList.remove('dark-mode');
+                    set_light_mode();
+                }
             }
         }
 
@@ -474,6 +604,10 @@
 
         // function to add eventlisteners
         function setup_customize_view_button_eventlisteners() {
+            document.getElementById('toggleTheme').addEventListener('click', function () {
+                toggle_theme()
+            });
+            
             document.getElementById('saveHide').addEventListener('click', function () {
                 update_customize_view_local_storage();
                 set_customized_view_config();
@@ -609,10 +743,8 @@
                         table += `<tr><td>${index}</td><td>${run.run_start}</td><td>${run.name}</td><td>${run.alias}</td><td>${run.tags}</td></tr>`
                     }
                     document.getElementById('runTable').innerHTML = table
-                    window.scrollTo(0, 0);
                 } else {
                     add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, 'danger')
-                    window.scrollTo(0, 0);
                 }
             };
             xhr.send();
@@ -671,10 +803,8 @@
                     // 2 functions below should alwyas be here to make sure the server side config is actually present
                     setup_customize_view_content() // fill the modal with the correct content
                     set_customized_view_config(false) // if there is a local storage already in place update that on server side
-                    window.scrollTo(0, 0);
                 } else {
                     add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, 'danger')
-                    window.scrollTo(0, 0);
                 }
             };
             xhr.send();
@@ -703,11 +833,9 @@
                         console.log(response.console)
                     }
                     get_outputs()
-                    window.scrollTo(0, 0);
                 } else {
                     document.getElementById(spinner).hidden = true
                     add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, 'danger')
-                    window.scrollTo(0, 0);
                 }
             };
             xhr.send(body);

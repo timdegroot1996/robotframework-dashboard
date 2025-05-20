@@ -1,4 +1,4 @@
-<html data-bs-theme="dark">
+<html data-bs-theme="dark" class="dark-mode">
 
 <head>
     <title>"placeholder_dashboard_title"</title>
@@ -28,55 +28,59 @@
         href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==" />
 
     <style>
+        /* LIGHT MODE STYLING */
+        body {
+            background-color: #eee;
+        }
+
+        .border-bottom {
+            border-color: rgba(0, 0, 0, 0.175) !important;
+        }
+
+        .fullscreen,
+        .sticky-top,
+        body {
+            background-color: #eee;
+        }
+
+        #version {
+            color: black;
+        }
+
+        /* DARK MODE STYLING */
+        .dark-mode :root {
+            color-scheme: dark;
+        }
+
+        .dark-mode .canvas {
+            background: rgba(30, 41, 59, 0.9);
+        }
+
+        .dark-mode .border-bottom {
+            border-color: rgba(255, 255, 255, 0.15) !important;
+        }
+
+        .dark-mode .fullscreen,
+        .dark-mode .sticky-top,
+        .dark-mode .card,
+
+        .dark-mode body,
+        .dark-mode .modal-dialog {
+            background: #0f172a;
+            color: #eee;
+        }
+
+        .dark-mode .list-group-item,
+        .dark-mode .form-label,
+        .dark-mode .form-control,
+        .dark-mode .form-select,
+        .dark-mode #version {
+            color: #eee !important;
+        }
+
+        /* GENERAL STYLING */
         :root {
             font-family: Helvetica, sans-serif;
-        }
-
-        @media (prefers-color-scheme: light) {
-            body {
-                background-color: #eee;
-            }
-
-            .border-bottom {
-                border-color: rgba(0, 0, 0, 0.175) !important;
-            }
-
-            .fullscreen,
-            .sticky-top,
-            body {
-                background: #eee;
-            }
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                color-scheme: dark;
-            }
-
-            .canvas {
-                background: rgba(30, 41, 59, 0.9);
-            }
-
-            .border-bottom {
-                border-color: rgba(255, 255, 255, 0.15) !important;
-            }
-
-            .fullscreen,
-            .sticky-top,
-            .card,
-
-            body,
-            .modal-dialog {
-                background: #0f172a;
-                color: #eee;
-            }
-
-            .list-group-item,
-            .form-label,
-            .form-control,
-            .form-select {
-                color: #eee !important;
-            }
         }
 
         .canvas {
@@ -88,11 +92,11 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
-        .canvas:not(.fullscreen) .pie-charts {
+        .canvas:not(.fullscreen) .donut-charts {
             height: 450px;
         }
 
-        .canvas.fullscreen .pie-charts {
+        .canvas.fullscreen .donut-charts {
             height: 100%;
         }
 
@@ -110,12 +114,8 @@
         }
 
         .canvas.fullscreen canvas,
-        .canvas.fullscreen .pie-charts {
+        .canvas.fullscreen .donut-charts {
             height: calc(100% - 51px) !important;
-        }
-
-        .border-bottom {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
         .card {
@@ -126,6 +126,9 @@
 
         .sticky-top {
             padding-top: 6px;
+            margin: 0 -0.75rem 0 -0.75rem;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
         }
 
         .dt-container {
@@ -250,18 +253,18 @@
                                 value="10">
                         </div>
                         <div class="col-auto d-flex">
-                            <button class="btn btn-outline-primary btn-sm mt-auto" id="resetFilters">Reset
+                            <button class="btn btn-outline-light btn-sm mt-auto" id="resetFilters">Reset
                                 Filters</button>
                         </div>
                         <div class="col-auto d-flex">
-                            <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-toggle="modal"
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto" data-bs-toggle="modal"
                                 data-bs-target="#hideModal" id="customizeView">
-                                Customize View
+                                Settings
                             </button>
                         </div>
                         <div class="col-auto mt-auto">
                             <a href="/">
-                                <button class="btn btn-outline-primary btn-sm" id="openDashboard" hidden>Open Admin
+                                <button class="btn btn-outline-light btn-sm" id="openDashboard" hidden>Open Admin
                                     Page</button>
                             </a>
                         </div>
@@ -297,41 +300,38 @@
             <div id="runDataHidden" hidden>
                 <!-- Run Statistics -->
                 <div class="col canvas pb-5" id="runStatisticsCanvas">
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="runStatisticsGraphPercentages">Percentages</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                        id="runStatisticsGraphAmount">Amount</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
-                        id="runStatisticsGraphLine">Timeline</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatisticsGraphAmount">Amount</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatisticsGraphLine">Timeline</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="runStatisticsFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runStatisticsClose"
-                        hidden>Close</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatisticsClose" hidden>Close</button>
                     <canvas id="runStatisticsGraph"></canvas>
                 </div>
-                <!-- Run Pie -->
-                <div class="col canvas pb-5" id="runPieCanvas">
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="runPieGraphPie">Pie</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runPieFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runPieClose" hidden>Close</button>
-                    <div class="row pie-charts">
+                <!-- Run Donuts -->
+                <div class="col canvas pb-5" id="runDonutCanvas">
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDonutGraphDonut">Donut</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDonutFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDonutClose" hidden>Close</button>
+                    <div class="row donut-charts">
                         <div class="col-md-6">
-                            <canvas id="runPieGraph" class="w-100 h-100"></canvas>
+                            <canvas id="runDonutGraph" class="w-100 h-100"></canvas>
                         </div>
                         <div class="col-md-6">
-                            <canvas id="runPieTotalGraph" class="w-100 h-100"></canvas>
+                            <canvas id="runDonutTotalGraph" class="w-100 h-100"></canvas>
                         </div>
                     </div>
                 </div>
                 <!-- Run Duration -->
                 <div class="col canvas pb-5" id="runDurationCanvas">
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runDurationGraphBar">Bar
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDurationGraphBar">Bar
                         View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="runDurationGraphLine">Line
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDurationGraphLine">Line
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="runDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="runDurationClose" hidden>Close</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDurationClose" hidden>Close</button>
                     <canvas id="runDurationGraph"></canvas>
                 </div>
                 <!-- Run Table -->
@@ -377,41 +377,40 @@
             <div id="suiteDataHidden" hidden>
                 <!-- Suite Statistics -->
                 <div class="col canvas pb-5" id="suiteStatisticsCanvas">
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="suiteStatisticsGraphPercentages">Percentages</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="suiteStatisticsGraphAmount">Amount</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="suiteStatisticsGraphLine">Timeline</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="suiteStatisticsFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteStatisticsClose"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteStatisticsClose"
                         hidden>Close</button>
                     <canvas id="suiteStatisticsGraph"></canvas>
                 </div>
                 <!-- Suite Duration -->
                 <div class="col canvas pb-5" id="suiteDurationCanvas">
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteDurationGraphBar">Bar
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteDurationGraphBar">Bar
                         View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="suiteDurationGraphLine">Line
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteDurationGraphLine">Line
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="suiteDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteDurationClose"
-                        hidden>Close</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteDurationClose" hidden>Close</button>
                     <canvas id="suiteDurationGraph"></canvas>
                 </div>
                 <!-- Suite Most Failed -->
                 <div class="col canvas pb-5" id="suiteMostFailedCanvas">
                     <div id="suiteMostFailedVertical">
-                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="suiteMostFailedGraphBar">Bar
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteMostFailedGraphBar">Bar
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="suiteMostFailedGraphTimeline">Timeline
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="suiteMostFailedFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="suiteMostFailedClose"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteMostFailedClose"
                             hidden>Close</button>
                         <canvas id="suiteMostFailedGraph"></canvas>
                     </div>
@@ -476,49 +475,46 @@
                 <!-- Test Statistics -->
                 <div class="col canvas canvas-vertical" id="testStatisticsCanvas">
                     <div id="testStatisticsVertical">
-                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                            id="testStatisticsGraphTimeline">Timeline
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testStatisticsGraphTimeline">Timeline
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testStatisticsFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testStatisticsClose"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testStatisticsClose"
                             hidden>Close</button>
                         <canvas id="testStatisticsGraph"></canvas>
                     </div>
                 </div>
                 <!-- Test Duration -->
                 <div class="col canvas pb-5" id="testDurationCanvas">
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationGraphBar">Bar
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationGraphBar">Bar
                         View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testDurationGraphLine">Line
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationGraphLine">Line
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="testDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationClose"
-                        hidden>Close</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationClose" hidden>Close</button>
                     <canvas id="testDurationGraph"></canvas>
                 </div>
                 <!-- Test Duration Deviation -->
                 <div class="col canvas pb-5" id="testDurationDeviationCanvas">
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="testDurationDeviationGraphBar">Boxplot
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationDeviationGraphBar">Boxplot
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="testDurationDeviationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testDurationDeviationClose"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationDeviationClose"
                         hidden>Close</button>
                     <canvas id="testDurationDeviationGraph"></canvas>
                 </div>
                 <!-- Test Messages -->
                 <div class="col canvas pb-5" id="testMessagesCanvas">
                     <div id="testMessagesVertical">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
                             View</button>
-                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                            id="testMessagesGraphTimeline">Timeline
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMessagesGraphTimeline">Timeline
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testMessagesFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMessagesClose"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMessagesClose"
                             hidden>Close</button>
                         <canvas id="testMessagesGraph"></canvas>
                     </div>
@@ -532,14 +528,13 @@
                         <div class="btn-group form-switch me-1">
                             <input class="form-check-input mb-3" type="checkbox" role="switch" id="ignoreSkips">
                         </div>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar
                             View</button>
-                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                            id="testMostFlakyGraphTimeline">Timeline
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyGraphTimeline">Timeline
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyFullscreen"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyFullscreen"
                             style="margin-right:56px;">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFlakyClose" hidden
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyClose" hidden
                             style="margin-right:56px;">Close</button>
                         <canvas id="testMostFlakyGraph"></canvas>
                     </div>
@@ -553,13 +548,13 @@
                         <div class="btn-group form-switch me-1">
                             <input class="form-check-input mb-3" type="checkbox" role="switch" id="ignoreSkipsRecent">
                         </div>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyGraphBar">Bar
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFlakyGraphBar">Bar
                             View</button>
-                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testRecentMostFlakyGraphTimeline">Timeline View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyFullscreen"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFlakyFullscreen"
                             style="margin-right:56px;">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFlakyClose" hidden
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFlakyClose" hidden
                             style="margin-right:56px;">Close</button>
                         <canvas id="testRecentMostFlakyGraph"></canvas>
                     </div>
@@ -567,14 +562,13 @@
                 <!-- Test Most Failed -->
                 <div class="col canvas pb-5" id="testMostFailedCanvas">
                     <div id="testMostFailedVertical">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedGraphBar">Bar
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFailedGraphBar">Bar
                             View</button>
-                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
-                            id="testMostFailedGraphTimeline">Timeline
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFailedGraphTimeline">Timeline
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testMostFailedFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testMostFailedClose"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFailedClose"
                             hidden>Close</button>
                         <canvas id="testMostFailedGraph"></canvas>
                     </div>
@@ -582,14 +576,14 @@
                 <!-- Test Recent Most Failed -->
                 <div class="col canvas pb-5" id="testRecentMostFailedCanvas">
                     <div id="testRecentMostFailedVertical">
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFailedGraphBar">Bar
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFailedGraphBar">Bar
                             View</button>
-                        <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testRecentMostFailedGraphTimeline">Timeline
                             View</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testRecentMostFailedFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="testRecentMostFailedClose"
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFailedClose"
                             hidden>Close</button>
                         <canvas id="testRecentMostFailedGraph"></canvas>
                     </div>
@@ -628,75 +622,75 @@
             <div id="keywordDataHidden" hidden>
                 <!-- Keyword Statistics -->
                 <div class="col canvas pb-5" id="keywordStatisticsCanvas">
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordStatisticsGraphPercentages">Percentages</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordStatisticsGraphAmount">Amount</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordStatisticsGraphLine">Timeline</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordStatisticsFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordStatisticsClose"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordStatisticsClose"
                         hidden>Close</button>
                     <canvas id="keywordStatisticsGraph"></canvas>
                 </div>
                 <!-- Keyword Times Run -->
                 <div class="col canvas pb-5" id="keywordTimesRunCanvas">
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordTimesRunGraphBar">Bar
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTimesRunGraphBar">Bar
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTimesRunGraphLine">Line
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTimesRunGraphLine">Line
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordTimesRunFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTimesRunClose"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTimesRunClose"
                         hidden>Close</button>
                     <canvas id="keywordTimesRunGraph"></canvas>
                 </div>
                 <!-- Keyword Total Duration -->
                 <div class="col canvas pb-5" id="keywordTotalDurationCanvas">
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalDurationGraphBar">Bar
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTotalDurationGraphBar">Bar
                         View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordTotalDurationGraphLine">Line
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTotalDurationGraphLine">Line
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordTotalDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordTotalDurationClose"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTotalDurationClose"
                         hidden>Close</button>
                     <canvas id="keywordTotalDurationGraph"></canvas>
                 </div>
                 <!-- Keyword Average Duration -->
                 <div class="col canvas pb-5" id="keywordAverageDurationCanvas">
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageDurationGraphBar">Bar
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordAverageDurationGraphBar">Bar
                         View</button>
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordAverageDurationGraphLine">Line
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordAverageDurationGraphLine">Line
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordAverageDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordAverageDurationClose"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordAverageDurationClose"
                         hidden>Close</button>
                     <canvas id="keywordAverageDurationGraph"></canvas>
                 </div>
                 <!-- Keyword Min Duration -->
                 <div class="col canvas pb-5" id="keywordMinDurationCanvas">
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordMinDurationGraphBar">Bar
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMinDurationGraphBar">Bar
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMinDurationGraphLine">Line
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMinDurationGraphLine">Line
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordMinDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMinDurationClose"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMinDurationClose"
                         hidden>Close</button>
                     <canvas id="keywordMinDurationGraph"></canvas>
                 </div>
                 <!-- Keyword Max Duration -->
                 <div class="col canvas pb-5" id="keywordMaxDurationCanvas">
-                    <button class="btn btn-primary btn-sm mb-3 mt-1 disabled" id="keywordMaxDurationGraphBar">Bar
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMaxDurationGraphBar">Bar
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMaxDurationGraphLine">Line
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMaxDurationGraphLine">Line
                         View</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordMaxDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-primary btn-sm mb-3 mt-1" id="keywordMaxDurationClose"
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMaxDurationClose"
                         hidden>Close</button>
                     <canvas id="keywordMaxDurationGraph"></canvas>
                 </div>
@@ -713,26 +707,40 @@
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title" id="hideModalLabel">Customize View</h1>
+                        <h1 class="modal-title" id="hideModalLabel">Settings</h1>
                         <div>
-                            <button type="button" class="btn btn-outline-primary btn-sm mt-auto" data-bs-dismiss="modal"
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto" data-bs-dismiss="modal"
                                 id="resetHide">Reset View</button>
-                            <button type="button" class="btn btn-outline-primary btn-sm mt-auto ms-3"
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
                                 data-bs-dismiss="modal" id="saveHide">Save</button>
                         </div>
                     </div>
                     <div class="modal-body">
-                        <div class="row justify-content-evenly">
-                            <div class="col">
-                                <h2>Sections</h2>
+                        <div class="row border-bottom">
+                            <h2>General</h2>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-4 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleTheme">Dark Mode</label>
                             </div>
-                            <div class="col">
-                                <h2>Graphs</h2>
+                            <div class="col btn-group form-switch ms-2">
+                                <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleTheme" />
                             </div>
+                        </div>
+                        <div class="row pb-4">
+                            <div class="col-4 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleLabels">Show Date/Alias Labels</label>
+                            </div>
+                            <div class="col btn-group form-switch ms-2">
+                                <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleLabels" />
+                            </div>
+                        </div>
+                        <div class="row border-bottom pt-1">
+                            <h2>Customize View</h2>
                         </div>
                         <div class="row mt-2">
                             <div class="col">
-                                <h4>Show</h4>
+                                <h4 class="ms-1">Show Sections</h4>
                                 <div class="border border-3 rounded-3">
                                     <ol id="sectionShow" class="list-group list-group-numbered"></ol>
                                 </div>
@@ -744,13 +752,13 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <h4>Hide</h4>
+                                <h4 class="ms-1">Hide Sections</h4>
                                 <div class="border border-3 rounded-3">
                                     <ol id="sectionHide" class="list-group"></ol>
                                 </div>
                             </div>
                             <div class="col">
-                                <h4>Show</h4>
+                                <h4 class="ms-1">Show Graphs</h4>
                                 <div class="border border-3 rounded-3">
                                     <ol id="graphShow" class="list-group list-group-numbered"></ol>
                                 </div>
@@ -762,7 +770,7 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <h4>Hide</h4>
+                                <h4 class="ms-1">Hide Graphs</h4>
                                 <div class="border border-3 rounded-3">
                                     <ol id="graphHide" class="list-group"></ol>
                                 </div>
@@ -852,8 +860,8 @@
 
         // create graphs
         var runStatisticsGraph;
-        var runPieGraph;
-        var runPieTotalGraph;
+        var runDonutGraph;
+        var runDonutTotalGraph;
         var runDurationGraph;
         var runTable;
         var suiteStatisticsGraph;
@@ -890,6 +898,7 @@
         var ignoreSkipsRecent = false; // test recent most flaky graph
         var showingRunTags = false; // used to keep track if the runtags popup is showing and determine if it should be closed when clicked outside
         var inFullscreen = false;
+        var showDateLabels = true;
 
         // add items in hide modal
         const hideSections = [
@@ -900,7 +909,7 @@
         ]
         const hideGraphs = [
             "Run Statistics",
-            "Run Pie",
+            "Run Donut",
             "Run Duration",
             "Run Table",
             "Suite Statistics",
@@ -934,22 +943,96 @@
         // GENERIC SETUP FUNCTIONS //
         /////////////////////////////
 
+        // function to update the theme when the button is clicked
+        function toggle_theme() {
+            if (document.documentElement.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+            }
+            setup_theme()
+            setup_all_graphs()
+        }
+
         // theme function based on browser/machine color scheme
         function setup_theme() {
-            if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            function set_light_mode() {
+                // bootstrap dark-mode attribute
+                document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "light");
+                // bootstrap default color
+                document.documentElement.style.setProperty('--bs-body-bg', '#fff');
+                // bootstrap buttons light -> dark
+                const buttonsOutlineLight = document.querySelectorAll('.btn-outline-light')
+                const buttonsLight = document.querySelectorAll('.btn-light')
+                for (const button of buttonsOutlineLight) {
+                    button.classList.remove('btn-outline-light');
+                    button.classList.add('btn-outline-dark');
+                }
+                for (const button of buttonsLight) {
+                    button.classList.remove('btn-light');
+                    button.classList.add('btn-dark');
+                }
+                // chartjs default graph settings
+                Chart.defaults.color = "#666";
+                Chart.defaults.borderColor = "rgba(0,0,0,0.1)";
+                Chart.defaults.backgroundColor = "rgba(0,0,0,0.1)";
+                Chart.defaults.elements.line.borderColor = "rgba(0,0,0,0.1)";
+                // set toggle in correct state if not already, needed on first load to set based on media or localstorage
+                if (document.getElementById('toggleTheme').checked) {
+                    document.getElementById('toggleTheme').checked = false
+                }
+            }
+
+            function set_dark_mode() {
+                // bootstrap dark-mode attribute
+                document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "dark");
+                // bootstrap light buttons -> dark
+                document.documentElement.style.setProperty('--bs-body-bg', 'rgba(30, 41, 59, 0.9)');
+                // bootstrap buttons dark -> light
+                const buttonsOutlineLight = document.querySelectorAll('.btn-outline-dark')
+                const buttonsLight = document.querySelectorAll('.btn-dark')
+                for (const button of buttonsOutlineLight) {
+                    button.classList.remove('btn-outline-dark');
+                    button.classList.add('btn-outline-light');
+                }
+                for (const button of buttonsLight) {
+                    button.classList.remove('btn-dark');
+                    button.classList.add('btn-light');
+                }
+                // chartjs default graph settings
                 Chart.defaults.color = "#eee";
                 Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
                 Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
                 Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
-                document.documentElement.style.setProperty('--bs-body-bg', 'rgba(30, 41, 59, 0.9)');
+                if (!document.getElementById('toggleTheme').checked) {
+                    document.getElementById('toggleTheme').checked = true
+                }
+            }
+
+            const theme = localStorage.getItem('theme');
+            const root = document.documentElement;
+            const isDark = root.classList.contains('dark-mode');
+            if (theme === 'light') {
+                if (isDark) root.classList.remove('dark-mode');
+                set_light_mode();
+            } else if (theme === 'dark') {
+                if (!isDark) root.classList.add('dark-mode');
+                set_dark_mode();
             } else {
-                document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "light");
+                // No theme in localStorage, fall back to system preference
+                if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                    root.classList.add('dark-mode');
+                    set_dark_mode();
+                } else {
+                    root.classList.remove('dark-mode');
+                    set_light_mode();
+                }
             }
         }
 
         // set default values
         function setup_stats() {
-            document.getElementById("stats").innerHTML = `<i><a style="color:white" href="https://github.com/timdegroot1996/robotframework-dashboard" target="_blank">Robotdashboard 0.8.7</a></i><br>
+            document.getElementById("stats").innerHTML = `<i><a id="version" href="https://github.com/timdegroot1996/robotframework-dashboard" target="_blank">Robotdashboard 0.8.7</a></i><br>
             <b>Database Summary</b><br>
             Runs: ${runs.length}<br>
             Suites: ${suites.length}<br>
@@ -1263,8 +1346,8 @@
             // Graph type defaults (unchanged)
             const defaultGraphTypes = {
                 runStatisticsGraphType: "percentages",
-                runPieGraphType: "pie",
-                runPieTotalGraphType: "pie",
+                runDonutGraphType: "donut",
+                runDonutTotalGraphType: "donut",
                 runDurationGraphType: "line",
                 suiteStatisticsGraphType: "percentages",
                 suiteDurationGraphType: "line",
@@ -1324,18 +1407,30 @@
 
         // function to change which button is highlighted styling wise
         function update_button_selection(camelButtonName, graphType) {
-            const buttons = ['Bar', 'Line', 'Timeline', 'Percentages', 'Amount']; // All possible button types
+            const buttons = ['Bar', 'Line', 'Timeline', 'Percentages', 'Amount', 'Donut']; // All possible button types
             buttons.forEach(button => {
                 const buttonId = `${camelButtonName}Graph${button}`;
                 if (document.getElementById(buttonId)) {
-                    if (button.toLowerCase() === graphType) {
-                        document.getElementById(buttonId).classList.add("disabled");
-                        document.getElementById(buttonId).classList.remove("btn-outline-primary");
-                        document.getElementById(buttonId).classList.add("btn-primary");
+                    if (document.documentElement.classList.contains('dark-mode')) {
+                        if (button.toLowerCase() === graphType) {
+                            document.getElementById(buttonId).classList.add("disabled");
+                            document.getElementById(buttonId).classList.remove("btn-outline-light");
+                            document.getElementById(buttonId).classList.add("btn-outline-light");
+                        } else {
+                            document.getElementById(buttonId).classList.remove("disabled");
+                            document.getElementById(buttonId).classList.remove("btn-outline-light");
+                            document.getElementById(buttonId).classList.add("btn-outline-light");
+                        }
                     } else {
-                        document.getElementById(buttonId).classList.remove("disabled");
-                        document.getElementById(buttonId).classList.remove("btn-primary");
-                        document.getElementById(buttonId).classList.add("btn-outline-primary");
+                        if (button.toLowerCase() === graphType) {
+                            document.getElementById(buttonId).classList.add("disabled");
+                            document.getElementById(buttonId).classList.remove("btn-outline-dark");
+                            document.getElementById(buttonId).classList.add("btn-outline-dark");
+                        } else {
+                            document.getElementById(buttonId).classList.remove("disabled");
+                            document.getElementById(buttonId).classList.remove("btn-outline-dark");
+                            document.getElementById(buttonId).classList.add("btn-outline-dark");
+                        }
                     }
                 }
             });
@@ -1433,10 +1528,33 @@
 
         // function to create customized view eventlisteners
         function setup_customize_view_button_eventlisteners() {
-            // update all graphs based on new hidden graphs/sections
-            document.getElementById('saveHide').addEventListener('click', function () {
-                update_customize_view_local_storage();
-                setup_data_and_graphs();
+            // update the theme
+            document.getElementById('toggleTheme').addEventListener('click', function () {
+                toggle_theme()
+            });
+
+            // update all graphs to not have date labels
+            function toggle_labels(load = false) {
+                var storage = JSON.parse(localStorage.getItem('showDateLabels'));
+                const toggle = document.getElementById('toggleLabels')
+                if (!load) {
+                    storage = !storage
+                }
+                if (storage === true) {
+                    showDateLabels = true
+                    toggle.checked = true
+                } else if (storage === false) {
+                    showDateLabels = false
+                    toggle.checked = false
+                } else {
+                    toggle.checked = true // first load and default value
+                }
+                localStorage.setItem('showDateLabels', JSON.stringify(showDateLabels));
+                if (!load) { setup_all_graphs() }
+            }
+            toggle_labels(true) // run once on load to setup correctly
+            document.getElementById('toggleLabels').addEventListener('click', function () {
+                toggle_labels(false)
             });
 
             // remove the entire customized view configuration
@@ -1461,7 +1579,7 @@
             }
 
             // eventlisteners for fullscreen buttons
-            const fullscreenButtons = ["runStatistics", "runPie", "runDuration", "suiteStatistics",
+            const fullscreenButtons = ["runStatistics", "runDonut", "runDuration", "suiteStatistics",
                 "suiteDuration", "suiteMostFailed", "testStatistics", "testDuration", "testDurationDeviation",
                 "testMessages", "testMostFlaky", "testRecentMostFlaky", "testMostFailed", "testRecentMostFailed",
                 "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
@@ -1475,7 +1593,7 @@
                     document.getElementById(`${fullscreenButton}Fullscreen`).hidden = true;
                     document.body.style.overflow = 'hidden';
                     window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
-                    if (fullscreenButton == 'runPie') {
+                    if (fullscreenButton == 'runDonut') {
                         window[`create_${camelcase_to_underscore(fullscreenButton)}_total_graph`]();
                     }
                 });
@@ -1487,7 +1605,7 @@
                     document.getElementById(`${fullscreenButton}Fullscreen`).hidden = false;
                     document.body.style.overflow = 'auto';
                     window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
-                    if (fullscreenButton == 'runPie') {
+                    if (fullscreenButton == 'runDonut') {
                         window[`create_${camelcase_to_underscore(fullscreenButton)}_total_graph`]();
                     }
                 });
@@ -1509,7 +1627,7 @@
             // eventlisteners for buttons to change graph views
             const graphChangeButtons = {
                 'run_statistics': 'Percentages,Line,Amount',
-                'run_pie': 'Pie',
+                'run_donut': 'Donut',
                 'run_duration': 'Bar,Line',
                 'suite_statistics': 'Percentages,Line,Amount',
                 'suite_duration': 'Bar,Line',
@@ -1947,48 +2065,49 @@
             const graphData = data[0]
             var config;
             if (runStatisticsGraphType == "line") {
-                config = get_graph_config("line", graphData, "Amount Of Tests (Line)", "Date", "Amount", false);
+                config = get_graph_config("line", graphData, "Amount Of Tests", "Date", "Amount", false);
             } else if (runStatisticsGraphType == "amount") {
-                config = get_graph_config("bar", graphData, "Run Statistics (Bar)", "Run", "Amount Of Tests");
+                config = get_graph_config("bar", graphData, "Run Statistics", "Run", "Amount Of Tests");
             } else if (runStatisticsGraphType == "percentages") {
-                config = get_graph_config("bar", graphData, "Run Statistics (Bar)", "Run", "Percentage");
+                config = get_graph_config("bar", graphData, "Run Statistics", "Run", "Percentage");
             }
+            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             runStatisticsGraph = new Chart("runStatisticsGraph", config);
             runStatisticsGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(runStatisticsGraph, event)
             });
         }
 
-        // function to create run pie graph in the run section
-        function create_run_pie_graph() {
-            if (runPieGraph) {
-                runPieGraph.destroy();
+        // function to create run donut graph in the run section
+        function create_run_donut_graph() {
+            if (runDonutGraph) {
+                runDonutGraph.destroy();
             }
             Chart.register(ChartDataLabels);
-            const data = get_pie_graph_data("run", filteredRuns);
+            const data = get_donut_graph_data("run", filteredRuns);
             const graphData = data[0]
             const callbackData = data[1]
-            var config = get_graph_config("pie", graphData, `Last Run Status (Pie): ${callbackData}`, "Run", "Amount", false);
+            var config = get_graph_config("donut", graphData, `Last Run Status: ${callbackData}`, "Run", "Amount", false);
             config.options.onClick = (event, chartElement) => {
                 if (chartElement.length) {
                     open_log_file(event, chartElement, callbackData)
                 }
             };
-            runPieGraph = new Chart("runPieGraph", config);
+            runDonutGraph = new Chart("runDonutGraph", config);
         }
 
-        // function to create run pie graph in the run section
-        function create_run_pie_total_graph() {
-            if (runPieTotalGraph) {
-                runPieTotalGraph.destroy();
+        // function to create run donut graph in the run section
+        function create_run_donut_total_graph() {
+            if (runDonutTotalGraph) {
+                runDonutTotalGraph.destroy();
             }
             Chart.register(ChartDataLabels);
-            const data = get_pie_total_graph_data("run", filteredRuns);
+            const data = get_donut_total_graph_data("run", filteredRuns);
             const graphData = data[0]
             const callbackData = data[1]
-            var config = get_graph_config("pie", graphData, `Total Status (Pie)`, "Run", "Amount", false);
+            var config = get_graph_config("donut", graphData, `Total Status`, "Run", "Amount", false);
             delete config.options.onClick;
-            runPieTotalGraph = new Chart("runPieTotalGraph", config);
+            runDonutTotalGraph = new Chart("runDonutTotalGraph", config);
         }
 
         // function to create run duration graph in the run section
@@ -2000,10 +2119,11 @@
             var config;
             if (runDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Run Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Run Duration Max ${limit} Bars`, "Run", "Duration");
             } else if (runDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Run Duration (Line)", "Date", "Duration");
+                config = get_graph_config("line", graphData, "Run Duration", "Date", "Duration");
             }
+            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             runDurationGraph = new Chart("runDurationGraph", config);
             runDurationGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(runDurationGraph, event)
@@ -2064,7 +2184,7 @@
             const callbackData = data[1]
             var config;
             if (suiteStatisticsGraphType == "line") {
-                config = get_graph_config("line", graphData, "Amount Of Tests (Line)", "Date", "amount", false);
+                config = get_graph_config("line", graphData, "Amount Of Tests", "Date", "amount", false);
                 config.options.plugins.tooltip = {
                     callbacks: {
                         title: function (tooltipItem) {
@@ -2073,7 +2193,7 @@
                     }
                 }
             } else if (suiteStatisticsGraphType == "amount") {
-                config = get_graph_config("bar", graphData, "Suite Statistics (Bar)", "Run", "Amount Of Tests");
+                config = get_graph_config("bar", graphData, "Suite Statistics", "Run", "Amount Of Tests");
                 // overwrite tooltip title
                 const filter = config.options.plugins.tooltip.filter
                 config.options.plugins.tooltip = {
@@ -2085,7 +2205,7 @@
                     }
                 }
             } else if (suiteStatisticsGraphType == "percentages") {
-                config = get_graph_config("bar", graphData, "Suite Statistics (Bar)", "Run", "Percentage");
+                config = get_graph_config("bar", graphData, "Suite Statistics", "Run", "Percentage");
                 // overwrite tooltip title
                 const filter = config.options.plugins.tooltip.filter
                 config.options.plugins.tooltip = {
@@ -2097,6 +2217,7 @@
                     }
                 }
             }
+            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             suiteStatisticsGraph = new Chart("suiteStatisticsGraph", config);
             suiteStatisticsGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(suiteStatisticsGraph, event)
@@ -2112,10 +2233,11 @@
             var config;
             if (suiteDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Suite Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Suite Duration Max ${limit} Bars`, "Run", "Duration");
             } else if (suiteDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Suite Duration (Line)", "Date", "Duration");
+                config = get_graph_config("line", graphData, "Suite Duration", "Date", "Duration");
             }
+            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             suiteDurationGraph = new Chart("suiteDurationGraph", config);
             suiteDurationGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(suiteDurationGraph, event)
@@ -2131,9 +2253,9 @@
             const graphData = data[0];
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50: 10;
+            const limit = inFullscreen ? 50 : 10;
             if (suiteMostFailedGraphType == "bar") {
-                config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Suites (Bar)`, "Suite Name", "Times Failed");
+                config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Suites`, "Suite", "Fails");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2146,7 +2268,7 @@
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (suiteMostFailedGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, `Top ${limit} Most Failed Suites (Timeline)`);
+                config = get_graph_config("timeline", graphData, `Top ${limit} Most Failed Suites`, "Run", "Suite");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2164,6 +2286,10 @@
                             return callbackData[this.getLabelForValue(value)];
                         },
                     },
+                    title: {
+                        display: true,
+                        text: "Run",
+                    },
                 };
                 // overwrite the click callback to use the callbackData
                 config.options.onClick = (event, chartElement) => {
@@ -2171,8 +2297,9 @@
                         open_log_file(event, chartElement, callbackData)
                     }
                 };
+                if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height('suiteMostFailedVertical', config.data.labels.length, config.options.plugins.title.text);
+            update_height('suiteMostFailedVertical', config.data.labels.length, config.options.plugins.title.text, suiteMostFailedGraphType);
             suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
             suiteMostFailedGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(suiteMostFailedGraph, event)
@@ -2286,7 +2413,7 @@
                 labels: labels,
                 datasets: datasets,
             };
-            var config = get_graph_config("timeline", graphData, "Test Statistics (Timeline)");
+            var config = get_graph_config("timeline", graphData, "Test Statistics", "Run", "Test");
             // overwrite tooltip and x scale with callbacks
             config.options.plugins.tooltip = {
                 callbacks: {
@@ -2304,6 +2431,10 @@
                         return runStarts[this.getLabelForValue(value)];
                     },
                 },
+                title: {
+                    display: true,
+                    text: "Run",
+                },
             };
             // overwrite the click callback to use the callbackData
             config.options.onClick = (event, chartElement) => {
@@ -2311,7 +2442,8 @@
                     open_log_file(event, chartElement, runStarts)
                 }
             };
-            update_height('testStatisticsVertical', config.data.labels.length, config.options.plugins.title.text);
+            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
+            update_height('testStatisticsVertical', config.data.labels.length, config.options.plugins.title.text, 'timeline');
             testStatisticsGraph = new Chart("testStatisticsGraph", config);
             testStatisticsGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testStatisticsGraph, event)
@@ -2327,10 +2459,11 @@
             var config;
             if (testDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Test Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Test Duration Max ${limit} Bars`, "Run", "Duration");
             } else if (testDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Test Duration (Line)", "Date", "Duration");
+                config = get_graph_config("line", graphData, "Test Duration", "Date", "Duration");
             }
+            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             testDurationGraph = new Chart("testDurationGraph", config);
             testDurationGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testDurationGraph, event)
@@ -2346,9 +2479,9 @@
             const graphData = data[0];
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50: 10;
+            const limit = inFullscreen ? 50 : 10;
             if (testMessagesGraphType == "bar") {
-                config = get_graph_config("bar", graphData, `Top ${limit} Fail Messages (Bar)`, "Message", "Times");
+                config = get_graph_config("bar", graphData, `Top ${limit} Fail Messages`, "Message", "Times");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2366,11 +2499,15 @@
                             return this.getLabelForValue(value).slice(0, 40);
                         },
                     },
+                    title: {
+                        display: true,
+                        text: "Message",
+                    },
                 };
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testMessagesGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, `Top ${limit} Fail Messages (Timeline)`);
+                config = get_graph_config("timeline", graphData, `Top ${limit} Fail Messages`, "Run", "Message");
                 // overwrite tooltip and x and y scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2388,6 +2525,10 @@
                             return callbackData[this.getLabelForValue(value)];
                         },
                     },
+                    title: {
+                        display: true,
+                        text: "Run",
+                    },
                 };
                 // overwrite the click callback to use the callbackData
                 config.options.onClick = (event, chartElement) => {
@@ -2400,8 +2541,9 @@
                         return this.getLabelForValue(value).slice(0, 40);
                     },
                 };
+                if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height('testMessagesVertical', config.data.labels.length, config.options.plugins.title.text);
+            update_height('testMessagesVertical', config.data.labels.length, config.options.plugins.title.text, testMessagesGraphType);
             testMessagesGraph = new Chart("testMessagesGraph", config);
             testMessagesGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testMessagesGraph, event)
@@ -2414,7 +2556,7 @@
                 testDurationDeviationGraph.destroy();
             }
             const graphData = get_duration_deviation_data("test", testDurationDeviationGraphType, filteredTests)
-            const config = get_graph_config("boxplot", graphData, "Duration Deviation (Boxplot)", "Test Name", "Duration");
+            const config = get_graph_config("boxplot", graphData, "Duration Deviation", "Test", "Duration");
             // no onClick on the boxplot chart
             delete config.options.onClick
             testDurationDeviationGraph = new Chart("testDurationDeviationGraph", config);
@@ -2432,15 +2574,15 @@
             const graphData = data[0]
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50: 10;
+            const limit = inFullscreen ? 50 : 10;
             if (testMostFlakyGraphType == "bar") {
-                config = get_graph_config("bar", graphData, `Top ${limit} Most Flaky Tests (Bar) Most Status Flips`, "Test Name", "Times Status Flipped");
+                config = get_graph_config("bar", graphData, `Top ${limit} Most Flaky Tests Most Status Flips`, "Test", "Status Flips");
                 // disable lenged in bar graph
                 config.options.plugins.legend = false
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testMostFlakyGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, `Top ${limit} Most Flaky Tests (Timeline) Most Status Flips`);
+                config = get_graph_config("timeline", graphData, `Top ${limit} Most Flaky Tests Most Status Flips`, "Run", "Test");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2458,6 +2600,10 @@
                             return callbackData[this.getLabelForValue(value)];
                         },
                     },
+                    title: {
+                        display: true,
+                        text: "Run",
+                    },
                 };
                 // overwrite the click callback to use the callbackData
                 config.options.onClick = (event, chartElement) => {
@@ -2465,8 +2611,9 @@
                         open_log_file(event, chartElement, callbackData)
                     }
                 }
+                if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height('testMostFlakyVertical', config.data.labels.length, config.options.plugins.title.text);
+            update_height('testMostFlakyVertical', config.data.labels.length, config.options.plugins.title.text, testMostFlakyGraphType);
             testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
             testMostFlakyGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testMostFlakyGraph, event)
@@ -2482,15 +2629,15 @@
             const graphData = data[0];
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50: 10;
+            const limit = inFullscreen ? 50 : 10;
             if (testRecentMostFlakyGraphType == "bar") {
-                config = get_graph_config("bar", graphData, `Top ${limit} Recent Most Flaky Tests (Bar) Most Status Flips`, "Test Name", "Times Status Flipped");
+                config = get_graph_config("bar", graphData, `Top ${limit} Recent Most Flaky Tests Most Status Flips`, "Test", "Status Flips");
                 // disable lenged in bar graph
                 config.options.plugins.legend = false
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testRecentMostFlakyGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, `Top ${limit} Recent Most Flaky Tests (Timeline) Most Status Flips`);
+                config = get_graph_config("timeline", graphData, `Top ${limit} Recent Most Flaky Tests Most Status Flips`, "Run", "Test");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2508,6 +2655,10 @@
                             return callbackData[this.getLabelForValue(value)];
                         },
                     },
+                    title: {
+                        display: true,
+                        text: "Run",
+                    },
                 };
                 // overwrite the click callback to use the callbackData
                 config.options.onClick = (event, chartElement) => {
@@ -2515,8 +2666,9 @@
                         open_log_file(event, chartElement, callbackData)
                     }
                 }
+                if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height('testRecentMostFlakyVertical', config.data.labels.length, config.options.plugins.title.text);
+            update_height('testRecentMostFlakyVertical', config.data.labels.length, config.options.plugins.title.text, testRecentMostFlakyGraphType);
             testRecentMostFlakyGraph = new Chart("testRecentMostFlakyGraph", config);
             testRecentMostFlakyGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testRecentMostFlakyGraph, event)
@@ -2535,9 +2687,9 @@
             const graphData = data[0]
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50: 10;
+            const limit = inFullscreen ? 50 : 10;
             if (testMostFailedGraphType == "bar") {
-                config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Tests (Bar)`, "Test Name", "Times Failed");
+                config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Tests`, "Test", "Fails");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2550,7 +2702,7 @@
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testMostFailedGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, `Top ${limit} Most Failed Tests (Timeline)`);
+                config = get_graph_config("timeline", graphData, `Top ${limit} Most Failed Tests`, "Run", "Test");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2568,6 +2720,10 @@
                             return callbackData[this.getLabelForValue(value)];
                         },
                     },
+                    title: {
+                        display: true,
+                        text: "Run",
+                    },
                 };
                 // overwrite the click callback to use the callbackData
                 config.options.onClick = (event, chartElement) => {
@@ -2575,8 +2731,9 @@
                         open_log_file(event, chartElement, callbackData)
                     }
                 }
+                if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height('testMostFailedVertical', config.data.labels.length, config.options.plugins.title.text);
+            update_height('testMostFailedVertical', config.data.labels.length, config.options.plugins.title.text, testMostFailedGraphType);
             testMostFailedGraph = new Chart("testMostFailedGraph", config);
             testMostFailedGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testMostFailedGraph, event)
@@ -2595,9 +2752,9 @@
             const graphData = data[0]
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50: 10;
+            const limit = inFullscreen ? 50 : 10;
             if (testRecentMostFailedGraphType == "bar") {
-                config = get_graph_config("bar", graphData, `Top ${limit} Recent Most Failed Tests (Bar)`, "Test Name", "Times Failed");
+                config = get_graph_config("bar", graphData, `Top ${limit} Recent Most Failed Tests`, "Test", "Fails");
                 // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
@@ -2610,7 +2767,7 @@
                 // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testRecentMostFailedGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, `Top ${limit} Recent Most Failed Tests (Timeline)`);
+                config = get_graph_config("timeline", graphData, `Top ${limit} Recent Most Failed Tests`, "Run", "Test");
                 // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2628,6 +2785,10 @@
                             return callbackData[this.getLabelForValue(value)];
                         },
                     },
+                    title: {
+                        display: true,
+                        text: "Run",
+                    },
                 };
                 // overwrite the click callback to use the callbackData
                 config.options.onClick = (event, chartElement) => {
@@ -2635,8 +2796,9 @@
                         open_log_file(event, chartElement, callbackData)
                     }
                 }
+                if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height('testRecentMostFailedVertical', config.data.labels.length, config.options.plugins.title.text);
+            update_height('testRecentMostFailedVertical', config.data.labels.length, config.options.plugins.title.text, testRecentMostFailedGraphType);
             testRecentMostFailedGraph = new Chart("testRecentMostFailedGraph", config);
             testRecentMostFailedGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(testRecentMostFailedGraph, event)
@@ -2698,12 +2860,13 @@
             const graphData = data[0]
             var config;
             if (keywordStatisticsGraphType == "line") {
-                config = get_graph_config("line", graphData, "Keyword Statistics (Line)", "Date", "Amount", false);
+                config = get_graph_config("line", graphData, "Keyword Statistics", "Date", "Amount", false);
             } else if (keywordStatisticsGraphType == "amount") {
-                config = get_graph_config("bar", graphData, "Keyword Statistics (Bar)", "Run", "Amount");
+                config = get_graph_config("bar", graphData, "Keyword Statistics", "Run", "Amount");
             } else if (keywordStatisticsGraphType == "percentages") {
-                config = get_graph_config("bar", graphData, "Keyword Statistics (Bar)", "Run", "Percentage");
+                config = get_graph_config("bar", graphData, "Keyword Statistics", "Run", "Percentage");
             }
+            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordStatisticsGraph = new Chart("keywordStatisticsGraph", config);
             keywordStatisticsGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(keywordStatisticsGraph, event)
@@ -2719,10 +2882,11 @@
             var config;
             if (keywordTimesRunGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Times Run (Bar) Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Times Run Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordTimesRunGraphType == "line") {
-                config = get_graph_config("line", graphData, "Times Run (Line)", "Date", "Duration");
+                config = get_graph_config("line", graphData, "Times Run", "Date", "Duration");
             }
+            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordTimesRunGraph = new Chart("keywordTimesRunGraph", config);
             keywordTimesRunGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(keywordTimesRunGraph, event)
@@ -2741,10 +2905,11 @@
             var config;
             if (keywordTotalDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Total Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Total Duration Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordTotalDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Total Duration (Line)", "Date", "Duration");
+                config = get_graph_config("line", graphData, "Total Duration", "Date", "Duration");
             }
+            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordTotalDurationGraph = new Chart("keywordTotalDurationGraph", config);
             keywordTotalDurationGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(keywordTotalDurationGraph, event)
@@ -2760,10 +2925,11 @@
             var config;
             if (keywordAverageDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Average Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Average Duration Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordAverageDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Average Duration (Line)", "Date", "Duration");
+                config = get_graph_config("line", graphData, "Average Duration", "Date", "Duration");
             }
+            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordAverageDurationGraph = new Chart("keywordAverageDurationGraph", config);
             keywordAverageDurationGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(keywordAverageDurationGraph, event)
@@ -2779,10 +2945,11 @@
             var config;
             if (keywordMinDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Min Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Min Duration Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordMinDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Min Duration (Line)", "Date", "Duration");
+                config = get_graph_config("line", graphData, "Min Duration", "Date", "Duration");
             }
+            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordMinDurationGraph = new Chart("keywordMinDurationGraph", config);
             keywordMinDurationGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(keywordMinDurationGraph, event)
@@ -2798,10 +2965,11 @@
             var config;
             if (keywordMaxDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Max Duration (Bar) Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Max Duration Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordMaxDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Max Duration (Line)", "Date", "Duration");
+                config = get_graph_config("line", graphData, "Max Duration", "Date", "Duration");
             }
+            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordMaxDurationGraph = new Chart("keywordMaxDurationGraph", config);
             keywordMaxDurationGraph.canvas.addEventListener('click', (event) => {
                 open_log_from_label(keywordMaxDurationGraph, event)
@@ -3001,7 +3169,6 @@
             // Common scales configuration
             const commonScales = {
                 x: {
-                    bounds: 'ticks',
                     title: {
                         display: true,
                         text: xTitle,
@@ -3147,7 +3314,7 @@
                     },
                 };
             }
-            if (graphType == "pie") {
+            if (graphType == "donut") {
                 return {
                     type: "doughnut",
                     data: graphData,
@@ -3260,7 +3427,7 @@
         }
 
         // function to prepare the data in the correct format for duration graphs
-        function get_pie_graph_data(dataType, filteredData) {
+        function get_donut_graph_data(dataType, filteredData) {
             const latest = filteredData[Object.keys(filteredData)[Object.keys(filteredData).length - 1]]
             var labels = [];
             var datasets = [];
@@ -3298,7 +3465,7 @@
         }
 
         // function to prepare the data in the correct format for duration graphs
-        function get_pie_total_graph_data(dataType, filteredData) {
+        function get_donut_total_graph_data(dataType, filteredData) {
             let passed = 0, failed = 0, skipped = 0;
             const labels = [], backgroundColors = [], backgroundBorderColors = [];
             for (const value of filteredData) {
@@ -3533,7 +3700,7 @@
                     return new Date(b[1].failed_run_starts[b[1].failed_run_starts.length - 1]).getTime() - new Date(a[1].failed_run_starts[a[1].failed_run_starts.length - 1]).getTime()
                 })
             }
-            const limit = inFullscreen ? 50: 10;
+            const limit = inFullscreen ? 50 : 10;
             if (graphType == "bar") {
                 var [datasets, labels, count] = [[], [], 0];
                 for (key in sortedData) {
@@ -3642,7 +3809,7 @@
                     return 0; // Preserve original order if equal (stable sort)
                 });
             }
-            const limit = inFullscreen ? 50: 10;
+            const limit = inFullscreen ? 50 : 10;
             if (graphType === 'bar') {
                 const datasets = [];
                 const labels = [];
@@ -3750,7 +3917,7 @@
             }
 
             // Sort messages by failure count
-            const limit = inFullscreen ? 50: 10;
+            const limit = inFullscreen ? 50 : 10;
             const sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length);
             if (graphType === 'bar') {
                 const [datasets, labels] = [[], []];
@@ -3822,10 +3989,10 @@
         }
 
         // function to update the height of the test statistics graph and enable scrolling
-        function update_height(verticalId, labels, title) {
+        function update_height(verticalId, labels, title, graphType) {
             const vertical = document.getElementById(verticalId)
             vertical.style.height = `465px`
-            if (labels > 10 && !title.includes('(Bar)')) {
+            if (labels > 10 && graphType != 'bar') {
                 // timeline view with more than 10 items -> update height
                 const newHeight = 465 + (labels - 10) * 35;
                 const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height) - 59;
@@ -3834,11 +4001,11 @@
                 } else {
                     vertical.style.height = `${newHeight}px`
                 }
-            } else if (inFullscreen && !title.includes('(Bar)')) {
+            } else if (inFullscreen && graphType != 'bar') {
                 // not more than 10 items, set the height to fullscreen without scrollbar
                 const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height) - 51;
                 vertical.style.height = `${parentHeight}px`
-            } else if (inFullscreen && title.includes('(Bar)')) {
+            } else if (inFullscreen && graphType == 'bar') {
                 const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height);
                 vertical.style.height = `${parentHeight}px`
             }
@@ -3925,8 +4092,8 @@
         // function that updates all graphs based on the new filtered data and hidden choices
         function setup_all_graphs() {
             create_run_statistics_graph();
-            create_run_pie_graph();
-            create_run_pie_total_graph();
+            create_run_donut_graph();
+            create_run_donut_total_graph();
             create_run_duration_graph();
             create_run_table();
             create_suite_statistics_graph(); 1
@@ -4014,6 +4181,7 @@
             function position_graph(graph) {
                 const camelCaseGraph = space_to_camelcase(graph)
                 const graphDataElement = document.getElementById(camelCaseGraph + 'Canvas')
+                console.log(graph, graphDataElement)
                 const canvas = graphDataElement.outerHTML
                 graphDataElement.remove()
                 if (sectionDataElement.lastChild == null) {
