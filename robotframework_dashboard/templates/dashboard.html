@@ -44,7 +44,12 @@
         }
 
         #version {
-            color: black;
+            color: #eee;
+        }
+
+        .form-switch .form-check-input:not(:checked) {
+            background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='black'/></svg>");
+            border-color: black;
         }
 
         /* DARK MODE STYLING */
@@ -56,6 +61,10 @@
             background: rgba(30, 41, 59, 0.9);
         }
 
+        .dark-mode .modal-content {
+            background: #0f172a;
+        }
+
         .dark-mode .border-bottom {
             border-color: rgba(255, 255, 255, 0.15) !important;
         }
@@ -63,24 +72,45 @@
         .dark-mode .fullscreen,
         .dark-mode .sticky-top,
         .dark-mode .card,
-
         .dark-mode body,
         .dark-mode .modal-dialog {
             background: #0f172a;
             color: #eee;
         }
 
-        .dark-mode .list-group-item,
+        .dark-mode .list-group-item:not(.disabled),
         .dark-mode .form-label,
         .dark-mode .form-control,
         .dark-mode .form-select,
         .dark-mode #version {
-            color: #eee !important;
+            color: #eee;
+        }
+
+        .dark-mode .list-group-item .disabled {
+            color: rgba(173, 181, 189, 0.75);
+        }
+
+        .dark-mode .form-switch .form-check-input:not(:checked) {
+            background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/></svg>");
+            border-color: #eee;
+        }
+
+        .dark-mode .table>:not(caption)>*>* {
+            color: #eee;
+        }
+
+        .dark-mode svg {
+            color: #eee;
         }
 
         /* GENERAL STYLING */
         :root {
             font-family: Helvetica, sans-serif;
+        }
+
+        h4,
+        h6 {
+            margin-bottom: 0rem;
         }
 
         .canvas {
@@ -204,7 +234,7 @@
 <body>
     <div class="container-fluid">
         <div class="sticky-top" id="filterSection">
-            <div class="row border-bottom pb-1">
+            <div class="row border-bottom pb-1" id="filterRowPadding">
                 <div class="col-10">
                     <div class="row">
                         <div class="col-auto">
@@ -213,12 +243,12 @@
                     </div>
                     <div class="row">
                         <div class="col-auto">
-                            <label class="form-label form-label-sm" for="runs">Runs</label>
+                            <label class="form-label form-label-sm" for="runs" id="runsLabel">Runs</label>
                             <select class="form-select form-select-sm" id="runs"></select>
                         </div>
                         <div class="col-auto">
                             <div class="selectBox" id="selectRunTags">
-                                <label class="form-label form-label-sm" for="runTag">Run Tags</label>
+                                <label class="form-label form-label-sm" for="runTag" id="runTagLabel">Run Tags</label>
                                 <select class="form-select form-select-sm">
                                     <option>Select Tags</option>
                                 </select>
@@ -229,23 +259,23 @@
                             </div>
                         </div>
                         <div class="col-auto">
-                            <label class="form-label form-label-sm" for="fromDate">From Date</label>
+                            <label class="form-label form-label-sm" for="fromDate" id="fromDateLabel">From Date</label>
                             <input class="form-control form-control-sm" id="fromDate" type="date" />
                         </div>
                         <div class="col-auto">
-                            <label class="form-label form-label-sm" for="fromTime">From Time</label>
+                            <label class="form-label form-label-sm" for="fromTime" id="fromTimeLabel">From Time</label>
                             <input class="form-control form-control-sm" id="fromTime" type="time" />
                         </div>
                         <div class="col-auto">
-                            <label class="form-label form-label-sm" for="toDate">To Date</label>
+                            <label class="form-label form-label-sm" for="toDate" id="toDateLabel">To Date</label>
                             <input class="form-control form-control-sm" id="toDate" type="date" />
                         </div>
                         <div class="col-auto">
-                            <label class="form-label form-label-sm" for="toTime">To Time</label>
+                            <label class="form-label form-label-sm" for="toTime" id="toTimeLabel">To Time</label>
                             <input class="form-control form-control-sm" id="toTime" type="time" />
                         </div>
                         <div class="col-auto">
-                            <label class="form-label form-label-sm" for="amount"
+                            <label class="form-label form-label-sm" for="amount" id="amountLabel"
                                 title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">Run
                                 Amount</label>
                             <input class="form-control form-control-sm" type="number" min=0 id="amount"
@@ -270,7 +300,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-2 stats">
+                <div class="col-2 stats pb-1">
                     <span id="stats"></span>
                 </div>
             </div>
@@ -285,13 +315,12 @@
         <div class="card" id="runStatisticsSection" style="display: none;">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-auto mt-2">
-                        <div class="btn btn-sm btn-secondary collapse-icon" id="runDetailsButton"
-                            data-bs-toggle="collapse" data-bs-target="#runData" aria-expanded="true"
-                            aria-controls="runData"></div>
+                    <div class="col-auto align-self-center">
+                        <div class="btn btn-sm collapse-icon" id="runDetailsButton" data-bs-toggle="collapse"
+                            data-bs-target="#runData" aria-expanded="true" aria-controls="runData"></div>
                     </div>
                     <div class="col">
-                        <h3 id="runTitle">Statistics</h3>
+                        <h4 id="runTitle">Statistics</h4>
                     </div>
                 </div>
             </div>
@@ -345,13 +374,28 @@
         <div class="card" id="suiteStatisticsSection" style="display: none;">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-auto mt-2">
-                        <div class="btn btn-sm btn-secondary collapse-icon" id="suiteDetailsButton"
-                            data-bs-toggle="collapse" data-bs-target="#suiteData" aria-expanded="true"
-                            aria-controls="suiteData"></div>
+                    <div class="col-auto align-self-center">
+                        <div class="btn btn-sm collapse-icon" id="suiteDetailsButton" data-bs-toggle="collapse"
+                            data-bs-target="#suiteData" aria-expanded="true" aria-controls="suiteData"></div>
                     </div>
                     <div class="col-3">
-                        <h3 id="suiteTitle">Suite Statistics</h3>
+                        <h4 id="suiteTitle">Suite Statistics</h4>
+                    </div>
+                    <div class="col-auto">
+                        <div class="btn-group">
+                            <label class="form-label mt-2" for="suiteSelectFolders">Folder</label>
+                        </div>
+                        <div class="btn-group">
+                            <select class="form-select form-select-sm" id="suiteSelectFolders"></select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="btn-group ms-1">
+                            <label class="form-check-label mt-2" for="showAllFolders">Show All Folders</label>
+                        </div>
+                        <div class="btn-group form-switch ms-1">
+                            <input class="form-check-input mt-2" type="checkbox" role="switch" id="showAllFolders" />
+                        </div>
                     </div>
                     <div class="col-auto">
                         <div class="btn-group">
@@ -375,6 +419,24 @@
             <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card suiteData -->
             <div id="suiteDataHiddenTemp" hidden></div>
             <div id="suiteDataHidden" hidden>
+                <!-- Suite Folder Donuts -->
+                <div class="col canvas pb-5" id="suiteFolderDonutCanvas">
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteFolderDonutGoUp">Go Up</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                        id="suiteFolderDonutGraphDonut">Donut</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                        id="suiteFolderDonutFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteFolderDonutClose"
+                        hidden>Close</button>
+                    <div class="row donut-charts">
+                        <div class="col-md-6">
+                            <canvas id="suiteFolderDonutGraph" class="w-100 h-100"></canvas>
+                        </div>
+                        <div class="col-md-6">
+                            <canvas id="suiteFolderFailDonutGraph" class="w-100 h-100"></canvas>
+                        </div>
+                    </div>
+                </div>
                 <!-- Suite Statistics -->
                 <div class="col canvas pb-5" id="suiteStatisticsCanvas">
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
@@ -426,13 +488,12 @@
         <div class="card" id="testStatisticsSection" style="display: none;">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-auto mt-2">
-                        <div class="btn btn-sm btn-secondary collapse-icon" id="testDetailsButton"
-                            data-bs-toggle="collapse" data-bs-target="#testData" aria-expanded="true"
-                            aria-controls="testData"></div>
+                    <div class="col-auto align-self-center">
+                        <div class="btn btn-sm collapse-icon" id="testDetailsButton" data-bs-toggle="collapse"
+                            data-bs-target="#testData" aria-expanded="true" aria-controls="testData"></div>
                     </div>
                     <div class="col-3">
-                        <h3 id="testTitle">Test Statistics</h3>
+                        <h4 id="testTitle">Test Statistics</h4>
                     </div>
                     <div class="col-auto">
                         <div class="btn-group">
@@ -599,13 +660,12 @@
         <div class="card" id="keywordStatisticsSection" style="display: none;">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-auto mt-2">
-                        <div class="btn btn-sm btn-secondary collapse-icon" id="keywordDetailsButton"
-                            data-bs-toggle="collapse" data-bs-target="#keywordData" aria-expanded="true"
-                            aria-controls="keywordData"></div>
+                    <div class="col-auto align-self-center">
+                        <div class="btn btn-sm collapse-icon" id="keywordDetailsButton" data-bs-toggle="collapse"
+                            data-bs-target="#keywordData" aria-expanded="true" aria-controls="keywordData"></div>
                     </div>
                     <div class="col-3">
-                        <h3 id="keywordTitle">Keyword Statistics</h3>
+                        <h4 id="keywordTitle">Keyword Statistics</h4>
                     </div>
                     <div class="col-auto">
                         <div class="btn-group">
@@ -710,9 +770,9 @@
                         <h1 class="modal-title" id="hideModalLabel">Settings</h1>
                         <div>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto" data-bs-dismiss="modal"
-                                id="resetHide">Reset View</button>
+                                id="resetGraphConfig">Reset View</button>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
-                                data-bs-dismiss="modal" id="saveHide">Save</button>
+                                data-bs-dismiss="modal" id="saveSettings">Save</button>
                         </div>
                     </div>
                     <div class="modal-body">
@@ -727,12 +787,20 @@
                                 <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleTheme" />
                             </div>
                         </div>
-                        <div class="row pb-4">
+                        <div class="row">
                             <div class="col-4 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleLabels">Show Date/Alias Labels</label>
                             </div>
                             <div class="col btn-group form-switch ms-2">
                                 <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleLabels" />
+                            </div>
+                        </div>
+                        <div class="row pb-4">
+                            <div class="col-4 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleLegends">Show Graph Legends</label>
+                            </div>
+                            <div class="col btn-group form-switch ms-2">
+                                <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleLegends" />
                             </div>
                         </div>
                         <div class="row border-bottom pt-1">
@@ -747,8 +815,8 @@
                             </div>
                             <div class="col-auto mt-5">
                                 <div class="controls mt-5">
-                                    <button class="btn btn-sm btn-secondary" id="sectionRight"></button>
-                                    <button class="btn btn-sm btn-secondary" id="sectionLeft"></button>
+                                    <button class="btn btn-sm" id="sectionRight"></button>
+                                    <button class="btn btn-sm" id="sectionLeft"></button>
                                 </div>
                             </div>
                             <div class="col">
@@ -765,8 +833,8 @@
                             </div>
                             <div class="col-auto mt-5">
                                 <div class="controls mt-5">
-                                    <button class="btn btn-sm btn-secondary" id="graphRight"></button>
-                                    <button class="btn btn-sm btn-secondary" id="graphLeft"></button>
+                                    <button class="btn btn-sm" id="graphRight"></button>
+                                    <button class="btn btn-sm" id="graphLeft"></button>
                                 </div>
                             </div>
                             <div class="col">
@@ -789,19 +857,19 @@
 
         // collapse/expand buttons icons/svgs
         const arrowRight =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
+            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g><path fill="currentColor" d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
         const arrowRightSmall =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><g><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
+            '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><g><path fill="currentColor" d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
         const arrowDown =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
+            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
         const arrowDownSmall =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
+            '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
         const arrowLeft =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g transform="scale(-1,1) translate(-52,0)"><path d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"/></g></svg>';
+            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g transform="scale(-1,1) translate(-52,0)"><path fill="currentColor" d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"/></g></svg>';
         const arrowDownVerySmall =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
+            '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
         const arrowUpVerySmall =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52" transform="matrix(-1,1.2246467991473532e-16,-1.2246467991473532e-16,-1,0,0)"><path d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"></path></svg>';
+            '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52" transform="matrix(-1,1.2246467991473532e-16,-1.2246467991473532e-16,-1,0,0)"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"></path></svg>';
 
         // colors
         const passedBackgroundBorderColor = "#97bd61";
@@ -864,6 +932,8 @@
         var runDonutTotalGraph;
         var runDurationGraph;
         var runTable;
+        var suiteFolderDonutGraph;
+        var suiteFolderFailDonutGraph;
         var suiteStatisticsGraph;
         var suiteDurationGraph;
         var suiteMostFailedGraph;
@@ -893,12 +963,16 @@
 
         // var to keep track of the checkbox statuses
         var useSuitePathsSuiteSection = false;
+        var showAllFolders = false;
         var useSuitePathsTestSection = false;
         var ignoreSkips = false; // test most flaky graph
         var ignoreSkipsRecent = false; // test recent most flaky graph
         var showingRunTags = false; // used to keep track if the runtags popup is showing and determine if it should be closed when clicked outside
         var inFullscreen = false;
         var showDateLabels = true;
+        var showLegends = true;
+        var previousFolder = ''; // used to update the suite folder donut to the previous folder with the button
+        var lastScrollY = 0;
 
         // add items in hide modal
         const hideSections = [
@@ -912,6 +986,7 @@
             "Run Donut",
             "Run Duration",
             "Run Table",
+            "Suite Folder Donut",
             "Suite Statistics",
             "Suite Duration",
             "Suite Most Failed",
@@ -935,8 +1010,8 @@
         ]
         var hideItem = `<li class="hideItem list-group-item list-group-item-action d-flex {type}">
             <div class="hideItemText">{value}</div>
-            <button class="btn btn-sm btn-secondary moveUp"></button>
-            <button class="btn btn-sm btn-secondary moveDown"></button>
+            <button class="btn btn-sm moveUp"></button>
+            <button class="btn btn-sm moveDown"></button>
             </li>`
 
         /////////////////////////////
@@ -1044,6 +1119,53 @@
             if (server) {
                 document.getElementById('openDashboard').hidden = false
             }
+        }
+
+        // function to update the filter row when scrolling
+        function setup_scroll_eventlistener() {
+            var scrollTimer, lastScrollFireTime = 0;
+            window.addEventListener("scroll", function (event) {
+                var minScrollTime = 200;
+                var now = new Date().getTime();
+
+                function process_scroll() {
+                    var scroll = this.scrollY;
+                    if (scroll > 100) {
+                        document.getElementById('stats').hidden = true
+                        document.getElementById('runsLabel').hidden = true
+                        document.getElementById('runTagLabel').hidden = true
+                        document.getElementById('fromDateLabel').hidden = true
+                        document.getElementById('fromTimeLabel').hidden = true
+                        document.getElementById('toDateLabel').hidden = true
+                        document.getElementById('toTimeLabel').hidden = true
+                        document.getElementById('amountLabel').hidden = true
+                        document.getElementById('filterRowPadding').classList.add('pb-2')
+                    } else {
+                        document.getElementById('stats').hidden = false
+                        document.getElementById('stats').hidden = false
+                        document.getElementById('runsLabel').hidden = false
+                        document.getElementById('runTagLabel').hidden = false
+                        document.getElementById('fromDateLabel').hidden = false
+                        document.getElementById('fromTimeLabel').hidden = false
+                        document.getElementById('toDateLabel').hidden = false
+                        document.getElementById('toTimeLabel').hidden = false
+                        document.getElementById('amountLabel').hidden = false
+                        document.getElementById('filterRowPadding').classList.remove('pb-2')
+                    }
+                }
+
+                if (!scrollTimer) {
+                    if (now - lastScrollFireTime > (3 * minScrollTime)) {
+                        process_scroll();   // fire immediately on first scroll
+                        lastScrollFireTime = now;
+                    }
+                    scrollTimer = setTimeout(function () {
+                        scrollTimer = null;
+                        lastScrollFireTime = new Date().getTime();
+                        process_scroll();
+                    }, minScrollTime);
+                }
+            });
         }
 
         // function to setup all collapse buttons and icons
@@ -1173,7 +1295,7 @@
         }
 
         // function to update the localstorage and graphs for the suitepath switches
-        function update_suite_path_local_storage(id, state, firstLoad = false) {
+        function update_switch_local_storage(id, state, firstLoad = false) {
             const storageState = JSON.parse(localStorage.getItem(id));
             if (firstLoad) {
                 if (storageState) {
@@ -1182,23 +1304,6 @@
                 }
             } else {
                 localStorage.setItem(id, JSON.stringify(state));
-            }
-            if (id == 'useSuitePathsSuiteSection') {
-                setup_suites_in_suite_select();
-                create_suite_statistics_graph();
-                create_suite_duration_graph();
-                create_suite_most_failed_graph();
-            }
-            if (id == 'useSuitePathsTestSection') {
-                setup_suites_in_test_select();
-                create_test_statistics_graph();
-                create_test_duration_graph();
-                create_test_duration_deviation_graph();
-                create_test_messages_graph();
-                create_test_most_flaky_graph();
-                create_test_recent_most_flaky_graph();
-                create_test_most_failed_graph();
-                create_test_recent_most_failed_graph();
             }
         }
 
@@ -1349,6 +1454,7 @@
                 runDonutGraphType: "donut",
                 runDonutTotalGraphType: "donut",
                 runDurationGraphType: "line",
+                suiteFolderDonutGraphType: "donut",
                 suiteStatisticsGraphType: "percentages",
                 suiteDurationGraphType: "line",
                 suiteMostFailedGraphType: "bar",
@@ -1552,13 +1658,45 @@
                 localStorage.setItem('showDateLabels', JSON.stringify(showDateLabels));
                 if (!load) { setup_all_graphs() }
             }
+            // update the label setting
             toggle_labels(true) // run once on load to setup correctly
             document.getElementById('toggleLabels').addEventListener('click', function () {
                 toggle_labels(false)
             });
 
+            function toggle_legends(load = false) {
+                var storage = JSON.parse(localStorage.getItem('showLegends'));
+                const toggle = document.getElementById('toggleLegends')
+                if (!load) {
+                    storage = !storage
+                }
+                if (storage === true) {
+                    showLegends = true
+                    toggle.checked = true
+                } else if (storage === false) {
+                    showLegends = false
+                    toggle.checked = false
+                } else {
+                    toggle.checked = true // first load and default value
+                }
+                localStorage.setItem('showLegends', JSON.stringify(showLegends));
+                if (!load) { setup_all_graphs() }
+            }
+
+            toggle_legends(true) // run once on load to setup correctly
+            document.getElementById('toggleLegends').addEventListener('click', function () {
+                toggle_legends(false)
+            });
+
+            // update all graphs based on new hidden graphs/sections
+            document.getElementById('saveSettings').addEventListener('click', function () {
+                document.getElementById('runs').focus()
+                update_customize_view_local_storage();
+                setup_data_and_graphs();
+            });
+
             // remove the entire customized view configuration
-            document.getElementById('resetHide').addEventListener('click', function () {
+            document.getElementById('resetGraphConfig').addEventListener('click', function () {
                 document.getElementById('runs').focus()
                 localStorage.setItem('sectionHide', JSON.stringify([]));
                 localStorage.setItem('graphHide', JSON.stringify([]));
@@ -1578,8 +1716,20 @@
                 document.getElementById(f).addEventListener("change", setup_data_and_graphs);
             }
 
+            // has to be added after the creation of the secctions and graphs
+            document.getElementById("suiteFolderDonutGoUp").addEventListener("click", function () {
+                function remove_last_folder(path) {
+                    const parts = path.split('.');
+                    parts.pop();
+                    return parts.length > 0 ? parts.join('.') : '';
+                }
+                const folder = remove_last_folder(previousFolder)
+                if (previousFolder == "" && folder == "") { return }
+                create_suite_folder_donut_graph(folder)
+            });
+
             // eventlisteners for fullscreen buttons
-            const fullscreenButtons = ["runStatistics", "runDonut", "runDuration", "suiteStatistics",
+            const fullscreenButtons = ["runStatistics", "runDonut", "runDuration", "suiteFolderDonut", "suiteStatistics",
                 "suiteDuration", "suiteMostFailed", "testStatistics", "testDuration", "testDurationDeviation",
                 "testMessages", "testMostFlaky", "testRecentMostFlaky", "testMostFailed", "testRecentMostFailed",
                 "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
@@ -1629,6 +1779,7 @@
                 'run_statistics': 'Percentages,Line,Amount',
                 'run_donut': 'Donut',
                 'run_duration': 'Bar,Line',
+                'suite_donut_folder': 'Donut',
                 'suite_statistics': 'Percentages,Line,Amount',
                 'suite_duration': 'Bar,Line',
                 'suite_most_failed': 'Bar,Timeline',
@@ -1689,9 +1840,9 @@
             document.getElementById("resetFilters").addEventListener("click", function () {
                 document.getElementById("runs").value = "All";
                 document.getElementById("runTag").value = "All";
+                document.getElementById("amount").value = filteredAmountDefault;
                 setup_lowest_highest_dates(runs);
                 setup_data_and_graphs();
-                document.getElementById("amount").value = filteredAmountDefault;
             });
             // eventlistener for all selection boxes and their respective graphs that should be updated
             document.getElementById("suiteSelectSuites").addEventListener("change", (e) => {
@@ -1700,7 +1851,27 @@
             });
             document.getElementById("useSuitePathsSuiteSection").addEventListener("change", (e) => {
                 useSuitePathsSuiteSection = !useSuitePathsSuiteSection;
-                update_suite_path_local_storage("useSuitePathsSuiteSection", useSuitePathsSuiteSection);
+                update_switch_local_storage("useSuitePathsSuiteSection", useSuitePathsSuiteSection);
+                setup_suites_in_suite_select();
+                create_suite_statistics_graph();
+                create_suite_duration_graph();
+                create_suite_most_failed_graph();
+            });
+            document.getElementById("suiteSelectFolders").addEventListener("change", (e) => {
+                setup_suites_in_suite_select();
+                create_suite_statistics_graph();
+                create_suite_duration_graph();
+                create_suite_most_failed_graph();
+            })
+            document.getElementById("showAllFolders").addEventListener("change", (e) => {
+                showAllFolders = !showAllFolders;
+                update_switch_local_storage("showAllFolders", showAllFolders);
+                setup_folders_in_suite_select();
+                create_suite_folder_donut_graph();
+                create_suite_folder_fail_donut_graph();
+                create_suite_statistics_graph();
+                create_suite_duration_graph();
+                create_suite_most_failed_graph();
             });
             document.getElementById("suiteSelectTests").addEventListener("change", (e) => {
                 setup_testtags_in_select();
@@ -1711,7 +1882,16 @@
             });
             document.getElementById("useSuitePathsTestSection").addEventListener("change", (e) => {
                 useSuitePathsTestSection = !useSuitePathsTestSection;
-                update_suite_path_local_storage("useSuitePathsTestSection", useSuitePathsTestSection);
+                update_switch_local_storage("useSuitePathsTestSection", useSuitePathsTestSection);
+                setup_suites_in_test_select();
+                create_test_statistics_graph();
+                create_test_duration_graph();
+                create_test_duration_deviation_graph();
+                create_test_messages_graph();
+                create_test_most_flaky_graph();
+                create_test_recent_most_flaky_graph();
+                create_test_most_failed_graph();
+                create_test_recent_most_failed_graph();
             });
             document.getElementById("testTagsSelect").addEventListener("change", (e) => {
                 setup_tests_in_select();
@@ -1838,12 +2018,22 @@
         // function to update the available suites to select in the suite filters
         function setup_suites_in_suite_select() {
             const suiteSelectSuites = document.getElementById("suiteSelectSuites");
+            const suiteSelectFolders = document.getElementById("suiteSelectFolders").value;
             // Clear existing options
             suiteSelectSuites.innerHTML = "";
             // Extract and sort suite names
-            const suiteNames = useSuitePathsSuiteSection
-                ? [...new Set(filteredSuites.map(suite => suite.full_name))].sort()
-                : [...new Set(filteredSuites.map(suite => suite.name))].sort();
+            var suiteNames = new Set()
+            for (const suite of filteredSuites) {
+                if (suiteSelectFolders != "All" && !suite.full_name.startsWith(suiteSelectFolders)) {
+                    continue
+                }
+                if (useSuitePathsSuiteSection) {
+                    suiteNames.add(suite.full_name);
+                } else {
+                    suiteNames.add(suite.name);
+                }
+            }
+            suiteNames = [...suiteNames].sort()
             // Add "All" as default
             suiteSelectSuites.options.add(new Option("All", "All"));
             // Add suite names to selects
@@ -1871,6 +2061,30 @@
             });
             // Set the default selection to the second option (All is default)
             suiteSelectTests.selectedIndex = 1;
+        }
+
+        // function to update the available folder suites in the suite filters
+        function setup_folders_in_suite_select() {
+            const suiteSelectFolders = document.getElementById("suiteSelectFolders");
+            // Clear existing options
+            suiteSelectFolders.innerHTML = "";
+            // Extract and sort suite names
+            var suiteFolders = new Set()
+            for (const suite of filteredSuites) {
+                const splitted = suite.full_name.split('.')
+                while (splitted.length > 0) {
+                    const [suiteName, folder] = [splitted.pop(), splitted.join('.')]
+                    suiteFolders.add(folder)
+                    if (!showAllFolders) { break }
+                }
+            }
+            suiteFolders = [...suiteFolders].filter(Boolean).sort()
+            // Add "All" as default
+            suiteSelectFolders.options.add(new Option("All", "All"));
+            // Add suite names to selects
+            suiteFolders.forEach(suiteFolder => {
+                suiteSelectFolders.options.add(new Option(suiteFolder, suiteFolder));
+            });
         }
 
         // function to update the available tests to select in the filters
@@ -2087,7 +2301,7 @@
             const data = get_donut_graph_data("run", filteredRuns);
             const graphData = data[0]
             const callbackData = data[1]
-            var config = get_graph_config("donut", graphData, `Last Run Status: ${callbackData}`, "Run", "Amount", false);
+            var config = get_graph_config("donut", graphData, `Last Run Status: ${callbackData}`);
             config.options.onClick = (event, chartElement) => {
                 if (chartElement.length) {
                     open_log_file(event, chartElement, callbackData)
@@ -2105,7 +2319,7 @@
             const data = get_donut_total_graph_data("run", filteredRuns);
             const graphData = data[0]
             const callbackData = data[1]
-            var config = get_graph_config("donut", graphData, `Total Status`, "Run", "Amount", false);
+            var config = get_graph_config("donut", graphData, `Total Status`);
             delete config.options.onClick;
             runDonutTotalGraph = new Chart("runDonutTotalGraph", config);
         }
@@ -2171,6 +2385,78 @@
                 ],
                 data: data,
             });
+        }
+
+        // function to create suite folder donut
+        function create_suite_folder_donut_graph(folder) {
+            if (suiteFolderDonutGraph) {
+                suiteFolderDonutGraph.destroy();
+            }
+            Chart.register(ChartDataLabels);
+            const data = get_donut_folder_graph_data("suite", filteredSuites, folder);
+            const graphData = data[0]
+            const callbackData = data[1]
+            const labels = graphData.labels
+            var config = get_graph_config("donut", graphData, `All Folder Statistics`);
+            config.options.plugins.tooltip.callbacks = {
+                label: function (context) {
+                    const label = labels[context.dataIndex]
+                    const passed = callbackData[label].passed
+                    const failed = callbackData[label].failed
+                    const skipped = callbackData[label].skipped
+                    return `Total: ${context.raw} Passed: ${passed}, Failed: ${failed}, Skipped: ${skipped}`;
+                },
+                title: function (tooltipItem) {
+                    return tooltipItem.label;
+                }
+            }
+            config.options.onClick = (event) => {
+                if (event.chart.tooltip.title) {
+                    setTimeout(() => {
+                        create_suite_folder_donut_graph(event.chart.tooltip.title[0]);
+                    }, 0);
+                }
+            };
+            suiteFolderDonutGraph = new Chart("suiteFolderDonutGraph", config);
+        }
+
+        // function to create suite last failed donut
+        function create_suite_folder_fail_donut_graph() {
+            if (suiteFolderFailDonutGraph) {
+                suiteFolderFailDonutGraph.destroy();
+            }
+            Chart.register(ChartDataLabels);
+            const data = get_donut_folder_fail_graph_data("suite", filteredSuites);
+            const graphData = data[0]
+            const callbackData = data[1]
+            if (graphData.labels.length == 0) {
+                graphData.labels = ['No Failed Folders']
+                graphData.datasets = [{
+                    data: [1],
+                    backgroundColor: ['grey'],
+                }]
+            }
+            var config = get_graph_config("donut", graphData, `Last Run Failed Folders`);
+            config.options.plugins.tooltip.callbacks = {
+                label: function (context) {
+                    return context.raw + ' Failed Tests';
+                },
+                title: function (tooltipItem) {
+                    return tooltipItem.label;
+                }
+            }
+            if (graphData.labels[0] != 'No Failed Folders') {
+                config.options.onClick = (event) => {
+                    if (event.chart.tooltip.title) {
+                        const select = document.getElementById('suiteSelectFolders')
+                        const newValue = event.chart.tooltip.title[0]
+                        if (select.value == newValue) { return }
+                        select.value = newValue
+                        select.dispatchEvent(new Event('change'))
+                    }
+                }
+            };
+            suiteFolderFailDonutGraph = new Chart("suiteFolderFailDonutGraph", config);
         }
 
         // function to create suite statistics graph in the suite section
@@ -2610,7 +2896,7 @@
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
                     }
-                }
+                };
                 if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
             update_height('testMostFlakyVertical', config.data.labels.length, config.options.plugins.title.text, testMostFlakyGraphType);
@@ -2665,7 +2951,7 @@
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
                     }
-                }
+                };
                 if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
             update_height('testRecentMostFlakyVertical', config.data.labels.length, config.options.plugins.title.text, testRecentMostFlakyGraphType);
@@ -2730,7 +3016,7 @@
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
                     }
-                }
+                };
                 if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
             update_height('testMostFailedVertical', config.data.labels.length, config.options.plugins.title.text, testMostFailedGraphType);
@@ -2795,7 +3081,7 @@
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
                     }
-                }
+                };
                 if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
             update_height('testRecentMostFailedVertical', config.data.labels.length, config.options.plugins.title.text, testRecentMostFailedGraphType);
@@ -3198,9 +3484,10 @@
             if (dataSets && graphType == "line") {
                 graphData = { datasets: graphData };
             }
+            var config
             // Configuration for 'line' graph
             if (graphType === "line") {
-                return {
+                config = {
                     type: "line",
                     data: graphData,
                     options: {
@@ -3228,7 +3515,7 @@
             }
             // Configuration for 'bar' graph
             if (graphType === "bar") {
-                return {
+                config = {
                     type: "bar",
                     data: graphData,
                     options: {
@@ -3260,7 +3547,7 @@
             }
             // Configuration for 'timeline' graph
             if (graphType === "timeline") {
-                return {
+                config = {
                     type: "bar",
                     data: graphData,
                     options: {
@@ -3284,7 +3571,7 @@
             }
             // Configuration for 'boxplot' graph
             if (graphType === "boxplot") {
-                return {
+                config = {
                     type: "boxplot",
                     data: graphData,
                     options: {
@@ -3315,7 +3602,7 @@
                 };
             }
             if (graphType == "donut") {
-                return {
+                config = {
                     type: "doughnut",
                     data: graphData,
                     options: {
@@ -3340,17 +3627,24 @@
                                 color: "#000000",
                                 align: "center",
                                 anchor: "center",
-                                formatter: function (value) {
+                                formatter: function (value, context) {
                                     if (value == 0) { return "" }
                                     const total = graphData.datasets[0].data.reduce((a, b) => a + b, 0);
                                     const percentage = Math.round((value / total) * 100);
-                                    return `${value} (${percentage}%)`;
+                                    return `${graphData.labels[context.dataIndex]}: ${value} (${percentage}%)`;
                                 }
                             },
                         },
                     },
                 };
             }
+            if (!showLegends) {
+                config.options = config.options || {};
+                config.options.plugins = config.options.plugins || {};
+                config.options.plugins.legend = config.options.plugins.legend || {};
+                config.options.plugins.legend.display = false;
+            }
+            return config
         }
 
         // function to prepare the data in the correct format for statistics graphs
@@ -3433,23 +3727,25 @@
             var datasets = [];
             var backgroundColors = [];
             var backgroundBorderColors = [];
-            if (latest.passed > 0) {
-                labels.push('Passed')
-                datasets.push(latest.passed)
-                backgroundColors.push(passedBackgroundColor)
-                backgroundBorderColors.push(passedBackgroundBorderColor)
-            }
-            if (latest.failed > 0) {
-                labels.push('Failed')
-                datasets.push(latest.failed)
-                backgroundColors.push(failedBackgroundColor)
-                backgroundBorderColors.push(failedBackgroundBorderColor)
-            }
-            if (latest.skipped > 0) {
-                labels.push('Skipped')
-                datasets.push(latest.skipped)
-                backgroundColors.push(skippedBackgroundColor)
-                backgroundBorderColors.push(skippedBackgroundBorderColor)
+            if (latest) {
+                if (latest.passed > 0) {
+                    labels.push('Passed')
+                    datasets.push(latest.passed)
+                    backgroundColors.push(passedBackgroundColor)
+                    backgroundBorderColors.push(passedBackgroundBorderColor)
+                }
+                if (latest.failed > 0) {
+                    labels.push('Failed')
+                    datasets.push(latest.failed)
+                    backgroundColors.push(failedBackgroundColor)
+                    backgroundBorderColors.push(failedBackgroundBorderColor)
+                }
+                if (latest.skipped > 0) {
+                    labels.push('Skipped')
+                    datasets.push(latest.skipped)
+                    backgroundColors.push(skippedBackgroundColor)
+                    backgroundBorderColors.push(skippedBackgroundBorderColor)
+                }
             }
             const graphData = {
                 labels: labels,
@@ -3460,7 +3756,7 @@
                     hoverOffset: 4
                 }]
             };
-            const callBackData = use_run_aliases ? latest.run_alias : latest.run_start;
+            const callBackData = latest ? use_run_aliases ? latest.run_alias : latest.run_start : ''
             return [graphData, callBackData]
         }
 
@@ -3499,6 +3795,114 @@
             };
             const callBackData = labels
             return [graphData, callBackData]
+        }
+
+        // function to prepare the data in the correct format for the last failed folders donut
+        function get_donut_folder_fail_graph_data(dataType, filteredData) {
+            var lastRunStart = filteredData[Object.keys(filteredData)[Object.keys(filteredData).length - 1]]
+            if (lastRunStart) {
+                lastRunStart = lastRunStart.run_start
+            }
+            const suiteSelectFolders = document.getElementById("suiteSelectFolders").querySelectorAll('option');
+            const folders = []
+            const labels = []
+            const data = []
+            for (const element of suiteSelectFolders) {
+                if (element.value == 'All') { continue }
+                folders.push(element.value)
+            }
+            for (const folder of folders) {
+                var failed = 0;
+                for (const value of filteredData) {
+                    if (value.run_start != lastRunStart) { continue }
+                    if (value.failed == 0) { continue }
+                    if (value.full_name.startsWith(folder)) {
+                        failed += value.failed;
+                        if (!labels.includes(folder)) { labels.push(folder) }
+                    }
+                }
+                if (failed != 0) { data.push(failed) }
+            }
+            const graphData = {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    hoverOffset: 4
+                }]
+            };
+            const callbackData = labels
+            return [graphData, callbackData]
+        }
+
+        // function to prepare the data in the correct format for folder donuts
+        function get_donut_folder_graph_data(dataType, filteredData, folder) {
+            // const suiteSelectFolders = document.getElementById("suiteSelectFolders").querySelectorAll('option');
+            function get_next_folder_level(fullPath, currentPath) {
+                const fullParts = fullPath.split('.');
+                const currentParts = currentPath.split('.');
+                if (
+                    currentParts.length < fullParts.length &&
+                    fullParts.slice(0, currentParts.length).join('.') === currentPath
+                ) {
+                    return fullParts.slice(0, currentParts.length + 1).join('.');
+                }
+                return currentPath;
+            }
+
+            var labels = new Set()
+            const callbackData = {}
+            const data = []
+            for (const value of filteredData) {
+                if (!folder) {
+                    const label = value.full_name.split('.')[0]
+                    labels.add(label)
+                    if (!callbackData[label]) {
+                        callbackData[label] = {
+                            total: value.total,
+                            passed: value.passed,
+                            skipped: value.skipped,
+                            failed: value.failed
+                        };
+                    } else {
+                        // If label exists, increment the values
+                        callbackData[label].total += value.total;
+                        callbackData[label].passed += value.passed;
+                        callbackData[label].skipped += value.skipped;
+                        callbackData[label].failed += value.failed;
+                    }
+                } else {
+                    if (!value.full_name.startsWith(folder)) { continue }
+                    const label = get_next_folder_level(folder, value.full_name)
+                    labels.add(label)
+                    if (!callbackData[label]) {
+                        callbackData[label] = {
+                            total: value.total,
+                            passed: value.passed,
+                            skipped: value.skipped,
+                            failed: value.failed
+                        };
+                    } else {
+                        // If label exists, increment the values
+                        callbackData[label].total += value.total;
+                        callbackData[label].passed += value.passed;
+                        callbackData[label].skipped += value.skipped;
+                        callbackData[label].failed += value.failed;
+                    }
+                }
+            }
+            previousFolder = folder ? folder : "";
+            labels = [...labels]
+            for (const label of labels) {
+                data.push(callbackData[label].total)
+            }
+            const graphData = {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    hoverOffset: 4
+                }]
+            };
+            return [graphData, callbackData]
         }
 
         // function to prepare the data in the correct format for duration graphs
@@ -4044,6 +4448,7 @@
 
         // function to update all graph data, function is called when updating filters and when the page loads
         function setup_data_and_graphs() {
+            lastScrollY = window.scrollY
             setup_spinner(false)
 
             // Let the browser render before continuing
@@ -4059,6 +4464,9 @@
                 requestAnimationFrame(() => {
                     setup_spinner(true);
                     setup_all_graphs();
+                    if (lastScrollY != 0) {
+                        scrollTo(0, lastScrollY, 'smooth')
+                    }
                 })
             });
         }
@@ -4076,13 +4484,14 @@
             filteredKeywords = filter_data("keywords");
             // set titles with amount of filtered items
             const runAmount = Object.keys(filteredRuns).length
-            const message = `<h6>showing ${runAmount} of ${filteredAmount} runs<h6>`
+            const message = `<h6>showing ${runAmount} of ${filteredAmount} runs</h6>`
             document.getElementById("runTitle").innerHTML = `Run Statistics (${runAmount}) ${message}`;
             document.getElementById("suiteTitle").innerHTML = `Suite Statistics (${Object.keys(filteredSuites).length}) ${message}`;
             document.getElementById("testTitle").innerHTML = `Test Statistics (${Object.keys(filteredTests).length}) ${message}`;
             document.getElementById("keywordTitle").innerHTML = `Keyword Statistics (${Object.keys(filteredKeywords).length}) ${message}`;
             // update filters based on data
             setup_suites_in_suite_select();
+            setup_folders_in_suite_select();
             setup_suites_in_test_select();
             setup_testtags_in_select();
             setup_tests_in_select();
@@ -4096,7 +4505,9 @@
             create_run_donut_total_graph();
             create_run_duration_graph();
             create_run_table();
-            create_suite_statistics_graph(); 1
+            create_suite_statistics_graph();
+            create_suite_folder_donut_graph();
+            create_suite_folder_fail_donut_graph();
             create_suite_duration_graph();
             create_suite_most_failed_graph();
             create_suite_table();
@@ -4164,13 +4575,13 @@
             }
 
             const chevronRow = `<div class="row" id="${lowerCaseSection}Chevron{index}">
-                                    <div class="col-auto mt-1">
-                                        <div class="btn btn-sm btn-secondary collapse-icon" id="${lowerCaseSection}ChevronButton{index}" data-bs-toggle="collapse"
+                                    <div class="col-auto">
+                                        <div class="btn btn-sm collapse-icon" id="${lowerCaseSection}ChevronButton{index}" data-bs-toggle="collapse"
                                             data-bs-target="#${lowerCaseSection}Data{index}" aria-expanded="true" aria-controls="${lowerCaseSection}Data{index}">
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <h5 class='sectionTitle'>{title}</h5>
+                                        <h6 class='sectionTitle'>{title}</h6>
                                     </div>
                                 </div>`
             const dataRow = `<div class="row collapse show" id="${lowerCaseSection}Data{index}">
@@ -4181,7 +4592,6 @@
             function position_graph(graph) {
                 const camelCaseGraph = space_to_camelcase(graph)
                 const graphDataElement = document.getElementById(camelCaseGraph + 'Canvas')
-                console.log(graph, graphDataElement)
                 const canvas = graphDataElement.outerHTML
                 graphDataElement.remove()
                 if (sectionDataElement.lastChild == null) {
@@ -4245,6 +4655,7 @@
         // function that triggers all functions that should be executed when the dashboard is loaded first
         // in the correct order!
         function main() {
+            setup_scroll_eventlistener();
             setup_theme();
             setup_stats();
             setup_customize_view_button_eventlisteners();
@@ -4252,17 +4663,15 @@
             setup_customize_view_local_storage();
             setup_customize_view_content();
             update_customize_view_local_storage();
+            update_switch_local_storage("useSuitePathsSuiteSection", useSuitePathsSuiteSection, true);
+            update_switch_local_storage("useSuitePathsTestSection", useSuitePathsTestSection, true);
+            update_switch_local_storage("showAllFolders", showAllFolders, true);
             setup_eventlisteners_section_filter_buttons();
             setup_run_amount_filter();
             setup_lowest_highest_dates();
             setup_runs_in_select_filter_buttons();
             setup_runtags_in_select_filter_buttons();
             setup_data_and_graphs();
-
-            setTimeout(() => { // let the browser render before continueing, this is because the data has to be filtered for this to take effect correctly
-                update_suite_path_local_storage("useSuitePathsSuiteSection", useSuitePathsSuiteSection, true);
-                update_suite_path_local_storage("useSuitePathsTestSection", useSuitePathsTestSection, true);
-            }, 0);
         }
 
         // trigger of first load
