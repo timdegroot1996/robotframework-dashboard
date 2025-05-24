@@ -271,8 +271,8 @@
                         <p class="mt-auto">outputs to remove by run_start</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm" for="removeRunStarts">E.g. '2025-03-13
-                            00:29:15.926420,2025-03-23 20:31:03.541062' (, separated)</label>
+                        <label class="form-label form-label-sm" for="removeRunStarts">E.g. "2025-03-13
+                            00:29:15.926420,2025-03-23 20:31:03.541062" (, separated)</label>
                         <input class="form-control form-control-sm" id="removeRunStarts"></input>
                     </div>
                 </div>
@@ -281,7 +281,7 @@
                         <p class="mt-auto">outputs to remove by index</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm mt-1" for="removeIndexes">E.g. '1:3;9;13', will remove
+                        <label class="form-label form-label-sm mt-1" for="removeIndexes">E.g. "1:3;9;13", will remove
                             1,2,3,9,13 (: or ; separated)</label>
                         <input class="form-control form-control-sm" id="removeIndexes"></input>
                     </div>
@@ -291,7 +291,7 @@
                         <p class="mt-auto">outputs to remove by alias</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm mt-1" for="removeAliases">E.g. 'alias1,cool_alias_2' (,
+                        <label class="form-label form-label-sm mt-1" for="removeAliases">E.g. "alias1,cool_alias_2" (,
                             separated)</label>
                         <input class="form-control form-control-sm" id="removeAliases"></input>
                     </div>
@@ -301,7 +301,7 @@
                         <p class="mt-auto">outputs to remove by tag</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm mt-1" for="removeTags">E.g. 'prod,dev,nightly,tag1' (,
+                        <label class="form-label form-label-sm mt-1" for="removeTags">E.g. "prod,dev,nightly,tag1" (,
                             separated)</label>
                         <input class="form-control form-control-sm" id="removeTags"></input>
                     </div>
@@ -322,8 +322,8 @@
                 <div class="row">
                     <p>IMPORTANT! The log_name that is provided should be similar to the output.xml that has been
                         uploaded
-                        If you added 'output-123.xml' then the log should be 'log-123.html', otherwise the database
-                        won't update correctly!</p>
+                        If you added "output-123.xml" then the log should be "log-123.html", otherwise the database
+                        won"t update correctly!</p>
                 </div>
                 <div class="row">
                     <div class="col-2 d-flex">
@@ -351,8 +351,8 @@
                         <p class="mt-auto">log.html to remove by name</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm mt-1" for="removeLog">E.g. 'log-20250219-172535.html' or
-                            'all' for everything</label>
+                        <label class="form-label form-label-sm mt-1" for="removeLog">E.g. "log-20250219-172535.html" or
+                            "all" for everything</label>
                         <input class="form-control form-control-sm" id="removeLog"></input>
                     </div>
                     <div class="col-2 d-flex">
@@ -370,7 +370,7 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <p>Use 'Run ID' or 'Run Start' to remove runs from the database.</p>
+                    <p>Use "Run ID" or "Run Start" to remove runs from the database.</p>
                 </div>
                 <div class="row">
                     <div class="col">
@@ -413,17 +413,17 @@
                         <h4>Admin custom view usage instructions</h4>
                         <ul>
                             <li>You can set which sections and graphs are hidden by default as admin</li>
-                            <li>This 'admin hidden settings' are saved in browser local storage and on the server itself
+                            <li>This "admin hidden settings" are saved in browser local storage and on the server itself
                             </li>
                             <li>If the server is turned off it loses the configuration.
                             <li>If you start the admin page the browser local storage in the admin page should
-                                automatically restore the 'admin hidden settings' on first load</li>
+                                automatically restore the "admin hidden settings" on first load</li>
                             <li>Above point assumes you are using a machine/browser you have previously used to set the
                                 settings!</li>
-                            <li>If a user does already have 'hidden settings' the admin settings are ignored even if
+                            <li>If a user does already have "hidden settings" the admin settings are ignored even if
                                 they are different</li>
-                            <li>To view current 'hidden settings' (both admin and user) you can open 'Developer Tools
-                                (F12)' > 'Application (App)' > 'Local Storage'</li>
+                            <li>To view current "hidden settings" (both admin and user) you can open "Developer Tools
+                                (F12)" > "Application (App)" > "Local Storage"</li>
                             <li>Only when refreshing the dashboard page will admin settings be used if they were changed
                                 while it was open
                             </li>
@@ -537,10 +537,10 @@
 
         // function to update the theme when the button is clicked
         function toggle_theme() {
-            if (document.documentElement.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'light');
+            if (document.documentElement.classList.contains("dark-mode")) {
+                localStorage.setItem("theme", "light");
             } else {
-                localStorage.setItem('theme', 'dark');
+                localStorage.setItem("theme", "dark");
             }
             setup_theme()
         }
@@ -551,67 +551,67 @@
                 // bootstrap dark-mode attribute
                 document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "light");
                 // bootstrap default color
-                document.documentElement.style.setProperty('--bs-body-bg', '#fff');
+                document.documentElement.style.setProperty("--bs-body-bg", "#fff");
                 // bootstrap buttons light -> dark
-                const buttonsOutlineLight = document.querySelectorAll('.btn-outline-light')
-                const buttonsLight = document.querySelectorAll('.btn-light')
+                const buttonsOutlineLight = document.querySelectorAll(".btn-outline-light")
+                const buttonsLight = document.querySelectorAll(".btn-light")
                 for (const button of buttonsOutlineLight) {
-                    button.classList.remove('btn-outline-light');
-                    button.classList.add('btn-outline-dark');
+                    button.classList.remove("btn-outline-light");
+                    button.classList.add("btn-outline-dark");
                 }
                 for (const button of buttonsLight) {
-                    button.classList.remove('btn-light');
-                    button.classList.add('btn-dark');
+                    button.classList.remove("btn-light");
+                    button.classList.add("btn-dark");
                 }
                 // set toggle in correct state if not already, needed on first load to set based on media or localstorage
-                if (document.getElementById('toggleTheme').checked) {
-                    document.getElementById('toggleTheme').checked = false
+                if (document.getElementById("toggleTheme").checked) {
+                    document.getElementById("toggleTheme").checked = false
                 }
                 // set the table correctly
-                document.getElementById('runTable').classList.remove('table-dark')
-                document.getElementById('runTable').classList.add('table-light')
+                document.getElementById("runTable").classList.remove("table-dark")
+                document.getElementById("runTable").classList.add("table-light")
             }
 
             function set_dark_mode() {
                 // bootstrap dark-mode attribute
                 document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "dark");
                 // bootstrap light buttons -> dark
-                document.documentElement.style.setProperty('--bs-body-bg', 'rgba(30, 41, 59, 0.9)');
+                document.documentElement.style.setProperty("--bs-body-bg", "rgba(30, 41, 59, 0.9)");
                 // bootstrap buttons dark -> light
-                const buttonsOutlineLight = document.querySelectorAll('.btn-outline-dark')
-                const buttonsLight = document.querySelectorAll('.btn-dark')
+                const buttonsOutlineLight = document.querySelectorAll(".btn-outline-dark")
+                const buttonsLight = document.querySelectorAll(".btn-dark")
                 for (const button of buttonsOutlineLight) {
-                    button.classList.remove('btn-outline-dark');
-                    button.classList.add('btn-outline-light');
+                    button.classList.remove("btn-outline-dark");
+                    button.classList.add("btn-outline-light");
                 }
                 for (const button of buttonsLight) {
-                    button.classList.remove('btn-dark');
-                    button.classList.add('btn-light');
+                    button.classList.remove("btn-dark");
+                    button.classList.add("btn-light");
                 }
-                if (!document.getElementById('toggleTheme').checked) {
-                    document.getElementById('toggleTheme').checked = true
+                if (!document.getElementById("toggleTheme").checked) {
+                    document.getElementById("toggleTheme").checked = true
                 }
                 // set the table correctly
-                document.getElementById('runTable').classList.remove('table-light')
-                document.getElementById('runTable').classList.add('table-dark')
+                document.getElementById("runTable").classList.remove("table-light")
+                document.getElementById("runTable").classList.add("table-dark")
             }
 
-            const theme = localStorage.getItem('theme');
+            const theme = localStorage.getItem("theme");
             const root = document.documentElement;
-            const isDark = root.classList.contains('dark-mode');
-            if (theme === 'light') {
-                if (isDark) root.classList.remove('dark-mode');
+            const isDark = root.classList.contains("dark-mode");
+            if (theme === "light") {
+                if (isDark) root.classList.remove("dark-mode");
                 set_light_mode();
-            } else if (theme === 'dark') {
-                if (!isDark) root.classList.add('dark-mode');
+            } else if (theme === "dark") {
+                if (!isDark) root.classList.add("dark-mode");
                 set_dark_mode();
             } else {
                 // No theme in localStorage, fall back to system preference
                 if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                    root.classList.add('dark-mode');
+                    root.classList.add("dark-mode");
                     set_dark_mode();
                 } else {
-                    root.classList.remove('dark-mode');
+                    root.classList.remove("dark-mode");
                     set_light_mode();
                 }
             }
@@ -619,32 +619,32 @@
 
         function setup_output_button_eventlisteners() {
             // add eventlisteners to all buttons
-            document.getElementById('addOutputPath').addEventListener('click', add_output_path);
-            document.getElementById('addOutputData').addEventListener('click', add_output_data);
-            document.getElementById('addOutputFolderPath').addEventListener('click', add_output_folder_path);
-            document.getElementById('removeOutputs').addEventListener('click', remove_outputs);
-            document.getElementById('addLogData').addEventListener('click', add_log);
-            document.getElementById('removeLogData').addEventListener('click', remove_log);
+            document.getElementById("addOutputPath").addEventListener("click", add_output_path);
+            document.getElementById("addOutputData").addEventListener("click", add_output_data);
+            document.getElementById("addOutputFolderPath").addEventListener("click", add_output_folder_path);
+            document.getElementById("removeOutputs").addEventListener("click", remove_outputs);
+            document.getElementById("addLogData").addEventListener("click", add_log);
+            document.getElementById("removeLogData").addEventListener("click", remove_log);
 
         }
 
         // function to add eventlisteners
         function setup_customize_view_button_eventlisteners() {
-            document.getElementById('toggleTheme').addEventListener('click', function () {
+            document.getElementById("toggleTheme").addEventListener("click", function () {
                 toggle_theme()
             });
 
-            document.getElementById('saveHide').addEventListener('click', function () {
+            document.getElementById("saveHide").addEventListener("click", function () {
                 update_customize_view_local_storage();
                 set_customized_view_config();
             });
 
             // remove the entire customized view configuration
-            document.getElementById('resetHide').addEventListener('click', function () {
-                localStorage.setItem('adminSectionHide', JSON.stringify([])); // Reset as empty array
-                localStorage.setItem('adminGraphHide', JSON.stringify([])); // Reset as empty array
-                localStorage.setItem('adminSectionShow', JSON.stringify(hideSections))
-                localStorage.setItem('adminGraphShow', JSON.stringify(hideGraphs))
+            document.getElementById("resetHide").addEventListener("click", function () {
+                localStorage.setItem("adminSectionHide", JSON.stringify([])); // Reset as empty array
+                localStorage.setItem("adminGraphHide", JSON.stringify([])); // Reset as empty array
+                localStorage.setItem("adminSectionShow", JSON.stringify(hideSections))
+                localStorage.setItem("adminGraphShow", JSON.stringify(hideGraphs))
                 setup_customize_view_content(); // Re-initialize the modal items
                 update_customize_view_local_storage();
                 set_customized_view_config();
@@ -659,13 +659,13 @@
                     <span aria-hidden="true">&times;</span>
                 </span>
             </div>`
-            document.getElementById('alertContainer').innerHTML = alertHTML
+            document.getElementById("alertContainer").innerHTML = alertHTML
 
         }
 
         // function to close the alerts
         function close_alert() {
-            document.getElementById('alertContainer').innerHTML = ''
+            document.getElementById("alertContainer").innerHTML = ""
         }
 
         //////////////////////////////////
@@ -674,86 +674,86 @@
 
         // function to add an output to the database based on a path
         function add_output_path() {
-            document.getElementById('addPathSpinner').hidden = false
-            const outputPath = document.getElementById('outputPath').value
-            const outputTags = document.getElementById('outputTags').value.split(':')
-            document.getElementById('outputPath').value = ''
-            document.getElementById('outputTags').value = ''
+            document.getElementById("addPathSpinner").hidden = false
+            const outputPath = document.getElementById("outputPath").value
+            const outputTags = document.getElementById("outputTags").value.split(":")
+            document.getElementById("outputPath").value = ""
+            document.getElementById("outputTags").value = ""
 
             const body = JSON.stringify({
                 output_path: outputPath,
                 output_tags: outputTags,
             });
-            send_request("POST", "/add-outputs", body, 'addPathSpinner')
+            send_request("POST", "/add-outputs", body, "addPathSpinner")
         }
 
         // function to add an output to the database based on raw data
         function add_output_data() {
-            document.getElementById('addDataSpinner').hidden = false
-            const outputData = document.getElementById('outputData').value
-            const outputDataTags = document.getElementById('outputDataTags').value.split(':')
-            const outputAlias = document.getElementById('outputDataAlias').value
-            document.getElementById('outputData').value = ''
-            document.getElementById('outputDataTags').value = ''
-            document.getElementById('outputDataAlias').value = ''
+            document.getElementById("addDataSpinner").hidden = false
+            const outputData = document.getElementById("outputData").value
+            const outputDataTags = document.getElementById("outputDataTags").value.split(":")
+            const outputAlias = document.getElementById("outputDataAlias").value
+            document.getElementById("outputData").value = ""
+            document.getElementById("outputDataTags").value = ""
+            document.getElementById("outputDataAlias").value = ""
 
             const body = JSON.stringify({
                 output_data: outputData,
                 output_tags: outputDataTags,
                 output_alias: outputAlias,
             });
-            send_request("POST", "/add-outputs", body, 'addDataSpinner')
+            send_request("POST", "/add-outputs", body, "addDataSpinner")
         }
 
         // function to add output(s) to the database based on a folder path
         function add_output_folder_path() {
-            document.getElementById('addFolderSpinner').hidden = false
-            const outputFolderPath = document.getElementById('outputFolderPath').value
-            const outputFolderTags = document.getElementById('outputFolderTags').value.split(':')
-            document.getElementById('outputFolderPath').value = ''
-            document.getElementById('outputFolderTags').value = ''
+            document.getElementById("addFolderSpinner").hidden = false
+            const outputFolderPath = document.getElementById("outputFolderPath").value
+            const outputFolderTags = document.getElementById("outputFolderTags").value.split(":")
+            document.getElementById("outputFolderPath").value = ""
+            document.getElementById("outputFolderTags").value = ""
 
             const body = JSON.stringify({
                 output_folder_path: outputFolderPath,
                 output_tags: outputFolderTags,
             });
-            send_request("POST", "/add-outputs", body, 'addFolderSpinner')
+            send_request("POST", "/add-outputs", body, "addFolderSpinner")
         }
 
         // function to remove outputs from the database
         function remove_outputs() {
-            document.getElementById('removeSpinner').hidden = false
+            document.getElementById("removeSpinner").hidden = false
             var [data, run_starts, indexes, aliases, tags] = [{}, [], [], [], []]
-            const removeRunStarts = document.getElementById('removeRunStarts').value.split(',')
+            const removeRunStarts = document.getElementById("removeRunStarts").value.split(",")
             for (const runStart of removeRunStarts) {
-                if (runStart == '') { continue }
+                if (runStart == "") { continue }
                 run_starts.push(runStart)
             }
-            if (run_starts.length > 0) { data['run_starts'] = run_starts }
-            const removeIndexes = document.getElementById('removeIndexes').value.split(';')
+            if (run_starts.length > 0) { data["run_starts"] = run_starts }
+            const removeIndexes = document.getElementById("removeIndexes").value.split(";")
             for (const index of removeIndexes) {
-                if (index == '') { continue }
+                if (index == "") { continue }
                 indexes.push(index)
             }
-            if (indexes.length > 0) { data['indexes'] = indexes }
-            const removeAliases = document.getElementById('removeAliases').value.split(',')
+            if (indexes.length > 0) { data["indexes"] = indexes }
+            const removeAliases = document.getElementById("removeAliases").value.split(",")
             for (const removeAlias of removeAliases) {
-                if (removeAlias == '') { continue }
+                if (removeAlias == "") { continue }
                 aliases.push(removeAlias)
             }
-            if (aliases.length > 0) { data['aliases'] = aliases }
-            const removeTags = document.getElementById('removeTags').value.split(',')
+            if (aliases.length > 0) { data["aliases"] = aliases }
+            const removeTags = document.getElementById("removeTags").value.split(",")
             for (const removeTag of removeTags) {
-                if (removeTag == '') { continue }
+                if (removeTag == "") { continue }
                 tags.push(removeTag)
             }
-            if (tags.length > 0) { data['tags'] = tags }
-            document.getElementById('removeRunStarts').value = ''
-            document.getElementById('removeIndexes').value = ''
-            document.getElementById('removeAliases').value = ''
-            document.getElementById('removeTags').value = ''
+            if (tags.length > 0) { data["tags"] = tags }
+            document.getElementById("removeRunStarts").value = ""
+            document.getElementById("removeIndexes").value = ""
+            document.getElementById("removeAliases").value = ""
+            document.getElementById("removeTags").value = ""
             const body = JSON.stringify(data)
-            send_request("DELETE", "/remove-outputs", body, 'removeSpinner')
+            send_request("DELETE", "/remove-outputs", body, "removeSpinner")
         }
 
         // function to retrieve all outputs currently in the database
@@ -764,13 +764,13 @@
             xhr.onload = () => {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     const runs = JSON.parse(xhr.responseText)
-                    let table = '<tr><th>Run Index</th><th>Run Start</th><th>Run Name</th><th>Run Alias</th><th>Run Tags</th></tr>'
+                    let table = "<tr><th>Run Index</th><th>Run Start</th><th>Run Name</th><th>Run Alias</th><th>Run Tags</th></tr>"
                     for (const [index, run] of runs.entries()) {
                         table += `<tr><td>${index}</td><td>${run.run_start}</td><td>${run.name}</td><td>${run.alias}</td><td>${run.tags}</td></tr>`
                     }
-                    document.getElementById('runTable').innerHTML = table
+                    document.getElementById("runTable").innerHTML = table
                 } else {
-                    add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, 'danger')
+                    add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, "danger")
                 }
             };
             xhr.send();
@@ -778,18 +778,18 @@
 
         // function to set the customized view config
         function set_customized_view_config(notifications = true) {
-            const adminSectionHide = localStorage.getItem('adminSectionHide');
-            const adminGraphHide = localStorage.getItem('adminGraphHide');
-            const adminSectionShow = localStorage.getItem('adminSectionShow');
-            const adminGraphShow = localStorage.getItem('adminGraphShow');
-            document.getElementById('saveHideSpinner').hidden = false
+            const adminSectionHide = localStorage.getItem("adminSectionHide");
+            const adminGraphHide = localStorage.getItem("adminGraphHide");
+            const adminSectionShow = localStorage.getItem("adminSectionShow");
+            const adminGraphShow = localStorage.getItem("adminGraphShow");
+            document.getElementById("saveHideSpinner").hidden = false
             const body = JSON.stringify({
                 admin_section_hide: adminSectionHide,
                 admin_graph_hide: adminGraphHide,
                 admin_section_show: adminSectionShow,
                 admin_graph_show: adminGraphShow,
             });
-            send_request("POST", "set-customized-view-config", body, 'saveHideSpinner', notifications)
+            send_request("POST", "set-customized-view-config", body, "saveHideSpinner", notifications)
         }
 
         // function to get the customized view config
@@ -800,37 +800,37 @@
             xhr.onload = () => {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     const config = JSON.parse(xhr.responseText)
-                    const adminSectionHide = JSON.parse(localStorage.getItem('adminSectionHide'))
-                    const adminGraphHide = JSON.parse(localStorage.getItem('adminGraphHide'))
-                    const adminSectionShow = JSON.parse(localStorage.getItem('adminSectionShow'))
-                    const adminGraphShow = JSON.parse(localStorage.getItem('adminGraphShow'))
+                    const adminSectionHide = JSON.parse(localStorage.getItem("adminSectionHide"))
+                    const adminGraphHide = JSON.parse(localStorage.getItem("adminGraphHide"))
+                    const adminSectionShow = JSON.parse(localStorage.getItem("adminSectionShow"))
+                    const adminGraphShow = JSON.parse(localStorage.getItem("adminGraphShow"))
                     if (adminSectionHide.length == 0 && adminGraphHide.length == 0 && adminSectionShow.length == 0 && adminGraphShow.length == 0) {
                         if (config.admin_section_hide.length > 2 && config.admin_graph_hide.length > 2 && config.admin_section_show.length > 2 && config.admin_graph_show.length > 2) {
                             // if the admin config is not empty use the server side admin config
-                            localStorage.setItem('adminSectionHide', JSON.stringify(JSON.parse(config.admin_section_hide)))
-                            localStorage.setItem('adminGraphHide', JSON.stringify(JSON.parse(config.admin_graph_hide)))
-                            localStorage.setItem('adminSectionShow', JSON.stringify(JSON.parse(config.admin_section_show)))
-                            localStorage.setItem('adminGraphShow', JSON.stringify(JSON.parse(config.admin_graph_show)))
+                            localStorage.setItem("adminSectionHide", JSON.stringify(JSON.parse(config.admin_section_hide)))
+                            localStorage.setItem("adminGraphHide", JSON.stringify(JSON.parse(config.admin_graph_hide)))
+                            localStorage.setItem("adminSectionShow", JSON.stringify(JSON.parse(config.admin_section_show)))
+                            localStorage.setItem("adminGraphShow", JSON.stringify(JSON.parse(config.admin_graph_show)))
                         } else {
                             // if the admin config is empty add the default values
-                            localStorage.setItem('adminSectionShow', JSON.stringify(hideSections))
-                            localStorage.setItem('adminGraphShow', JSON.stringify(hideGraphs))
+                            localStorage.setItem("adminSectionShow", JSON.stringify(hideSections))
+                            localStorage.setItem("adminGraphShow", JSON.stringify(hideGraphs))
                         }
                     } else {
                         // Below exception is created to handle problems when switching between old versions without graphs
                         // to newer versions with additional graphs. The view is completely reset to add all graphs again.
                         if (hideGraphs.length != (Object.keys(adminGraphShow).length + Object.keys(adminGraphHide).length)) {
-                            localStorage.setItem('adminSectionHide', JSON.stringify([]));
-                            localStorage.setItem('adminGraphHide', JSON.stringify([]));
-                            localStorage.setItem('adminSectionShow', JSON.stringify(hideSections));
-                            localStorage.setItem('adminGraphShow', JSON.stringify(hideGraphs));
+                            localStorage.setItem("adminSectionHide", JSON.stringify([]));
+                            localStorage.setItem("adminGraphHide", JSON.stringify([]));
+                            localStorage.setItem("adminSectionShow", JSON.stringify(hideSections));
+                            localStorage.setItem("adminGraphShow", JSON.stringify(hideGraphs));
                         }
                     }
                     // 2 functions below should alwyas be here to make sure the server side config is actually present
                     setup_customize_view_content() // fill the modal with the correct content
                     set_customized_view_config(false) // if there is a local storage already in place update that on server side
                 } else {
-                    add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, 'danger')
+                    add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, "danger")
                 }
             };
             xhr.send();
@@ -845,23 +845,23 @@
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     document.getElementById(spinner).hidden = true
                     response = JSON.parse(xhr.responseText);
-                    if (response.success == '1') {
+                    if (response.success == "1") {
                         console.log(response.console)
                         if (notifications) {
-                            if (response.console.includes('ERROR')) {
-                                add_alert('SUCCESS: The processing was handled but some errors occurred, see the browser console for more details!', 'warning')
+                            if (response.console.includes("ERROR")) {
+                                add_alert("SUCCESS: The processing was handled but some errors occurred, see the browser console for more details!", "warning")
                             } else {
-                                add_alert(response.message, 'success')
+                                add_alert(response.message, "success")
                             }
                         }
                     } else {
-                        add_alert(response.message, 'danger')
+                        add_alert(response.message, "danger")
                         console.log(response.console)
                     }
                     get_outputs()
                 } else {
                     document.getElementById(spinner).hidden = true
-                    add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, 'danger')
+                    add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, "danger")
                 }
             };
             xhr.send(body);
@@ -869,28 +869,28 @@
 
         // function to add a logs raw data to the server and update the database
         function add_log() {
-            document.getElementById('addLogDataSpinner').hidden = false
-            const logData = document.getElementById('logData').value
-            const logName = document.getElementById('logName').value
-            document.getElementById('logData').value = ''
-            document.getElementById('logName').value = ''
+            document.getElementById("addLogDataSpinner").hidden = false
+            const logData = document.getElementById("logData").value
+            const logName = document.getElementById("logName").value
+            document.getElementById("logData").value = ""
+            document.getElementById("logName").value = ""
 
             const body = JSON.stringify({
                 log_data: logData,
                 log_name: logName,
             });
-            send_request("POST", "/add-log", body, 'addLogDataSpinner')
+            send_request("POST", "/add-log", body, "addLogDataSpinner")
         }
 
         // function to remove outputs from the database
         function remove_log() {
-            document.getElementById('removeLogDataSpinner').hidden = false
-            const removeLog = document.getElementById('removeLog').value
-            document.getElementById('removeLog').value = ''
+            document.getElementById("removeLogDataSpinner").hidden = false
+            const removeLog = document.getElementById("removeLog").value
+            document.getElementById("removeLog").value = ""
             const body = JSON.stringify({
                 log_name: removeLog,
             });
-            send_request("DELETE", "/remove-log", body, 'removeLogDataSpinner')
+            send_request("DELETE", "/remove-log", body, "removeLogDataSpinner")
         }
 
         //////////////////////////////
@@ -900,18 +900,18 @@
         // Updated localStorage setup with backward compatibility
         function setup_customize_view_local_storage() {
             const keys = [
-                'adminSectionShow', 'adminSectionHide',
-                'adminGraphShow', 'adminGraphHide'
+                "adminSectionShow", "adminSectionHide",
+                "adminGraphShow", "adminGraphHide"
             ];
 
             keys.forEach(key => {
                 const value = localStorage.getItem(key);
                 if (value === null) {
                     localStorage.setItem(key, JSON.stringify([]));
-                } else if (!value.trim().startsWith('[')) {
+                } else if (!value.trim().startsWith("[")) {
                     // Convert old comma-separated string to JSON array
-                    const parsed = value.split(',')
-                        .map(s => s.trim().replace(/^'|'$/g, ''))
+                    const parsed = value.split(",")
+                        .map(s => s.trim().replace(/^"|"$/g, ""))
                         .filter(Boolean);
                     localStorage.setItem(key, JSON.stringify(parsed));
                 }
@@ -923,22 +923,22 @@
             function move_items(fromId, toId) {
                 const fromBox = document.getElementById(fromId);
                 const toBox = document.getElementById(toId);
-                const selectedItems = fromBox.querySelectorAll('.active');
+                const selectedItems = fromBox.querySelectorAll(".active");
 
                 const fromStorage = JSON.parse(localStorage.getItem(fromId));
                 const toStorage = JSON.parse(localStorage.getItem(toId));
 
                 for (let item of selectedItems) {
                     const val = item.children[0].innerText;
-                    if (toId.includes('Hide')) {
+                    if (toId.includes("Hide")) {
                         if (!toStorage.includes(val)) toStorage.push(val);
                         const identifier = val.split(" ")[0];
-                        if (toId.includes('Section')) disable_graphs_in_customize_view(true, identifier);
+                        if (toId.includes("Section")) disable_graphs_in_customize_view(true, identifier);
                     } else {
                         const index = fromStorage.indexOf(val);
                         if (index !== -1) fromStorage.splice(index, 1);
                         const identifier = val.split(" ")[0];
-                        if (toId.includes('Section')) disable_graphs_in_customize_view(false, identifier);
+                        if (toId.includes("Section")) disable_graphs_in_customize_view(false, identifier);
                     }
                 }
 
@@ -946,10 +946,10 @@
                 localStorage.setItem(toId, JSON.stringify(toStorage));
 
                 selectedItems.forEach(item => {
-                    item.classList.remove('active');
-                    if (toId === 'adminGraphShow') {
-                        const section = item.children[0].innerText.split(' ')[0];
-                        const listItems = document.getElementById('adminGraphShow').querySelectorAll('.hideItem');
+                    item.classList.remove("active");
+                    if (toId === "adminGraphShow") {
+                        const section = item.children[0].innerText.split(" ")[0];
+                        const listItems = document.getElementById("adminGraphShow").querySelectorAll(".hideItem");
                         let lastMatchingItem = Array.from(listItems).reverse().find(li => {
                             return li.children[0].innerText.startsWith(section);
                         }) || listItems[listItems.length - 1];
@@ -961,10 +961,10 @@
             }
 
             const arrowMappings = {
-                'sectionRight': { from: 'adminSectionShow', to: 'adminSectionHide', content: arrowRight },
-                'sectionLeft': { from: 'adminSectionHide', to: 'adminSectionShow', content: arrowLeft },
-                'graphRight': { from: 'adminGraphShow', to: 'adminGraphHide', content: arrowRight },
-                'graphLeft': { from: 'adminGraphHide', to: 'adminGraphShow', content: arrowLeft }
+                "sectionRight": { from: "adminSectionShow", to: "adminSectionHide", content: arrowRight },
+                "sectionLeft": { from: "adminSectionHide", to: "adminSectionShow", content: arrowLeft },
+                "graphRight": { from: "adminGraphShow", to: "adminGraphHide", content: arrowRight },
+                "graphLeft": { from: "adminGraphHide", to: "adminGraphShow", content: arrowLeft }
             };
 
             for (let arrow in arrowMappings) {
@@ -984,68 +984,68 @@
             for (const graph of allGraphs) {
                 if (graph.innerText.startsWith(identifier)) {
                     if (disable) {
-                        graph.parentElement.classList.add('disabled');
+                        graph.parentElement.classList.add("disabled");
                     } else {
-                        graph.parentElement.classList.remove('disabled');
+                        graph.parentElement.classList.remove("disabled");
                     }
                 }
             }
         }
 
         function setup_customize_view_content() {
-            const graphShow = JSON.parse(localStorage.getItem('adminGraphShow'));
-            const graphHide = JSON.parse(localStorage.getItem('adminGraphHide'));
-            const sectionShow = JSON.parse(localStorage.getItem('adminSectionShow'));
-            const sectionHide = JSON.parse(localStorage.getItem('adminSectionHide'));
+            const graphShow = JSON.parse(localStorage.getItem("adminGraphShow"));
+            const graphHide = JSON.parse(localStorage.getItem("adminGraphHide"));
+            const sectionShow = JSON.parse(localStorage.getItem("adminSectionShow"));
+            const sectionHide = JSON.parse(localStorage.getItem("adminSectionHide"));
 
-            let graphShowItems = '', graphHideItems = '';
-            let sectionShowItems = '', sectionHideItems = '';
+            let graphShowItems = "", graphHideItems = "";
+            let sectionShowItems = "", sectionHideItems = "";
 
             for (let graph of [...graphShow, ...graphHide]) {
-                const element = hideItem.replaceAll('{value}', graph).replaceAll('{type}', 'graph');
+                const element = hideItem.replaceAll("{value}", graph).replaceAll("{type}", "graph");
                 if (graphHide.includes(graph)) {
                     graphHideItems += element;
                 } else {
                     graphShowItems += element;
                 }
             }
-            document.getElementById('adminGraphShow').innerHTML = graphShowItems;
-            document.getElementById('adminGraphHide').innerHTML = graphHideItems;
+            document.getElementById("adminGraphShow").innerHTML = graphShowItems;
+            document.getElementById("adminGraphHide").innerHTML = graphHideItems;
 
             for (let section of [...sectionShow, ...sectionHide]) {
-                const element = hideItem.replaceAll('{value}', section).replaceAll('{type}', 'section');
+                const element = hideItem.replaceAll("{value}", section).replaceAll("{type}", "section");
                 if (sectionHide.includes(section)) {
-                    const identifier = section.split(' ')[0];
+                    const identifier = section.split(" ")[0];
                     disable_graphs_in_customize_view(true, identifier);
                     sectionHideItems += element;
                 } else {
                     sectionShowItems += element;
                 }
             }
-            document.getElementById('adminSectionShow').innerHTML = sectionShowItems;
-            document.getElementById('adminSectionHide').innerHTML = sectionHideItems;
+            document.getElementById("adminSectionShow").innerHTML = sectionShowItems;
+            document.getElementById("adminSectionHide").innerHTML = sectionHideItems;
 
-            document.querySelectorAll('.graph .moveUp, .section .moveUp').forEach(item => {
+            document.querySelectorAll(".graph .moveUp, .section .moveUp").forEach(item => {
                 item.innerHTML = arrowUpVerySmall;
-                item.addEventListener('click', function (event) {
+                item.addEventListener("click", function (event) {
                     const before = $(this).parent().prev();
                     if (before.length) $(this).parent().insertBefore(before);
                     event.stopPropagation();
                 });
             });
 
-            document.querySelectorAll('.graph .moveDown, .section .moveDown').forEach(item => {
+            document.querySelectorAll(".graph .moveDown, .section .moveDown").forEach(item => {
                 item.innerHTML = arrowDownVerySmall;
-                item.addEventListener('click', function (event) {
+                item.addEventListener("click", function (event) {
                     const after = $(this).parent().next();
                     if (after.length) $(this).parent().insertAfter(after);
                     event.stopPropagation();
                 });
             });
 
-            document.querySelectorAll('.hideItem').forEach(item => {
-                item.addEventListener('click', function () {
-                    this.classList.toggle('active');
+            document.querySelectorAll(".hideItem").forEach(item => {
+                item.addEventListener("click", function () {
+                    this.classList.toggle("active");
                 });
             });
 
@@ -1053,13 +1053,13 @@
 
         function update_customize_view_local_storage() {
             // Sync current order to localStorage
-            const sectionOrder = Array.from(document.getElementById('adminSectionShow').querySelectorAll('.hideItem'))
+            const sectionOrder = Array.from(document.getElementById("adminSectionShow").querySelectorAll(".hideItem"))
                 .map(item => item.children[0].innerText);
-            const graphOrder = Array.from(document.getElementById('adminGraphShow').querySelectorAll('.hideItem'))
+            const graphOrder = Array.from(document.getElementById("adminGraphShow").querySelectorAll(".hideItem"))
                 .map(item => item.children[0].innerText);
 
-            localStorage.setItem('adminSectionShow', JSON.stringify(sectionOrder));
-            localStorage.setItem('adminGraphShow', JSON.stringify(graphOrder));
+            localStorage.setItem("adminSectionShow", JSON.stringify(sectionOrder));
+            localStorage.setItem("adminGraphShow", JSON.stringify(graphOrder));
         }
 
         ///////////////////////////

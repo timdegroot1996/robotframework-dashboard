@@ -99,7 +99,7 @@
             color: #eee;
         }
 
-        .dark-mode svg {
+        .dark-mode .collapse-icon {
             color: #eee;
         }
 
@@ -335,6 +335,15 @@
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatisticsGraphLine">Timeline</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="runStatisticsFullscreen">Fullscreen</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        title="HoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHooray HoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHooray!">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="21" fill="currentColor"
+                            class="bi bi-info-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                            <path
+                                d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                        </svg>
+                    </button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatisticsClose" hidden>Close</button>
                     <canvas id="runStatisticsGraph"></canvas>
                 </div>
@@ -383,18 +392,16 @@
                     </div>
                     <div class="col-auto">
                         <div class="btn-group">
-                            <label class="form-label mt-2" for="suiteSelectFolders">Folder</label>
+                            <label class="form-label mt-2" for="suiteFolder">Folder: </label>
                         </div>
                         <div class="btn-group">
-                            <select class="form-select form-select-sm" id="suiteSelectFolders"></select>
+                            <p class="form-label mt-2" id="suiteFolder">All</p>
                         </div>
                     </div>
                     <div class="col-auto">
-                        <div class="btn-group ms-1">
-                            <label class="form-check-label mt-2" for="showAllFolders">Show All Folders</label>
-                        </div>
-                        <div class="btn-group form-switch ms-1">
-                            <input class="form-check-input mt-2" type="checkbox" role="switch" id="showAllFolders" />
+                        <div class="btn-group">
+                            <button class="btn btn-outline-light btn-sm mt-1" id="resetSuiteFolder">Reset
+                                Folder</button>
                         </div>
                     </div>
                     <div class="col-auto">
@@ -880,6 +887,7 @@
         const failedBackgroundColor = "rgba(206, 62, 1, 0.7)";
         const greyBackgroundBorderColor = "#0f172a";
         const greyBackgroundColor = "rgba(33, 37, 41, 0.7)";
+        const graphFontSize = 12;
 
         // bar config
         const barConfig = {
@@ -912,6 +920,21 @@
             pointRadius: 4,
             pointHoverRadius: 6
         }
+        // data label background rectangle config
+        const dataLabelConfig = {
+            color: "#eee",
+            backgroundColor: function (context) {
+                return "rgba(0, 0, 0, 0.6)";
+            },
+            borderRadius: 4,
+            padding: 3,
+            align: "center",
+            anchor: "center",
+            font: {
+                // weight: "bold",
+                size: graphFontSize,
+            },
+        }
 
         // prepare input data
         var runs = "placeholder_runs".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
@@ -924,7 +947,7 @@
         const use_logs = "placeholder_use_logs"
         const use_run_aliases = "placeholder_use_run_aliases"
         const server = "placeholder_server"
-        if (!message_config.includes('placeholder_message_config')) { message_config = JSON.parse(message_config) }
+        if (!message_config.includes("placeholder_message_config")) { message_config = JSON.parse(message_config) }
 
         // create graphs
         var runStatisticsGraph;
@@ -963,7 +986,6 @@
 
         // var to keep track of the checkbox statuses
         var useSuitePathsSuiteSection = false;
-        var showAllFolders = false;
         var useSuitePathsTestSection = false;
         var ignoreSkips = false; // test most flaky graph
         var ignoreSkipsRecent = false; // test recent most flaky graph
@@ -971,7 +993,7 @@
         var inFullscreen = false;
         var showDateLabels = true;
         var showLegends = true;
-        var previousFolder = ''; // used to update the suite folder donut to the previous folder with the button
+        var previousFolder = ""; // used to update the suite folder donut to the previous folder with the button
         var lastScrollY = 0;
 
         // add items in hide modal
@@ -1020,10 +1042,10 @@
 
         // function to update the theme when the button is clicked
         function toggle_theme() {
-            if (document.documentElement.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'light');
+            if (document.documentElement.classList.contains("dark-mode")) {
+                localStorage.setItem("theme", "light");
             } else {
-                localStorage.setItem('theme', 'dark');
+                localStorage.setItem("theme", "dark");
             }
             setup_theme()
             setup_all_graphs()
@@ -1031,21 +1053,22 @@
 
         // theme function based on browser/machine color scheme
         function setup_theme() {
+            Chart.defaults.font.size = graphFontSize
             function set_light_mode() {
                 // bootstrap dark-mode attribute
                 document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "light");
                 // bootstrap default color
-                document.documentElement.style.setProperty('--bs-body-bg', '#fff');
+                document.documentElement.style.setProperty("--bs-body-bg", "#fff");
                 // bootstrap buttons light -> dark
-                const buttonsOutlineLight = document.querySelectorAll('.btn-outline-light')
-                const buttonsLight = document.querySelectorAll('.btn-light')
+                const buttonsOutlineLight = document.querySelectorAll(".btn-outline-light")
+                const buttonsLight = document.querySelectorAll(".btn-light")
                 for (const button of buttonsOutlineLight) {
-                    button.classList.remove('btn-outline-light');
-                    button.classList.add('btn-outline-dark');
+                    button.classList.remove("btn-outline-light");
+                    button.classList.add("btn-outline-dark");
                 }
                 for (const button of buttonsLight) {
-                    button.classList.remove('btn-light');
-                    button.classList.add('btn-dark');
+                    button.classList.remove("btn-light");
+                    button.classList.add("btn-dark");
                 }
                 // chartjs default graph settings
                 Chart.defaults.color = "#666";
@@ -1053,8 +1076,8 @@
                 Chart.defaults.backgroundColor = "rgba(0,0,0,0.1)";
                 Chart.defaults.elements.line.borderColor = "rgba(0,0,0,0.1)";
                 // set toggle in correct state if not already, needed on first load to set based on media or localstorage
-                if (document.getElementById('toggleTheme').checked) {
-                    document.getElementById('toggleTheme').checked = false
+                if (document.getElementById("toggleTheme").checked) {
+                    document.getElementById("toggleTheme").checked = false
                 }
             }
 
@@ -1062,44 +1085,44 @@
                 // bootstrap dark-mode attribute
                 document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "dark");
                 // bootstrap light buttons -> dark
-                document.documentElement.style.setProperty('--bs-body-bg', 'rgba(30, 41, 59, 0.9)');
+                document.documentElement.style.setProperty("--bs-body-bg", "rgba(30, 41, 59, 0.9)");
                 // bootstrap buttons dark -> light
-                const buttonsOutlineLight = document.querySelectorAll('.btn-outline-dark')
-                const buttonsLight = document.querySelectorAll('.btn-dark')
+                const buttonsOutlineLight = document.querySelectorAll(".btn-outline-dark")
+                const buttonsLight = document.querySelectorAll(".btn-dark")
                 for (const button of buttonsOutlineLight) {
-                    button.classList.remove('btn-outline-dark');
-                    button.classList.add('btn-outline-light');
+                    button.classList.remove("btn-outline-dark");
+                    button.classList.add("btn-outline-light");
                 }
                 for (const button of buttonsLight) {
-                    button.classList.remove('btn-dark');
-                    button.classList.add('btn-light');
+                    button.classList.remove("btn-dark");
+                    button.classList.add("btn-light");
                 }
                 // chartjs default graph settings
                 Chart.defaults.color = "#eee";
                 Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
                 Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
                 Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
-                if (!document.getElementById('toggleTheme').checked) {
-                    document.getElementById('toggleTheme').checked = true
+                if (!document.getElementById("toggleTheme").checked) {
+                    document.getElementById("toggleTheme").checked = true
                 }
             }
 
-            const theme = localStorage.getItem('theme');
+            const theme = localStorage.getItem("theme");
             const root = document.documentElement;
-            const isDark = root.classList.contains('dark-mode');
-            if (theme === 'light') {
-                if (isDark) root.classList.remove('dark-mode');
+            const isDark = root.classList.contains("dark-mode");
+            if (theme === "light") {
+                if (isDark) root.classList.remove("dark-mode");
                 set_light_mode();
-            } else if (theme === 'dark') {
-                if (!isDark) root.classList.add('dark-mode');
+            } else if (theme === "dark") {
+                if (!isDark) root.classList.add("dark-mode");
                 set_dark_mode();
             } else {
                 // No theme in localStorage, fall back to system preference
                 if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                    root.classList.add('dark-mode');
+                    root.classList.add("dark-mode");
                     set_dark_mode();
                 } else {
-                    root.classList.remove('dark-mode');
+                    root.classList.remove("dark-mode");
                     set_light_mode();
                 }
             }
@@ -1115,9 +1138,9 @@
             Keywords: ${keywords.length}`;
 
             filteredAmountDefault = filteredAmount
-            document.getElementById('amount').value = filteredAmount
+            document.getElementById("amount").value = filteredAmount
             if (server) {
-                document.getElementById('openDashboard').hidden = false
+                document.getElementById("openDashboard").hidden = false
             }
         }
 
@@ -1131,26 +1154,26 @@
                 function process_scroll() {
                     var scroll = this.scrollY;
                     if (scroll > 100) {
-                        document.getElementById('stats').hidden = true
-                        document.getElementById('runsLabel').hidden = true
-                        document.getElementById('runTagLabel').hidden = true
-                        document.getElementById('fromDateLabel').hidden = true
-                        document.getElementById('fromTimeLabel').hidden = true
-                        document.getElementById('toDateLabel').hidden = true
-                        document.getElementById('toTimeLabel').hidden = true
-                        document.getElementById('amountLabel').hidden = true
-                        document.getElementById('filterRowPadding').classList.add('pb-2')
+                        document.getElementById("stats").hidden = true
+                        document.getElementById("runsLabel").hidden = true
+                        document.getElementById("runTagLabel").hidden = true
+                        document.getElementById("fromDateLabel").hidden = true
+                        document.getElementById("fromTimeLabel").hidden = true
+                        document.getElementById("toDateLabel").hidden = true
+                        document.getElementById("toTimeLabel").hidden = true
+                        document.getElementById("amountLabel").hidden = true
+                        document.getElementById("filterRowPadding").classList.add("pb-2")
                     } else {
-                        document.getElementById('stats').hidden = false
-                        document.getElementById('stats').hidden = false
-                        document.getElementById('runsLabel').hidden = false
-                        document.getElementById('runTagLabel').hidden = false
-                        document.getElementById('fromDateLabel').hidden = false
-                        document.getElementById('fromTimeLabel').hidden = false
-                        document.getElementById('toDateLabel').hidden = false
-                        document.getElementById('toTimeLabel').hidden = false
-                        document.getElementById('amountLabel').hidden = false
-                        document.getElementById('filterRowPadding').classList.remove('pb-2')
+                        document.getElementById("stats").hidden = false
+                        document.getElementById("stats").hidden = false
+                        document.getElementById("runsLabel").hidden = false
+                        document.getElementById("runTagLabel").hidden = false
+                        document.getElementById("fromDateLabel").hidden = false
+                        document.getElementById("fromTimeLabel").hidden = false
+                        document.getElementById("toDateLabel").hidden = false
+                        document.getElementById("toTimeLabel").hidden = false
+                        document.getElementById("amountLabel").hidden = false
+                        document.getElementById("filterRowPadding").classList.remove("pb-2")
                     }
                 }
 
@@ -1171,7 +1194,7 @@
         // function to setup all collapse buttons and icons
         function setup_collapsables() {
             // initialize all collapsables by adding the eventlisteners to the buttons
-            const collapsables = document.querySelectorAll('.collapse-icon')
+            const collapsables = document.querySelectorAll(".collapse-icon")
             for (let collapsable of collapsables) {
                 update_collapse_button(collapsable);
                 collapsable.addEventListener("click", (e) => {
@@ -1181,13 +1204,13 @@
             // function that handles the setting of the correct icon when expanding/collapsing sections
             function update_collapse_button(element) {
                 if (element.className.includes("collapsed")) {
-                    if (element.id.includes('Details')) {
+                    if (element.id.includes("Details")) {
                         element.innerHTML = arrowRight;
                     } else {
                         element.innerHTML = arrowRightSmall;
                     }
                 } else {
-                    if (element.id.includes('Details')) {
+                    if (element.id.includes("Details")) {
                         element.innerHTML = arrowDown;
                     } else {
                         element.innerHTML = arrowDownSmall;
@@ -1199,17 +1222,17 @@
         // function to add a spinner for slow loads
         function setup_spinner(hide) {
             if (hide) {
-                $('#loading').fadeOut(100)
-                $('#runStatisticsSection').fadeIn()
-                $('#suiteStatisticsSection').fadeIn()
-                $('#testStatisticsSection').fadeIn()
-                $('#keywordStatisticsSection').fadeIn()
+                $("#loading").fadeOut(100)
+                $("#runStatisticsSection").fadeIn()
+                $("#suiteStatisticsSection").fadeIn()
+                $("#testStatisticsSection").fadeIn()
+                $("#keywordStatisticsSection").fadeIn()
             } else {
-                $('#runStatisticsSection').hide()
-                $('#suiteStatisticsSection').hide()
-                $('#testStatisticsSection').hide()
-                $('#keywordStatisticsSection').hide()
-                $('#loading').show();
+                $("#runStatisticsSection").hide()
+                $("#suiteStatisticsSection").hide()
+                $("#testStatisticsSection").hide()
+                $("#keywordStatisticsSection").hide()
+                $("#loading").show();
             }
         }
 
@@ -1217,7 +1240,7 @@
         function space_to_camelcase(string) {
             return string.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
                 return index === 0 ? word.toLowerCase() : word.toUpperCase();
-            }).replace(/\s+/g, '');
+            }).replace(/\s+/g, "");
         }
 
         // function to convert to camelcase from underscores
@@ -1228,14 +1251,14 @@
         // function to convert camelcose to underscores
         function camelcase_to_underscore(str) {
             return str
-                .replace(/([A-Z]+)/g, '_$1')     // Prefix all capital groups with _
-                .replace(/^_/, '')               // Remove leading underscore if it appears
+                .replace(/([A-Z]+)/g, "_$1")     // Prefix all capital groups with _
+                .replace(/^_/, "")               // Remove leading underscore if it appears
                 .toLowerCase();                  // Convert everything to lowercase
         }
 
         // function to convert a date object to the desired string format
         function format_date_to_string(date) {
-            const pad = (n) => n.toString().padStart(2, '0');
+            const pad = (n) => n.toString().padStart(2, "0");
             const year = date.getFullYear();
             const month = pad(date.getMonth() + 1); // Months are 0-indexed
             const day = pad(date.getDate());
@@ -1247,19 +1270,19 @@
 
         // function to transform an output.xml path to a log.html path
         function transform_file_path(filePath) {
-            const normalizedPath = filePath.replace(/\\/g, '/');
-            const pathSegments = normalizedPath.split('/');
+            const normalizedPath = filePath.replace(/\\/g, "/");
+            const pathSegments = normalizedPath.split("/");
             const filename = pathSegments.pop();
-            const updatedFilename = filename.replace(/output/g, 'log').replace(/\.xml$/i, '.html');
-            const updatedPath = [...pathSegments, updatedFilename].join('/');
-            return filePath.includes('\\') ? updatedPath.replace(/\//g, '\\') : updatedPath;
+            const updatedFilename = filename.replace(/output/g, "log").replace(/\.xml$/i, ".html");
+            const updatedPath = [...pathSegments, updatedFilename].join("/");
+            return filePath.includes("\\") ? updatedPath.replace(/\//g, "\\") : updatedPath;
         }
 
         // function used to combine paths to open the correct log file, used in combination with a file server
         function combine_paths(baseUrlStr, relativePath) {
             const baseUrl = new URL(baseUrlStr);
-            const baseParts = baseUrl.pathname.split('/').filter(Boolean);
-            const relParts = relativePath.replaceAll('\\', '/').split('/').filter(Boolean);
+            const baseParts = baseUrl.pathname.split("/").filter(Boolean);
+            const relParts = relativePath.replaceAll("\\", "/").split("/").filter(Boolean);
             // Find the first matching folder name from the relative path in the base path
             let match = null;
             for (let i = 0; i < relParts.length; i++) {
@@ -1283,15 +1306,15 @@
             // Resolve "." and ".."
             const resolvedParts = [];
             for (const part of combinedParts) {
-                if (part === '.') continue;
-                if (part === '..') {
+                if (part === ".") continue;
+                if (part === "..") {
                     if (resolvedParts.length > 0) resolvedParts.pop();
                 } else {
                     resolvedParts.push(part);
                 }
             }
 
-            return baseUrl.origin + '/' + resolvedParts.join('/');
+            return baseUrl.origin + "/" + resolvedParts.join("/");
         }
 
         // function to update the localstorage and graphs for the suitepath switches
@@ -1317,22 +1340,22 @@
             function move_items(fromId, toId) {
                 const fromBox = document.getElementById(fromId);
                 const toBox = document.getElementById(toId);
-                const selectedItems = fromBox.querySelectorAll('.active');
+                const selectedItems = fromBox.querySelectorAll(".active");
 
                 const fromStorage = JSON.parse(localStorage.getItem(fromId));
                 const toStorage = JSON.parse(localStorage.getItem(toId));
 
                 for (let item of selectedItems) {
                     const val = item.children[0].innerText;
-                    if (toId.includes('Hide')) {
+                    if (toId.includes("Hide")) {
                         if (!toStorage.includes(val)) toStorage.push(val);
                         const identifier = val.split(" ")[0];
-                        if (toId.includes('section')) disable_graphs_in_customize_view(true, identifier);
+                        if (toId.includes("section")) disable_graphs_in_customize_view(true, identifier);
                     } else {
                         const index = fromStorage.indexOf(val);
                         if (index !== -1) fromStorage.splice(index, 1);
                         const identifier = val.split(" ")[0];
-                        if (toId.includes('section')) disable_graphs_in_customize_view(false, identifier);
+                        if (toId.includes("section")) disable_graphs_in_customize_view(false, identifier);
                     }
                 }
 
@@ -1340,10 +1363,10 @@
                 localStorage.setItem(toId, JSON.stringify(toStorage));
 
                 selectedItems.forEach(item => {
-                    item.classList.remove('active');
-                    if (toId === 'graphShow') {
-                        const section = item.children[0].innerText.split(' ')[0];
-                        const listItems = document.getElementById('graphShow').querySelectorAll('.hideItem');
+                    item.classList.remove("active");
+                    if (toId === "graphShow") {
+                        const section = item.children[0].innerText.split(" ")[0];
+                        const listItems = document.getElementById("graphShow").querySelectorAll(".hideItem");
                         let lastMatchingItem = Array.from(listItems).reverse().find(li => {
                             return li.children[0].innerText.startsWith(section);
                         }) || listItems[listItems.length - 1];
@@ -1356,10 +1379,10 @@
 
             // Map the arrow actions and associated operations
             const arrowMappings = {
-                'sectionRight': { from: 'sectionShow', to: 'sectionHide', content: arrowRight },
-                'sectionLeft': { from: 'sectionHide', to: 'sectionShow', content: arrowLeft },
-                'graphRight': { from: 'graphShow', to: 'graphHide', content: arrowRight },
-                'graphLeft': { from: 'graphHide', to: 'graphShow', content: arrowLeft }
+                "sectionRight": { from: "sectionShow", to: "sectionHide", content: arrowRight },
+                "sectionLeft": { from: "sectionHide", to: "sectionShow", content: arrowLeft },
+                "graphRight": { from: "graphShow", to: "graphHide", content: arrowRight },
+                "graphLeft": { from: "graphHide", to: "graphShow", content: arrowLeft }
             };
 
             // Initialize arrows with their respective functionality and content
@@ -1392,10 +1415,10 @@
 
             // Helper: Convert legacy "'item1','item2'" string into array
             function migrate_legacy_string(value) {
-                if (typeof value === 'string') {
-                    return value.split(',')
-                        .map(v => v.trim().replace(/^'+|'+$/g, '')) // strip surrounding single quotes
-                        .filter(v => v !== '');
+                if (typeof value === "string") {
+                    return value.split(",")
+                        .map(v => v.trim().replace(/^'+|'+$/g, "")) // strip surrounding single quotes
+                        .filter(v => v !== "");
                 }
                 return [];
             }
@@ -1411,7 +1434,7 @@
                     try {
                         // Try parsing as JSON array (new format)
                         const parsed = JSON.parse(raw);
-                        if (!Array.isArray(parsed)) throw new Error('Not an array');
+                        if (!Array.isArray(parsed)) throw new Error("Not an array");
                     } catch (e) {
                         // Legacy format → migrate to array
                         const migrated = migrate_legacy_string(raw);
@@ -1429,7 +1452,7 @@
             // Actually set the defaults, either admin or normal
             if (allEmpty) {
                 if (
-                    !adminDefaults.sectionHide.includes('placeholder_admin') &&
+                    !adminDefaults.sectionHide.includes("placeholder_admin") &&
                     (
                         adminDefaults.sectionShow.length > 0 ||
                         adminDefaults.graphShow.length > 0 ||
@@ -1443,8 +1466,8 @@
                     });
                 } else {
                     // there is no admin defaults so use the regular defaults
-                    localStorage.setItem('sectionShow', JSON.stringify(hideSections))
-                    localStorage.setItem('graphShow', JSON.stringify(hideGraphs))
+                    localStorage.setItem("sectionShow", JSON.stringify(hideSections))
+                    localStorage.setItem("graphShow", JSON.stringify(hideGraphs))
                 }
             }
 
@@ -1488,23 +1511,23 @@
                             storedTypes[key] = defaultGraphTypes[key];
                         }
                     }
-                    localStorage.setItem('sectionHide', JSON.stringify([]));
-                    localStorage.setItem('graphHide', JSON.stringify([]));
-                    localStorage.setItem('sectionShow', JSON.stringify(hideSections));
-                    localStorage.setItem('graphShow', JSON.stringify(hideGraphs));
+                    localStorage.setItem("sectionHide", JSON.stringify([]));
+                    localStorage.setItem("graphHide", JSON.stringify([]));
+                    localStorage.setItem("sectionShow", JSON.stringify(hideSections));
+                    localStorage.setItem("graphShow", JSON.stringify(hideGraphs));
                     localStorage.setItem("graphTypes", JSON.stringify(defaultGraphTypes));
                 }
             }
 
             for (let key in storedTypes) {
                 window[key] = storedTypes[key];
-                update_button_selection(key.replace('GraphType', ''), storedTypes[key]);
+                update_button_selection(key.replace('GraphType', ""), storedTypes[key]);
             }
         }
 
         // function to update the localstorage of the graphtypes
         function update_graph_type(graph, type) {
-            const storedTypes = JSON.parse(localStorage.getItem("graphTypes") || '{}');
+            const storedTypes = JSON.parse(localStorage.getItem("graphTypes") || "{}");
             storedTypes[graph] = type;
             localStorage.setItem("graphTypes", JSON.stringify(storedTypes));
             // Also update global variable
@@ -1513,11 +1536,11 @@
 
         // function to change which button is highlighted styling wise
         function update_button_selection(camelButtonName, graphType) {
-            const buttons = ['Bar', 'Line', 'Timeline', 'Percentages', 'Amount', 'Donut']; // All possible button types
+            const buttons = ["Bar", "Line", "Timeline", "Percentages", "Amount", "Donut"]; // All possible button types
             buttons.forEach(button => {
                 const buttonId = `${camelButtonName}Graph${button}`;
                 if (document.getElementById(buttonId)) {
-                    if (document.documentElement.classList.contains('dark-mode')) {
+                    if (document.documentElement.classList.contains("dark-mode")) {
                         if (button.toLowerCase() === graphType) {
                             document.getElementById(buttonId).classList.add("disabled");
                             document.getElementById(buttonId).classList.remove("btn-outline-light");
@@ -1544,59 +1567,59 @@
 
         // create the modal with the correct layout based on localstorage
         function setup_customize_view_content() {
-            const graphShow = JSON.parse(localStorage.getItem('graphShow'));
-            const graphHide = JSON.parse(localStorage.getItem('graphHide'));
-            const sectionShow = JSON.parse(localStorage.getItem('sectionShow'));
-            const sectionHide = JSON.parse(localStorage.getItem('sectionHide'));
+            const graphShow = JSON.parse(localStorage.getItem("graphShow"));
+            const graphHide = JSON.parse(localStorage.getItem("graphHide"));
+            const sectionShow = JSON.parse(localStorage.getItem("sectionShow"));
+            const sectionHide = JSON.parse(localStorage.getItem("sectionHide"));
 
-            let graphShowItems = '', graphHideItems = '';
-            let sectionShowItems = '', sectionHideItems = '';
+            let graphShowItems = "", graphHideItems = "";
+            let sectionShowItems = "", sectionHideItems = "";
 
             for (let graph of [...graphShow, ...graphHide]) {
-                const element = hideItem.replaceAll('{value}', graph).replaceAll('{type}', 'graph');
+                const element = hideItem.replaceAll("{value}", graph).replaceAll("{type}", "graph");
                 if (graphHide.includes(graph)) {
                     graphHideItems += element;
                 } else {
                     graphShowItems += element;
                 }
             }
-            document.getElementById('graphShow').innerHTML = graphShowItems;
-            document.getElementById('graphHide').innerHTML = graphHideItems;
+            document.getElementById("graphShow").innerHTML = graphShowItems;
+            document.getElementById("graphHide").innerHTML = graphHideItems;
 
             for (let section of [...sectionShow, ...sectionHide]) {
-                const element = hideItem.replaceAll('{value}', section).replaceAll('{type}', 'section');
+                const element = hideItem.replaceAll("{value}", section).replaceAll("{type}", "section");
                 if (sectionHide.includes(section)) {
-                    const identifier = section.split(' ')[0];
+                    const identifier = section.split(" ")[0];
                     disable_graphs_in_customize_view(true, identifier);
                     sectionHideItems += element;
                 } else {
                     sectionShowItems += element;
                 }
             }
-            document.getElementById('sectionShow').innerHTML = sectionShowItems;
-            document.getElementById('sectionHide').innerHTML = sectionHideItems;
+            document.getElementById("sectionShow").innerHTML = sectionShowItems;
+            document.getElementById("sectionHide").innerHTML = sectionHideItems;
 
-            document.querySelectorAll('.graph .moveUp, .section .moveUp').forEach(item => {
+            document.querySelectorAll(".graph .moveUp, .section .moveUp").forEach(item => {
                 item.innerHTML = arrowUpVerySmall;
-                item.addEventListener('click', function (event) {
+                item.addEventListener("click", function (event) {
                     const before = $(this).parent().prev();
                     if (before.length) $(this).parent().insertBefore(before);
                     event.stopPropagation();
                 });
             });
 
-            document.querySelectorAll('.graph .moveDown, .section .moveDown').forEach(item => {
+            document.querySelectorAll(".graph .moveDown, .section .moveDown").forEach(item => {
                 item.innerHTML = arrowDownVerySmall;
-                item.addEventListener('click', function (event) {
+                item.addEventListener("click", function (event) {
                     const after = $(this).parent().next();
                     if (after.length) $(this).parent().insertAfter(after);
                     event.stopPropagation();
                 });
             });
 
-            document.querySelectorAll('.hideItem').forEach(item => {
-                item.addEventListener('click', function () {
-                    this.classList.toggle('active');
+            document.querySelectorAll(".hideItem").forEach(item => {
+                item.addEventListener("click", function () {
+                    this.classList.toggle("active");
                 });
             });
         }
@@ -1609,9 +1632,9 @@
             for (const graph of relatedGraphs) {
                 if (graph.innerText.startsWith(identifier)) {
                     if (disable) {
-                        graph.parentElement.classList.add('disabled');
+                        graph.parentElement.classList.add("disabled");
                     } else {
-                        graph.parentElement.classList.remove('disabled');
+                        graph.parentElement.classList.remove("disabled");
                     }
                 }
             }
@@ -1619,13 +1642,13 @@
 
         function update_customize_view_local_storage() {
             // Sync current order to localStorage
-            const sectionOrder = Array.from(document.getElementById('sectionShow').querySelectorAll('.hideItem'))
+            const sectionOrder = Array.from(document.getElementById("sectionShow").querySelectorAll(".hideItem"))
                 .map(item => item.children[0].innerText);
-            const graphOrder = Array.from(document.getElementById('graphShow').querySelectorAll('.hideItem'))
+            const graphOrder = Array.from(document.getElementById("graphShow").querySelectorAll(".hideItem"))
                 .map(item => item.children[0].innerText);
 
-            localStorage.setItem('sectionShow', JSON.stringify(sectionOrder));
-            localStorage.setItem('graphShow', JSON.stringify(graphOrder));
+            localStorage.setItem("sectionShow", JSON.stringify(sectionOrder));
+            localStorage.setItem("graphShow", JSON.stringify(graphOrder));
         }
 
         /////////////////////////////
@@ -1635,14 +1658,14 @@
         // function to create customized view eventlisteners
         function setup_customize_view_button_eventlisteners() {
             // update the theme
-            document.getElementById('toggleTheme').addEventListener('click', function () {
+            document.getElementById("toggleTheme").addEventListener("click", function () {
                 toggle_theme()
             });
 
             // update all graphs to not have date labels
             function toggle_labels(load = false) {
-                var storage = JSON.parse(localStorage.getItem('showDateLabels'));
-                const toggle = document.getElementById('toggleLabels')
+                var storage = JSON.parse(localStorage.getItem("showDateLabels"));
+                const toggle = document.getElementById("toggleLabels")
                 if (!load) {
                     storage = !storage
                 }
@@ -1655,18 +1678,18 @@
                 } else {
                     toggle.checked = true // first load and default value
                 }
-                localStorage.setItem('showDateLabels', JSON.stringify(showDateLabels));
+                localStorage.setItem("showDateLabels", JSON.stringify(showDateLabels));
                 if (!load) { setup_all_graphs() }
             }
             // update the label setting
             toggle_labels(true) // run once on load to setup correctly
-            document.getElementById('toggleLabels').addEventListener('click', function () {
+            document.getElementById("toggleLabels").addEventListener("click", function () {
                 toggle_labels(false)
             });
 
             function toggle_legends(load = false) {
-                var storage = JSON.parse(localStorage.getItem('showLegends'));
-                const toggle = document.getElementById('toggleLegends')
+                var storage = JSON.parse(localStorage.getItem("showLegends"));
+                const toggle = document.getElementById("toggleLegends")
                 if (!load) {
                     storage = !storage
                 }
@@ -1679,29 +1702,29 @@
                 } else {
                     toggle.checked = true // first load and default value
                 }
-                localStorage.setItem('showLegends', JSON.stringify(showLegends));
+                localStorage.setItem("showLegends", JSON.stringify(showLegends));
                 if (!load) { setup_all_graphs() }
             }
 
             toggle_legends(true) // run once on load to setup correctly
-            document.getElementById('toggleLegends').addEventListener('click', function () {
+            document.getElementById("toggleLegends").addEventListener("click", function () {
                 toggle_legends(false)
             });
 
             // update all graphs based on new hidden graphs/sections
-            document.getElementById('saveSettings').addEventListener('click', function () {
-                document.getElementById('runs').focus()
+            document.getElementById("saveSettings").addEventListener("click", function () {
+                document.getElementById("runs").focus()
                 update_customize_view_local_storage();
                 setup_data_and_graphs();
             });
 
             // remove the entire customized view configuration
-            document.getElementById('resetGraphConfig').addEventListener('click', function () {
-                document.getElementById('runs').focus()
-                localStorage.setItem('sectionHide', JSON.stringify([]));
-                localStorage.setItem('graphHide', JSON.stringify([]));
-                localStorage.setItem('sectionShow', JSON.stringify(hideSections));
-                localStorage.setItem('graphShow', JSON.stringify(hideGraphs));
+            document.getElementById("resetGraphConfig").addEventListener("click", function () {
+                document.getElementById("runs").focus()
+                localStorage.setItem("sectionHide", JSON.stringify([]));
+                localStorage.setItem("graphHide", JSON.stringify([]));
+                localStorage.setItem("sectionShow", JSON.stringify(hideSections));
+                localStorage.setItem("graphShow", JSON.stringify(hideGraphs));
                 setup_customize_view_content();
                 update_customize_view_local_storage();
                 setup_data_and_graphs();
@@ -1719,9 +1742,9 @@
             // has to be added after the creation of the secctions and graphs
             document.getElementById("suiteFolderDonutGoUp").addEventListener("click", function () {
                 function remove_last_folder(path) {
-                    const parts = path.split('.');
+                    const parts = path.split(".");
                     parts.pop();
-                    return parts.length > 0 ? parts.join('.') : '';
+                    return parts.length > 0 ? parts.join('.') : "";
                 }
                 const folder = remove_last_folder(previousFolder)
                 if (previousFolder == "" && folder == "") { return }
@@ -1737,25 +1760,25 @@
             for (let fullscreenButton of fullscreenButtons) {
                 document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", (e) => {
                     inFullscreen = !inFullscreen;
-                    $('#filterSection').hide();
+                    $("#filterSection").hide();
                     document.getElementById(`${fullscreenButton}Canvas`).classList.add("fullscreen");
                     document.getElementById(`${fullscreenButton}Close`).hidden = false;
                     document.getElementById(`${fullscreenButton}Fullscreen`).hidden = true;
-                    document.body.style.overflow = 'hidden';
+                    document.body.style.overflow = "hidden";
                     window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
-                    if (fullscreenButton == 'runDonut') {
+                    if (fullscreenButton == "runDonut") {
                         window[`create_${camelcase_to_underscore(fullscreenButton)}_total_graph`]();
                     }
                 });
                 document.getElementById(`${fullscreenButton}Close`).addEventListener("click", (e) => {
                     inFullscreen = !inFullscreen;
-                    $('#filterSection').show();
+                    $("#filterSection").show();
                     document.getElementById(`${fullscreenButton}Canvas`).classList.remove("fullscreen");
                     document.getElementById(`${fullscreenButton}Close`).hidden = true;
                     document.getElementById(`${fullscreenButton}Fullscreen`).hidden = false;
-                    document.body.style.overflow = 'auto';
+                    document.body.style.overflow = "auto";
                     window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
-                    if (fullscreenButton == 'runDonut') {
+                    if (fullscreenButton == "runDonut") {
                         window[`create_${camelcase_to_underscore(fullscreenButton)}_total_graph`]();
                     }
                 });
@@ -1776,26 +1799,26 @@
 
             // eventlisteners for buttons to change graph views
             const graphChangeButtons = {
-                'run_statistics': 'Percentages,Line,Amount',
-                'run_donut': 'Donut',
-                'run_duration': 'Bar,Line',
-                'suite_donut_folder': 'Donut',
-                'suite_statistics': 'Percentages,Line,Amount',
-                'suite_duration': 'Bar,Line',
-                'suite_most_failed': 'Bar,Timeline',
-                'test_duration': 'Bar,Line',
-                'test_duration_deviation': 'Bar',
-                'test_messages': 'Bar,Timeline',
-                'test_most_flaky': 'Bar,Timeline',
-                'test_recent_most_flaky': 'Bar,Timeline',
-                'test_most_failed': 'Bar,Timeline',
-                'test_recent_most_failed': 'Bar,Timeline',
-                'keyword_statistics': 'Percentages,Line,Amount',
-                'keyword_times_run': 'Bar,Line',
-                'keyword_total_duration': 'Bar,Line',
-                'keyword_average_duration': 'Bar,Line',
-                'keyword_min_duration': 'Bar,Line',
-                'keyword_max_duration': 'Bar,Line',
+                "run_statistics": "Percentages,Line,Amount",
+                "run_donut": "Donut",
+                "run_duration": "Bar,Line",
+                "suite_donut_folder": "Donut",
+                "suite_statistics": "Percentages,Line,Amount",
+                "suite_duration": "Bar,Line",
+                "suite_most_failed": "Bar,Timeline",
+                "test_duration": "Bar,Line",
+                "test_duration_deviation": "Bar",
+                "test_messages": "Bar,Timeline",
+                "test_most_flaky": "Bar,Timeline",
+                "test_recent_most_flaky": "Bar,Timeline",
+                "test_most_failed": "Bar,Timeline",
+                "test_recent_most_failed": "Bar,Timeline",
+                "keyword_statistics": "Percentages,Line,Amount",
+                "keyword_times_run": "Bar,Line",
+                "keyword_total_duration": "Bar,Line",
+                "keyword_average_duration": "Bar,Line",
+                "keyword_min_duration": "Bar,Line",
+                "keyword_max_duration": "Bar,Line",
             };
 
             function handle_graph_change_type_button_click(graphChangeButton, graphType, camelButtonName) {
@@ -1808,7 +1831,7 @@
 
             function add_graph_eventlisteners(graphChangeButton, buttonTypes) {
                 const camelButtonName = underscore_to_camelcase(graphChangeButton);
-                const graphTypes = buttonTypes.split(',');
+                const graphTypes = buttonTypes.split(",");
                 graphTypes.forEach((graphType, index) => {
                     const buttonId = `${camelButtonName}Graph${graphType}`;
                     if (document.getElementById(buttonId)) {
@@ -1857,21 +1880,8 @@
                 create_suite_duration_graph();
                 create_suite_most_failed_graph();
             });
-            document.getElementById("suiteSelectFolders").addEventListener("change", (e) => {
-                setup_suites_in_suite_select();
-                create_suite_statistics_graph();
-                create_suite_duration_graph();
-                create_suite_most_failed_graph();
-            })
-            document.getElementById("showAllFolders").addEventListener("change", (e) => {
-                showAllFolders = !showAllFolders;
-                update_switch_local_storage("showAllFolders", showAllFolders);
-                setup_folders_in_suite_select();
-                create_suite_folder_donut_graph();
-                create_suite_folder_fail_donut_graph();
-                create_suite_statistics_graph();
-                create_suite_duration_graph();
-                create_suite_most_failed_graph();
+            document.getElementById("resetSuiteFolder").addEventListener("click", (e) => {
+                create_suite_folder_donut_graph("");
             });
             document.getElementById("suiteSelectTests").addEventListener("change", (e) => {
                 setup_testtags_in_select();
@@ -1913,10 +1923,10 @@
                 create_keyword_max_duration_graph();
             });
 
-            const checkboxesElement = document.getElementById('checkboxes');
-            const runTagsSelectElement = document.getElementById('selectRunTags');
+            const checkboxesElement = document.getElementById("checkboxes");
+            const runTagsSelectElement = document.getElementById("selectRunTags");
             // listen for click events on body to hide the run checkboxes when clicking outside of the select/checkboxes elements
-            document.body.addEventListener('click', function (event) {
+            document.body.addEventListener("click", function (event) {
                 if (showingRunTags == true && !checkboxesElement.contains(event.target) && !runTagsSelectElement.contains(event.target)) {
                     show_checkboxes()
                 }
@@ -1929,7 +1939,7 @@
 
         // function to setup run 
         function setup_run_amount_filter() {
-            document.getElementById('amount').setAttribute('max', runs.length)
+            document.getElementById("amount").setAttribute("max", runs.length)
         }
 
         // function that initializes the from date/time and to date/time selection boxes in the filters
@@ -1967,7 +1977,7 @@
             // Build the options HTML (including "All" as the first option)
             const optionsHtml = Array.from(runOptions)
                 .map(runName => `<option value="${runName}">${runName}</option>`)
-                .join('');
+                .join("");
             // Add the "All" option and append all other options
             const runsSelect = document.getElementById("runs");
             runsSelect.innerHTML = `<option value="All">All</option>` + optionsHtml;
@@ -2004,9 +2014,9 @@
                 </li>
             `;
             // Build the list items for all tags and the "All" tag
-            const listItems = [listItemTemplate('All')].concat(
+            const listItems = [listItemTemplate("All")].concat(
                 Array.from(tags).map(tag => listItemTemplate(tag))
-            ).join('');
+            ).join("");
             // Insert the generated HTML into the DOM
             const tagsSelect = document.getElementById("runTag");
             tagsSelect.innerHTML = andOrTags + listItems;
@@ -2018,13 +2028,13 @@
         // function to update the available suites to select in the suite filters
         function setup_suites_in_suite_select() {
             const suiteSelectSuites = document.getElementById("suiteSelectSuites");
-            const suiteSelectFolders = document.getElementById("suiteSelectFolders").value;
+            const suiteFolder = document.getElementById("suiteFolder").innerText;
             // Clear existing options
             suiteSelectSuites.innerHTML = "";
             // Extract and sort suite names
             var suiteNames = new Set()
             for (const suite of filteredSuites) {
-                if (suiteSelectFolders != "All" && !suite.full_name.startsWith(suiteSelectFolders)) {
+                if (suiteFolder != "All" && !(suite.full_name.startsWith(suiteFolder + ".") || suite.full_name == suiteFolder)) {
                     continue
                 }
                 if (useSuitePathsSuiteSection) {
@@ -2061,30 +2071,6 @@
             });
             // Set the default selection to the second option (All is default)
             suiteSelectTests.selectedIndex = 1;
-        }
-
-        // function to update the available folder suites in the suite filters
-        function setup_folders_in_suite_select() {
-            const suiteSelectFolders = document.getElementById("suiteSelectFolders");
-            // Clear existing options
-            suiteSelectFolders.innerHTML = "";
-            // Extract and sort suite names
-            var suiteFolders = new Set()
-            for (const suite of filteredSuites) {
-                const splitted = suite.full_name.split('.')
-                while (splitted.length > 0) {
-                    const [suiteName, folder] = [splitted.pop(), splitted.join('.')]
-                    suiteFolders.add(folder)
-                    if (!showAllFolders) { break }
-                }
-            }
-            suiteFolders = [...suiteFolders].filter(Boolean).sort()
-            // Add "All" as default
-            suiteSelectFolders.options.add(new Option("All", "All"));
-            // Add suite names to selects
-            suiteFolders.forEach(suiteFolder => {
-                suiteSelectFolders.options.add(new Option(suiteFolder, suiteFolder));
-            });
         }
 
         // function to update the available tests to select in the filters
@@ -2125,11 +2111,11 @@
             const testTags = [...new Set(filteredTests.reduce((tags, test) => {
                 if (useSuitePathsTestSection) {
                     if (test.full_name.includes(`${suiteSelectTests}.${test.name}`) || suiteSelectTests === "All") {
-                        test.tags.replace(/\[|\]/g, '').split(',').forEach(tag => tags.push(tag.trim()));
+                        test.tags.replace(/\[|\]/g, "").split(",").forEach(tag => tags.push(tag.trim()));
                     }
                 } else {
                     if (test.full_name.includes(`.${suiteSelectTests}.${test.name}`) || suiteSelectTests === "All") {
-                        test.tags.replace(/\[|\]/g, '').split(',').forEach(tag => tags.push(tag.trim()));
+                        test.tags.replace(/\[|\]/g, "").split(",").forEach(tag => tags.push(tag.trim()));
                     }
                 }
                 return tags;
@@ -2224,24 +2210,24 @@
         function filter_amount(filteredRuns) {
             var selectedAmount = document.getElementById("amount").value;
             // Handle weird selectedAmountValues:
-            if (selectedAmount == '') {
-                $("#amount").val(10).trigger('change.amount');
+            if (selectedAmount == "") {
+                $("#amount").val(10).trigger("change.amount");
                 selectedAmount = document.getElementById("amount").value;
             }
             if (selectedAmount > runs.length) {
-                $("#amount").val(runs.length).trigger('change.amount');
+                $("#amount").val(runs.length).trigger("change.amount");
                 selectedAmount = document.getElementById("amount").value;
             }
             if (selectedAmount < 0) {
-                $("#amount").val(0).trigger('change.amount');
+                $("#amount").val(0).trigger("change.amount");
                 selectedAmount = document.getElementById("amount").value;
             }
-            if (selectedAmount.includes(',')) {
-                $("#amount").val(selectedAmount.split(',')[0]).trigger('change.amount');
+            if (selectedAmount.includes(",")) {
+                $("#amount").val(selectedAmount.split(",")[0]).trigger("change.amount");
                 selectedAmount = document.getElementById("amount").value;
             }
-            if (selectedAmount.includes('.')) {
-                $("#amount").val(selectedAmount.split('.')[0]).trigger('change.amount');
+            if (selectedAmount.includes(".")) {
+                $("#amount").val(selectedAmount.split(".")[0]).trigger("change.amount");
                 selectedAmount = document.getElementById("amount").value;
             }
             filteredAmount = filteredRuns.length
@@ -2287,7 +2273,7 @@
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             runStatisticsGraph = new Chart("runStatisticsGraph", config);
-            runStatisticsGraph.canvas.addEventListener('click', (event) => {
+            runStatisticsGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(runStatisticsGraph, event)
             });
         }
@@ -2339,7 +2325,7 @@
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             runDurationGraph = new Chart("runDurationGraph", config);
-            runDurationGraph.canvas.addEventListener('click', (event) => {
+            runDurationGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(runDurationGraph, event)
             });
         }
@@ -2389,6 +2375,14 @@
 
         // function to create suite folder donut
         function create_suite_folder_donut_graph(folder) {
+            const suiteFolder = document.getElementById("suiteFolder")
+            suiteFolder.innerText = folder == "" || folder == undefined ? "All" : folder;
+            if (folder || folder == "") { // not first load so update the graphs accordingly as well
+                setup_suites_in_suite_select();
+                create_suite_folder_fail_donut_graph();
+                create_suite_statistics_graph();
+                create_suite_duration_graph();
+            }
             if (suiteFolderDonutGraph) {
                 suiteFolderDonutGraph.destroy();
             }
@@ -2404,7 +2398,7 @@
                     const passed = callbackData[label].passed
                     const failed = callbackData[label].failed
                     const skipped = callbackData[label].skipped
-                    return `Total: ${context.raw} Passed: ${passed}, Failed: ${failed}, Skipped: ${skipped}`;
+                    return [`Total: ${context.raw}`, `Passed: ${passed}`, `Failed: ${failed}`, `Skipped: ${skipped}`];
                 },
                 title: function (tooltipItem) {
                     return tooltipItem.label;
@@ -2429,31 +2423,44 @@
             const data = get_donut_folder_fail_graph_data("suite", filteredSuites);
             const graphData = data[0]
             const callbackData = data[1]
+            const labels = graphData.labels
             if (graphData.labels.length == 0) {
-                graphData.labels = ['No Failed Folders']
+                graphData.labels = ["No Failed Folders In Last Run"]
                 graphData.datasets = [{
                     data: [1],
-                    backgroundColor: ['grey'],
+                    backgroundColor: ["grey"],
                 }]
             }
             var config = get_graph_config("donut", graphData, `Last Run Failed Folders`);
             config.options.plugins.tooltip.callbacks = {
                 label: function (context) {
-                    return context.raw + ' Failed Tests';
+                    if (context.label == "No Failed Folders In Last Run") { return null }
+                    const label = labels[context.dataIndex]
+                    const passed = callbackData[label].passed
+                    const failed = callbackData[label].failed
+                    const skipped = callbackData[label].skipped
+                    return [`Passed: ${passed}`, `Failed: ${failed}`, `Skipped: ${skipped}`];
                 },
                 title: function (tooltipItem) {
                     return tooltipItem.label;
                 }
             }
-            if (graphData.labels[0] != 'No Failed Folders') {
-                config.options.onClick = (event) => {
-                    if (event.chart.tooltip.title) {
-                        const select = document.getElementById('suiteSelectFolders')
-                        const newValue = event.chart.tooltip.title[0]
-                        if (select.value == newValue) { return }
-                        select.value = newValue
-                        select.dispatchEvent(new Event('change'))
-                    }
+            config.options.plugins.datalabels = {
+                ...dataLabelConfig,
+                formatter: function (value, context) {
+                    if (value === 0) return null;
+                    const total = graphData.datasets[0].data.reduce((a, b) => a + b, 0);
+                    const percentage = Math.round((value / total) * 100);
+                    if (percentage <= 5) return null;
+                    const label = graphData.labels[context.dataIndex].split(".").pop();
+                    return `${label}: ${value} (${percentage}%)`;
+                }
+            };
+            config.options.onClick = (event) => {
+                if (event.chart.tooltip.title) {
+                    setTimeout(() => {
+                        create_suite_folder_donut_graph(event.chart.tooltip.title[0]);
+                    }, 0);
                 }
             };
             suiteFolderFailDonutGraph = new Chart("suiteFolderFailDonutGraph", config);
@@ -2505,7 +2512,7 @@
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             suiteStatisticsGraph = new Chart("suiteStatisticsGraph", config);
-            suiteStatisticsGraph.canvas.addEventListener('click', (event) => {
+            suiteStatisticsGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(suiteStatisticsGraph, event)
             });
         }
@@ -2525,7 +2532,7 @@
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             suiteDurationGraph = new Chart("suiteDurationGraph", config);
-            suiteDurationGraph.canvas.addEventListener('click', (event) => {
+            suiteDurationGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(suiteDurationGraph, event)
             });
         }
@@ -2585,9 +2592,9 @@
                 };
                 if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height('suiteMostFailedVertical', config.data.labels.length, config.options.plugins.title.text, suiteMostFailedGraphType);
+            update_height("suiteMostFailedVertical", config.data.labels.length, config.options.plugins.title.text, suiteMostFailedGraphType);
             suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
-            suiteMostFailedGraph.canvas.addEventListener('click', (event) => {
+            suiteMostFailedGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(suiteMostFailedGraph, event)
             });
         }
@@ -2657,7 +2664,7 @@
                 if (testSelect != "All" && test.name != testSelect) {
                     continue;
                 }
-                if (testTagsSelect != "All" && !test.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
+                if (testTagsSelect != "All" && !test.tags.replace(/\[|\]/g, "").split(",").includes(testTagsSelect)) {
                     continue
                 }
                 if (!labels.includes(test.name)) {
@@ -2729,9 +2736,9 @@
                 }
             };
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
-            update_height('testStatisticsVertical', config.data.labels.length, config.options.plugins.title.text, 'timeline');
+            update_height("testStatisticsVertical", config.data.labels.length, config.options.plugins.title.text, "timeline");
             testStatisticsGraph = new Chart("testStatisticsGraph", config);
-            testStatisticsGraph.canvas.addEventListener('click', (event) => {
+            testStatisticsGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testStatisticsGraph, event)
             });
         }
@@ -2751,7 +2758,7 @@
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             testDurationGraph = new Chart("testDurationGraph", config);
-            testDurationGraph.canvas.addEventListener('click', (event) => {
+            testDurationGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testDurationGraph, event)
             });
         }
@@ -2829,9 +2836,9 @@
                 };
                 if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height('testMessagesVertical', config.data.labels.length, config.options.plugins.title.text, testMessagesGraphType);
+            update_height("testMessagesVertical", config.data.labels.length, config.options.plugins.title.text, testMessagesGraphType);
             testMessagesGraph = new Chart("testMessagesGraph", config);
-            testMessagesGraph.canvas.addEventListener('click', (event) => {
+            testMessagesGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testMessagesGraph, event)
             });
         }
@@ -2846,7 +2853,7 @@
             // no onClick on the boxplot chart
             delete config.options.onClick
             testDurationDeviationGraph = new Chart("testDurationDeviationGraph", config);
-            testDurationDeviationGraph.canvas.addEventListener('click', (event) => {
+            testDurationDeviationGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testDurationDeviationGraph, event)
             });
         }
@@ -2899,9 +2906,9 @@
                 };
                 if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height('testMostFlakyVertical', config.data.labels.length, config.options.plugins.title.text, testMostFlakyGraphType);
+            update_height("testMostFlakyVertical", config.data.labels.length, config.options.plugins.title.text, testMostFlakyGraphType);
             testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
-            testMostFlakyGraph.canvas.addEventListener('click', (event) => {
+            testMostFlakyGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testMostFlakyGraph, event)
             });
         }
@@ -2954,9 +2961,9 @@
                 };
                 if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height('testRecentMostFlakyVertical', config.data.labels.length, config.options.plugins.title.text, testRecentMostFlakyGraphType);
+            update_height("testRecentMostFlakyVertical", config.data.labels.length, config.options.plugins.title.text, testRecentMostFlakyGraphType);
             testRecentMostFlakyGraph = new Chart("testRecentMostFlakyGraph", config);
-            testRecentMostFlakyGraph.canvas.addEventListener('click', (event) => {
+            testRecentMostFlakyGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testRecentMostFlakyGraph, event)
             });
         }
@@ -3019,9 +3026,9 @@
                 };
                 if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height('testMostFailedVertical', config.data.labels.length, config.options.plugins.title.text, testMostFailedGraphType);
+            update_height("testMostFailedVertical", config.data.labels.length, config.options.plugins.title.text, testMostFailedGraphType);
             testMostFailedGraph = new Chart("testMostFailedGraph", config);
-            testMostFailedGraph.canvas.addEventListener('click', (event) => {
+            testMostFailedGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testMostFailedGraph, event)
             });
         }
@@ -3084,9 +3091,9 @@
                 };
                 if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height('testRecentMostFailedVertical', config.data.labels.length, config.options.plugins.title.text, testRecentMostFailedGraphType);
+            update_height("testRecentMostFailedVertical", config.data.labels.length, config.options.plugins.title.text, testRecentMostFailedGraphType);
             testRecentMostFailedGraph = new Chart("testRecentMostFailedGraph", config);
-            testRecentMostFailedGraph.canvas.addEventListener('click', (event) => {
+            testRecentMostFailedGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testRecentMostFailedGraph, event)
             });
         }
@@ -3154,7 +3161,7 @@
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordStatisticsGraph = new Chart("keywordStatisticsGraph", config);
-            keywordStatisticsGraph.canvas.addEventListener('click', (event) => {
+            keywordStatisticsGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(keywordStatisticsGraph, event)
             });
         }
@@ -3174,7 +3181,7 @@
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordTimesRunGraph = new Chart("keywordTimesRunGraph", config);
-            keywordTimesRunGraph.canvas.addEventListener('click', (event) => {
+            keywordTimesRunGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(keywordTimesRunGraph, event)
             });
         }
@@ -3197,7 +3204,7 @@
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordTotalDurationGraph = new Chart("keywordTotalDurationGraph", config);
-            keywordTotalDurationGraph.canvas.addEventListener('click', (event) => {
+            keywordTotalDurationGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(keywordTotalDurationGraph, event)
             });
         }
@@ -3217,7 +3224,7 @@
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordAverageDurationGraph = new Chart("keywordAverageDurationGraph", config);
-            keywordAverageDurationGraph.canvas.addEventListener('click', (event) => {
+            keywordAverageDurationGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(keywordAverageDurationGraph, event)
             });
         }
@@ -3237,7 +3244,7 @@
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordMinDurationGraph = new Chart("keywordMinDurationGraph", config);
-            keywordMinDurationGraph.canvas.addEventListener('click', (event) => {
+            keywordMinDurationGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(keywordMinDurationGraph, event)
             });
         }
@@ -3257,7 +3264,7 @@
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordMaxDurationGraph = new Chart("keywordMaxDurationGraph", config);
-            keywordMaxDurationGraph.canvas.addEventListener('click', (event) => {
+            keywordMaxDurationGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(keywordMaxDurationGraph, event)
             });
         }
@@ -3321,7 +3328,7 @@
             for (let i = 0; i < ticks.length; i++) {
                 if (xCoor >= left + (right * i) && xCoor <= left + right + (right * i) && yCoor >= top && yCoor <= bottom) {
                     var run
-                    const identifier = chart.config._config.options.indexAxis === 'y' ? Object.values(ticks).map(item => item.label) : data.labels // exception for timelines
+                    const identifier = chart.config._config.options.indexAxis === "y" ? Object.values(ticks).map(item => item.label) : data.labels // exception for timelines
                     if (use_run_aliases) {
                         run = runs.find(run => run.run_alias === identifier[i])
                     } else {
@@ -3336,12 +3343,12 @@
                         var fileUrl = ""
                         if (server) { // server url
                             fileUrl = `/log?path=${path}`
-                        } else if (window.location.href.includes('file:///')) { // local machine url
+                        } else if (window.location.href.includes("file:///")) { // local machine url
                             fileUrl = `file:///${path}`
                         } else { // remote machine file server
                             fileUrl = combine_paths(window.location.href, path)
                         }
-                        const win = window.open(fileUrl, '_blank')
+                        const win = window.open(fileUrl, "_blank")
                     }
                 }
             }
@@ -3349,33 +3356,33 @@
 
         // function to add the suite or test id to the log path url
         function update_log_path_with_id(path, graphId, chartElement, event) {
-            if (graphId.includes('run') || graphId.includes('keyword')) {
+            if (graphId.includes("run") || graphId.includes("keyword")) {
                 return transform_file_path(path)
-            } // can't select a run or keyword in the suite/log log.html
+            } // can"t select a run or keyword in the suite/log log.html
             const graphType = event.chart.config._config.type
-            var name = ''
-            var id = ''
+            var name = ""
+            var id = ""
             var runStart = runs.find(run => run.path === path).run_start
-            if (graphId.includes('suite')) {
-                if (graphId == 'suiteStatisticsGraph') {
-                    name = event.chart.tooltip.title[0].split(': ').pop()
-                } else if (graphId == 'suiteDurationGraph') {
-                    name = event.chart.tooltip.body[0].lines[0].split(': ')[0]
-                } else if (graphId == 'suiteMostFailedGraph') {
+            if (graphId.includes("suite")) {
+                if (graphId == "suiteStatisticsGraph") {
+                    name = event.chart.tooltip.title[0].split(": ").pop()
+                } else if (graphId == "suiteDurationGraph") {
+                    name = event.chart.tooltip.body[0].lines[0].split(": ")[0]
+                } else if (graphId == "suiteMostFailedGraph") {
                     name = chartElement[0].element.$context.raw.y
                 }
                 id = suites.find(suite => suite.name === name && suite.run_start === runStart)
             } else { // it contains a test
-                if (graphId == 'testStatisticsGraph' || graphId == 'testMostFlakyGraph' || graphId == 'testRecentMostFlakyGraph' || graphId == 'testMostFailedGraph' || graphId == 'testRecentMostFailedGraph') {
+                if (graphId == "testStatisticsGraph" || graphId == "testMostFlakyGraph" || graphId == "testRecentMostFlakyGraph" || graphId == "testMostFailedGraph" || graphId == "testRecentMostFailedGraph") {
                     name = chartElement[0].element.$context.raw.y
-                } else if (graphId == 'testDurationGraph') {
-                    if (graphType == 'bar') {
+                } else if (graphId == "testDurationGraph") {
+                    if (graphType == "bar") {
                         name = event.chart.tooltip.dataPoints[0].dataset.label
                     } else {
                         const datasetIndex = chartElement[0].datasetIndex
                         name = event.chart.legend.legendItems[datasetIndex].text
                     }
-                } else { // this exception is for the Test Messages graph as you can't tell which test it relates to (might be more than 1!)
+                } else { // this exception is for the Test Messages graph as you can"t tell which test it relates to (might be more than 1!)
                     return transform_file_path(path)
                 }
                 id = tests.find(test => test.name === name && test.run_start === runStart)
@@ -3391,13 +3398,13 @@
             if (!use_logs) { return }
             const graphType = event.chart.config._config.type
             const graphId = event.chart.canvas.id
-            var runStart = ''
-            if (graphType == 'doughnut') {
+            var runStart = ""
+            if (graphType == "doughnut") {
                 runStart = callbackData
             } else if (callbackData) {
                 const index = chartElement[0].element.$context.raw.x[0]
                 runStart = callbackData[index]
-            } else if (graphType == 'line' && !graphId.includes('Statistics')) {
+            } else if (graphType == "line" && !graphId.includes("Statistics")) {
                 runStart = format_date_to_string(new Date(chartElement[0].element.$context.raw.x))
             } else {
                 const index = chartElement[0].index
@@ -3413,12 +3420,12 @@
             var fileUrl = ""
             if (server) { // server url
                 fileUrl = `/log?path=${path}`
-            } else if (window.location.href.includes('file:///')) { // local machine url
+            } else if (window.location.href.includes("file:///")) { // local machine url
                 fileUrl = `file:///${path}`
             } else { // remote machine file server
                 fileUrl = combine_paths(window.location.href, path)
             }
-            const win = window.open(fileUrl, '_blank')
+            const win = window.open(fileUrl, "_blank")
         }
 
         // function to retrieve the required graph config for chartjs, based on the different type of graphs
@@ -3485,7 +3492,7 @@
                 graphData = { datasets: graphData };
             }
             var config
-            // Configuration for 'line' graph
+            // Configuration for "line" graph
             if (graphType === "line") {
                 config = {
                     type: "line",
@@ -3513,7 +3520,7 @@
                     },
                 };
             }
-            // Configuration for 'bar' graph
+            // Configuration for "bar" graph
             if (graphType === "bar") {
                 config = {
                     type: "bar",
@@ -3539,13 +3546,13 @@
                                 color: "#000000",
                                 align: "center",
                                 anchor: "center",
-                                formatter: (value) => value > 0 ? value : "",
+                                formatter: (value) => value > 0 ? value : null,
                             },
                         },
                     },
                 };
             }
-            // Configuration for 'timeline' graph
+            // Configuration for "timeline" graph
             if (graphType === "timeline") {
                 config = {
                     type: "bar",
@@ -3569,7 +3576,7 @@
                     },
                 };
             }
-            // Configuration for 'boxplot' graph
+            // Configuration for "boxplot" graph
             if (graphType === "boxplot") {
                 config = {
                     type: "boxplot",
@@ -3610,13 +3617,17 @@
                         animation: {
                             duration: 2000,
                         },
-                        radius: '90%',
+                        radius: "90%",
                         plugins: {
                             ...baseConfig.plugins,
                             tooltip: {
                                 callbacks: {
                                     title: function (tooltipItem) {
-                                        return tooltipItem[0].element.$datalabels[0]._model.lines[0];
+                                        if (tooltipItem[0].element.$datalabels[0]._model) {
+                                            return tooltipItem[0].element.$datalabels[0]._model.lines[0];
+                                        } else {
+                                            return `${tooltipItem[0].label}: ${tooltipItem[0].formattedValue}`
+                                        }
                                     }
                                 }
                             },
@@ -3624,14 +3635,16 @@
                                 display: true,
                             },
                             datalabels: {
-                                color: "#000000",
+                                ...dataLabelConfig,
                                 align: "center",
                                 anchor: "center",
                                 formatter: function (value, context) {
-                                    if (value == 0) { return "" }
+                                    if (value == 0) { return null }
                                     const total = graphData.datasets[0].data.reduce((a, b) => a + b, 0);
                                     const percentage = Math.round((value / total) * 100);
-                                    return `${graphData.labels[context.dataIndex]}: ${value} (${percentage}%)`;
+                                    if (percentage <= 5) { return null }
+                                    const label = graphData.labels[context.dataIndex].split(".").pop()
+                                    return `${label}: ${value} (${percentage}%)`;
                                 }
                             },
                         },
@@ -3647,11 +3660,48 @@
             return config
         }
 
+        function exclude_from_suite_data(dataType, value) {
+            if (dataType !== "suite") return false;
+            const suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
+            const suiteSelectSuitesOptions = [...document.getElementById("suiteSelectSuites").options].map(o => o.value);
+            const suiteFolder = document.getElementById("suiteFolder").innerText;
+            const isFolderAll = suiteFolder === "All";
+            const isSuiteAll = suiteSelectSuites === "All";
+            const usingSuitePaths = useSuitePathsSuiteSection;
+
+            const folderMatches = (val) => val.full_name === suiteFolder || val.full_name.startsWith(`${suiteFolder}.`);
+            const suiteNameMatches = (val) => suiteSelectSuitesOptions.includes(val.name);
+            const fullNameMatches = (val) => suiteSelectSuitesOptions.includes(val.full_name);
+
+            if (isFolderAll && isSuiteAll) {
+                // All folders, all suites: include all
+                return false;
+            }
+            if (isFolderAll && !isSuiteAll) {
+                // All folders, specific suite
+                return usingSuitePaths
+                    ? value.full_name !== suiteSelectSuites
+                    : value.name !== suiteSelectSuites;
+            }
+            if (!isFolderAll && isSuiteAll) {
+                // Specific folder, all suites
+                if (!folderMatches(value)) return true;
+
+                return usingSuitePaths
+                    ? !fullNameMatches(value)
+                    : !suiteNameMatches(value);
+            }
+            // Specific folder, specific suite
+            if (!folderMatches(value)) return true;
+            return usingSuitePaths
+                ? value.full_name !== suiteSelectSuites
+                : value.name !== suiteSelectSuites;
+        }
+
         // function to prepare the data in the correct format for statistics graphs
         function get_statistics_graph_data(dataType, graphType, filteredData) {
             // Cache DOM values once for performance
             const keywordSelect = document.getElementById("keywordSelect").value;
-            const suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
             // Initialize arrays to store the data
             const passed = [], failed = [], skipped = [], labels = [], aliases = [], names = [];
             // Helper function to calculate percentages
@@ -3671,11 +3721,7 @@
             };
             // Loop through filtered data and process it based on the graph type
             for (const value of filteredData) {
-                if (useSuitePathsSuiteSection) {
-                    if (dataType === "suite" && suiteSelectSuites !== "All" && value.full_name !== suiteSelectSuites) continue;
-                } else {
-                    if (dataType === "suite" && suiteSelectSuites !== "All" && value.name !== suiteSelectSuites) continue;
-                }
+                if (exclude_from_suite_data(dataType, value)) { continue }
                 if (dataType === "keyword" && value.name !== keywordSelect) continue;
                 // Process percentage-based data
                 if (graphType === "percentages") {
@@ -3720,7 +3766,7 @@
             return [statisticsData, names];
         }
 
-        // function to prepare the data in the correct format for duration graphs
+        // function to prepare the data in the correct format for last run donut graphs
         function get_donut_graph_data(dataType, filteredData) {
             const latest = filteredData[Object.keys(filteredData)[Object.keys(filteredData).length - 1]]
             var labels = [];
@@ -3729,19 +3775,19 @@
             var backgroundBorderColors = [];
             if (latest) {
                 if (latest.passed > 0) {
-                    labels.push('Passed')
+                    labels.push("Passed")
                     datasets.push(latest.passed)
                     backgroundColors.push(passedBackgroundColor)
                     backgroundBorderColors.push(passedBackgroundBorderColor)
                 }
                 if (latest.failed > 0) {
-                    labels.push('Failed')
+                    labels.push("Failed")
                     datasets.push(latest.failed)
                     backgroundColors.push(failedBackgroundColor)
                     backgroundBorderColors.push(failedBackgroundBorderColor)
                 }
                 if (latest.skipped > 0) {
-                    labels.push('Skipped')
+                    labels.push("Skipped")
                     datasets.push(latest.skipped)
                     backgroundColors.push(skippedBackgroundColor)
                     backgroundBorderColors.push(skippedBackgroundBorderColor)
@@ -3756,7 +3802,7 @@
                     hoverOffset: 4
                 }]
             };
-            const callBackData = latest ? use_run_aliases ? latest.run_alias : latest.run_start : ''
+            const callBackData = latest ? use_run_aliases ? latest.run_alias : latest.run_start : ""
             return [graphData, callBackData]
         }
 
@@ -3766,19 +3812,19 @@
             const labels = [], backgroundColors = [], backgroundBorderColors = [];
             for (const value of filteredData) {
                 if (value.passed > 0) {
-                    if (!labels.includes('Passed')) { labels.push('Passed') };
+                    if (!labels.includes("Passed")) { labels.push("Passed") };
                     if (!backgroundColors.includes(passedBackgroundColor)) { backgroundColors.push(passedBackgroundColor) };
                     if (!backgroundBorderColors.includes(passedBackgroundBorderColor)) { backgroundBorderColors.push(passedBackgroundBorderColor) };
                     passed = passed + value.passed;
                 }
                 if (value.failed > 0) {
-                    if (!labels.includes('Failed')) { labels.push('Failed') };
+                    if (!labels.includes("Failed")) { labels.push("Failed") };
                     if (!backgroundColors.includes(failedBackgroundColor)) { backgroundColors.push(failedBackgroundColor) };
                     if (!backgroundBorderColors.includes(failedBackgroundBorderColor)) { backgroundBorderColors.push(failedBackgroundBorderColor) };
                     failed = failed + value.failed;
                 }
                 if (value.skipped > 0) {
-                    if (!labels.includes('Skipped')) { labels.push('Skipped') };
+                    if (!labels.includes("Skipped")) { labels.push("Skipped") };
                     if (!backgroundColors.includes(skippedBackgroundColor)) { backgroundColors.push(skippedBackgroundColor) };
                     if (!backgroundBorderColors.includes(skippedBackgroundBorderColor)) { backgroundBorderColors.push(skippedBackgroundBorderColor) };
                     skipped = skipped + value.skipped;
@@ -3803,58 +3849,15 @@
             if (lastRunStart) {
                 lastRunStart = lastRunStart.run_start
             }
-            const suiteSelectFolders = document.getElementById("suiteSelectFolders").querySelectorAll('option');
-            const folders = []
-            const labels = []
-            const data = []
-            for (const element of suiteSelectFolders) {
-                if (element.value == 'All') { continue }
-                folders.push(element.value)
-            }
-            for (const folder of folders) {
-                var failed = 0;
-                for (const value of filteredData) {
-                    if (value.run_start != lastRunStart) { continue }
-                    if (value.failed == 0) { continue }
-                    if (value.full_name.startsWith(folder)) {
-                        failed += value.failed;
-                        if (!labels.includes(folder)) { labels.push(folder) }
-                    }
-                }
-                if (failed != 0) { data.push(failed) }
-            }
-            const graphData = {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    hoverOffset: 4
-                }]
-            };
-            const callbackData = labels
-            return [graphData, callbackData]
-        }
-
-        // function to prepare the data in the correct format for folder donuts
-        function get_donut_folder_graph_data(dataType, filteredData, folder) {
-            // const suiteSelectFolders = document.getElementById("suiteSelectFolders").querySelectorAll('option');
-            function get_next_folder_level(fullPath, currentPath) {
-                const fullParts = fullPath.split('.');
-                const currentParts = currentPath.split('.');
-                if (
-                    currentParts.length < fullParts.length &&
-                    fullParts.slice(0, currentParts.length).join('.') === currentPath
-                ) {
-                    return fullParts.slice(0, currentParts.length + 1).join('.');
-                }
-                return currentPath;
-            }
-
+            const suiteFolder = document.getElementById("suiteFolder").innerText;
             var labels = new Set()
             const callbackData = {}
             const data = []
             for (const value of filteredData) {
-                if (!folder) {
-                    const label = value.full_name.split('.')[0]
+                if (value.run_start != lastRunStart) { continue }
+                if (value.failed == 0) { continue }
+                if (suiteFolder == "All") {
+                    const label = value.full_name.split(".")[0]
                     labels.add(label)
                     if (!callbackData[label]) {
                         callbackData[label] = {
@@ -3871,7 +3874,99 @@
                         callbackData[label].failed += value.failed;
                     }
                 } else {
-                    if (!value.full_name.startsWith(folder)) { continue }
+                    if (!value.full_name.startsWith(suiteFolder + ".") && value.full_name != suiteFolder) { continue }
+                    const label = get_next_folder_level(suiteFolder, value.full_name)
+                    labels.add(label)
+                    if (!callbackData[label]) {
+                        callbackData[label] = {
+                            total: value.total,
+                            passed: value.passed,
+                            skipped: value.skipped,
+                            failed: value.failed
+                        };
+                    } else {
+                        // If label exists, increment the values
+                        callbackData[label].total += value.total;
+                        callbackData[label].passed += value.passed;
+                        callbackData[label].skipped += value.skipped;
+                        callbackData[label].failed += value.failed;
+                    }
+                }
+            }
+            labels = [...labels]
+            for (const label of labels) {
+                data.push(callbackData[label].failed)
+            }
+            const redShades = [
+                "#ce3e01", // base fail color
+                "#b13601", // darker burnt orange
+                "#992f01", // deep red-orange
+                "#7f2600"  // very dark, almost brown-red
+            ];
+            function assignColors(intoCount) {
+                const result = [];
+                const colorCount = redShades.length;
+                let index = 0;
+                for (let i = 0; i < intoCount; i++) {
+                    result.push(redShades[index]);
+                    index = (index + 1) % colorCount;
+                    // Ensure no same color next to each other
+                    if (i > 0 && result[i] === result[i - 1]) {
+                        index = (index + 1) % colorCount;
+                        result[i] = redShades[index];
+                    }
+                }
+                return result;
+            }
+            const backgroundColor = assignColors(labels.length);
+            const graphData = {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: backgroundColor,
+                    hoverOffset: 4
+                }]
+            };
+            return [graphData, callbackData];
+        }
+
+        function get_next_folder_level(fullPath, currentPath) {
+            const fullParts = fullPath.split(".");
+            const currentParts = currentPath.split(".");
+            if (
+                currentParts.length < fullParts.length &&
+                fullParts.slice(0, currentParts.length).join(".") === currentPath
+            ) {
+                return fullParts.slice(0, currentParts.length + 1).join(".");
+            }
+            return currentPath;
+        }
+
+        // function to prepare the data in the correct format for folder donuts
+        function get_donut_folder_graph_data(dataType, filteredData, folder) {
+            var labels = new Set()
+            const callbackData = {}
+            const data = []
+            for (const value of filteredData) {
+                if (!folder) {
+                    const label = value.full_name.split(".")[0]
+                    labels.add(label)
+                    if (!callbackData[label]) {
+                        callbackData[label] = {
+                            total: value.total,
+                            passed: value.passed,
+                            skipped: value.skipped,
+                            failed: value.failed
+                        };
+                    } else {
+                        // If label exists, increment the values
+                        callbackData[label].total += value.total;
+                        callbackData[label].passed += value.passed;
+                        callbackData[label].skipped += value.skipped;
+                        callbackData[label].failed += value.failed;
+                    }
+                } else {
+                    if (!value.full_name.startsWith(folder + ".") && value.full_name != folder) { continue }
                     const label = get_next_folder_level(folder, value.full_name)
                     labels.add(label)
                     if (!callbackData[label]) {
@@ -3916,18 +4011,14 @@
             // Helper function for filtering based on selection criteria
             const should_include = (value) => {
                 if (dataType === "keyword" && value.name !== keywordSelect) return false;
-                if (useSuitePathsSuiteSection) {
-                    if (dataType === "suite" && suiteSelectSuites !== "All" && value.full_name !== suiteSelectSuites) return false;
-                } else {
-                    if (dataType === "suite" && suiteSelectSuites !== "All" && value.name !== suiteSelectSuites) return false;
-                }
+                if (exclude_from_suite_data(dataType, value)) return false;
                 if (useSuitePathsTestSection) {
                     if (dataType === "test" && suiteSelectTests !== "All" && value.full_name !== `${suiteSelectTests}.${value.name}`) return false;
                 } else {
                     if (dataType === "test" && suiteSelectTests !== "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name !== `${suiteSelectTests}.${value.name}`) return false;
                 }
                 if (dataType === "test" && testSelect !== "All" && value.name !== testSelect) return false;
-                if (dataType === "test" && testTagsSelect !== "All" && !value.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) return false;
+                if (dataType === "test" && testTagsSelect !== "All" && !value.tags.replace(/\[|\]/g, "").split(",").includes(testTagsSelect)) return false;
                 return true;
             };
             // Bar graph construction
@@ -4018,7 +4109,7 @@
                     if (testSelect !== "All" && value.name !== testSelect) {
                         continue;
                     }
-                    if (testTagsSelect !== "All" && !value.tags.replace(/\[|\]/g, '').split(',').includes(testTagsSelect)) {
+                    if (testTagsSelect !== "All" && !value.tags.replace(/\[|\]/g, "").split(",").includes(testTagsSelect)) {
                         continue;
                     }
                 }
@@ -4052,42 +4143,42 @@
             var data = {};
             for (value of filteredData) {
                 if (data[value.name]) {
-                    data[value.name]['run_starts'].push(value.run_start)
+                    data[value.name]["run_starts"].push(value.run_start)
                     var current_status
-                    if (value.passed == 1) { current_status = 'passed' }
+                    if (value.passed == 1) { current_status = "passed" }
                     else if (value.failed == 1) {
-                        current_status = 'failed'
-                        data[value.name]['failed_run_starts'].push(value.run_start)
+                        current_status = "failed"
+                        data[value.name]["failed_run_starts"].push(value.run_start)
                     }
                     else if (!ignore) {
                         if (value.skipped == 1) {
-                            current_status = 'skipped'
-                            data[value.name]['failed_run_starts'].push(value.run_start)
+                            current_status = "skipped"
+                            data[value.name]["failed_run_starts"].push(value.run_start)
                         }
                     }
-                    if (current_status != data[value.name]['previous_status']) {
-                        data[value.name]['flips'] += 1
-                        data[value.name]['previous_status'] = current_status
+                    if (current_status != data[value.name]["previous_status"]) {
+                        data[value.name]["flips"] += 1
+                        data[value.name]["previous_status"] = current_status
                     }
                 } else {
                     var previous_status
                     data[value.name] = {
-                        'run_starts': [value.run_start],
-                        'flips': 0,
-                        'failed_run_starts': []
+                        "run_starts": [value.run_start],
+                        "flips": 0,
+                        "failed_run_starts": []
                     }
-                    if (value.passed == 1) { previous_status = 'passed' }
+                    if (value.passed == 1) { previous_status = "passed" }
                     else if (value.failed == 1) {
-                        previous_status = 'failed'
-                        data[value.name]['failed_run_starts'].push(value.run_start)
+                        previous_status = "failed"
+                        data[value.name]["failed_run_starts"].push(value.run_start)
                     }
                     else if (!ignore) {
                         if (value.skipped == 1) {
-                            previous_status = 'skipped'
-                            data[value.name]['failed_run_starts'].push(value.run_start)
+                            previous_status = "skipped"
+                            data[value.name]["failed_run_starts"].push(value.run_start)
                         }
                     }
-                    data[value.name]['previous_status'] = previous_status
+                    data[value.name]["previous_status"] = previous_status
                 }
             }
             var sortedData = [];
@@ -4214,7 +4305,7 @@
                 });
             }
             const limit = inFullscreen ? 50 : 10;
-            if (graphType === 'bar') {
+            if (graphType === "bar") {
                 const datasets = [];
                 const labels = [];
                 let count = 0;
@@ -4236,7 +4327,7 @@
                 };
                 const callbackData = Object.fromEntries(sortedData.map(([name, runs]) => [name, aliases.get(name)]));
                 return [graphData, callbackData];
-            } else if (graphType === 'timeline') {
+            } else if (graphType === "timeline") {
                 const labels = [];
                 const runStartsSet = new Set();
                 const runAliasesSet = new Set();
@@ -4295,7 +4386,7 @@
                 }
             }
             // If there is a message config use that to merge the data
-            if (!message_config.includes('placeholder_message_config')) {
+            if (!message_config.includes("placeholder_message_config")) {
                 function matches_message_config(str, rule) {
                     rule = rule.replace(/\$\{.*?\}/g, "*") // match any ${something} string
                     var escapeRegex = (str) => str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"); // escape the test messages to prevent regex mismatches
@@ -4323,7 +4414,7 @@
             // Sort messages by failure count
             const limit = inFullscreen ? 50 : 10;
             const sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length);
-            if (graphType === 'bar') {
+            if (graphType === "bar") {
                 const [datasets, labels] = [[], []];
                 let count = 0;
 
@@ -4345,7 +4436,7 @@
                 };
                 const callbackData = Object.fromEntries(sortedData.map(([message, runs]) => [message, aliases.get(message)]));
                 return [graphData, callbackData];
-            } else if (graphType === 'timeline') {
+            } else if (graphType === "timeline") {
                 const labels = [];
                 const runStartsSet = new Set();
                 const runAliasesSet = new Set();
@@ -4363,7 +4454,7 @@
                 var datasets = [];
                 let runAxis = 0;
                 function check_label(message, label) {
-                    return !message_config.includes('placeholder_message_config')
+                    return !message_config.includes("placeholder_message_config")
                         ? matches_message_config(message, label)
                         : message === label;
                 }
@@ -4396,7 +4487,7 @@
         function update_height(verticalId, labels, title, graphType) {
             const vertical = document.getElementById(verticalId)
             vertical.style.height = `465px`
-            if (labels > 10 && graphType != 'bar') {
+            if (labels > 10 && graphType != "bar") {
                 // timeline view with more than 10 items -> update height
                 const newHeight = 465 + (labels - 10) * 35;
                 const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height) - 59;
@@ -4405,11 +4496,11 @@
                 } else {
                     vertical.style.height = `${newHeight}px`
                 }
-            } else if (inFullscreen && graphType != 'bar') {
+            } else if (inFullscreen && graphType != "bar") {
                 // not more than 10 items, set the height to fullscreen without scrollbar
                 const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height) - 51;
                 vertical.style.height = `${parentHeight}px`
-            } else if (inFullscreen && graphType == 'bar') {
+            } else if (inFullscreen && graphType == "bar") {
                 const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height);
                 vertical.style.height = `${parentHeight}px`
             }
@@ -4432,10 +4523,10 @@
             const data = Object.entries(grouped)
                 .filter(([_, data]) => data.length > 0)
                 .map(([status, data]) => ({
-                    label: status.split(':*:&:.:')[0],
+                    label: status.split(":*:&:.:")[0],
                     data,
-                    backgroundColor: status.split(':*:&:.:')[1],
-                    borderColor: status.split(':*:&:.:')[2],
+                    backgroundColor: status.split(":*:&:.:")[1],
+                    borderColor: status.split(":*:&:.:")[2],
                     ...barConfig,
                     parsing: true
                 }));
@@ -4448,7 +4539,7 @@
 
         // function to update all graph data, function is called when updating filters and when the page loads
         function setup_data_and_graphs() {
-            lastScrollY = window.scrollY
+            lastScrollY = window.scrollY + 128;
             setup_spinner(false)
 
             // Let the browser render before continuing
@@ -4464,8 +4555,8 @@
                 requestAnimationFrame(() => {
                     setup_spinner(true);
                     setup_all_graphs();
-                    if (lastScrollY != 0) {
-                        scrollTo(0, lastScrollY, 'smooth')
+                    if (lastScrollY > 128) {
+                        scrollTo(0, lastScrollY, "smooth")
                     }
                 })
             });
@@ -4491,7 +4582,6 @@
             document.getElementById("keywordTitle").innerHTML = `Keyword Statistics (${Object.keys(filteredKeywords).length}) ${message}`;
             // update filters based on data
             setup_suites_in_suite_select();
-            setup_folders_in_suite_select();
             setup_suites_in_test_select();
             setup_testtags_in_select();
             setup_tests_in_select();
@@ -4531,46 +4621,46 @@
 
         // function to order the sections according to the localstorage config
         function setup_section_order() {
-            var prevId = '#loading'
-            const sectionShowList = JSON.parse(localStorage.getItem('sectionShow'));
+            var prevId = "#loading"
+            const sectionShowList = JSON.parse(localStorage.getItem("sectionShow"));
             for (let section of sectionShowList) {
-                var nextId = `#${space_to_camelcase(section + ' Section')}`
-                document.getElementById(`${space_to_camelcase(section + ' Section')}`).hidden = false
+                var nextId = `#${space_to_camelcase(section + " Section")}`
+                document.getElementById(`${space_to_camelcase(section + " Section")}`).hidden = false
                 $(nextId).insertAfter(prevId)
                 prevId = nextId
             }
-            const sectionHideList = JSON.parse(localStorage.getItem('sectionHide'));
+            const sectionHideList = JSON.parse(localStorage.getItem("sectionHide"));
             for (let section of sectionHideList) {
-                document.getElementById(`${space_to_camelcase(section + ' Section')}`).hidden = true
+                document.getElementById(`${space_to_camelcase(section + " Section")}`).hidden = true
             }
         }
 
         // function to order the grphs according to the localstorage config
         function setup_graph_order() {
-            setup_graphs('Run')
-            setup_graphs('Suite')
-            setup_graphs('Test')
-            setup_graphs('Keyword')
+            setup_graphs("Run")
+            setup_graphs("Suite")
+            setup_graphs("Test")
+            setup_graphs("Keyword")
         }
 
         // function to order the graphs in the sections
         function setup_graphs(section) {
             const lowerCaseSection = section.toLowerCase()
-            const sectionDataElement = document.getElementById(lowerCaseSection + 'Data')
-            const sectionDataHiddenElement = document.getElementById(lowerCaseSection + 'DataHidden')
-            const sectionDataHiddenTempElement = document.getElementById(lowerCaseSection + 'DataHiddenTemp')
+            const sectionDataElement = document.getElementById(lowerCaseSection + "Data")
+            const sectionDataHiddenElement = document.getElementById(lowerCaseSection + "DataHidden")
+            const sectionDataHiddenTempElement = document.getElementById(lowerCaseSection + "DataHiddenTemp")
             // first move all graphs from the {section}Data element to {section}DataHidden to have a clean start if it is not the first load
             if (sectionDataElement.children.length > 0) {
                 sectionDataHiddenElement.innerHTML = sectionDataElement.innerHTML
-                sectionDataElement.innerHTML = ''
-                // also use the temphidden elements if it's not empty (they are placed there if they are hidden by the config)
+                sectionDataElement.innerHTML = ""
+                // also use the temphidden elements if it"s not empty (they are placed there if they are hidden by the config)
                 if (sectionDataHiddenTempElement.children.length > 0) {
                     while (sectionDataHiddenTempElement.children.length > 0) {
                         sectionDataHiddenElement.appendChild(sectionDataHiddenTempElement.children[0]);
                     }
                 }
                 // exception to handle tables because they are completely altered by the datatables module on creation
-                const sectionTableElement = document.getElementById(lowerCaseSection + 'TableCanvas')
+                const sectionTableElement = document.getElementById(lowerCaseSection + "TableCanvas")
                 sectionTableElement.innerHTML = `<table class="table table-striped" id="${lowerCaseSection}Table"></table>`
             }
 
@@ -4581,7 +4671,7 @@
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <h6 class='sectionTitle'>{title}</h6>
+                                        <h6 class="sectionTitle">{title}</h6>
                                     </div>
                                 </div>`
             const dataRow = `<div class="row collapse show" id="${lowerCaseSection}Data{index}">
@@ -4591,58 +4681,58 @@
             // helper function to create the chevron rows and data rows in the sections
             function position_graph(graph) {
                 const camelCaseGraph = space_to_camelcase(graph)
-                const graphDataElement = document.getElementById(camelCaseGraph + 'Canvas')
+                const graphDataElement = document.getElementById(camelCaseGraph + "Canvas")
                 const canvas = graphDataElement.outerHTML
                 graphDataElement.remove()
                 if (sectionDataElement.lastChild == null) {
                     // there is no data row yet > create a new row
-                    if (graph.includes('Table')) {
-                        sectionDataElement.innerHTML = chevronRow.replaceAll('{index}', '1').replace('{title}', graph).replace('collapse-icon', 'collapse-icon collapsed')
-                        sectionDataElement.insertAdjacentHTML('beforeend', dataRow.replace('{index}', '1').replace('{canvas}', canvas).replace('collapse show', 'collapse'))
+                    if (graph.includes("Table")) {
+                        sectionDataElement.innerHTML = chevronRow.replaceAll("{index}", "1").replace("{title}", graph).replace("collapse-icon", "collapse-icon collapsed")
+                        sectionDataElement.insertAdjacentHTML("beforeend", dataRow.replace("{index}", "1").replace("{canvas}", canvas).replace("collapse show", "collapse"))
                     } else {
-                        sectionDataElement.innerHTML = chevronRow.replaceAll('{index}', '1').replace('{title}', graph)
-                        sectionDataElement.insertAdjacentHTML('beforeend', dataRow.replace('{index}', '1').replace('{canvas}', canvas))
+                        sectionDataElement.innerHTML = chevronRow.replaceAll("{index}", "1").replace("{title}", graph)
+                        sectionDataElement.insertAdjacentHTML("beforeend", dataRow.replace("{index}", "1").replace("{canvas}", canvas))
                     }
                 } else {
                     const index = parseInt(sectionDataElement.lastChild.id.match(/\d+/)[0], 10) + 1
-                    if (graph.includes('Table')) {
-                        // it's a table which automatically comes on a new row
-                        sectionDataElement.insertAdjacentHTML('beforeend', chevronRow.replaceAll('{index}', `${index}`).replace('{title}', graph).replace('collapse-icon', 'collapse-icon collapsed'))
-                        sectionDataElement.insertAdjacentHTML('beforeend', dataRow.replace('{index}', `${index}`).replace('{canvas}', canvas).replace('collapse show', 'collapse'))
+                    if (graph.includes("Table")) {
+                        // it"s a table which automatically comes on a new row
+                        sectionDataElement.insertAdjacentHTML("beforeend", chevronRow.replaceAll("{index}", `${index}`).replace("{title}", graph).replace("collapse-icon", "collapse-icon collapsed"))
+                        sectionDataElement.insertAdjacentHTML("beforeend", dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas).replace("collapse show", "collapse"))
                     } else if (sectionDataElement.lastChild.children.length == 1) {
                         // there is 1 canvas in the data row
-                        if (sectionDataElement.lastChild.children[0].id.includes('Table')) {
-                            // it's a table > create a new row
-                            sectionDataElement.insertAdjacentHTML('beforeend', chevronRow.replaceAll('{index}', `${index}`).replace('{title}', graph))
-                            sectionDataElement.insertAdjacentHTML('beforeend', dataRow.replace('{index}', `${index}`).replace('{canvas}', canvas))
+                        if (sectionDataElement.lastChild.children[0].id.includes("Table")) {
+                            // it"s a table > create a new row
+                            sectionDataElement.insertAdjacentHTML("beforeend", chevronRow.replaceAll("{index}", `${index}`).replace("{title}", graph))
+                            sectionDataElement.insertAdjacentHTML("beforeend", dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas))
                         } else {
-                            // it's a graph > add it to the row
-                            sectionDataElement.lastChild.insertAdjacentHTML('beforeend', canvas)
-                            const titleElement = sectionDataElement.children[sectionDataElement.children.length - 2].querySelector('.sectionTitle')
+                            // it"s a graph > add it to the row
+                            sectionDataElement.lastChild.insertAdjacentHTML("beforeend", canvas)
+                            const titleElement = sectionDataElement.children[sectionDataElement.children.length - 2].querySelector(".sectionTitle")
                             const oldTitle = titleElement.innerText
                             titleElement.innerText = oldTitle + ` & ${graph}`
                         }
                     } else if (sectionDataElement.lastChild.children.length == 2) {
                         // there are 2 canvasses in the data row > create a new row
-                        sectionDataElement.insertAdjacentHTML('beforeend', chevronRow.replaceAll('{index}', `${index}`).replace('{title}', graph))
-                        sectionDataElement.insertAdjacentHTML('beforeend', dataRow.replace('{index}', `${index}`).replace('{canvas}', canvas))
+                        sectionDataElement.insertAdjacentHTML("beforeend", chevronRow.replaceAll("{index}", `${index}`).replace("{title}", graph))
+                        sectionDataElement.insertAdjacentHTML("beforeend", dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas))
                     }
                 }
             }
 
             // order the graphs correctly
-            const graphShowList = JSON.parse(localStorage.getItem('graphShow'));
+            const graphShowList = JSON.parse(localStorage.getItem("graphShow"));
             for (let graph of graphShowList) {
                 if (graph.startsWith(section)) {
                     position_graph(graph)
                 }
             }
             // move the hidden items to temp hidden to keep the HTML available for reconfiguration
-            const graphHideList = JSON.parse(localStorage.getItem('graphHide'));
+            const graphHideList = JSON.parse(localStorage.getItem("graphHide"));
             for (let graph of graphHideList) {
                 if (graph.startsWith(section)) {
                     const camelCaseGraph = space_to_camelcase(graph)
-                    const graphDataElement = document.getElementById(camelCaseGraph + 'Canvas')
+                    const graphDataElement = document.getElementById(camelCaseGraph + "Canvas")
                     sectionDataHiddenTempElement.appendChild(graphDataElement)
                 }
             }
@@ -4665,7 +4755,6 @@
             update_customize_view_local_storage();
             update_switch_local_storage("useSuitePathsSuiteSection", useSuitePathsSuiteSection, true);
             update_switch_local_storage("useSuitePathsTestSection", useSuitePathsTestSection, true);
-            update_switch_local_storage("showAllFolders", showAllFolders, true);
             setup_eventlisteners_section_filter_buttons();
             setup_run_amount_filter();
             setup_lowest_highest_dates();
