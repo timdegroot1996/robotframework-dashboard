@@ -889,7 +889,7 @@
         const greyBackgroundColor = "rgba(33, 37, 41, 0.7)";
         const graphFontSize = 12;
 
-        // bar config
+        // base bar config
         const barConfig = {
             borderSkipped: false,
             borderRadius: {
@@ -914,7 +914,7 @@
             borderColor: skippedBackgroundBorderColor,
             ...barConfig,
         }
-        // line config
+        // base line config
         const lineConfig = {
             tension: 0.1,
             pointRadius: 4,
@@ -931,7 +931,6 @@
             align: "center",
             anchor: "center",
             font: {
-                // weight: "bold",
                 size: graphFontSize,
             },
         }
