@@ -1330,6 +1330,19 @@
             }
         }
 
+        // function to get a higher folder path based on the full_path or partial full_path provided
+        function get_next_folder_level(fullPath, currentPath) {
+            const fullParts = fullPath.split(".");
+            const currentParts = currentPath.split(".");
+            if (
+                currentParts.length < fullParts.length &&
+                fullParts.slice(0, currentParts.length).join(".") === currentPath
+            ) {
+                return fullParts.slice(0, currentParts.length + 1).join(".");
+            }
+            return currentPath;
+        }
+
         //////////////////////////////
         // CUSTOMIZE VIEW FUNCTIONS //
         //////////////////////////////
@@ -1341,7 +1354,6 @@
                 const fromBox = document.getElementById(fromId);
                 const toBox = document.getElementById(toId);
                 const selectedItems = fromBox.querySelectorAll(".active");
-
                 const fromStorage = JSON.parse(localStorage.getItem(fromId));
                 const toStorage = JSON.parse(localStorage.getItem(toId));
 
@@ -1358,10 +1370,8 @@
                         if (toId.includes("section")) disable_graphs_in_customize_view(false, identifier);
                     }
                 }
-
                 localStorage.setItem(fromId, JSON.stringify(fromStorage));
                 localStorage.setItem(toId, JSON.stringify(toStorage));
-
                 selectedItems.forEach(item => {
                     item.classList.remove("active");
                     if (toId === "graphShow") {
@@ -1505,7 +1515,11 @@
                 storedTypes = JSON.parse(storedTypes);
                 // Below exception is created to handle problems when switching between old versions without graphs
                 // to newer versions with additional graphs. The view is completely reset to add all graphs again.
-                if (Object.keys(defaultGraphTypes).length != Object.keys(storedTypes).length) {
+                const storedKeys = Object.keys(storedTypes);
+                const defaultKeys = Object.keys(defaultGraphTypes);
+                const mismatch = storedKeys.length !== defaultKeys.length ||
+                    defaultKeys.some(key => !(key in storedTypes));
+                if (mismatch) {
                     for (const key in defaultGraphTypes) {
                         if (!(key in storedTypes)) {
                             storedTypes[key] = defaultGraphTypes[key];
@@ -1640,13 +1654,12 @@
             }
         }
 
+        // function to sync current order to localStorage
         function update_customize_view_local_storage() {
-            // Sync current order to localStorage
             const sectionOrder = Array.from(document.getElementById("sectionShow").querySelectorAll(".hideItem"))
                 .map(item => item.children[0].innerText);
             const graphOrder = Array.from(document.getElementById("graphShow").querySelectorAll(".hideItem"))
                 .map(item => item.children[0].innerText);
-
             localStorage.setItem("sectionShow", JSON.stringify(sectionOrder));
             localStorage.setItem("graphShow", JSON.stringify(graphOrder));
         }
@@ -1687,6 +1700,7 @@
                 toggle_labels(false)
             });
 
+            // helper function to update the legend setting where needed
             function toggle_legends(load = false) {
                 var storage = JSON.parse(localStorage.getItem("showLegends"));
                 const toggle = document.getElementById("toggleLegends")
@@ -1705,7 +1719,6 @@
                 localStorage.setItem("showLegends", JSON.stringify(showLegends));
                 if (!load) { setup_all_graphs() }
             }
-
             toggle_legends(true) // run once on load to setup correctly
             document.getElementById("toggleLegends").addEventListener("click", function () {
                 toggle_legends(false)
@@ -1856,10 +1869,7 @@
                 showingRunTags = !showingRunTags;
                 checkboxes.style.display = showingRunTags ? "block" : "none";
             }
-
-            // eventlistener for run tags selection
             document.getElementById("selectRunTags").addEventListener("click", show_checkboxes);
-            // eventlistener for reset filter button
             document.getElementById("resetFilters").addEventListener("click", function () {
                 document.getElementById("runs").value = "All";
                 document.getElementById("runTag").value = "All";
@@ -1867,7 +1877,6 @@
                 setup_lowest_highest_dates(runs);
                 setup_data_and_graphs();
             });
-            // eventlistener for all selection boxes and their respective graphs that should be updated
             document.getElementById("suiteSelectSuites").addEventListener("change", (e) => {
                 create_suite_duration_graph();
                 create_suite_statistics_graph();
@@ -1922,7 +1931,6 @@
                 create_keyword_min_duration_graph();
                 create_keyword_max_duration_graph();
             });
-
             const checkboxesElement = document.getElementById("checkboxes");
             const runTagsSelectElement = document.getElementById("selectRunTags");
             // listen for click events on body to hide the run checkboxes when clicking outside of the select/checkboxes elements
@@ -1937,7 +1945,7 @@
         // FILTER BUTTON CONTENT FUNCTIONS //
         /////////////////////////////////////
 
-        // function to setup run 
+        // function to setup run amount filter maximum
         function setup_run_amount_filter() {
             document.getElementById("amount").setAttribute("max", runs.length)
         }
@@ -1970,24 +1978,18 @@
 
         // function to update the available runs to select in the filters
         function setup_runs_in_select_filter_buttons() {
-            // Use a Set to collect unique run names
             const runOptions = new Set();
-            // Collect all unique run names
             runs.forEach(run => runOptions.add(run.name));
-            // Build the options HTML (including "All" as the first option)
             const optionsHtml = Array.from(runOptions)
                 .map(runName => `<option value="${runName}">${runName}</option>`)
                 .join("");
-            // Add the "All" option and append all other options
             const runsSelect = document.getElementById("runs");
             runsSelect.innerHTML = `<option value="All">All</option>` + optionsHtml;
         }
 
         // function to update the available runtags to select in the filters
         function setup_runtags_in_select_filter_buttons() {
-            // Use a Set to collect unique tags
             const tags = new Set();
-            // Collect all unique tags from the runs
             runs.forEach(run => {
                 run.tags.split(",").forEach(tag => {
                     if (tag) { // Avoid adding empty tags
@@ -1995,7 +1997,6 @@
                     }
                 });
             });
-            // Create the "Use OR" toggle item
             const andOrTags = `
                 <li class="list-group-item d-flex small" onclick="setup_data_and_graphs()">
                     <div class="btn-group form-switch">
@@ -2006,21 +2007,17 @@
                     </div>
                 </li>
             `;
-            // Template for list items
             const listItemTemplate = (value) => `
                 <li class="list-group-item list-group-item-action d-flex small" onclick="setup_data_and_graphs()">
                     <input class="form-check-input me-1" type="checkbox" value="" id="${value}">
                     <label class="form-check-label ms-2" for="${value}">${value}</label>
                 </li>
             `;
-            // Build the list items for all tags and the "All" tag
             const listItems = [listItemTemplate("All")].concat(
                 Array.from(tags).map(tag => listItemTemplate(tag))
             ).join("");
-            // Insert the generated HTML into the DOM
             const tagsSelect = document.getElementById("runTag");
             tagsSelect.innerHTML = andOrTags + listItems;
-            // Set the "All" tag to be checked by default
             document.getElementById("All").checked = true;
 
         }
@@ -2029,9 +2026,7 @@
         function setup_suites_in_suite_select() {
             const suiteSelectSuites = document.getElementById("suiteSelectSuites");
             const suiteFolder = document.getElementById("suiteFolder").innerText;
-            // Clear existing options
             suiteSelectSuites.innerHTML = "";
-            // Extract and sort suite names
             var suiteNames = new Set()
             for (const suite of filteredSuites) {
                 if (suiteFolder != "All" && !(suite.full_name.startsWith(suiteFolder + ".") || suite.full_name == suiteFolder)) {
@@ -2044,32 +2039,24 @@
                 }
             }
             suiteNames = [...suiteNames].sort()
-            // Add "All" as default
             suiteSelectSuites.options.add(new Option("All", "All"));
-            // Add suite names to selects
             suiteNames.forEach(suiteName => {
                 suiteSelectSuites.options.add(new Option(suiteName, suiteName));
             });
-            // Set the default selection to the second option (All is default)
             suiteSelectSuites.selectedIndex = 1;
         }
 
         // function to update the available suites to select in the test filters
         function setup_suites_in_test_select() {
             const suiteSelectTests = document.getElementById("suiteSelectTests");
-            // Clear existing options
             suiteSelectTests.innerHTML = "";
-            // Extract and sort suite names
             const suiteNames = useSuitePathsTestSection
                 ? [...new Set(filteredSuites.map(suite => suite.full_name))].sort()
                 : [...new Set(filteredSuites.map(suite => suite.name))].sort();
-            // Add "All" as default
             suiteSelectTests.options.add(new Option("All", "All"));
-            // Add suite names to selects
             suiteNames.forEach(suiteName => {
                 suiteSelectTests.options.add(new Option(suiteName, suiteName));
             });
-            // Set the default selection to the second option (All is default)
             suiteSelectTests.selectedIndex = 1;
         }
 
@@ -2079,9 +2066,7 @@
             const suiteSelectTests = document.getElementById("suiteSelectTests").value;
             const testTagsSelect = document.getElementById("testTagsSelect").value;
             const testSelect = document.getElementById("testSelect");
-            // Clear existing options
             testSelect.innerHTML = "";
-            // Filter test names based on suite and tags
             const testNames = filteredTests.reduce((names, test) => {
                 const isInSuite = useSuitePathsTestSection
                     ? test.full_name.includes(`${suiteSelectTests}.${test.name}`) || suiteSelectTests === "All"
@@ -2094,9 +2079,7 @@
 
                 return names;
             }, []);
-            // Add "All" as default
             testSelect.options.add(new Option("All", "All"));
-            // Add filtered test names to select
             testNames.forEach(testName => testSelect.options.add(new Option(testName, testName)));
         }
 
@@ -2105,9 +2088,7 @@
         function setup_testtags_in_select() {
             const suiteSelectTests = document.getElementById("suiteSelectTests").value;
             const testTagsSelect = document.getElementById("testTagsSelect");
-            // Clear existing options
             testTagsSelect.innerHTML = "";
-            // Extract unique tags for the selected suite
             const testTags = [...new Set(filteredTests.reduce((tags, test) => {
                 if (useSuitePathsTestSection) {
                     if (test.full_name.includes(`${suiteSelectTests}.${test.name}`) || suiteSelectTests === "All") {
@@ -2120,9 +2101,7 @@
                 }
                 return tags;
             }, []))].filter(Boolean);
-            // Add "All" as default
             testTagsSelect.options.add(new Option("All", "All"));
-            // Add tags to select
             testTags.forEach(tag => testTagsSelect.options.add(new Option(tag, tag)));
         }
 
@@ -2130,13 +2109,9 @@
         // applies to the keyword filter on the keyword statistics level
         function setup_keywords_in_select() {
             const keywordSelect = document.getElementById("keywordSelect");
-            // Clear existing options
             keywordSelect.innerHTML = "";
-            // Extract unique keyword names
             const keywordNames = [...new Set(filteredKeywords.map(keyword => keyword.name))].sort();
-            // Add keywords to select
             keywordNames.forEach(keywordName => keywordSelect.options.add(new Option(keywordName, keywordName)));
-            // Select the last keyword by default
             keywordSelect.selectedIndex = keywordNames.length - 1;
         }
 
@@ -2163,18 +2138,15 @@
             const selectedTags = Array.from(tagElements)
                 .filter(tagElement => tagElement.checked)
                 .map(tagElement => tagElement.id);
-            // If "All" is selected, return all runs
-            if (selectedTags.includes("All")) {
+            if (selectedTags.includes("All")) { // If "All" is selected, return all runs
                 return runs;
             }
-            // If no tags are selected, return an empty list
-            if (selectedTags.length === 0) {
+            if (selectedTags.length === 0) { // If no tags are selected, return an empty list
                 return [];
             }
             return runs.filter(run => {
                 const runTags = run.tags.split(",");
-                // Use AND logic: the run must contain all selected tags
-                if (!useOrTags) {
+                if (!useOrTags) { // Use AND logic: the run must contain all selected tags
                     return selectedTags.every(selectedTag => runTags.includes(selectedTag));
                 }
                 // Use OR logic: the run must contain at least one selected tag
@@ -2188,18 +2160,15 @@
             const fromTime = document.getElementById("fromTime").value;
             const toDate = document.getElementById("toDate").value;
             const toTime = document.getElementById("toTime").value;
-            // Return all runs if any date/time values are missing
-            if (!fromDate || !fromTime || !toDate || !toTime) {
+            if (!fromDate || !fromTime || !toDate || !toTime) { // Return all runs if any date/time values are missing
                 return runs;
             }
             const fromDateTime = new Date(`${fromDate} ${fromTime}:00`);
             const toDateTime = new Date(`${toDate} ${toTime}:00`);
-            // Check for valid date range
-            if (fromDateTime > toDateTime) {
+            if (fromDateTime > toDateTime) { // Check for valid date range
                 alert("Filter error: The selected from date + time is later than your selected to date + time. Date filter has not been applied!");
                 return runs;  // Return all runs if invalid range
             }
-            // Use the array filter method for a cleaner approach
             return runs.filter(run => {
                 const runStart = new Date(run.run_start);
                 return runStart >= fromDateTime && runStart <= toDateTime;
@@ -2487,7 +2456,6 @@
                 }
             } else if (suiteStatisticsGraphType == "amount") {
                 config = get_graph_config("bar", graphData, "Suite Statistics", "Run", "Amount Of Tests");
-                // overwrite tooltip title
                 const filter = config.options.plugins.tooltip.filter
                 config.options.plugins.tooltip = {
                     filter,
@@ -2499,7 +2467,6 @@
                 }
             } else if (suiteStatisticsGraphType == "percentages") {
                 config = get_graph_config("bar", graphData, "Suite Statistics", "Run", "Percentage");
-                // overwrite tooltip title
                 const filter = config.options.plugins.tooltip.filter
                 config.options.plugins.tooltip = {
                     filter,
@@ -2549,7 +2516,6 @@
             const limit = inFullscreen ? 50 : 10;
             if (suiteMostFailedGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Suites`, "Suite", "Fails");
-                // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2558,11 +2524,9 @@
                         },
                     },
                 };
-                // no onClick on the bar chart
                 delete config.options.onClick
             } else if (suiteMostFailedGraphType == "timeline") {
                 config = get_graph_config("timeline", graphData, `Top ${limit} Most Failed Suites`, "Run", "Suite");
-                // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -2584,7 +2548,6 @@
                         text: "Run",
                     },
                 };
-                // overwrite the click callback to use the callbackData
                 config.options.onClick = (event, chartElement) => {
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
@@ -2707,7 +2670,6 @@
                 datasets: datasets,
             };
             var config = get_graph_config("timeline", graphData, "Test Statistics", "Run", "Test");
-            // overwrite tooltip and x scale with callbacks
             config.options.plugins.tooltip = {
                 callbacks: {
                     label: function (context) {
@@ -2729,7 +2691,6 @@
                     text: "Run",
                 },
             };
-            // overwrite the click callback to use the callbackData
             config.options.onClick = (event, chartElement) => {
                 if (chartElement.length) {
                     open_log_file(event, chartElement, runStarts)
@@ -2775,7 +2736,6 @@
             const limit = inFullscreen ? 50 : 10;
             if (testMessagesGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit} Fail Messages`, "Message", "Times");
-                // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2797,11 +2757,9 @@
                         text: "Message",
                     },
                 };
-                // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testMessagesGraphType == "timeline") {
                 config = get_graph_config("timeline", graphData, `Top ${limit} Fail Messages`, "Run", "Message");
-                // overwrite tooltip and x and y scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -2823,7 +2781,6 @@
                         text: "Run",
                     },
                 };
-                // overwrite the click callback to use the callbackData
                 config.options.onClick = (event, chartElement) => {
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
@@ -2850,7 +2807,6 @@
             }
             const graphData = get_duration_deviation_data("test", testDurationDeviationGraphType, filteredTests)
             const config = get_graph_config("boxplot", graphData, "Duration Deviation", "Test", "Duration");
-            // no onClick on the boxplot chart
             delete config.options.onClick
             testDurationDeviationGraph = new Chart("testDurationDeviationGraph", config);
             testDurationDeviationGraph.canvas.addEventListener("click", (event) => {
@@ -2870,13 +2826,10 @@
             const limit = inFullscreen ? 50 : 10;
             if (testMostFlakyGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit} Most Flaky Tests Most Status Flips`, "Test", "Status Flips");
-                // disable lenged in bar graph
                 config.options.plugins.legend = false
-                // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testMostFlakyGraphType == "timeline") {
                 config = get_graph_config("timeline", graphData, `Top ${limit} Most Flaky Tests Most Status Flips`, "Run", "Test");
-                // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -2898,7 +2851,6 @@
                         text: "Run",
                     },
                 };
-                // overwrite the click callback to use the callbackData
                 config.options.onClick = (event, chartElement) => {
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
@@ -2925,13 +2877,10 @@
             const limit = inFullscreen ? 50 : 10;
             if (testRecentMostFlakyGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit} Recent Most Flaky Tests Most Status Flips`, "Test", "Status Flips");
-                // disable lenged in bar graph
                 config.options.plugins.legend = false
-                // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testRecentMostFlakyGraphType == "timeline") {
                 config = get_graph_config("timeline", graphData, `Top ${limit} Recent Most Flaky Tests Most Status Flips`, "Run", "Test");
-                // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -2953,7 +2902,6 @@
                         text: "Run",
                     },
                 };
-                // overwrite the click callback to use the callbackData
                 config.options.onClick = (event, chartElement) => {
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
@@ -2983,7 +2931,6 @@
             const limit = inFullscreen ? 50 : 10;
             if (testMostFailedGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Tests`, "Test", "Fails");
-                // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -2992,11 +2939,9 @@
                         },
                     },
                 };
-                // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testMostFailedGraphType == "timeline") {
                 config = get_graph_config("timeline", graphData, `Top ${limit} Most Failed Tests`, "Run", "Test");
-                // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -3018,7 +2963,6 @@
                         text: "Run",
                     },
                 };
-                // overwrite the click callback to use the callbackData
                 config.options.onClick = (event, chartElement) => {
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
@@ -3048,7 +2992,6 @@
             const limit = inFullscreen ? 50 : 10;
             if (testRecentMostFailedGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit} Recent Most Failed Tests`, "Test", "Fails");
-                // overwrite legend and tooltip
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -3057,11 +3000,9 @@
                         },
                     },
                 };
-                // no onClick on the bar chart
                 delete config.options.onClick
             } else if (testRecentMostFailedGraphType == "timeline") {
                 config = get_graph_config("timeline", graphData, `Top ${limit} Recent Most Failed Tests`, "Run", "Test");
-                // overwrite tooltip and x scale with callbacks
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -3083,7 +3024,6 @@
                         text: "Run",
                     },
                 };
-                // overwrite the click callback to use the callbackData
                 config.options.onClick = (event, chartElement) => {
                     if (chartElement.length) {
                         open_log_file(event, chartElement, callbackData)
@@ -3660,6 +3600,8 @@
             return config
         }
 
+        // helper function to more easily use the logic of filtering suite graph data based on the selected filters
+        // returns true if the value should be excluded, false if it should be included
         function exclude_from_suite_data(dataType, value) {
             if (dataType !== "suite") return false;
             const suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
@@ -3700,13 +3642,9 @@
 
         // function to prepare the data in the correct format for statistics graphs
         function get_statistics_graph_data(dataType, graphType, filteredData) {
-            // Cache DOM values once for performance
             const keywordSelect = document.getElementById("keywordSelect").value;
-            // Initialize arrays to store the data
             const passed = [], failed = [], skipped = [], labels = [], aliases = [], names = [];
-            // Helper function to calculate percentages
             const calculate_percentage = (value, total) => Math.round((value / total) * 100);
-            // Helper function to process each value for graph data
             const process_value = (value) => {
                 const total = value.passed + value.failed + value.skipped;
                 const passedPercentage = calculate_percentage(value.passed, total);
@@ -3719,7 +3657,6 @@
                 aliases.push(value.run_alias);
                 names.push(value.name)
             };
-            // Loop through filtered data and process it based on the graph type
             for (const value of filteredData) {
                 if (exclude_from_suite_data(dataType, value)) { continue }
                 if (dataType === "keyword" && value.name !== keywordSelect) continue;
@@ -3733,7 +3670,6 @@
                         process_value(value);
                     }
                 } else {
-                    // Process raw count data
                     passed.push(value.passed);
                     failed.push(value.failed);
                     skipped.push(value.skipped);
@@ -3742,10 +3678,8 @@
                     names.push(value.name)
                 }
             }
-            // Determine if we need to use aliases for labels
             const finalLabels = graphType !== "line" ? (use_run_aliases ? aliases : labels) : labels;
             const styling = graphType !== "line" ? barConfig : lineConfig;
-            // Common dataset construction logic
             const create_data_set = (label, data, backgroundColor, borderColor) => ({
                 label,
                 data,
@@ -3754,7 +3688,6 @@
                 ...styling,
                 stack: graphType === "percentages" || "amount" ? "Stack 0" : undefined,
             });
-            // Construct the statistics data based on the graph type
             const statisticsData = {
                 labels: finalLabels,
                 datasets: [
@@ -3867,7 +3800,6 @@
                             failed: value.failed
                         };
                     } else {
-                        // If label exists, increment the values
                         callbackData[label].total += value.total;
                         callbackData[label].passed += value.passed;
                         callbackData[label].skipped += value.skipped;
@@ -3885,7 +3817,6 @@
                             failed: value.failed
                         };
                     } else {
-                        // If label exists, increment the values
                         callbackData[label].total += value.total;
                         callbackData[label].passed += value.passed;
                         callbackData[label].skipped += value.skipped;
@@ -3910,8 +3841,7 @@
                 for (let i = 0; i < intoCount; i++) {
                     result.push(redShades[index]);
                     index = (index + 1) % colorCount;
-                    // Ensure no same color next to each other
-                    if (i > 0 && result[i] === result[i - 1]) {
+                    if (i > 0 && result[i] === result[i - 1]) { // Ensure no same color next to each other
                         index = (index + 1) % colorCount;
                         result[i] = redShades[index];
                     }
@@ -3928,18 +3858,6 @@
                 }]
             };
             return [graphData, callbackData];
-        }
-
-        function get_next_folder_level(fullPath, currentPath) {
-            const fullParts = fullPath.split(".");
-            const currentParts = currentPath.split(".");
-            if (
-                currentParts.length < fullParts.length &&
-                fullParts.slice(0, currentParts.length).join(".") === currentPath
-            ) {
-                return fullParts.slice(0, currentParts.length + 1).join(".");
-            }
-            return currentPath;
         }
 
         // function to prepare the data in the correct format for folder donuts
@@ -3959,7 +3877,6 @@
                             failed: value.failed
                         };
                     } else {
-                        // If label exists, increment the values
                         callbackData[label].total += value.total;
                         callbackData[label].passed += value.passed;
                         callbackData[label].skipped += value.skipped;
@@ -3977,7 +3894,6 @@
                             failed: value.failed
                         };
                     } else {
-                        // If label exists, increment the values
                         callbackData[label].total += value.total;
                         callbackData[label].passed += value.passed;
                         callbackData[label].skipped += value.skipped;
@@ -4002,13 +3918,11 @@
 
         // function to prepare the data in the correct format for duration graphs
         function get_duration_graph_data(dataType, graphType, objectDataAttribute, filteredData) {
-            // Cache DOM elements once for performance
             const suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
             const suiteSelectTests = document.getElementById("suiteSelectTests").value;
             const testSelect = document.getElementById("testSelect").value;
             const testTagsSelect = document.getElementById("testTagsSelect").value;
             const keywordSelect = document.getElementById("keywordSelect").value;
-            // Helper function for filtering based on selection criteria
             const should_include = (value) => {
                 if (dataType === "keyword" && value.name !== keywordSelect) return false;
                 if (exclude_from_suite_data(dataType, value)) return false;
@@ -4021,7 +3935,6 @@
                 if (dataType === "test" && testTagsSelect !== "All" && !value.tags.replace(/\[|\]/g, "").split(",").includes(testTagsSelect)) return false;
                 return true;
             };
-            // Bar graph construction
             const limit = inFullscreen ? 100 : 30;
             if (graphType === "bar") {
                 const labels = [];
@@ -4046,7 +3959,6 @@
                     labels.length = 0;
                     labels.push(...aliases);
                 }
-                // Prepare graph data for bar chart
                 const graphData = {
                     labels,
                     datasets: Array.from(data.entries()).map(([label, dataset]) => ({
@@ -4058,7 +3970,6 @@
                 };
                 return graphData;
             }
-            // Line graph construction
             else if (graphType === "line") {
                 const labels = [];
                 const sets = new Map();
@@ -4074,7 +3985,6 @@
                         sets.get(name).push({ x: run_start, y: roundedValue });
                     }
                 }
-                // Prepare graph data for line chart
                 const datasets = Array.from(sets.entries()).map(([key, values]) => ({
                     label: key.slice(0, 40),
                     fill: false,
@@ -4087,15 +3997,11 @@
 
         // function to prepare the data in the correct format for the duration deviation graph
         function get_duration_deviation_data(dataType, graphType, filteredData) {
-            // Cache the DOM selections once to avoid repeated access
             const suiteSelectTests = document.getElementById("suiteSelectTests").value;
             const testSelect = document.getElementById("testSelect").value;
             const testTagsSelect = document.getElementById("testTagsSelect").value;
-            // Use a Map to store data for better performance and management
             const data = new Map();
-            // Iterate over filteredData to collect elapsed times
             for (const value of filteredData) {
-                // Apply filtering based on user selections
                 if (dataType === "test") {
                     if (useSuitePathsTestSection) {
                         if (suiteSelectTests !== "All" && value.full_name !== `${suiteSelectTests}.${value.name}`) {
@@ -4113,22 +4019,18 @@
                         continue;
                     }
                 }
-                // Add elapsed time data to the Map, grouping by test name
                 if (data.has(value.name)) {
                     data.get(value.name).push(value.elapsed_s);
                 } else {
                     data.set(value.name, [value.elapsed_s]);
                 }
             }
-            // Prepare the data for the graph (labels and datasets)
             const labels = [];
             const datasets = [];
-            // Iterate over the Map and construct graph data
             for (const [testName, elapsedTimes] of data.entries()) {
                 labels.push(testName);
                 datasets.push(elapsedTimes);
             }
-            // Return the graph data object
             return {
                 labels,
                 datasets: [{
@@ -4279,10 +4181,8 @@
 
         // function to prepare the data in the correct format for most failed graphs
         function get_most_failed_data(dataType, graphType, filteredData, recent) {
-            // Maps to store data and aliases
             const data = new Map();
             const aliases = new Map();
-            // Collect data and aliases
             for (const value of filteredData) {
                 if (value.failed > 0) {
                     if (!data.has(value.name)) {
@@ -4293,9 +4193,8 @@
                     aliases.get(value.name).push(value.run_alias);
                 }
             }
-            // Sort the data based on the number of failures (descending order)
             var sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length);
-            if (recent) { // do extra filtering to get most most failed tests at the top
+            if (recent) { // Do extra filtering to get most most failed tests at the top
                 sortedData = sortedData.slice().sort((a, b) => {
                     const latestA = a[1][a[1].length - 1];
                     const latestB = b[1][b[1].length - 1];
@@ -4332,16 +4231,13 @@
                 const runStartsSet = new Set();
                 const runAliasesSet = new Set();
                 let count = 0;
-                // Collect unique run starts and labels
                 for (const [name, runStarts] of sortedData) {
                     if (count == limit) break;
                     labels.push(name);
                     runStarts.forEach(runStart => runStartsSet.add(runStart));
                     count++;
                 }
-                // Convert set to sorted array
                 const runStarts = Array.from(runStartsSet).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-                // Build datasets
                 var datasets = [];
                 let runAxis = 0;
                 for (const runStart of runStarts) {
@@ -4371,10 +4267,8 @@
 
         // function to prepare the data in the correct format for messages graphs
         function get_messages_data(dataType, graphType, filteredData) {
-            // Maps to store data and aliases
             const data = new Map();
             const aliases = new Map();
-            // Build data and aliases
             for (const value of filteredData) {
                 if (value.message && (value.failed === 1 || value.skipped === 1)) {
                     if (!data.has(value.message)) {
@@ -4410,10 +4304,8 @@
                     data.set(message, [...new Set(arrayWithDuplicates)])
                 }
             }
-
-            // Sort messages by failure count
             const limit = inFullscreen ? 50 : 10;
-            const sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length);
+            const sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length); // Sort messages by failure count
             if (graphType === "bar") {
                 const [datasets, labels] = [[], []];
                 let count = 0;
@@ -4441,16 +4333,13 @@
                 const runStartsSet = new Set();
                 const runAliasesSet = new Set();
                 let count = 0;
-                // Collect unique run starts and labels
-                for (const [message, runStarts] of sortedData) {
+                for (const [message, runStarts] of sortedData) { // Collect unique run starts and labels
                     if (count == limit) break;
                     labels.push(message);
                     runStarts.forEach(runStart => runStartsSet.add(runStart));
                     count++;
                 }
-                // Convert set to sorted array
                 const runStarts = Array.from(runStartsSet).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-                // Build datasets
                 var datasets = [];
                 let runAxis = 0;
                 function check_label(message, label) {
@@ -4501,6 +4390,7 @@
                 const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height) - 51;
                 vertical.style.height = `${parentHeight}px`
             } else if (inFullscreen && graphType == "bar") {
+                // bar chart should have fullscreen height because you get more labels on the horizontal axis
                 const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height);
                 vertical.style.height = `${parentHeight}px`
             }
