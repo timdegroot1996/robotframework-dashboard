@@ -335,16 +335,9 @@
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatisticsGraphLine">Timeline</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="runStatisticsFullscreen">Fullscreen</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        title="HoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHooray HoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHoorayHooray!">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="21" fill="currentColor"
-                            class="bi bi-info-circle" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                            <path
-                                d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
-                        </svg>
-                    </button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatisticsClose" hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="runStatisticsInformation"></button>
                     <canvas id="runStatisticsGraph"></canvas>
                 </div>
                 <!-- Run Donuts -->
@@ -352,6 +345,8 @@
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDonutGraphDonut">Donut</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDonutFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDonutClose" hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="runDonutInformation"></button>
                     <div class="row donut-charts">
                         <div class="col-md-6">
                             <canvas id="runDonutGraph" class="w-100 h-100"></canvas>
@@ -370,6 +365,8 @@
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="runDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDurationClose" hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="runDurationInformation"></button>
                     <canvas id="runDurationGraph"></canvas>
                 </div>
                 <!-- Run Table -->
@@ -428,6 +425,12 @@
             <div id="suiteDataHidden" hidden>
                 <!-- Suite Folder Donuts -->
                 <div class="col canvas pb-5" id="suiteFolderDonutCanvas">
+                    <div class="btn-group me-1">
+                        <label class="form-check-label mb-3" for="onlyFailedFolders">Only Failed Folders</label>
+                    </div>
+                    <div class="btn-group form-switch me-1">
+                        <input class="form-check-input mb-3" type="checkbox" role="switch" id="onlyFailedFolders">
+                    </div>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteFolderDonutGoUp">Go Up</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="suiteFolderDonutGraphDonut">Donut</button>
@@ -435,6 +438,8 @@
                         id="suiteFolderDonutFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteFolderDonutClose"
                         hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="suiteFolderDonutInformation"></button>
                     <div class="row donut-charts">
                         <div class="col-md-6">
                             <canvas id="suiteFolderDonutGraph" class="w-100 h-100"></canvas>
@@ -456,6 +461,8 @@
                         id="suiteStatisticsFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteStatisticsClose"
                         hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="suiteStatisticsInformation"></button>
                     <canvas id="suiteStatisticsGraph"></canvas>
                 </div>
                 <!-- Suite Duration -->
@@ -467,6 +474,8 @@
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="suiteDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteDurationClose" hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="suiteDurationInformation"></button>
                     <canvas id="suiteDurationGraph"></canvas>
                 </div>
                 <!-- Suite Most Failed -->
@@ -481,6 +490,8 @@
                             id="suiteMostFailedFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteMostFailedClose"
                             hidden>Close</button>
+                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                            id="suiteMostFailedInformation"></button>
                         <canvas id="suiteMostFailedGraph"></canvas>
                     </div>
                 </div>
@@ -549,6 +560,8 @@
                             id="testStatisticsFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testStatisticsClose"
                             hidden>Close</button>
+                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                            id="testStatisticsInformation"></button>
                         <canvas id="testStatisticsGraph"></canvas>
                     </div>
                 </div>
@@ -561,6 +574,8 @@
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="testDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationClose" hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="testDurationInformation"></button>
                     <canvas id="testDurationGraph"></canvas>
                 </div>
                 <!-- Test Duration Deviation -->
@@ -571,6 +586,8 @@
                         id="testDurationDeviationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationDeviationClose"
                         hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="testDurationDeviationInformation"></button>
                     <canvas id="testDurationDeviationGraph"></canvas>
                 </div>
                 <!-- Test Messages -->
@@ -584,6 +601,8 @@
                             id="testMessagesFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMessagesClose"
                             hidden>Close</button>
+                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                            id="testMessagesInformation"></button>
                         <canvas id="testMessagesGraph"></canvas>
                     </div>
                 </div>
@@ -600,10 +619,12 @@
                             View</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyGraphTimeline">Timeline
                             View</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyFullscreen"
-                            style="margin-right:56px;">Fullscreen</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyClose" hidden
-                            style="margin-right:56px;">Close</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                            id="testMostFlakyFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyClose"
+                            hidden>Close</button>
+                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                            id="testMostFlakyInformation"></button>
                         <canvas id="testMostFlakyGraph"></canvas>
                     </div>
                 </div>
@@ -620,10 +641,12 @@
                             View</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testRecentMostFlakyGraphTimeline">Timeline View</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFlakyFullscreen"
-                            style="margin-right:56px;">Fullscreen</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFlakyClose" hidden
-                            style="margin-right:56px;">Close</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                            id="testRecentMostFlakyFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFlakyClose"
+                            hidden>Close</button>
+                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                            id="testRecentMostFlakyInformation"></button>
                         <canvas id="testRecentMostFlakyGraph"></canvas>
                     </div>
                 </div>
@@ -638,6 +661,8 @@
                             id="testMostFailedFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFailedClose"
                             hidden>Close</button>
+                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                            id="testMostFailedInformation"></button>
                         <canvas id="testMostFailedGraph"></canvas>
                     </div>
                 </div>
@@ -653,6 +678,8 @@
                             id="testRecentMostFailedFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFailedClose"
                             hidden>Close</button>
+                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                            id="testRecentMostFailedInformation"></button>
                         <canvas id="testRecentMostFailedGraph"></canvas>
                     </div>
                 </div>
@@ -699,6 +726,8 @@
                         id="keywordStatisticsFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordStatisticsClose"
                         hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="keywordStatisticsInformation"></button>
                     <canvas id="keywordStatisticsGraph"></canvas>
                 </div>
                 <!-- Keyword Times Run -->
@@ -711,6 +740,8 @@
                         id="keywordTimesRunFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTimesRunClose"
                         hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="keywordTimesRunInformation"></button>
                     <canvas id="keywordTimesRunGraph"></canvas>
                 </div>
                 <!-- Keyword Total Duration -->
@@ -723,6 +754,8 @@
                         id="keywordTotalDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTotalDurationClose"
                         hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="keywordTotalDurationInformation"></button>
                     <canvas id="keywordTotalDurationGraph"></canvas>
                 </div>
                 <!-- Keyword Average Duration -->
@@ -735,6 +768,8 @@
                         id="keywordAverageDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordAverageDurationClose"
                         hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="keywordAverageDurationInformation"></button>
                     <canvas id="keywordAverageDurationGraph"></canvas>
                 </div>
                 <!-- Keyword Min Duration -->
@@ -747,6 +782,8 @@
                         id="keywordMinDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMinDurationClose"
                         hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="keywordMinDurationInformation"></button>
                     <canvas id="keywordMinDurationGraph"></canvas>
                 </div>
                 <!-- Keyword Max Duration -->
@@ -759,7 +796,25 @@
                         id="keywordMaxDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMaxDurationClose"
                         hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="keywordMaxDurationInformation"></button>
                     <canvas id="keywordMaxDurationGraph"></canvas>
+                </div>
+                <!-- Keyword Most Failed -->
+                <div class="col canvas pb-5" id="keywordMostFailedCanvas">
+                    <div id="keywordMostFailedVertical">
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMostFailedGraphBar">Bar
+                            View</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMostFailedGraphTimeline">Timeline
+                            View</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                            id="keywordMostFailedFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMostFailedClose"
+                            hidden>Close</button>
+                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                            id="keywordMostFailedInformation"></button>
+                        <canvas id="keywordMostFailedGraph"></canvas>
+                    </div>
                 </div>
                 <!-- Keyword Table -->
                 <div class="col" id="keywordTableCanvas">
@@ -788,7 +843,7 @@
                         </div>
                         <div class="row mt-2">
                             <div class="col-4 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleTheme">Dark Mode</label>
+                                <label class="form-check-label mt-1" for="toggleTheme">Theme: Dark Mode</label>
                             </div>
                             <div class="col btn-group form-switch ms-2">
                                 <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleTheme" />
@@ -796,7 +851,7 @@
                         </div>
                         <div class="row">
                             <div class="col-4 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleLabels">Show Date/Alias Labels</label>
+                                <label class="form-check-label mt-1" for="toggleLabels">Graphs: Show Date/Alias Labels</label>
                             </div>
                             <div class="col btn-group form-switch ms-2">
                                 <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleLabels" />
@@ -804,7 +859,7 @@
                         </div>
                         <div class="row pb-4">
                             <div class="col-4 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleLegends">Show Graph Legends</label>
+                                <label class="form-check-label mt-1" for="toggleLegends">Graphs: Show Legends</label>
                             </div>
                             <div class="col btn-group form-switch ms-2">
                                 <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleLegends" />
@@ -877,6 +932,115 @@
             '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
         const arrowUpVerySmall =
             '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52" transform="matrix(-1,1.2246467991473532e-16,-1.2246467991473532e-16,-1,0,0)"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"></path></svg>';
+
+        // information svg
+        const informationSVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="21" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" /><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" /></svg>';
+        const informationTitles = {
+            runStatisticsInformation: `This graph shows the statistics of the runs represented in multiple formats:
+- Percentages: Displays the distribution of passed/failed/skipped tests per run, where 100% equals all tests combined.
+- Amount: Displays the actual number of passed/failed/skipped tests per run.
+- Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times.`,
+
+            runDonutInformation: `This graph contains two donut charts:
+- The first donut displays the total percentage of passed, failed, and skipped tests across all runs.
+- The second donut displays the same breakdown, but only for the most recent run.`,
+
+            runDurationInformation: `This graph visualizes the duration of each run:
+- Bar: Displays total run durations represented as vertical bars.
+- Line: Displays the same data but over a time axis for clearer trend analysis.`,
+
+            suiteFolderDonutInformation: `This graph contains two donut charts:
+- The first donut displays the top-level folders of the suites and the amount of tests each folder contains.
+- The second donut displays the same folder structure but only for the most recent run and only includes failed tests.
+- Clicking on a folder updates the chart with the subfolders/suites it contains.
+- Navigating folders also updates Suite Statistics and Suite Duration.
+- "Go Up" navigates to the parent folder level.
+- "Only Failed Folders" filters to show only folders with failing tests.`,
+
+            suiteStatisticsInformation: `This graph provides suite-level statistics in three formats:
+- Percentages: Displays the passed/failed/skipped rate of test suites per run.
+- Amount: Displays the actual number of passed/failed/skipped suites per run.
+- Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times.`,
+
+            suiteDurationInformation: `This graph visualizes the duration of each suite:
+- Bar: Displays total suite durations represented as vertical bars.
+- Line: Displays the same data but over a time axis for clearer trend analysis.`,
+
+            suiteMostFailedInformation: `This graph highlights the test suites with the most failures:
+- Bar: Displays suites ranked by number of failures represented as vertical bars.
+- Timeline: Displays when failures occurred to identify clustering over time.
+- The default view shows the Top 10 most failed suites; fullscreen expands this to the Top 50.`,
+
+            testStatisticsInformation: `This graph displays the statistics of the tests in a timeline format.`,
+
+            testDurationInformation: `This graph tracks how long individual tests take to run:
+- Bar: Displays test durations represented as vertical bars.
+- Line: Displays the same data but over a time axis for clearer trend analysis.`,
+
+            testDurationDeviationInformation: `This boxplot chart displays how much test durations deviate from the average, represented as vertical bars.
+It helps identify tests with inconsistent execution times, which might be flaky or worth investigating`,
+
+            testMessagesInformation: `This graph presents the most frequently occurring fail/skip test messages:
+- Bar: Displays messages ranked by number of occurrences represented as vertical bars.
+- Timeline: Displays when those messages occurred to reveal noisy periods or problem spikes.
+- The regular view shows the Top 10 most frequent messages; fullscreen mode expands this to the Top 50.
+- To generalize messages (e.g., group similar messages), use the -m/--messageconfig option in the CLI (--help or README).`,
+
+            testMostFlakyInformation: `This graph identifies the flakiest tests based on status flips (passed/failed/skipped):
+- Bar: Displays tests ranked by frequency of status changes represented as vertical bars.
+- Timeline: Displays when the status changes occurred across runs.
+- The regular view shows the Top 10 flaky tests; fullscreen mode expands the list to the Top 50.
+- "Ignore Skips" filters to only count passed/failed as status flips and not skips.`,
+
+            testRecentMostFlakyInformation: `This graph identifies the most recently flaky tests based on status flips:
+- Bar: Displays tests ranked by frequency of recent status changes represented as vertical bars.
+- Timeline: Displays when the status changes occurred across runs.
+- The most recent flaky tests are listed first.
+- The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.
+- "Ignore Skips" filters to only count passed/failed as status flips and not skips.`,
+
+            testMostFailedInformation: `This graph lists the most failed tests overall:
+- Bar: Displays tests ranked by total number of failures represented as vertical bars.
+- Timeline: Displays when failures occurred across runs.
+- The regular view shows the Top 10 most failed tests; fullscreen mode expands the list to the Top 50.`,
+
+            testRecentMostFailedInformation: `This graph lists the most recently failed tests:
+- Bar: Displays tests ranked by number of recent failures represented as vertical bars.
+- Timeline: Displays when failures occurred across runs.
+- The most recently failed tests are listed first.
+- The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.`,
+
+            keywordStatisticsInformation: `This graph presents keyword execution results in multiple formats:
+- Percentages: Displays the distribution of passed/failed/skipped statuses for each keyword per run.
+- Amount: Displays raw counts of each status per run.
+- Line: Displays the same data but over a time axis.`,
+
+            keywordTimesRunInformation: `This graph shows how frequently each keyword was executed:
+- Bar: Displays times run per keyword represented as vertical bars.
+- Line: Displays the same data but over a time axis.`,
+
+            keywordTotalDurationInformation: `This graph visualizes total execution time of keywords:
+- Bar: Displays the cumulative time each keyword ran during each run represented as vertical bars.
+- Line: Displays the same data but over a time axis.`,
+
+            keywordAverageDurationInformation: `This graph shows the average execution time per keyword:
+- Bar: Displays the average duration for each keyword represented as vertical bars.
+- Line: Displays the same data but over a time axis.`,
+
+            keywordMinDurationInformation: `This graph shows the fastest observed execution time for each keyword per run:
+- Bar: Displays minimum durations represented as vertical bars.
+- Line: Displays the same data but over a time axis.`,
+
+            keywordMaxDurationInformation: `This graph shows the slowest observed execution time for each keyword per run:
+- Bar: Displays maximum durations represented as vertical bars.
+- Line: Displays the same data but over a time axis.`,
+
+keywordMostFailedInformation: `This graph lists the most failed keywords overall:
+- Bar: Displays keywords ranked by total number of failures represented as vertical bars.
+- Timeline: Displays when failures occurred across runs.
+- The regular view shows the Top 10 most failed keywords; fullscreen mode expands the list to the Top 50.`,
+
+        };
 
         // colors
         const passedBackgroundBorderColor = "#97bd61";
@@ -975,6 +1139,7 @@
         var keywordAverageDurationGraph;
         var keywordMinDurationGraph;
         var keywordMaxDurationGraph;
+        var keywordMostFailedGraph;
         var keywordTable;
 
         // filtered data vars
@@ -988,6 +1153,7 @@
         var useSuitePathsTestSection = false;
         var ignoreSkips = false; // test most flaky graph
         var ignoreSkipsRecent = false; // test recent most flaky graph
+        var onlyFailedFolders = false; // suite folder donut
         var showingRunTags = false; // used to keep track if the runtags popup is showing and determine if it should be closed when clicked outside
         var inFullscreen = false;
         var showDateLabels = true;
@@ -1027,6 +1193,7 @@
             "Keyword Average Duration",
             "Keyword Min Duration",
             "Keyword Max Duration",
+            "Keyword Most Failed",
             "Keyword Table"
         ]
         var hideItem = `<li class="hideItem list-group-item list-group-item-action d-flex {type}">
@@ -1215,6 +1382,16 @@
                         element.innerHTML = arrowDownSmall;
                     }
                 }
+            }
+        }
+
+        function setup_information_icons() {
+            const informationButtons = document.querySelectorAll(".information")
+            for (let button of informationButtons) {
+                button.innerHTML = informationSVG;
+                const id = button.id;
+                const title = informationTitles[id];
+                button.title = title;
             }
         }
 
@@ -1503,7 +1680,8 @@
                 keywordTotalDurationGraphType: "line",
                 keywordAverageDurationGraphType: "line",
                 keywordMinDurationGraphType: "bar",
-                keywordMaxDurationGraphType: "bar"
+                keywordMaxDurationGraphType: "bar",
+                keywordMostFailedGraphType: "timeline",
             };
 
             let storedTypes = localStorage.getItem("graphTypes");
@@ -1768,7 +1946,7 @@
                 "suiteDuration", "suiteMostFailed", "testStatistics", "testDuration", "testDurationDeviation",
                 "testMessages", "testMostFlaky", "testRecentMostFlaky", "testMostFailed", "testRecentMostFailed",
                 "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
-                "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration"]
+                "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration", "keywordMostFailed"]
             for (let fullscreenButton of fullscreenButtons) {
                 document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", (e) => {
                     inFullscreen = !inFullscreen;
@@ -1808,7 +1986,10 @@
                 ignoreSkipsRecent = !ignoreSkipsRecent;
                 create_test_recent_most_flaky_graph();
             });
-
+            document.getElementById("onlyFailedFolders").addEventListener("change", (e) => {
+                onlyFailedFolders = !onlyFailedFolders;
+                create_suite_folder_donut_graph("");
+            });
             // eventlisteners for buttons to change graph views
             const graphChangeButtons = {
                 "run_statistics": "Percentages,Line,Amount",
@@ -1831,6 +2012,7 @@
                 "keyword_average_duration": "Bar,Line",
                 "keyword_min_duration": "Bar,Line",
                 "keyword_max_duration": "Bar,Line",
+                "keyword_most_failed": "Bar,Timeline"
             };
 
             function handle_graph_change_type_button_click(graphChangeButton, graphType, camelButtonName) {
@@ -3208,6 +3390,63 @@
             });
         }
 
+        // function to create test most failed graph in the test section
+        function create_keyword_most_failed_graph() {
+            if (typeof type === "string") {
+                keywordMostFailedGraphType = type;
+            }
+            if (keywordMostFailedGraph) {
+                keywordMostFailedGraph.destroy();
+            }
+            const data = get_most_failed_data("keyword", keywordMostFailedGraphType, filteredKeywords, false);
+            const graphData = data[0]
+            const callbackData = data[1];
+            var config;
+            const limit = inFullscreen ? 50 : 10;
+            if (keywordMostFailedGraphType == "bar") {
+                config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Keywords`, "Keyword", "Fails");
+                config.options.plugins.legend = { display: false };
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return callbackData[tooltipItem.label];
+                        },
+                    },
+                };
+                delete config.options.onClick
+            } else if (keywordMostFailedGraphType == "timeline") {
+                config = get_graph_config("timeline", graphData, `Top ${limit} Most Failed Keywords`, "Run", "Keyword");
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (context) {
+                            return callbackData[context.raw.x[0]];
+                        },
+                    },
+                };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 45,
+                        maxRotation: 45,
+                        stepSize: 1,
+                        callback: function (value, index, ticks) {
+                            return callbackData[this.getLabelForValue(value)];
+                        },
+                    },
+                    title: {
+                        display: true,
+                        text: "Run",
+                    },
+                };
+                delete config.options.onClick;
+                if (!showDateLabels) { config.options.scales.x.ticks.display = false }
+            }
+            update_height("keywordMostFailedVertical", config.data.labels.length, config.options.plugins.title.text, keywordMostFailedGraphType);
+            keywordMostFailedGraph = new Chart("keywordMostFailedGraph", config);
+            keywordMostFailedGraph.canvas.addEventListener("click", (event) => {
+                open_log_from_label(keywordMostFailedGraph, event)
+            });
+        }
+
         // function to keyword table in the keyword section
         function create_keyword_table() {
             if (keywordTable) {
@@ -3572,6 +3811,36 @@
                             },
                             legend: {
                                 display: true,
+                                labels: {
+                                    generateLabels: function (chart) {
+                                        const dataset = chart.data.datasets[0];
+                                        const meta = chart.getDatasetMeta(0);
+                                        const labels = chart.data.labels;
+                                        const defaultColor = Chart.defaults.color;
+
+                                        return labels.map((label, i) => {
+                                            const style = meta.controller.getStyle(i);
+                                            const isHidden = !chart.isDatasetVisible(0) || meta.data[i].hidden;
+
+                                            return {
+                                                text: label.split('.').pop(),
+                                                fillStyle: style.backgroundColor,
+                                                strokeStyle: style.borderColor,
+                                                lineWidth: style.borderWidth,
+                                                lineCap: style.borderCapStyle || 'butt',
+                                                lineDash: style.borderDash || [],
+                                                lineDashOffset: style.borderDashOffset || 0,
+                                                pointStyle: style.pointStyle || 'circle',
+                                                rotation: style.rotation || 0,
+                                                hidden: isHidden,
+                                                index: i,
+                                                datasetIndex: 0,
+                                                fontColor: defaultColor,
+                                                hidden: chart._hiddenIndices?.[i] ?? false,
+                                            };
+                                        });
+                                    }
+                                },
                             },
                             datalabels: {
                                 ...dataLabelConfig,
@@ -3902,16 +4171,58 @@
             }
             previousFolder = folder ? folder : "";
             labels = [...labels]
+            finalLabels = []
             for (const label of labels) {
-                data.push(callbackData[label].total)
+                if (onlyFailedFolders) {
+                    if (callbackData[label].failed > 0) {
+                        finalLabels.push(label)
+                        data.push(callbackData[label].failed)
+                    }
+                } else {
+                    finalLabels.push(label)
+                    data.push(callbackData[label].total)
+                }
             }
-            const graphData = {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    hoverOffset: 4
-                }]
-            };
+            var graphData
+            if (onlyFailedFolders) {
+                const redShades = [
+                    "#ce3e01", // base fail color
+                    "#b13601", // darker burnt orange
+                    "#992f01", // deep red-orange
+                    "#7f2600"  // very dark, almost brown-red
+                ];
+                function assignColors(intoCount) {
+                    const result = [];
+                    const colorCount = redShades.length;
+                    let index = 0;
+                    for (let i = 0; i < intoCount; i++) {
+                        result.push(redShades[index]);
+                        index = (index + 1) % colorCount;
+                        if (i > 0 && result[i] === result[i - 1]) { // Ensure no same color next to each other
+                            index = (index + 1) % colorCount;
+                            result[i] = redShades[index];
+                        }
+                    }
+                    return result;
+                }
+                const backgroundColor = assignColors(finalLabels.length);
+                graphData = {
+                    labels: finalLabels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        hoverOffset: 4
+                    }]
+                };
+            } else {
+                graphData = {
+                    labels: finalLabels,
+                    datasets: [{
+                        data: data,
+                        hoverOffset: 4
+                    }]
+                };
+            }
             return [graphData, callbackData]
         }
 
@@ -4206,6 +4517,7 @@
             if (graphType === "bar") {
                 const datasets = [];
                 const labels = [];
+                const runStartsLabels = new Map();
                 let count = 0;
                 for (const [name, runStarts] of sortedData) {
                     if (count == limit) break;
@@ -4214,6 +4526,7 @@
                         data.set(name, aliases.get(name));
                     }
                     datasets.push(runStarts.length);
+                    runStartsLabels.set(name, runStarts)
                     count++;
                 }
                 const graphData = {
@@ -4223,7 +4536,9 @@
                         ...failedConfig,
                     }],
                 };
-                const callbackData = Object.fromEntries(sortedData.map(([name, runs]) => [name, aliases.get(name)]));
+                const callbackData = use_run_aliases 
+                    ? Object.fromEntries(sortedData.map(([name, runs]) => [name, aliases.get(name)]))
+                    : Object.fromEntries(sortedData.map(([name, runs]) => [name, runStartsLabels.get(name)]));
                 return [graphData, callbackData];
             } else if (graphType === "timeline") {
                 const labels = [];
@@ -4505,6 +4820,7 @@
             create_keyword_average_duration_graph();
             create_keyword_min_duration_graph();
             create_keyword_max_duration_graph();
+            create_keyword_most_failed_graph();
             create_keyword_table();
         }
 
@@ -4637,6 +4953,7 @@
             setup_scroll_eventlistener();
             setup_theme();
             setup_stats();
+            setup_information_icons();
             setup_customize_view_button_eventlisteners();
             setup_customize_view_arrow_eventlisteners();
             setup_customize_view_local_storage();
