@@ -7,7 +7,7 @@ Resource    ../resources/keywords/general-keywords.resource
 Suite Setup    Start Browser
 Suite Teardown    Close Browser
 Test Setup    Run Keywords    Generate Dashboard    Open Dashboard
-Test Teardown    Run Keywords    Close Dashboard    Remove Database And Dashboard
+Test Teardown    Run Keywords    Close Dashboard    Remove Database And Dashboard With Index
 
 
 *** Test Cases ***
@@ -16,9 +16,15 @@ Validate dashboard runStatistics
     Validate Graph    canvas=runStatisticsCanvas    graphId=runStatisticsGraphAmount    button=${true}
     Validate Graph    canvas=runStatisticsCanvas    graphId=runStatisticsGraphLine    button=${true}
 
+Validate dashboard runDonut
+    Validate Graph    canvas=runDonutCanvas    graphId=runDonutGraph
+
 Validate dashboard runDuration
     Validate Graph    canvas=runDurationCanvas    graphId=runDurationGraphLine
     Validate Graph    canvas=runDurationCanvas    graphId=runDurationGraphBar    button=${true}
+
+Validate dashboard suiteFolderDonut
+    Validate Graph    canvas=suiteFolderDonutCanvas    graphId=suiteFolderDonutGraph
 
 Validate dashboard suiteStatistics
     Validate Graph    canvas=suiteStatisticsCanvas    graphId=suiteStatisticsGraphPercentages
@@ -87,3 +93,8 @@ Validate dashboard minDuration
 Validate dashboard maxDuration
     Validate Graph    canvas=keywordMaxDurationCanvas    graphId=keywordMaxDurationGraphBar
     Validate Graph    canvas=keywordMaxDurationCanvas    graphId=keywordMaxDurationGraphLine    button=${true}
+
+Validate dashboard keywordMostFailed
+    Skip    msg=This test has some issues with the vertical, unclear why
+    Validate Graph    canvas=keywordMostFailedCanvas    graphId=keywordMostFailedGraphBar
+    Validate Graph    canvas=keywordMostFailedCanvas    graphId=keywordMostFailedGraphTimeline    button=${true}

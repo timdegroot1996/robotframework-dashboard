@@ -7,7 +7,7 @@
 
 ======================================================================================
  1. Database preparation
-  created database: 'robot_results.db'
+  created database: '*.db'
 ======================================================================================
  2. Processing output XML(s)
   skipping step

@@ -1,0 +1,1 @@
+pabot --pabotlib --testlevelsplit --processes 8 -d results .\atest\testsuites\*.robot

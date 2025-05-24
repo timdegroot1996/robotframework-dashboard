@@ -8,3 +8,5 @@ robotframework_dashboard.egg-info
 robot_results.db
 robotdashboard.html
 robot_dashboard*.html
+index.txt
+.pabotsuitenames

@@ -2,6 +2,13 @@
 Library    String
 Library    Browser
 Library    DocTest.VisualTest
+Resource    ../variables/variables.resource
+
+
+*** Variables ***
+${ROOT_FOLDER}    ${CURDIR}/../../..
+${SCREENSHOT_FOLDER}    ${ROOT_FOLDER}/results/browser/screenshot
+${REFERENCE_FOLDER}    ${CURDIR}/../dashboard_output
 
 
 *** Keywords ***
@@ -14,7 +21,7 @@ Close Browser
     Close Page
 
 Open Dashboard
-    New Page    url=${CURDIR}/../../../robot_dashboard.html
+    New Page    url=${ROOT_FOLDER}/robotdashboard_${DASHBOARD_INDEX}.html
     Wait For Elements State    selector=id=loading    state=hidden
 
 Close Dashboard
@@ -27,39 +34,39 @@ Validate Screenshot
     IF    'test' in $reference    VAR    ${folder}    test
     IF    'keyword' in $reference    VAR    ${folder}    keyword
     IF    'filter' in $reference    VAR    ${folder}    filter
-    VAR    ${reference}    ${CURDIR}/../dashboard_output/${folder}/${reference}.png
-    VAR    ${screenshot}    ${CURDIR}/../../../results/browser/screenshot/${screenshot}.png
+    VAR    ${reference}    ${REFERENCE_FOLDER}/${folder}/${reference}.png
+    VAR    ${screenshot}    ${SCREENSHOT_FOLDER}/${screenshot}.png
     Compare Images    reference_image=${reference}    test_image=${screenshot}    threshold=0.01
 
 Validate Graph
     [Arguments]    ${canvas}    ${graphId}    ${button}=${False}
-    IF    ${button}
-        Click    selector=id=${graphId}
-        Sleep    time_=200ms
-    END
-    Take Screenshot    filename=${graphId}    selector=id=${canvas}
+    IF    ${button}    Click    selector=id=${graphId}
+    Sleep    time_=3s
+    Take Screenshot    filename=${SCREENSHOT_FOLDER}/${graphId}    selector=id=${canvas}
     Validate Screenshot    screenshot=${graphId}    reference=${graphId}
     ${fullscreenButton}    Replace String    string=${canvas}    search_for=Canvas    replace_with=Fullscreen
     Click    selector=id=${fullscreenButton}
-    Take Screenshot    filename=${graphId}Fullscreen    selector=id=${canvas}
+    Sleep    time_=3s
+    Take Screenshot    filename=${SCREENSHOT_FOLDER}/${graphId}Fullscreen    selector=id=${canvas}
     Validate Screenshot    screenshot=${graphId}Fullscreen    reference=${graphId}Fullscreen
     ${closeButton}    Replace String    string=${canvas}    search_for=Canvas    replace_with=Close
     Click    selector=id=${closeButton}
+    Sleep    time_=3s
     Validate Screenshot    screenshot=${graphId}    reference=${graphId}
 
 Validate Table
     [Arguments]    ${tableId}    ${collapseButtonId}
     Click    selector=id=${collapseButtonId}
-    Sleep    time_=200ms
-    Take Screenshot    filename=${tableId}    selector=id=${tableId}
+    Sleep    time_=3s
+    Take Screenshot    filename=${SCREENSHOT_FOLDER}/${tableId}    selector=id=${tableId}
     Validate Screenshot    screenshot=${tableId}    reference=${tableId}
 
 Validate Run Filter
     [Arguments]    ${option}
     Select Options By    id=runs    value    ${option}
     Wait For Elements State    selector=id=loading    state=hidden
-    Sleep    200ms
-    Take Screenshot    filename=filterRuns${option}    fullPage=${True}
+    Sleep    time_=3s
+    Take Screenshot    filename=${SCREENSHOT_FOLDER}/filterRuns${option}    fullPage=${True}
     Validate Screenshot    screenshot=filterRuns${option}    reference=filterRuns${option}
 
 Validate Run Tag Filter
@@ -79,6 +86,6 @@ Validate Run Tag Filter
         Check Checkbox    selector=id=dev
     END
     Click    selector=id=selectRunTags
-    Sleep    time_=1s
-    Take Screenshot    filename=filterRunTags${option}    fullPage=${True}
+    Sleep    time_=3s
+    Take Screenshot    filename=${SCREENSHOT_FOLDER}/filterRunTags${option}    fullPage=${True}
     Validate Screenshot    screenshot=filterRunTags${option}    reference=filterRunTags${option}

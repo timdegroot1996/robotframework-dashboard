@@ -3,11 +3,12 @@ Library    Collections
 Library    OperatingSystem
 Library    String
 Library    DatabaseLibrary
+Resource    ../variables/variables.resource
 
 
 *** Keywords ***
 Create Database Connection
-    Connect To Database    db_module=sqlite3    db_name=robot_results.db
+    Connect To Database    db_module=sqlite3    db_name=robotresults_${DASHBOARD_INDEX}.db
 
 Close Database Connection
     Disconnect From Database
