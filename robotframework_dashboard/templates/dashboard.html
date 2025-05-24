@@ -805,8 +805,8 @@
                     <div id="keywordMostFailedVertical">
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMostFailedGraphBar">Bar
                             View</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMostFailedGraphTimeline">Timeline
-                            View</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                            id="keywordMostFailedGraphTimeline">Timeline View</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="keywordMostFailedFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMostFailedClose"
@@ -851,7 +851,8 @@
                         </div>
                         <div class="row">
                             <div class="col-4 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleLabels">Graphs: Show Date/Alias Labels</label>
+                                <label class="form-check-label mt-1" for="toggleLabels">Graphs: Show Date/Alias
+                                    Labels</label>
                             </div>
                             <div class="col btn-group form-switch ms-2">
                                 <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleLabels" />
@@ -1035,7 +1036,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - Bar: Displays maximum durations represented as vertical bars.
 - Line: Displays the same data but over a time axis.`,
 
-keywordMostFailedInformation: `This graph lists the most failed keywords overall:
+            keywordMostFailedInformation: `This graph lists the most failed keywords overall:
 - Bar: Displays keywords ranked by total number of failures represented as vertical bars.
 - Timeline: Displays when failures occurred across runs.
 - The regular view shows the Top 10 most failed keywords; fullscreen mode expands the list to the Top 50.`,
@@ -1949,6 +1950,7 @@ keywordMostFailedInformation: `This graph lists the most failed keywords overall
                 "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration", "keywordMostFailed"]
             for (let fullscreenButton of fullscreenButtons) {
                 document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", (e) => {
+                    lastScrollY = window.scrollY
                     inFullscreen = !inFullscreen;
                     $("#filterSection").hide();
                     document.getElementById(`${fullscreenButton}Canvas`).classList.add("fullscreen");
@@ -1957,7 +1959,10 @@ keywordMostFailedInformation: `This graph lists the most failed keywords overall
                     document.body.style.overflow = "hidden";
                     window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
                     if (fullscreenButton == "runDonut") {
-                        window[`create_${camelcase_to_underscore(fullscreenButton)}_total_graph`]();
+                        create_run_donut_total_graph();
+                    }
+                    if (fullscreenButton == "suiteFolderDonut") {
+                        create_suite_folder_fail_donut_graph();
                     }
                 });
                 document.getElementById(`${fullscreenButton}Close`).addEventListener("click", (e) => {
@@ -1969,8 +1974,12 @@ keywordMostFailedInformation: `This graph lists the most failed keywords overall
                     document.body.style.overflow = "auto";
                     window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
                     if (fullscreenButton == "runDonut") {
-                        window[`create_${camelcase_to_underscore(fullscreenButton)}_total_graph`]();
+                        create_run_donut_total_graph();
                     }
+                    if (fullscreenButton == "suiteFolderDonut") {
+                        create_suite_folder_fail_donut_graph();
+                    }
+                    scrollTo(0, lastScrollY, "auto")
                 });
             }
         }
@@ -4536,7 +4545,7 @@ keywordMostFailedInformation: `This graph lists the most failed keywords overall
                         ...failedConfig,
                     }],
                 };
-                const callbackData = use_run_aliases 
+                const callbackData = use_run_aliases
                     ? Object.fromEntries(sortedData.map(([name, runs]) => [name, aliases.get(name)]))
                     : Object.fromEntries(sortedData.map(([name, runs]) => [name, runStartsLabels.get(name)]));
                 return [graphData, callbackData];
@@ -4705,7 +4714,7 @@ keywordMostFailedInformation: `This graph lists the most failed keywords overall
                 vertical.style.height = `${parentHeight}px`
             } else if (inFullscreen && graphType == "bar") {
                 // bar chart should have fullscreen height because you get more labels on the horizontal axis
-                const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height);
+                const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height) - 59;
                 vertical.style.height = `${parentHeight}px`
             }
         }
@@ -4743,7 +4752,7 @@ keywordMostFailedInformation: `This graph lists the most failed keywords overall
 
         // function to update all graph data, function is called when updating filters and when the page loads
         function setup_data_and_graphs() {
-            lastScrollY = window.scrollY + 128;
+            lastScrollY = window.scrollY;
             setup_spinner(false)
 
             // Let the browser render before continuing
@@ -4759,9 +4768,12 @@ keywordMostFailedInformation: `This graph lists the most failed keywords overall
                 requestAnimationFrame(() => {
                     setup_spinner(true);
                     setup_all_graphs();
-                    if (lastScrollY > 128) {
-                        scrollTo(0, lastScrollY, "smooth")
-                    }
+
+                    requestAnimationFrame(() => {
+                        if (lastScrollY > 0) {
+                            scrollTo(0, lastScrollY, "auto")
+                        }
+                    })
                 })
             });
         }
