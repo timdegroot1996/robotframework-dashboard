@@ -52,6 +52,11 @@
             border-color: black;
         }
 
+        .information[data-title]::after {
+            background-color: white;
+            color: black;
+        }
+
         /* DARK MODE STYLING */
         .dark-mode :root {
             color-scheme: dark;
@@ -59,6 +64,10 @@
 
         .dark-mode .canvas {
             background: rgba(30, 41, 59, 0.9);
+        }
+
+        .dark-mode .fullscreen {
+            background: rgba(30, 41, 59, 1);
         }
 
         .dark-mode .modal-content {
@@ -69,7 +78,6 @@
             border-color: rgba(255, 255, 255, 0.15) !important;
         }
 
-        .dark-mode .fullscreen,
         .dark-mode .sticky-top,
         .dark-mode .card,
         .dark-mode body,
@@ -103,6 +111,11 @@
             color: #eee;
         }
 
+        .dark-mode .information[data-title]::after {
+            background-color: #0f172a;
+            color: #eee;
+        }
+
         /* GENERAL STYLING */
         :root {
             font-family: Helvetica, sans-serif;
@@ -111,6 +124,40 @@
         h4,
         h6 {
             margin-bottom: 0rem;
+        }
+
+        .information[data-title]:hover::after {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .information[data-title]::after {
+            content: attr(data-title);
+            white-space: pre-line;
+            font-size: 0.95rem;
+            position: absolute;
+            padding: 8px 12px;
+            border-radius: 8px;
+            top: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            border: 1px solid #1e293b;
+            z-index: 9999;
+            visibility: hidden;
+            max-width: 400px;
+            min-width: 150px;
+            width: max-content;
+            max-width: 90vw;
+            word-wrap: break-word;
+            text-align: left;
+        }
+
+        .information[data-title] {
+            position: relative;
+            cursor: pointer;
         }
 
         .canvas {
@@ -180,6 +227,7 @@
             top: 0;
             z-index: 10;
             padding: 11px 20px 70px 20px;
+            border-radius: 0px;
         }
 
         .selectBox {
@@ -1392,7 +1440,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 button.innerHTML = informationSVG;
                 const id = button.id;
                 const title = informationTitles[id];
-                button.title = title;
+                button.setAttribute('data-title', title)
             }
         }
 
