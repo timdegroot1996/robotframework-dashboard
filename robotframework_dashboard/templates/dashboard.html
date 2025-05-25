@@ -4906,7 +4906,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function updates the data in the graphs whenever filters are updated
         function setup_filtered_data_and_filters() {
-            console.log(runs[0].run_start)
             filteredRuns = remove_milliseconds(runs)
             filteredSuites = remove_milliseconds(suites)
             filteredTests = remove_milliseconds(tests)
