@@ -98,23 +98,6 @@ class ArgumentParser:
             default="",
         )
         parser.add_argument(
-            "-e",
-            "--excludemilliseconds",
-            help="`boolean` Default is True, specifies if the dashboard html shows \
-                milliseconds in the graphs. The database will always contain milliseconds.",
-            default=True,
-        )
-        parser.add_argument(
-            "-a",
-            "--aliases",
-            help="`boolean` Default is False, specifies if the dashboard html shows \
-                run aliases in the graphs. The database will always contain run aliases. \
-                Aliases are generated based on the input name: output_run_name_1.xml \
-                will convert to alias: 'run_name_1'. 'output_' and '.xml' are removed, \
-                and everything that remains will be the run alias.",
-            default=False,
-        )
-        parser.add_argument(
             "-m",
             "--messageconfig",
             help="`path` Specifies the path to a config file that contains lines of messages with placeholders to 'bundle' test messages. \
@@ -224,21 +207,6 @@ class ArgumentParser:
             else False
         )
 
-        # handles the boolean handling of --excludemilliseconds
-        exclude_milliseconds = (
-            True
-            if arguments.excludemilliseconds == True
-            or arguments.excludemilliseconds.lower() == "true"
-            else False
-        )
-
-        # handles the boolean handling of --aliases
-        use_run_aliases = None
-        if isinstance(arguments.aliases, str) and arguments.aliases.lower() == "true":
-            use_run_aliases = True
-        else:
-            use_run_aliases = False
-
         # handles the boolean handling of --uselogs
         use_logs = None
         if isinstance(arguments.uselogs, str) and arguments.uselogs.lower() == "true":
@@ -306,8 +274,6 @@ class ArgumentParser:
             "list_runs": list_runs,
             "remove_runs": remove_runs,
             "dashboard_title": arguments.dashboardtitle,
-            "exclude_milliseconds": exclude_milliseconds,
-            "use_run_aliases": use_run_aliases,
             "database_class": database_class,
             "start_server": start_server,
             "server_host": server_host,

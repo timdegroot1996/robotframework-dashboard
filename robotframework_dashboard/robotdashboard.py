@@ -21,9 +21,7 @@ class RobotDashboard:
         generation_datetime: datetime,
         list_runs: bool,
         dashboard_title: str,
-        exclude_milliseconds: bool,
         database_class: Path,
-        use_run_aliases: bool,
         message_config: list,
         quantity: int,
         use_logs: bool,
@@ -35,9 +33,7 @@ class RobotDashboard:
         self.generation_datetime = generation_datetime
         self.list_runs = list_runs
         self.dashboard_title = dashboard_title
-        self.exclude_milliseconds = exclude_milliseconds
         self.database_class = database_class
-        self.use_run_aliases = use_run_aliases
         self.message_config = message_config
         self.quantity = quantity
         self.use_logs = use_logs
@@ -205,9 +201,7 @@ class RobotDashboard:
                 dashboard_data,
                 self.generation_datetime,
                 self.dashboard_title,
-                self.exclude_milliseconds,
                 self.server,
-                self.use_run_aliases,
                 self.message_config,
                 self.quantity,
                 self.use_logs,

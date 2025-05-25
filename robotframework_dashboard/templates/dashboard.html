@@ -890,7 +890,7 @@
                             <h2>General</h2>
                         </div>
                         <div class="row mt-2">
-                            <div class="col-4 btn-group ms-1">
+                            <div class="col-6 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleTheme">Theme: Dark Mode</label>
                             </div>
                             <div class="col btn-group form-switch ms-2">
@@ -898,20 +898,40 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-4 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleLabels">Graphs: Show Date/Alias
-                                    Labels</label>
+                            <div class="col-6 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleLegends">Graphs: Show Legends</label>
+                            </div>
+                            <div class="col btn-group form-switch ms-2">
+                                <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleLegends" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleLabels">Graphs: Show Run Start/Alias
+                                    Labels On Axes</label>
                             </div>
                             <div class="col btn-group form-switch ms-2">
                                 <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleLabels" />
                             </div>
                         </div>
-                        <div class="row pb-4">
-                            <div class="col-4 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleLegends">Graphs: Show Legends</label>
+                        <div class="row">
+                            <div class="col-6 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleAliases">Graphs: Show Alias Labels
+                                    (Defaults
+                                    to Run Start Labels)</label>
                             </div>
                             <div class="col btn-group form-switch ms-2">
-                                <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleLegends" />
+                                <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleAliases" />
+                            </div>
+                        </div>
+                        <div class="row pb-4">
+                            <div class="col-6 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleMilliseconds">Graphs: Show
+                                    Milliseconds Run Start Labels</label>
+                            </div>
+                            <div class="col btn-group form-switch ms-2">
+                                <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                    id="toggleMilliseconds" />
                             </div>
                         </div>
                         <div class="row border-bottom pt-1">
@@ -1149,15 +1169,14 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // prepare input data
-        var runs = "placeholder_runs".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-        var suites = "placeholder_suites".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-        var tests = "placeholder_tests".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-        var keywords = "placeholder_keywords".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+        const runs = "placeholder_runs".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+        const suites = "placeholder_suites".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+        const tests = "placeholder_tests".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+        const keywords = "placeholder_keywords".sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         var message_config = '"placeholder_message_config"'
         var filteredAmount = "placeholder_amount"
         var filteredAmountDefault = 0
         const use_logs = "placeholder_use_logs"
-        const use_run_aliases = "placeholder_use_run_aliases"
         const server = "placeholder_server"
         if (!message_config.includes("placeholder_message_config")) { message_config = JSON.parse(message_config) }
 
@@ -1204,9 +1223,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         var ignoreSkipsRecent = false; // test recent most flaky graph
         var onlyFailedFolders = false; // suite folder donut
         var showingRunTags = false; // used to keep track if the runtags popup is showing and determine if it should be closed when clicked outside
-        var inFullscreen = false;
-        var showDateLabels = true;
-        var showLegends = true;
+        var inFullscreen = false; // used to keep track if fullscreen view is being shown
+        var showDateLabels = true; // used to keep track of global date/run_start label setting
+        var showLegends = true; // used to keep track of global legend setting
+        var showAliases = false; // used to keep track of global alias setting
+        var showMilliseconds = false; // used to keep track of global millisecond setting
         var previousFolder = ""; // used to update the suite folder donut to the previous folder with the button
         var lastScrollY = 0;
 
@@ -1915,12 +1936,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     showDateLabels = false
                     toggle.checked = false
                 } else {
-                    toggle.checked = true // first load and default value
+                    toggle.checked = showDateLabels // first load and default value
                 }
                 localStorage.setItem("showDateLabels", JSON.stringify(showDateLabels));
-                if (!load) { setup_all_graphs() }
+                if (!load) { setup_data_and_graphs() }
             }
-            // update the label setting
             toggle_labels(true) // run once on load to setup correctly
             document.getElementById("toggleLabels").addEventListener("click", function () {
                 toggle_labels(false)
@@ -1940,14 +1960,62 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     showLegends = false
                     toggle.checked = false
                 } else {
-                    toggle.checked = true // first load and default value
+                    toggle.checked = showLegends // first load and default value
                 }
                 localStorage.setItem("showLegends", JSON.stringify(showLegends));
-                if (!load) { setup_all_graphs() }
+                if (!load) { setup_data_and_graphs() }
             }
             toggle_legends(true) // run once on load to setup correctly
             document.getElementById("toggleLegends").addEventListener("click", function () {
                 toggle_legends(false)
+            });
+
+            // update all graphs to not use either aliases or run_starts
+            function toggle_aliases(load = false) {
+                var storage = JSON.parse(localStorage.getItem("showAliases"));
+                const toggle = document.getElementById("toggleAliases")
+                if (!load) {
+                    storage = !storage
+                }
+                if (storage === true) {
+                    showAliases = true
+                    toggle.checked = true
+                } else if (storage === false) {
+                    showAliases = false
+                    toggle.checked = false
+                } else {
+                    toggle.checked = showAliases // first load and default value
+                }
+                localStorage.setItem("showAliases", JSON.stringify(showAliases));
+                if (!load) { setup_data_and_graphs() }
+            }
+            toggle_aliases(true) // run once on load to setup correctly
+            document.getElementById("toggleAliases").addEventListener("click", function () {
+                toggle_aliases(false)
+            });
+
+            // update all graphs to use run_starts with or without milliseconds
+            function toggle_milliseconds(load = false) {
+                var storage = JSON.parse(localStorage.getItem("showMilliseconds"));
+                const toggle = document.getElementById("toggleMilliseconds")
+                if (!load) {
+                    storage = !storage
+                }
+                if (storage === true) {
+                    showMilliseconds = true
+                    toggle.checked = true
+                } else if (storage === false) {
+                    showMilliseconds = false
+                    toggle.checked = false
+                } else {
+                    toggle.checked = showMilliseconds // first load and default value
+                }
+                localStorage.setItem("showMilliseconds", JSON.stringify(showMilliseconds));
+                if (!load) { setup_data_and_graphs() }
+            }
+            toggle_milliseconds(true) // run once on load to setup correctly
+            document.getElementById("toggleMilliseconds").addEventListener("click", function () {
+                toggle_milliseconds(false)
             });
 
             // update all graphs based on new hidden graphs/sections
@@ -2357,6 +2425,16 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // DATA FILTER FUNCTIONS //
         ///////////////////////////
 
+        // function to remove milliseconds if needed
+        function remove_milliseconds(data) {
+            if (showMilliseconds) { return data; }
+
+            return data.map(obj => ({
+                ...obj,
+                run_start: obj.run_start.slice(0, 19)
+            }));
+        }
+
         // function to filter run data based on the runs (aka run name) filter
         function filter_runs(runs) {
             const selectedRun = document.getElementById("runs").value;
@@ -2444,13 +2522,13 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // function to filter suites/tests/keywords based on the already filtered runs
-        function filter_data(dataType) {
+        function filter_data(data) {
             var validRunStarts = [];
             for (value of filteredRuns) {
                 validRunStarts.push(value.run_start);
             }
             var filteredData = [];
-            for (value of window[dataType]) {
+            for (value of data) {
                 if (validRunStarts.includes(value.run_start)) {
                     filteredData.push(value);
                 }
@@ -2871,7 +2949,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 if (!labels.includes(test.name)) {
                     labels.push(test.name);
                 }
-                if (use_run_aliases) {
+                if (showAliases) {
                     if (!runStarts.includes(test.run_alias)) {
                         runStarts.push(test.run_alias);
                     }
@@ -3564,7 +3642,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 if (xCoor >= left + (right * i) && xCoor <= left + right + (right * i) && yCoor >= top && yCoor <= bottom) {
                     var run
                     const identifier = chart.config._config.options.indexAxis === "y" ? Object.values(ticks).map(item => item.label) : data.labels // exception for timelines
-                    if (use_run_aliases) {
+                    if (showAliases) {
                         run = runs.find(run => run.run_alias === identifier[i])
                     } else {
                         run = runs.find(run => run.run_start === identifier[i])
@@ -4003,7 +4081,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     names.push(value.name)
                 }
             }
-            const finalLabels = graphType !== "line" ? (use_run_aliases ? aliases : labels) : labels;
+            const finalLabels = graphType !== "line" ? (showAliases ? aliases : labels) : labels;
             const styling = graphType !== "line" ? barConfig : lineConfig;
             const create_data_set = (label, data, backgroundColor, borderColor) => ({
                 label,
@@ -4060,7 +4138,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     hoverOffset: 4
                 }]
             };
-            const callBackData = latest ? use_run_aliases ? latest.run_alias : latest.run_start : ""
+            const callBackData = latest ? showAliases ? latest.run_alias : latest.run_start : ""
             return [graphData, callBackData]
         }
 
@@ -4322,7 +4400,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     }
                     if (labels.length > limit) break;
                 }
-                if (use_run_aliases) {
+                if (showAliases) {
                     labels.length = 0;
                     labels.push(...aliases);
                 }
@@ -4536,7 +4614,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     }
                     runAxis += 1;
                 }
-                if (use_run_aliases) { runStarts = run_aliases }
+                if (showAliases) { runStarts = run_aliases }
                 datasets = convert_timeline_data(datasets)
                 var graphData = {
                     labels: labels,
@@ -4579,7 +4657,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 for (const [name, runStarts] of sortedData) {
                     if (count == limit) break;
                     labels.push(name);
-                    if (use_run_aliases) {
+                    if (showAliases) {
                         data.set(name, aliases.get(name));
                     }
                     datasets.push(runStarts.length);
@@ -4593,7 +4671,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         ...failedConfig,
                     }],
                 };
-                const callbackData = use_run_aliases
+                const callbackData = showAliases
                     ? Object.fromEntries(sortedData.map(([name, runs]) => [name, aliases.get(name)]))
                     : Object.fromEntries(sortedData.map(([name, runs]) => [name, runStartsLabels.get(name)]));
                 return [graphData, callbackData];
@@ -4627,7 +4705,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     runAxis++;
                 }
                 datasets = convert_timeline_data(datasets)
-                const runStartsArray = use_run_aliases ? Array.from(runAliasesSet) : runStarts;
+                const runStartsArray = showAliases ? Array.from(runAliasesSet) : runStarts;
                 const graphData = {
                     labels,
                     datasets,
@@ -4685,7 +4763,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     if (count == limit) break;
                     labels.push(message);
                     datasets.push(runStarts.length);
-                    if (use_run_aliases) {
+                    if (showAliases) {
                         data.set(message, aliases.get(message));
                     }
                     count++;
@@ -4734,7 +4812,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     runAxis++;
                 }
                 datasets = convert_timeline_data(datasets)
-                const runStartsArray = use_run_aliases ? Array.from(runAliasesSet) : runStarts;
+                const runStartsArray = showAliases ? Array.from(runAliasesSet) : runStarts;
                 const graphData = {
                     labels,
                     datasets,
@@ -4828,15 +4906,20 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function updates the data in the graphs whenever filters are updated
         function setup_filtered_data_and_filters() {
+            console.log(runs[0].run_start)
+            filteredRuns = remove_milliseconds(runs)
+            filteredSuites = remove_milliseconds(suites)
+            filteredTests = remove_milliseconds(tests)
+            filteredKeywords = remove_milliseconds(keywords)
             // filter run data
-            filteredRuns = filter_runs(runs);
+            filteredRuns = filter_runs(filteredRuns);
             filteredRuns = filter_runtags(filteredRuns);
             filteredRuns = filter_dates(filteredRuns);
             filteredRuns = filter_amount(filteredRuns);
             // filter suites and tests based on filtered runs
-            filteredSuites = filter_data("suites");
-            filteredTests = filter_data("tests");
-            filteredKeywords = filter_data("keywords");
+            filteredSuites = filter_data(filteredSuites);
+            filteredTests = filter_data(filteredTests);
+            filteredKeywords = filter_data(filteredKeywords);
             // set titles with amount of filtered items
             const runAmount = Object.keys(filteredRuns).length
             const message = `<h6>showing ${runAmount} of ${filteredAmount} runs</h6>`
