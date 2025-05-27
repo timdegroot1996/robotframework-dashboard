@@ -45,38 +45,50 @@ When running the tool the following steps will be executed
 5. Optionally generates a dashboard HTML file that can be used to look at the stored results
 
 ## Dashboard HTML Features
+The Dashboard will provide information across your runs across all levels.
 
-The Robot Framework Dashboard HTML will provide information across your runs across all levels.
-Currently available features:
+### Available Settings
+- Fully customizable order of sections and graphs
+- Light/Dark mode
+- Show/hide graph legends
+- Show/hide graph labels (run_starts or aliases)
+- Show/hide graph alias labels (instead of default run_starts)
+- Show/hide milliseconds in run_start labels 
 
-- Global filters: run, run tag, run date
+### Availabel Filters/Graphs
+- Global filters: run, run tag, run date, run amount
 - Runs
   - Statistics: pass, fail, skip
+  - Donut: pass, fail, skip (total and last run)
   - Duration: total elapsed time
   - Overview: table overview of runs
 - Suites
-  - Filter: suite
+  - Filter: folder, suite
+  - Donut: run, fail, pass and percentage per folder (total run stats and last run failed stats)
   - Statistics: pass, fail, skip
   - Duration: total elapsed time
-  - Most failed: top 10 failing suites
+  - Most failed: top 10 failing suites (top 50 in fullscreen)
   - Overview: table overview of suites
 - Tests
   - Filter: suite, test, test tags
   - Statistics: pass, fail, skip
   - Duration: total elapsed time
-  - Duration Deviation: boxplot of elapsed time to find outliers
-  - Most Flaky: top 10 flaky tests
-  - Most failed: top 10 failing tests
-  - Fail messages: top 10 fail messages
+  - Duration deviation: boxplot of elapsed time to find outliers
+  - Fail Messages: top 10 fail messages (top 50 in fullscreen)
+  - Most Flaky: top 10 flaky tests (top 50 in fullscreen)
+  - Recent Most Flaky: top 10 most recent most flaky tests (top 50 in fullscreen)
+  - Most Failed: top 10 failing tests (top 50 in fullscreen)
+  - Recent Most Failed: top 10 most recent most failing tests (top 50 in fullscreen)
   - Overview: table overview of tests
 - Keywords
   - Filter: keywords
-  - Keyword statistics: pass, fail, skip
-  - Keyword times run
-  - Keyword total duration
-  - Keyword average duration
-  - Keyword min duration
-  - Keyword max duration
+  - Statistics: pass, fail, skip
+  - Times Run
+  - Total Duration
+  - Average Duration
+  - Min Duration
+  - Max Duration
+  - Most Failed: top 10 failing keywords (top 50 in fullscreen)
   - Overview: table overview of keywords
 
 ## Version Details
@@ -135,16 +147,13 @@ robotdashboard -r alias=some_cool_alias,tag=prod,tag=dev -r alias=alias12345
 ```
 robotdashboard -t "My Cool Title"
 ```
-- Show milliseconds in the graphs in the dashboard html (setting excludemilliseconds to False as it defaults to True)
+- Excludemilliseconds [DEPRECATED]
 ```
-robotdashboard -e False
+robotdashboard -e False # this has been deprecated from the command line interface and moved to the "Settings" in the dashboard itself
 ```
-- Show aliases in the graphs in the dashboard html (setting aliases to False as it defaults to True). Aliases are created based on the filename, output_ and .xml are removed, everything that remains will be the output name. Duplicate aliases will get a number based on the order in the database to generate unique aliases in the dashboard.
+- Aliases [DEPRECATED]
 ```
-robotdashboard -a True
-robotdashboard --aliases true --outputpath output-20250313-002257.xml         # alias will be: output-20250313-002257
-robotdashboard --aliases True --outputpath output_.xml                        # alias will be: Alias 1   (this is automatically generated to prevent dupes)
-robotdashboard --aliases True --outputpath ./folder/output_My Cool Name.xml   # alias will be: My Cool Name   (only file basename is used)
+robotdashboard -a True # this has been deprecated from the command line interface and moved to the "Settings" in the dashboard itself
 ```
 - Enable the automatic opening of log.html files from the dashboard graphs (runs/suites/test/keywords) when clicked on specified elements
 ```
@@ -285,7 +294,7 @@ To be able to automatically follow up on the server implementation and not have 
 2. Make sure the robotdashboard server is running see the Dashboard Server section for detailed instructions
 3. Update your robot.toml (see also the exmaple robot.toml) or manual command line usage with "--listener path/to/robotdashboardlistener.py:tags=tag1,tag2"
 4. Optionally you can also provide ":host=yourhost:port=yourport" if the defaults of robotdashboard server are not to your liking. See the comments in the listener
-5. Optionally you can automatically limit the amount of runs in your database by providing ":limit=100" for example
+5. Optionally you can automatically limit the amount of runs in your database by providing ":limit=100"
 6. Enjoy automatic dashboarding of your manual/pipeline runs! :)
 
 ## Contributing
