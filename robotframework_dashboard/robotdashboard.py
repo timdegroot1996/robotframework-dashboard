@@ -94,7 +94,9 @@ class RobotDashboard:
                             .replace("output_", "")
                             .replace(".xml", "")
                         )
-                        self.database.insert_output_data(output_data, tags, run_alias, output_path)
+                        self.database.insert_output_data(
+                            output_data, tags, run_alias, output_path
+                        )
                         end = time()
                         console += self._print_console(
                             f"  Processed output XML '{output_basename}' in {round(end-start, 2)} seconds"
@@ -112,15 +114,22 @@ class RobotDashboard:
                                     start = time()
                                     output_path = join(getcwd(), subdir, file)
                                     output_basename = basename(output_path)
-                                    console += self._print_console(f"  Processing output XML '{output_basename}'")
-                                    output_data = OutputProcessor().get_output_data(output_path)
+                                    console += self._print_console(
+                                        f"  Processing output XML '{output_basename}'"
+                                    )
+                                    output_data = OutputProcessor().get_output_data(
+                                        output_path
+                                    )
                                     run_alias = (
                                         str(basename(file))
                                         .replace("output_", "")
                                         .replace(".xml", "")
                                     )
                                     self.database.insert_output_data(
-                                        output_data, output_folder_path[1], run_alias, output_path
+                                        output_data,
+                                        output_folder_path[1],
+                                        run_alias,
+                                        output_path,
                                     )
                                     end = time()
                                     console += self._print_console(
@@ -215,7 +224,7 @@ class RobotDashboard:
                 " 5. Creating dashboard HTML\n  skipping step"
             )
         return console
-    
+
     def update_output_path(self, log_path):
         """Function to update the output_path using the log path that the server has used"""
         self.database.open_database()

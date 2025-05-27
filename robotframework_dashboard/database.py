@@ -24,17 +24,20 @@ class DatabaseProcessor:
 
     def _create_tables(self):
         """Helper function to create the tables (they use IF NOT EXISTS to not override)"""
+
         def get_runs_length():
             return len(self.connection.cursor().execute(RUN_TABLE_LENGTH).fetchall())
-        
+
         def get_suites_length():
             return len(self.connection.cursor().execute(SUITE_TABLE_LENGTH).fetchall())
-        
+
         def get_tests_length():
             return len(self.connection.cursor().execute(TEST_TABLE_LENGTH).fetchall())
-        
+
         def get_keywords_length():
-            return len(self.connection.cursor().execute(KEYWORD_TABLE_LENGTH).fetchall())
+            return len(
+                self.connection.cursor().execute(KEYWORD_TABLE_LENGTH).fetchall()
+            )
 
         # check to see if the tables already exist
         table_list = self.connection.cursor().execute(RUN_TABLE_EXISTS).fetchall()
@@ -44,41 +47,41 @@ class DatabaseProcessor:
             # run: path added in 0.8.1
             # suite/test: id was added in 0.8.4
             run_table_length = get_runs_length()
-            if run_table_length == 10: 
+            if run_table_length == 10:
                 self.connection.cursor().execute(RUN_TABLE_UPDATE_ALIAS)
                 self.connection.commit()
                 run_table_length = get_runs_length()
-            if run_table_length == 11: 
+            if run_table_length == 11:
                 self.connection.cursor().execute(RUN_TABLE_UPDATE_PATH)
                 self.connection.commit()
                 run_table_length = get_runs_length()
-           
+
             suite_table_length = get_suites_length()
-            if suite_table_length == 9: 
+            if suite_table_length == 9:
                 self.connection.cursor().execute(SUITE_TABLE_UPDATE_ALIAS)
                 self.connection.commit()
                 suite_table_length = get_suites_length()
-            if suite_table_length == 10: 
+            if suite_table_length == 10:
                 self.connection.cursor().execute(SUITE_TABLE_UPDATE_ID)
                 self.connection.commit()
                 suite_table_length = get_suites_length()
-           
+
             test_table_length = get_tests_length()
-            if test_table_length == 9: 
+            if test_table_length == 9:
                 self.connection.cursor().execute(TEST_TABLE_UPDATE_TAGS)
                 self.connection.commit()
                 test_table_length = get_tests_length()
-            if test_table_length == 10: 
+            if test_table_length == 10:
                 self.connection.cursor().execute(TEST_TABLE_UPDATE_ALIAS)
                 self.connection.commit()
                 test_table_length = get_tests_length()
-            if test_table_length == 11: 
+            if test_table_length == 11:
                 self.connection.cursor().execute(TEST_TABLE_UPDATE_ID)
                 self.connection.commit()
                 test_table_length = get_tests_length()
-            
+
             keyword_table_length = get_keywords_length()
-            if keyword_table_length == 10: 
+            if keyword_table_length == 10:
                 self.connection.cursor().execute(KEYWORD_TABLE_UPDATE_ALIAS)
                 self.connection.commit()
                 keyword_table_length = get_keywords_length()
@@ -93,7 +96,9 @@ class DatabaseProcessor:
         """This function is called to close the connection to the database"""
         self.connection.close()
 
-    def insert_output_data(self, output_data: dict, tags: list, run_alias: str, path: Path):
+    def insert_output_data(
+        self, output_data: dict, tags: list, run_alias: str, path: Path
+    ):
         """This function inserts the data of an output file into the database"""
         try:
             self._insert_runs(output_data["runs"], tags, run_alias, path)
@@ -179,7 +184,8 @@ class DatabaseProcessor:
         for suite_row in suite_rows:
             row = self._dict_from_row(suite_row)
             row["run_alias"] = aliases[row["run_start"]]
-            if row["id"] == None: row["id"] == ""
+            if row["id"] == None:
+                row["id"] == ""
             suites.append(row)
         data["suites"] = suites
         # Get tests from run table
@@ -189,7 +195,8 @@ class DatabaseProcessor:
             row["run_alias"] = aliases[row["run_start"]]
             if row["tags"] == None:
                 row["tags"] = ""
-            if row["id"] == None: row["id"] == ""
+            if row["id"] == None:
+                row["id"] == ""
             tests.append(row)
         data["tests"] = tests
         # Get keywords from run table
@@ -236,30 +243,38 @@ class DatabaseProcessor:
                 if "run_start=" in run:
                     run_start = run.replace("run_start=", "")
                     if not run_start in run_starts:
-                        print(f"  ERROR: Could not find run to remove from the database: run_start={run_start}")
+                        print(
+                            f"  ERROR: Could not find run to remove from the database: run_start={run_start}"
+                        )
                         console += f"  ERROR: Could not find run to remove from the database: run_start={run_start}\n"
                         continue
                     self._remove_run(run_start)
                     print(f"  Removed run from the database: run_start={run_start}")
-                    console += f"  Removed run from the database: run_start={run_start}\n"
+                    console += (
+                        f"  Removed run from the database: run_start={run_start}\n"
+                    )
                 elif "index=" in run:
-                    runs = run.replace("index=", "").split(';')
+                    runs = run.replace("index=", "").split(";")
                     indexes = []
                     for run in runs:
-                        if ':' in run:
-                            start, stop = run.split(':')
-                            for i in range(int(start), int(stop)+1):
+                        if ":" in run:
+                            start, stop = run.split(":")
+                            for i in range(int(start), int(stop) + 1):
                                 indexes.append(i)
                         else:
                             indexes.append(int(run))
                     for index in indexes:
                         self._remove_run(run_starts[index])
-                        print(f"  Removed run from the database: index={index}, run_start={run_starts[index]}")
+                        print(
+                            f"  Removed run from the database: index={index}, run_start={run_starts[index]}"
+                        )
                         console += f"  Removed run from the database: index={index}, run_start={run_starts[index]}\n"
                 elif "alias=" in run:
                     alias = run.replace("alias=", "")
                     self._remove_run(run_starts[run_aliases.index(alias)])
-                    print(f"  Removed run from the database: alias={alias}, run_start={run_starts[run_aliases.index(alias)]}")
+                    print(
+                        f"  Removed run from the database: alias={alias}, run_start={run_starts[run_aliases.index(alias)]}"
+                    )
                     console += f"  Removed run from the database: alias={alias}, run_start={run_starts[run_aliases.index(alias)]}\n"
                 elif "tag=" in run:
                     tag = run.replace("tag=", "")
@@ -267,14 +282,20 @@ class DatabaseProcessor:
                     for index, run_tag in enumerate(run_tags):
                         if tag in run_tag:
                             self._remove_run(run_starts[index])
-                            print(f"  Removed run from the database: tag={tag}, run_start={run_starts[index]}")
+                            print(
+                                f"  Removed run from the database: tag={tag}, run_start={run_starts[index]}"
+                            )
                             console += f"  Removed run from the database: tag={tag}, run_start={run_starts[index]}\n"
                             removed += 1
                     if removed == 0:
-                        print(f"  WARNING: no runs were removed as no runs were found with tag: {tag}")
+                        print(
+                            f"  WARNING: no runs were removed as no runs were found with tag: {tag}"
+                        )
                         console += f"  WARNING: no runs were removed as no runs were found with tag: {tag}\n"
                 else:
-                    print(f"  ERROR: incorrect usage of the remove_run feature ({run}), check out robotdashboard --help for instructions")
+                    print(
+                        f"  ERROR: incorrect usage of the remove_run feature ({run}), check out robotdashboard --help for instructions"
+                    )
                     console += f"  ERROR: incorrect usage of the remove_run feature ({run}), check out robotdashboard --help for instructions\n"
             except:
                 print(f"  ERROR: Could not find run to remove from the database: {run}")
@@ -297,16 +318,18 @@ class DatabaseProcessor:
         """Function to update the output_path using the log path that the server has used"""
         console = ""
         log_name = log_path[11:]
-        output_name = log_name.replace('log', 'output').replace('.html','.xml')
+        output_name = log_name.replace("log", "output").replace(".html", ".xml")
         data = self.connection.cursor().execute(SELECT_FROM_RUNS).fetchall()
         for entry in data:
             entry = self._dict_from_row(entry)
-            if output_name in entry['path'] or log_name in entry['path']:
-                query = UPDATE_RUN_PATH.format(path=log_path, run_start=entry['run_start'])
+            if output_name in entry["path"] or log_name in entry["path"]:
+                query = UPDATE_RUN_PATH.format(
+                    path=log_path, run_start=entry["run_start"]
+                )
                 console = f"Executed query: {query}\n"
                 self.connection.cursor().execute(query)
                 self.connection.commit()
                 break
         if console == "":
-            console = f'ERROR: There was no output with the name {output_name} or {log_name} in any of the existing outputs in the database!\n'
+            console = f"ERROR: There was no output with the name {output_name} or {log_name} in any of the existing outputs in the database!\n"
         return console

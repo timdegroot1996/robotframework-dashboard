@@ -3,9 +3,11 @@ CREATE_SUITES = """ CREATE TABLE IF NOT EXISTS suites ("run_start" TEXT, "full_n
 CREATE_TESTS = """ CREATE TABLE IF NOT EXISTS tests ("run_start" TEXT, "full_name" TEXT, "name" TEXT, "passed" INTEGER, "failed" INTEGER, "skipped" INTEGER, "elapsed_s" TEXT, "start_time" TEXT, "message" TEXT, "tags" TEXT, "run_alias" TEXT, "id" TEXT); """
 CREATE_KEYWORDS = """ CREATE TABLE IF NOT EXISTS keywords ("run_start" TEXT, "name" TEXT, "passed" INTEGER, "failed" INTEGER, "skipped" INTEGER, "times_run" TEXT, "total_time_s" TEXT, "average_time_s" TEXT, "min_time_s" TEXT, "max_time_s" TEXT, "run_alias" TEXT); """
 
-RUN_TABLE_EXISTS = """SELECT name FROM sqlite_master WHERE type='table' AND name='runs';"""
+RUN_TABLE_EXISTS = (
+    """SELECT name FROM sqlite_master WHERE type='table' AND name='runs';"""
+)
 RUN_TABLE_LENGTH = """PRAGMA table_info(runs);"""
-RUN_TABLE_UPDATE_ALIAS= """ALTER TABLE runs ADD COLUMN run_alias TEXT;"""
+RUN_TABLE_UPDATE_ALIAS = """ALTER TABLE runs ADD COLUMN run_alias TEXT;"""
 RUN_TABLE_UPDATE_PATH = """ALTER TABLE runs ADD COLUMN path TEXT;"""
 
 SUITE_TABLE_LENGTH = """PRAGMA table_info(suites);"""
@@ -13,7 +15,7 @@ SUITE_TABLE_UPDATE_ALIAS = """ALTER TABLE suites ADD COLUMN run_alias TEXT;"""
 SUITE_TABLE_UPDATE_ID = """ALTER TABLE suites ADD COLUMN id TEXT;"""
 
 TEST_TABLE_LENGTH = """PRAGMA table_info(tests);"""
-TEST_TABLE_UPDATE_TAGS  = """ALTER TABLE tests ADD COLUMN tags TEXT;"""
+TEST_TABLE_UPDATE_TAGS = """ALTER TABLE tests ADD COLUMN tags TEXT;"""
 TEST_TABLE_UPDATE_ALIAS = """ALTER TABLE tests ADD COLUMN run_alias TEXT;"""
 TEST_TABLE_UPDATE_ID = """ALTER TABLE tests ADD COLUMN id TEXT;"""
 

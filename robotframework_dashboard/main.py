@@ -41,7 +41,9 @@ def main():
     # 1. Database preparation
     robotdashboard.initialize_database(suppress=False)
     # 2. Processing output XML(s)
-    robotdashboard.process_outputs(outputs=arguments.outputs, output_folder_path=arguments.output_folder_path)
+    robotdashboard.process_outputs(
+        outputs=arguments.outputs, output_folder_path=arguments.output_folder_path
+    )
     # 3. Listing all available runs in the database
     robotdashboard.print_runs()
     # 4. Removing runs from the database
@@ -53,6 +55,7 @@ def main():
         server = ApiServer(arguments.server_host, arguments.server_port)
         server.set_robotdashboard(robotdashboard)
         server.run()
+
 
 if __name__ == "__main__":
     main()

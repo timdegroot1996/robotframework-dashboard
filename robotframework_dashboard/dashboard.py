@@ -39,7 +39,8 @@ class DashboardGenerator:
                 '"placeholder_tests"', f'"{self.compress_and_encode(data["tests"])}"'
             )
             dashboard_data = dashboard_data.replace(
-                '"placeholder_keywords"', f'"{self.compress_and_encode(data["keywords"])}"'
+                '"placeholder_keywords"',
+                f'"{self.compress_and_encode(data["keywords"])}"',
             )
             dashboard_data = dashboard_data.replace(
                 '"placeholder_amount"', str(quantity)
@@ -63,9 +64,13 @@ class DashboardGenerator:
                     str(message_config).replace("'", '"'),
                 )
             if use_logs:
-                dashboard_data = dashboard_data.replace('"placeholder_use_logs"', "true")
+                dashboard_data = dashboard_data.replace(
+                    '"placeholder_use_logs"', "true"
+                )
             else:
-                dashboard_data = dashboard_data.replace('"placeholder_use_logs"', "false")
+                dashboard_data = dashboard_data.replace(
+                    '"placeholder_use_logs"', "false"
+                )
 
         # handle possible subdirectories
         path = Path(name_dashboard)
