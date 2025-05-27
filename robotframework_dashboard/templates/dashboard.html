@@ -3572,7 +3572,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         text: "Run",
                     },
                 };
-                delete config.options.onClick;
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData)
+                    }
+                };
                 if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             }
             update_height("keywordMostFailedVertical", config.data.labels.length, config.options.plugins.title.text, keywordMostFailedGraphType);
@@ -3723,7 +3727,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 const index = chartElement[0].index
                 runStart = event.chart.data.labels[index]
             }
-            var output = runs.find(run => run.run_start === runStart)
+            var output = runs.find(run => run.run_start.slice(0, 19) === runStart.slice(0, 19))
             var path = output ? output.path : runs.find(run => run.run_alias === runStart).path
             if (path == "") {
                 alert("Log file error: this output didn't have a path in the database so the log file cannot be found!");
