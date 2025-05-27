@@ -24,6 +24,18 @@ class DatabaseProcessor:
 
     def _create_tables(self):
         """Helper function to create the tables (they use IF NOT EXISTS to not override)"""
+        def get_runs_length():
+            return len(self.connection.cursor().execute(RUN_TABLE_LENGTH).fetchall())
+        
+        def get_suites_length():
+            return len(self.connection.cursor().execute(SUITE_TABLE_LENGTH).fetchall())
+        
+        def get_tests_length():
+            return len(self.connection.cursor().execute(TEST_TABLE_LENGTH).fetchall())
+        
+        def get_keywords_length():
+            return len(self.connection.cursor().execute(KEYWORD_TABLE_LENGTH).fetchall())
+
         # check to see if the tables already exist
         table_list = self.connection.cursor().execute(RUN_TABLE_EXISTS).fetchall()
         if len(table_list) > 0:
@@ -31,34 +43,45 @@ class DatabaseProcessor:
             # run/suite/test/keyword: run_alias added in 0.6.0
             # run: path added in 0.8.1
             # suite/test: id was added in 0.8.4
-            run_table_length = len(
-                self.connection.cursor().execute(RUN_TABLE_LENGTH).fetchall()
-            )
-            suite_table_length = len(
-                self.connection.cursor().execute(SUITE_TABLE_LENGTH).fetchall()
-            )
-            test_table_length = len(
-                self.connection.cursor().execute(TEST_TABLE_LENGTH).fetchall()
-            )
-            keyword_table_length = len(
-                self.connection.cursor().execute(KEYWORD_TABLE_LENGTH).fetchall()
-            )
-            if run_table_length == 10: self.connection.cursor().execute(RUN_TABLE_UPDATE_ALIAS)
-            self.connection.commit()
-            if run_table_length == 11: self.connection.cursor().execute(RUN_TABLE_UPDATE_PATH)
-            self.connection.commit()
-            if suite_table_length == 9: self.connection.cursor().execute(SUITE_TABLE_UPDATE_ALIAS)
-            self.connection.commit()
-            if suite_table_length == 10: self.connection.cursor().execute(SUITE_TABLE_UPDATE_ID)
-            self.connection.commit()
-            if test_table_length == 9: self.connection.cursor().execute(TEST_TABLE_UPDATE_TAGS)
-            self.connection.commit()
-            if test_table_length == 10: self.connection.cursor().execute(TEST_TABLE_UPDATE_ALIAS)
-            self.connection.commit()
-            if test_table_length == 11: self.connection.cursor().execute(TEST_TABLE_UPDATE_ID)
-            self.connection.commit()
-            if keyword_table_length == 10: self.connection.cursor().execute(KEYWORD_TABLE_UPDATE_ALIAS)
-            self.connection.commit()
+            run_table_length = get_runs_length()
+            if run_table_length == 10: 
+                self.connection.cursor().execute(RUN_TABLE_UPDATE_ALIAS)
+                self.connection.commit()
+                run_table_length = get_runs_length()
+            if run_table_length == 11: 
+                self.connection.cursor().execute(RUN_TABLE_UPDATE_PATH)
+                self.connection.commit()
+                run_table_length = get_runs_length()
+           
+            suite_table_length = get_suites_length()
+            if suite_table_length == 9: 
+                self.connection.cursor().execute(SUITE_TABLE_UPDATE_ALIAS)
+                self.connection.commit()
+                suite_table_length = get_suites_length()
+            if suite_table_length == 10: 
+                self.connection.cursor().execute(SUITE_TABLE_UPDATE_ID)
+                self.connection.commit()
+                suite_table_length = get_suites_length()
+           
+            test_table_length = get_tests_length()
+            if test_table_length == 9: 
+                self.connection.cursor().execute(TEST_TABLE_UPDATE_TAGS)
+                self.connection.commit()
+                test_table_length = get_tests_length()
+            if test_table_length == 10: 
+                self.connection.cursor().execute(TEST_TABLE_UPDATE_ALIAS)
+                self.connection.commit()
+                test_table_length = get_tests_length()
+            if test_table_length == 11: 
+                self.connection.cursor().execute(TEST_TABLE_UPDATE_ID)
+                self.connection.commit()
+                test_table_length = get_tests_length()
+            
+            keyword_table_length = get_keywords_length()
+            if keyword_table_length == 10: 
+                self.connection.cursor().execute(KEYWORD_TABLE_UPDATE_ALIAS)
+                self.connection.commit()
+                keyword_table_length = get_keywords_length()
         else:
             self.connection.cursor().execute(CREATE_RUNS)
             self.connection.cursor().execute(CREATE_SUITES)

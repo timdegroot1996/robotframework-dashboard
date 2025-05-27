@@ -3,6 +3,8 @@ from pathlib import Path
 from datetime import datetime
 from json import dumps
 from .version import __version__
+from zlib import compress
+from base64 import b64encode
 
 
 class DashboardGenerator:
@@ -28,16 +30,16 @@ class DashboardGenerator:
                 '"placeholder_version"', __version__
             )
             dashboard_data = dashboard_data.replace(
-                '"placeholder_runs"', dumps(data["runs"])
+                '"placeholder_runs"', f'"{self.compress_and_encode(data["runs"])}"'
             )
             dashboard_data = dashboard_data.replace(
-                '"placeholder_suites"', dumps(data["suites"])
+                '"placeholder_suites"', f'"{self.compress_and_encode(data["suites"])}"'
             )
             dashboard_data = dashboard_data.replace(
-                '"placeholder_tests"', dumps(data["tests"])
+                '"placeholder_tests"', f'"{self.compress_and_encode(data["tests"])}"'
             )
             dashboard_data = dashboard_data.replace(
-                '"placeholder_keywords"', dumps(data["keywords"])
+                '"placeholder_keywords"', f'"{self.compress_and_encode(data["keywords"])}"'
             )
             dashboard_data = dashboard_data.replace(
                 '"placeholder_amount"', str(quantity)
@@ -76,3 +78,8 @@ class DashboardGenerator:
         # warn in case of empty database
         if len(data["runs"]) == 0:
             print(f"  WARNING: There are no runs so the dashboard will be empty!")
+
+    def compress_and_encode(self, obj):
+        json_data = dumps(obj).encode("utf-8")
+        compressed = compress(json_data)
+        return b64encode(compressed).decode("utf-8")
