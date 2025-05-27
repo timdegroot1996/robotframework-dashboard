@@ -9,9 +9,9 @@
 usage: robotdashboard [[]-v[]] [[]-h[]] [[]-o [[]OUTPUTPATH ...[]][]] [[]-f OUTPUTFOLDERPATH[]]
                       [[]-r [[]REMOVERUNS ...[]][]] [[]-d DATABASEPATH[]]
                       [[]-n NAMEDASHBOARD[]] [[]-t DASHBOARDTITLE[]]
-                      [[]-e EXCLUDEMILLISECONDS[]] [[]-a ALIASES[]] [[]-m MESSAGECONFIG[]]
-                      [[]-q QUANTITY[]] [[]-u USELOGS[]] [[]-g GENERATEDASHBOARD[]]
-                      [[]-l LISTRUNS[]] [[]-c DATABASECLASS[]] [[]-s SERVER[]]
+                      [[]-m MESSAGECONFIG[]] [[]-q QUANTITY[]] [[]-u USELOGS[]]
+                      [[]-g GENERATEDASHBOARD[]] [[]-l LISTRUNS[]] [[]-c DATABASECLASS[]]
+                      [[]-s SERVER[]]
 
 options:
   -v, --version         Display application version information.
@@ -44,18 +44,6 @@ options:
   -t DASHBOARDTITLE, --dashboardtitle DASHBOARDTITLE
                         `string` Specifies a custom dashboard html report
                         title.
-  -e EXCLUDEMILLISECONDS, --excludemilliseconds EXCLUDEMILLISECONDS
-                        `boolean` Default is True, specifies if the dashboard
-                        html shows milliseconds in the graphs. The database
-                        will always contain milliseconds.
-  -a ALIASES, --aliases ALIASES
-                        `boolean` Default is False, specifies if the dashboard
-                        html shows run aliases in the graphs. The database
-                        will always contain run aliases. Aliases are generated
-                        based on the input name: output_run_name_1.xml will
-                        convert to alias: 'run_name_1'. 'output_' and '.xml'
-                        are removed, and everything that remains will be the
-                        run alias.
   -m MESSAGECONFIG, --messageconfig MESSAGECONFIG
                         `path` Specifies the path to a config file that
                         contains lines of messages with placeholders to

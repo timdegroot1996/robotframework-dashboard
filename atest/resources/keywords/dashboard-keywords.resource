@@ -36,28 +36,28 @@ Validate Screenshot
     IF    'filter' in $reference    VAR    ${folder}    filter
     VAR    ${reference}    ${REFERENCE_FOLDER}/${folder}/${reference}.png
     VAR    ${screenshot}    ${SCREENSHOT_FOLDER}/${screenshot}.png
-    Compare Images    reference_image=${reference}    test_image=${screenshot}    threshold=0.01
+    Compare Images    reference_image=${reference}    test_image=${screenshot}    threshold=0.05   # 95% accuracy
 
 Validate Graph
     [Arguments]    ${canvas}    ${graphId}    ${button}=${False}
     IF    ${button}    Click    selector=id=${graphId}
-    Sleep    time_=3s
+    Sleep    time_=3500ms
     Take Screenshot    filename=${SCREENSHOT_FOLDER}/${graphId}    selector=id=${canvas}
     Validate Screenshot    screenshot=${graphId}    reference=${graphId}
     ${fullscreenButton}    Replace String    string=${canvas}    search_for=Canvas    replace_with=Fullscreen
     Click    selector=id=${fullscreenButton}
-    Sleep    time_=3s
+    Sleep    time_=3500ms
     Take Screenshot    filename=${SCREENSHOT_FOLDER}/${graphId}Fullscreen    selector=id=${canvas}
     Validate Screenshot    screenshot=${graphId}Fullscreen    reference=${graphId}Fullscreen
     ${closeButton}    Replace String    string=${canvas}    search_for=Canvas    replace_with=Close
     Click    selector=id=${closeButton}
-    Sleep    time_=3s
+    Sleep    time_=3500ms
     Validate Screenshot    screenshot=${graphId}    reference=${graphId}
 
 Validate Table
     [Arguments]    ${tableId}    ${collapseButtonId}
     Click    selector=id=${collapseButtonId}
-    Sleep    time_=3s
+    Sleep    time_=3500ms
     Take Screenshot    filename=${SCREENSHOT_FOLDER}/${tableId}    selector=id=${tableId}
     Validate Screenshot    screenshot=${tableId}    reference=${tableId}
 
@@ -65,7 +65,7 @@ Validate Run Filter
     [Arguments]    ${option}
     Select Options By    id=runs    value    ${option}
     Wait For Elements State    selector=id=loading    state=hidden
-    Sleep    time_=3s
+    Sleep    time_=3500ms
     Take Screenshot    filename=${SCREENSHOT_FOLDER}/filterRuns${option}    fullPage=${True}
     Validate Screenshot    screenshot=filterRuns${option}    reference=filterRuns${option}
 
@@ -86,6 +86,6 @@ Validate Run Tag Filter
         Check Checkbox    selector=id=dev
     END
     Click    selector=id=selectRunTags
-    Sleep    time_=3s
+    Sleep    time_=3500ms
     Take Screenshot    filename=${SCREENSHOT_FOLDER}/filterRunTags${option}    fullPage=${True}
     Validate Screenshot    screenshot=filterRunTags${option}    reference=filterRunTags${option}

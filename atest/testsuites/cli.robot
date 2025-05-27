@@ -76,12 +76,6 @@ Validate robotdahboard t
 Validate robotdahboard dashboardtitle
     Validate CLI    command=robotdashboard -d dashboardtitle.db --dashboardtitle "Another very interesting title 91239192"    expected=dashboardtitle
 
-Validate robotdahboard e
-    Validate CLI    command=robotdashboard -d e.db -e false    expected=excludemilliseconds
-
-Validate robotdahboard excludemilliseconds
-    Validate CLI    command=robotdashboard -d excludemilliseconds.db --excludemilliseconds false    expected=excludemilliseconds
-
 Validate robotdahboard c
     Validate CLI    command=robotdashboard -d c.db -c example/database/mysql.py    expected=databaseclass
 
@@ -97,12 +91,6 @@ Validate robotdahboard server
     Skip    msg=Might have to implement process library to run in a separate shell and do more tests
     Validate CLI    command=robotdashboard --outputfolderpath ${OUTPUTS_FOLDER} -g f
     Validate CLI    command=robotdashboard --server default    expected=server
-
-Validate robotdahboard a
-    Validate CLI    command=robotdashboard -d a.db -a true    expected=aliases
-
-Validate robotdahboard aliases
-    Validate CLI    command=robotdashboard -d aliases.db --aliases True    expected=aliases
 
 Validate robotdashboard m
     Validate CLI    command=robotdashboard -d m.db -m ./example/messageconfig.txt    expected=messageconfig
