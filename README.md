@@ -1,5 +1,7 @@
 # Robot Framework Dashboard
 
+Before reading anything else here is a [Full Dashboard](https://timdegroot1996.github.io/robotframework-dashboard/example/robot_dashboard.html) you can checkout right away!
+
 ### Table of Contents
 - [Overview](#Overview)
 - [Installation](#Installation)
