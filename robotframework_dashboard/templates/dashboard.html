@@ -61,7 +61,7 @@
         }
 
         .stat-label {
-            font-size: 0.85rem;
+            font-size: 1rem;
             color: darkgrey;
         }
 
@@ -303,6 +303,14 @@
             font-weight: 600;
         }
 
+        .fullscreen .stat-value {
+            font-size: 4rem;
+        }
+
+        .fullscreen .stat-label {
+            font-size: 2rem;
+        }
+
         .green-text {
             color: rgba(151, 189, 97, 0.9);
         }
@@ -454,23 +462,22 @@
                     <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
                         id="runStatsInformation"></button>
                     <div class="w-100 h-100">
-                        <p class="text-white mb-3">Run Stats</p>
-                        <div class="d-flex flex-column justify-content-between h-75">
+                        <div class="d-flex flex-column justify-content-between h-75 mt-5">
                             <div class="row text-center mb-4">
                                 <div class="col">
-                                    <div class="stat-label">Runs</div>
+                                    <div class="stat-label">Executed Runs</div>
                                     <div class="stat-value blue-text" id="totalRuns">5</div>
                                 </div>
                                 <div class="col">
-                                    <div class="stat-label">Suites</div>
+                                    <div class="stat-label">Executed Suites</div>
                                     <div class="stat-value blue-text" id="totalSuites">53</div>
                                 </div>
                                 <div class="col">
-                                    <div class="stat-label">Tests</div>
+                                    <div class="stat-label">Executed Tests</div>
                                     <div class="stat-value blue-text" id="totalTests">31513</div>
                                 </div>
                                 <div class="col">
-                                    <div class="stat-label">Keywords</div>
+                                    <div class="stat-label">Executed Keywords</div>
                                     <div class="stat-value blue-text" id="totalKeywords">333333</div>
                                 </div>
                             </div>
@@ -494,7 +501,7 @@
                             </div>
                             <div class="row text-center">
                                 <div class="col">
-                                    <div class="stat-label">Run Time</div>
+                                    <div class="stat-label">Total Run Time</div>
                                     <div class="stat-value white-text" id="totalRunTime">34551</div>
                                 </div>
                                 <div class="col">
@@ -1036,7 +1043,7 @@
                                 <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleAliases" />
                             </div>
                         </div>
-                        <div class="row pb-4">
+                        <div class="row">
                             <div class="col-6 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleMilliseconds">Graphs: Show
                                     Milliseconds Run Start Labels</label>
@@ -1044,6 +1051,20 @@
                             <div class="col btn-group form-switch ms-2">
                                 <input class="form-check-input mt-2" type="checkbox" role="switch"
                                     id="toggleMilliseconds" />
+                            </div>
+                        </div>
+                        <div class="row pb-4">
+                            <div class="col-6 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleMaxGraphsPerRow">Graphs: Maximum Graphs
+                                    Per Row</label>
+                            </div>
+                            <div class="col-auto ps-0 mt-1">
+                                <select class="form-select form-select-sm" id="toggleMaxGraphsPerRow">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row border-bottom pt-1">
@@ -1350,7 +1371,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         var showAliases = false; // used to keep track of global alias setting
         var showMilliseconds = false; // used to keep track of global millisecond setting
         var previousFolder = ""; // used to update the suite folder donut to the previous folder with the button
-        var lastScrollY = 0;
+        var lastScrollY = 0; // used to scroll back to where you were previously
+        var maxGraphsPerRow = 2; // used to determine how many graphs to show per row
 
         // add items in hide modal
         const hideSections = [
@@ -2139,6 +2161,26 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             toggle_milliseconds(true) // run once on load to setup correctly
             document.getElementById("toggleMilliseconds").addEventListener("click", function () {
                 toggle_milliseconds(false)
+            });
+
+            // update the max graphs per row limit
+            function toggle_graph_limit(load = false) {
+                var storage = parseInt(JSON.parse(localStorage.getItem("maxGraphsPerRow")));
+                const toggle = document.getElementById("toggleMaxGraphsPerRow")
+                if (load) {
+                    if (storage) { // update from storage if it exists
+                        maxGraphsPerRow = storage
+                    }
+                    toggle.value = maxGraphsPerRow // on first load always set the toggle to the correct value
+                } else { // not first load so the toggle changed, update value and storage accordingly
+                    maxGraphsPerRow = toggle.value
+                }
+                localStorage.setItem("maxGraphsPerRow", JSON.stringify(maxGraphsPerRow));
+                if (!load) { setup_data_and_graphs() }
+            }
+            toggle_graph_limit(true) // run once on load to setup correctly
+            document.getElementById("toggleMaxGraphsPerRow").addEventListener("change", function () {
+                toggle_graph_limit(false)
             });
 
             // update all graphs based on new hidden graphs/sections
@@ -5217,38 +5259,79 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 const graphDataElement = document.getElementById(camelCaseGraph + "Canvas")
                 const canvas = graphDataElement.outerHTML
                 graphDataElement.remove()
+
                 if (sectionDataElement.lastChild == null) {
-                    // there is no data row yet > create a new row
+                    // no row yet
                     if (graph.includes("Table")) {
-                        sectionDataElement.innerHTML = chevronRow.replaceAll("{index}", "1").replace("{title}", graph).replace("collapse-icon", "collapse-icon collapsed")
-                        sectionDataElement.insertAdjacentHTML("beforeend", dataRow.replace("{index}", "1").replace("{canvas}", canvas).replace("collapse show", "collapse"))
+                        sectionDataElement.innerHTML = chevronRow
+                            .replaceAll("{index}", "1")
+                            .replace("{title}", graph)
+                            .replace("collapse-icon", "collapse-icon collapsed")
+                        sectionDataElement.insertAdjacentHTML(
+                            "beforeend",
+                            dataRow
+                                .replace("{index}", "1")
+                                .replace("{canvas}", canvas)
+                                .replace("collapse show", "collapse")
+                        )
                     } else {
-                        sectionDataElement.innerHTML = chevronRow.replaceAll("{index}", "1").replace("{title}", graph)
-                        sectionDataElement.insertAdjacentHTML("beforeend", dataRow.replace("{index}", "1").replace("{canvas}", canvas))
+                        sectionDataElement.innerHTML = chevronRow
+                            .replaceAll("{index}", "1")
+                            .replace("{title}", graph)
+                        sectionDataElement.insertAdjacentHTML(
+                            "beforeend",
+                            dataRow
+                                .replace("{index}", "1")
+                                .replace("{canvas}", canvas))
                     }
                 } else {
-                    const index = parseInt(sectionDataElement.lastChild.id.match(/\d+/)[0], 10) + 1
+                    const lastRow = sectionDataElement.lastChild
+                    const index = parseInt(lastRow.id.match(/\d+/)[0], 10) + 1
+
                     if (graph.includes("Table")) {
-                        // it"s a table which automatically comes on a new row
-                        sectionDataElement.insertAdjacentHTML("beforeend", chevronRow.replaceAll("{index}", `${index}`).replace("{title}", graph).replace("collapse-icon", "collapse-icon collapsed"))
-                        sectionDataElement.insertAdjacentHTML("beforeend", dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas).replace("collapse show", "collapse"))
-                    } else if (sectionDataElement.lastChild.children.length == 1) {
-                        // there is 1 canvas in the data row
-                        if (sectionDataElement.lastChild.children[0].id.includes("Table")) {
-                            // it"s a table > create a new row
-                            sectionDataElement.insertAdjacentHTML("beforeend", chevronRow.replaceAll("{index}", `${index}`).replace("{title}", graph))
-                            sectionDataElement.insertAdjacentHTML("beforeend", dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas))
+                        // tables always start a new row
+                        sectionDataElement.insertAdjacentHTML(
+                            "beforeend",
+                            chevronRow
+                                .replaceAll("{index}", `${index}`)
+                                .replace("{title}", graph)
+                                .replace("collapse-icon", "collapse-icon collapsed")
+                        )
+                        sectionDataElement.insertAdjacentHTML(
+                            "beforeend",
+                            dataRow
+                                .replace("{index}", `${index}`)
+                                .replace("{canvas}", canvas)
+                                .replace("collapse show", "collapse")
+                        )
+                    } else if (lastRow.children.length < maxGraphsPerRow) {
+                        const isTableRow = [...lastRow.children].some(child => child.id && child.id.includes("Table"))
+                        if (isTableRow) {
+                            // current row is a table row, start new row
+                            sectionDataElement.insertAdjacentHTML(
+                                "beforeend",
+                                chevronRow.replaceAll("{index}", `${index}`).replace("{title}", graph)
+                            )
+                            sectionDataElement.insertAdjacentHTML(
+                                "beforeend",
+                                dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas)
+                            )
                         } else {
-                            // it"s a graph > add it to the row
-                            sectionDataElement.lastChild.insertAdjacentHTML("beforeend", canvas)
+                            // add to current row
+                            lastRow.insertAdjacentHTML("beforeend", canvas)
                             const titleElement = sectionDataElement.children[sectionDataElement.children.length - 2].querySelector(".sectionTitle")
-                            const oldTitle = titleElement.innerText
-                            titleElement.innerText = oldTitle + ` & ${graph}`
+                            titleElement.innerText += ` & ${graph}`
                         }
-                    } else if (sectionDataElement.lastChild.children.length == 2) {
-                        // there are 2 canvasses in the data row > create a new row
-                        sectionDataElement.insertAdjacentHTML("beforeend", chevronRow.replaceAll("{index}", `${index}`).replace("{title}", graph))
-                        sectionDataElement.insertAdjacentHTML("beforeend", dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas))
+                    } else {
+                        // max reached so new row
+                        sectionDataElement.insertAdjacentHTML(
+                            "beforeend",
+                            chevronRow.replaceAll("{index}", `${index}`).replace("{title}", graph)
+                        )
+                        sectionDataElement.insertAdjacentHTML(
+                            "beforeend",
+                            dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas)
+                        )
                     }
                 }
             }
