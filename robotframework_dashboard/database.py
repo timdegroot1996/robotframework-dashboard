@@ -1,9 +1,10 @@
 import sqlite3
 from pathlib import Path
 from .queries import *
+from .abstract_db import AbstractDatabaseProcessor
 
 
-class DatabaseProcessor:
+class DatabaseProcessor(AbstractDatabaseProcessor):
     def __init__(self, database_path: Path):
         """This function should handle the connection to the database
         And if required the creation of the tables"""

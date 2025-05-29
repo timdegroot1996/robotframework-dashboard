@@ -1,5 +1,6 @@
 import sqlite3
 from pathlib import Path
+from robotframework_dashboard.abstract_db import AbstractDatabaseProcessor
 
 CREATE_RUNS = """ CREATE TABLE IF NOT EXISTS runs ("run_start" TEXT, "full_name" TEXT, "name" TEXT, "total" INTEGER, "passed" INTEGER, "failed" INTEGER, "skipped" INTEGER, "elapsed_s" TEXT, "start_time" TEXT, "tags" TEXT, "run_alias" TEXT, unique(run_start, full_name)); """
 CREATE_SUITES = """ CREATE TABLE IF NOT EXISTS suites ("run_start" TEXT, "full_name" TEXT, "name" TEXT, "total" INTEGER, "passed" INTEGER, "failed" INTEGER, "skipped" INTEGER, "elapsed_s" TEXT, "start_time" TEXT, "run_alias" TEXT); """
@@ -32,7 +33,7 @@ DELETE_FROM_TESTS = """ DELETE FROM tests WHERE run_start="{run_start}" """
 DELETE_FROM_KEYWORDS = """ DELETE FROM keywords WHERE run_start="{run_start}" """
 
 
-class DatabaseProcessor:
+class DatabaseProcessor(AbstractDatabaseProcessor):
     def __init__(self, database_path: Path):
         """This function should handle the connection to the database
         And if required the creation of the tables"""
@@ -232,3 +233,6 @@ class DatabaseProcessor:
             DELETE_FROM_KEYWORDS.format(run_start=run_start)
         )
         self.connection.commit()
+
+    def update_output_path(self, log_path):
+        return super().update_output_path(log_path)

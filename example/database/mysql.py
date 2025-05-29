@@ -1,5 +1,6 @@
 import mysql.connector
 from pathlib import Path
+from robotframework_dashboard.abstract_db import AbstractDatabaseProcessor
 
 # Some helper queries I used to create the initial database and tables directly in MySQL
 # If you want another way of storing the data feel free to make your own tables and queries!
@@ -74,7 +75,7 @@ KEYWORD_KEYS = [
 ]
 
 
-class DatabaseProcessor:
+class DatabaseProcessor(AbstractDatabaseProcessor):
     def __init__(self, database_path: Path):
         """This function should handle the creation of the tables if required
         The use of the database_path variable might not be required but you should still keep it as an argument!
@@ -218,3 +219,6 @@ class DatabaseProcessor:
             DELETE_FROM_KEYWORDS.format(run_start=run_start)
         )
         self.connection.commit()
+
+    def update_output_path(self, log_path) -> None:
+        return super().update_output_path(log_path)
