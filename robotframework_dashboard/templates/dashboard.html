@@ -1,4 +1,4 @@
-<html data-bs-theme="dark" class="dark-mode">
+<html data-bs-theme="dark" class="dark-mode w-100">
 
 <head>
     <title>"placeholder_dashboard_title"</title>
@@ -57,6 +57,15 @@
 
         .information[data-title]::after {
             background-color: white;
+            color: black;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: darkgrey;
+        }
+
+        .white-text {
             color: black;
         }
 
@@ -119,6 +128,15 @@
             color: #eee;
         }
 
+        .dark-mode .stat-label {
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+
+        .dark-mode .white-text {
+            color: #eee;
+        }
+
         /* GENERAL STYLING */
         :root {
             font-family: Helvetica, sans-serif;
@@ -150,12 +168,11 @@
             border: 1px solid #1e293b;
             z-index: 9999;
             visibility: hidden;
-            max-width: 400px;
-            min-width: 150px;
+            max-width: min(90vw, 400px);
             width: max-content;
-            max-width: 90vw;
-            word-wrap: break-word;
+            overflow-wrap: break-word;
             text-align: left;
+            box-sizing: border-box;
         }
 
         .information[data-title] {
@@ -164,6 +181,7 @@
         }
 
         .canvas {
+            min-width: 400px;
             width: 700px;
             height: 540px;
             text-align: center;
@@ -278,6 +296,27 @@
             margin: 5px 2px 0px 2px;
             padding: 3px 1px 2px 1px;
             height: 16px !important;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .green-text {
+            color: rgba(151, 189, 97, 0.9);
+        }
+
+        .red-text {
+            color: rgba(206, 62, 1, 0.9);
+        }
+
+        .yellow-text {
+            color: rgba(254, 216, 79, 0.9);
+        }
+
+        .blue-text {
+            color: dodgerblue;
         }
     </style>
 </head>
@@ -407,6 +446,73 @@
                         </div>
                     </div>
                 </div>
+                <!-- Run Stats -->
+                <div class="col canvas pb-5" id="runStatsCanvas">
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatsGraphStats">Stats</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatsFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatsClose" hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="runStatsInformation"></button>
+                    <div class="w-100 h-100">
+                        <p class="text-white mb-3">Run Stats</p>
+                        <div class="d-flex flex-column justify-content-between h-75">
+                            <div class="row text-center mb-4">
+                                <div class="col">
+                                    <div class="stat-label">Runs</div>
+                                    <div class="stat-value blue-text" id="totalRuns">5</div>
+                                </div>
+                                <div class="col">
+                                    <div class="stat-label">Suites</div>
+                                    <div class="stat-value blue-text" id="totalSuites">53</div>
+                                </div>
+                                <div class="col">
+                                    <div class="stat-label">Tests</div>
+                                    <div class="stat-value blue-text" id="totalTests">31513</div>
+                                </div>
+                                <div class="col">
+                                    <div class="stat-label">Keywords</div>
+                                    <div class="stat-value blue-text" id="totalKeywords">333333</div>
+                                </div>
+                            </div>
+                            <div class="row text-center mb-4">
+                                <div class="col">
+                                    <div class="stat-label">Unique Tests</div>
+                                    <div class="stat-value white-text" id="totalUniqueTests">355</div>
+                                </div>
+                                <div class="col">
+                                    <div class="stat-label">Passed</div>
+                                    <div class="stat-value green-text" id="totalPassed">1111</div>
+                                </div>
+                                <div class="col">
+                                    <div class="stat-label">Failed</div>
+                                    <div class="stat-value red-text" id="totalFailed">1343143</div>
+                                </div>
+                                <div class="col">
+                                    <div class="stat-label">Skipped</div>
+                                    <div class="stat-value yellow-text" id="totalSkipped">431</div>
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col">
+                                    <div class="stat-label">Run Time</div>
+                                    <div class="stat-value white-text" id="totalRunTime">34551</div>
+                                </div>
+                                <div class="col">
+                                    <div class="stat-label">Avg Run Time</div>
+                                    <div class="stat-value white-text" id="averageRunTime">14134</div>
+                                </div>
+                                <div class="col">
+                                    <div class="stat-label">Avg Test Time</div>
+                                    <div class="stat-value white-text" id="averageTestTime">134</div>
+                                </div>
+                                <div class="col">
+                                    <div class="stat-label">Avg Run Pass Rate</div>
+                                    <div class="stat-value green-text" id="averagePassRate">111</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Run Duration -->
                 <div class="col canvas pb-5" id="runDurationCanvas">
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDurationGraphBar">Bar
@@ -462,7 +568,8 @@
                     </div>
                     <div class="col-auto">
                         <div class="btn-group ms-1">
-                            <label class="form-check-label mt-2" for="useSuitePathsSuiteSection">Use Suite Paths</label>
+                            <label class="form-check-label mt-2" for="useSuitePathsSuiteSection">Use Suite
+                                Paths</label>
                         </div>
                         <div class="btn-group form-switch ms-1">
                             <input class="form-check-input mt-2" type="checkbox" role="switch"
@@ -574,7 +681,8 @@
                     </div>
                     <div class="col-auto">
                         <div class="btn-group ms-1">
-                            <label class="form-check-label mt-2" for="useSuitePathsTestSection">Use Suite Paths</label>
+                            <label class="form-check-label mt-2" for="useSuitePathsTestSection">Use Suite
+                                Paths</label>
                         </div>
                         <div class="btn-group form-switch ms-1">
                             <input class="form-check-input mt-2" type="checkbox" role="switch"
@@ -902,7 +1010,8 @@
                         </div>
                         <div class="row">
                             <div class="col-6 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleLegends">Graphs: Show Legends</label>
+                                <label class="form-check-label mt-1" for="toggleLegends">Graphs: Show
+                                    Legends</label>
                             </div>
                             <div class="col btn-group form-switch ms-2">
                                 <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleLegends" />
@@ -1016,6 +1125,8 @@
             runDonutInformation: `This graph contains two donut charts:
 - The first donut displays the total percentage of passed, failed, and skipped tests across all runs.
 - The second donut displays the same breakdown, but only for the most recent run.`,
+
+            runStatsInformation: `This canvas shows some stats.`,
 
             runDurationInformation: `This graph visualizes the duration of each run:
 - Bar: Displays total run durations represented as vertical bars.
@@ -1251,6 +1362,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         const hideGraphs = [
             "Run Statistics",
             "Run Donut",
+            "Run Stats",
             "Run Duration",
             "Run Table",
             "Suite Folder Donut",
@@ -1742,6 +1854,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 runStatisticsGraphType: "percentages",
                 runDonutGraphType: "donut",
                 runDonutTotalGraphType: "donut",
+                runStatsGraphType: "stats",
                 runDurationGraphType: "line",
                 suiteFolderDonutGraphType: "donut",
                 suiteStatisticsGraphType: "percentages",
@@ -1807,7 +1920,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to change which button is highlighted styling wise
         function update_button_selection(camelButtonName, graphType) {
-            const buttons = ["Bar", "Line", "Timeline", "Percentages", "Amount", "Donut"]; // All possible button types
+            const buttons = ["Bar", "Line", "Timeline", "Percentages", "Amount", "Donut", "Stats"]; // All possible button types
             buttons.forEach(button => {
                 const buttonId = `${camelButtonName}Graph${button}`;
                 if (document.getElementById(buttonId)) {
@@ -2069,7 +2182,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             });
 
             // eventlisteners for fullscreen buttons
-            const fullscreenButtons = ["runStatistics", "runDonut", "runDuration", "suiteFolderDonut", "suiteStatistics",
+            const fullscreenButtons = ["runStatistics", "runDonut", "runStats", "runDuration", "suiteFolderDonut", "suiteStatistics",
                 "suiteDuration", "suiteMostFailed", "testStatistics", "testDuration", "testDurationDeviation",
                 "testMessages", "testMostFlaky", "testRecentMostFlaky", "testMostFailed", "testRecentMostFailed",
                 "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
@@ -2129,6 +2242,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const graphChangeButtons = {
                 "run_statistics": "Percentages,Line,Amount",
                 "run_donut": "Donut",
+                "run_stats": "Stats",
                 "run_duration": "Bar,Line",
                 "suite_donut_folder": "Donut",
                 "suite_statistics": "Percentages,Line,Amount",
@@ -2603,6 +2717,23 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config = get_graph_config("donut", graphData, `Total Status`);
             delete config.options.onClick;
             runDonutTotalGraph = new Chart("runDonutTotalGraph", config);
+        }
+
+        // function to create the run stats section in the run section
+        function create_run_stats_graph() {
+            const data = get_stats_data(filteredRuns, filteredSuites, filteredTests, filteredKeywords);
+            document.getElementById('totalRuns').innerText = data.totalRuns
+            document.getElementById('totalSuites').innerText = data.totalSuites
+            document.getElementById('totalTests').innerText = data.totalTests
+            document.getElementById('totalKeywords').innerText = data.totalKeywords
+            document.getElementById('totalUniqueTests').innerText = data.totalUniqueTests
+            document.getElementById('totalPassed').innerText = data.totalPassed
+            document.getElementById('totalFailed').innerText = data.totalFailed
+            document.getElementById('totalSkipped').innerText = data.totalSkipped
+            document.getElementById('totalRunTime').innerText = data.totalRunTime
+            document.getElementById('averageRunTime').innerText = data.averageRunTime
+            document.getElementById('averageTestTime').innerText = data.averageTestTime
+            document.getElementById('averagePassRate').innerText = data.averagePassRate
         }
 
         // function to create run duration graph in the run section
@@ -4454,6 +4585,46 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             }
         }
 
+        // function to prepare the data for the run stats canvas
+        function get_stats_data(filteredRuns, filteredSuites, filteredTests, filteredKeywords) {
+            const data = {
+                totalRuns: Object.keys(filteredRuns).length,
+                totalSuites: Object.keys(filteredSuites).length,
+                totalTests: Object.keys(filteredTests).length,
+                totalKeywords: filteredKeywords.reduce((sum, k) => sum + parseInt(k.times_run), 0),
+            };
+            const testStats = {
+                total: 0,
+                passed: 0,
+                failed: 0,
+                skipped: 0,
+                duration: 0,
+                names: new Set(),
+            };
+            for (const test of filteredTests) {
+                testStats.total++;
+                testStats.names.add(test.name);
+                if (test.passed == 1) testStats.passed++;
+                if (test.failed == 1) testStats.failed++;
+                if (test.skipped == 1) testStats.skipped++;
+                testStats.duration += parseFloat(test.elapsed_s);
+            }
+            data.totalUniqueTests = testStats.names.size;
+            data.totalPassed = `${testStats.passed} (${Math.round(testStats.passed / testStats.total * 100)}%)`;
+            data.totalFailed = `${testStats.failed} (${Math.round(testStats.failed / testStats.total * 100)}%)`;
+            data.totalSkipped = `${testStats.skipped} (${Math.round(testStats.skipped / testStats.total * 100)}%)`;
+            let totalRunDuration = 0;
+            const passRates = filteredRuns.map(run => {
+                totalRunDuration += parseFloat(run.elapsed_s);
+                return Math.round((run.passed / run.total) * 100);
+            });
+            data.totalRunTime = `${Math.round(totalRunDuration)} (s)`;
+            data.averageRunTime = `${Math.round(totalRunDuration / data.totalRuns)} (s)`;
+            data.averageTestTime = `${Math.round(testStats.duration / testStats.total * 100) / 100} (s)`;
+            data.averagePassRate = `${Math.round(passRates.reduce((a, b) => a + b, 0) / passRates.length)}%`;
+            return data;
+        }
+
         // function to prepare the data in the correct format for the duration deviation graph
         function get_duration_deviation_data(dataType, graphType, filteredData) {
             const suiteSelectTests = document.getElementById("suiteSelectTests").value;
@@ -4953,6 +5124,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             create_run_statistics_graph();
             create_run_donut_graph();
             create_run_donut_total_graph();
+            create_run_stats_graph();
             create_run_duration_graph();
             create_run_table();
             create_suite_statistics_graph();
