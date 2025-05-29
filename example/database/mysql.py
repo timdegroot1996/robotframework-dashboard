@@ -1,19 +1,19 @@
 import mysql.connector
 from pathlib import Path
-from robotframework_dashboard.abstract_db import AbstractDatabaseProcessor
+from robotframework_dashboard.abstractdb import AbstractDatabaseProcessor
 
 # Some helper queries I used to create the initial database and tables directly in MySQL
 # If you want another way of storing the data feel free to make your own tables and queries!
 
-CREATE_RUNS = """ CREATE TABLE runs (`run_start` VARCHAR(26) UNIQUE, `full_name` text, `name` text, `total` int, `passed` int, `failed` int, `skipped` int, `elapsed_s` text, `start_time` text, `tags` text, `run_alias` text) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; """
-CREATE_SUITES = """ CREATE TABLE suites (`run_start` text, `full_name` text, `name` text, `total` int, `passed` int, `failed` int, `skipped` int, `elapsed_s` text, `start_time` text) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; """
-CREATE_TESTS = """ CREATE TABLE tests (`run_start` text, `full_name` text, `name` text, `passed` int, `failed` int, `skipped` int, `elapsed_s` text, `start_time` text, `message` text, `tags` text) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; """
-CREATE_KEYWORDS = """ CREATE TABLE keywords (`run_start` text, `name` text, `passed` int, `failed` int, `skipped` int, `times_run` text, `total_time_s` text, `average_time_s` text, `min_time_s` text, `max_time_s` text) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; """
+CREATE_RUNS = """ CREATE TABLE runs (`run_start` VARCHAR(26) UNIQUE, `full_name` text, `name` text, `total` int, `passed` int, `failed` int, `skipped` int, `elapsed_s` text, `start_time` text, `tags` text, `run_alias` text, `path` text) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; """
+CREATE_SUITES = """ CREATE TABLE suites (`run_start` text, `full_name` text, `name` text, `total` int, `passed` int, `failed` int, `skipped` int, `elapsed_s` text, `start_time` text, `run_alias` text, `id` text) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; """
+CREATE_TESTS = """ CREATE TABLE tests (`run_start` text, `full_name` text, `name` text, `passed` int, `failed` int, `skipped` int, `elapsed_s` text, `start_time` text, `message` text, `tags` text, `run_alias` text, `id` text) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; """
+CREATE_KEYWORDS = """ CREATE TABLE keywords (`run_start` text, `name` text, `passed` int, `failed` int, `skipped` int, `times_run` text, `total_time_s` text, `average_time_s` text, `min_time_s` text, `max_time_s` text, `run_alias` text) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; """
 
-INSERT_INTO_RUNS = """ INSERT INTO runs (run_start, full_name, name, total, passed, failed, skipped, elapsed_s, start_time, tags, run_alias) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) """
-INSERT_INTO_SUITES = """ INSERT INTO suites (run_start, full_name, name, total, passed, failed, skipped, elapsed_s, start_time) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) """
-INSERT_INTO_TESTS = """ INSERT INTO tests (run_start, full_name, name, passed, failed, skipped, elapsed_s, start_time, message, tags) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) """
-INSERT_INTO_KEYWORDS = """ INSERT INTO keywords (run_start, name, passed, failed, skipped, times_run, total_time_s, average_time_s, min_time_s, max_time_s) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) """
+INSERT_INTO_RUNS = """ INSERT INTO runs (run_start, full_name, name, total, passed, failed, skipped, elapsed_s, start_time, tags, run_alias, path) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) """
+INSERT_INTO_SUITES = """ INSERT INTO suites (run_start, full_name, name, total, passed, failed, skipped, elapsed_s, start_time, run_alias, id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) """
+INSERT_INTO_TESTS = """ INSERT INTO tests (run_start, full_name, name, passed, failed, skipped, elapsed_s, start_time, message, tags, run_alias, id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) """
+INSERT_INTO_KEYWORDS = """ INSERT INTO keywords (run_start, name, passed, failed, skipped, times_run, total_time_s, average_time_s, min_time_s, max_time_s, run_alias) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) """
 
 SELECT_FROM_RUNS = """ SELECT * FROM runs """
 SELECT_RUN_DATA = """ SELECT name, run_start, run_alias, tags FROM runs """
@@ -37,6 +37,8 @@ RUN_KEYS = [
     "elapsed_s",
     "start_time",
     "tags",
+    "run_alias",
+    "path",
 ]
 SUITE_KEYS = [
     "run_start",
@@ -48,6 +50,8 @@ SUITE_KEYS = [
     "skipped",
     "elapsed_s",
     "start_time",
+    "run_alias",
+    "id",
 ]
 TEST_KEYS = [
     "run_start",
@@ -60,6 +64,8 @@ TEST_KEYS = [
     "start_time",
     "message",
     "tags",
+    "run_alias",
+    "id",
 ]
 KEYWORD_KEYS = [
     "run_start",
@@ -72,6 +78,7 @@ KEYWORD_KEYS = [
     "average_time_s",
     "min_time_s",
     "max_time_s",
+    "run_alias",
 ]
 
 
@@ -97,41 +104,58 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         self.connection.disconnect()
         self.connection.close()
 
-    def insert_output_data(self, output_data: dict, tags: list, run_alias: str):
+    def insert_output_data(self, output_data: dict, tags: list, run_alias: str, path: Path):
         """This function inserts the data of an output file into the database"""
         try:
-            self._insert_runs(output_data["runs"], tags, run_alias)
-            self._insert_suites(output_data["suites"])
-            self._insert_tests(output_data["tests"])
-            self._insert_keywords(output_data["keywords"])
+            self._insert_runs(output_data["runs"], tags, run_alias, path)
+            self._insert_suites(output_data["suites"], run_alias)
+            self._insert_tests(output_data["tests"], run_alias)
+            self._insert_keywords(output_data["keywords"], run_alias)
         except Exception as error:
             print(
                 f"   ERROR: you are probably trying to add the same output again, {error}"
             )
 
-    def _insert_runs(self, runs: list, tags: list, run_alias: str):
+    def _insert_runs(self, runs: list, tags: list, run_alias: str, path: Path):
         """Helper function to insert the run data with the run tags"""
         full_runs = []
         for run in runs:
             run += (",".join(tags),)
             run += (run_alias,)
+            run += (str(path),)
             full_runs.append(run)
         self.connection.cursor().executemany(INSERT_INTO_RUNS, full_runs)
         self.connection.commit()
 
-    def _insert_suites(self, suites: list):
+    def _insert_suites(self, suites: list, run_alias: str):
         """Helper function to insert the suite data"""
-        self.connection.cursor().executemany(INSERT_INTO_SUITES, suites)
+        full_suites = []
+        for suite in suites:
+            suite = list(suite)
+            suite.insert(9, run_alias)
+            suite = tuple(suite)
+            full_suites.append(suite)
+        self.connection.cursor().executemany(INSERT_INTO_SUITES, full_suites)
         self.connection.commit()
 
-    def _insert_tests(self, tests: list):
+    def _insert_tests(self, tests: list, run_alias: str):
         """Helper function to insert the test data"""
-        self.connection.cursor().executemany(INSERT_INTO_TESTS, tests)
+        full_tests = []
+        for test in tests:
+            test = list(test)
+            test.insert(10, run_alias)
+            test = tuple(test)
+            full_tests.append(test)
+        self.connection.cursor().executemany(INSERT_INTO_TESTS, full_tests)
         self.connection.commit()
 
-    def _insert_keywords(self, keywords: list):
+    def _insert_keywords(self, keywords: list, run_alias: str):
         """Helper function to insert the keyword data"""
-        self.connection.cursor().executemany(INSERT_INTO_KEYWORDS, keywords)
+        full_keywords = []
+        for keyword in keywords:
+            keyword += (run_alias,)
+            full_keywords.append(keyword)
+        self.connection.cursor().executemany(INSERT_INTO_KEYWORDS, full_keywords)
         self.connection.commit()
 
     def get_data(self):
@@ -196,19 +220,19 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
     def remove_runs(self, remove_runs):
         """This function removes all provided runs and all their corresponding data"""
         run_starts, run_names, run_aliases, run_tags = self._get_runs()
+        console = ""
         for run in remove_runs:
-            run = run[0]
-            if run in run_starts:
-                self._remove_run(run)
+            if not 'run_start=' in run:
+                raise Exception(f"  ERROR: only run_start= has been implemented: {run}")
+            run_start = run.split('=')[1]
+            if run_start in run_starts:
+                self._remove_run(run_start)
                 print(f"  Removed run from the database: {run}")
+                console = f"  Removed run from the database: {run}"
             else:
-                try:
-                    run_index = int(run)
-                    run_start = run_starts[run_index]
-                    self._remove_run(run_start)
-                    print(f"  Removed run from the database: {run_start}")
-                except:
-                    print(f"  ERROR: Could not find run to remove the database: {run}")
+                print(f"  ERROR: Could not find run to remove the database, {run}")
+                console = f"  ERROR: Could not find run to remove the database, {run}"
+        return console
 
     def _remove_run(self, run_start):
         """Helper function to remove the data from all tables"""
@@ -219,6 +243,3 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
             DELETE_FROM_KEYWORDS.format(run_start=run_start)
         )
         self.connection.commit()
-
-    def update_output_path(self, log_path) -> None:
-        return super().update_output_path(log_path)

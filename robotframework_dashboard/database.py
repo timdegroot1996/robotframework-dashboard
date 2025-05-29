@@ -1,7 +1,7 @@
 import sqlite3
 from pathlib import Path
 from .queries import *
-from .abstract_db import AbstractDatabaseProcessor
+from .abstractdb import AbstractDatabaseProcessor
 
 
 class DatabaseProcessor(AbstractDatabaseProcessor):
@@ -209,7 +209,7 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         data["keywords"] = keywords
         return data
 
-    def _dict_from_row(self, row):
+    def _dict_from_row(self, row: sqlite3.Row):
         """Helper function create a dictionary object"""
         return dict(zip(row.keys(), row))
 
@@ -235,7 +235,7 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         if len(run_starts) == 0:
             print(f"  WARNING: There are no runs so the dashboard will be empty!")
 
-    def remove_runs(self, remove_runs):
+    def remove_runs(self, remove_runs: list):
         """This function removes all provided runs and all their corresponding data"""
         run_starts, run_names, run_aliases, run_tags = self._get_runs()
         console = ""
@@ -305,7 +305,7 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
                 )
         return console
 
-    def _remove_run(self, run_start):
+    def _remove_run(self, run_start: str):
         """Helper function to remove the data from all tables"""
         self.connection.cursor().execute(DELETE_FROM_RUNS.format(run_start=run_start))
         self.connection.cursor().execute(DELETE_FROM_SUITES.format(run_start=run_start))
@@ -315,7 +315,7 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         )
         self.connection.commit()
 
-    def update_output_path(self, log_path):
+    def update_output_path(self, log_path: str):
         """Function to update the output_path using the log path that the server has used"""
         console = ""
         log_name = log_path[11:]

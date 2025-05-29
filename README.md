@@ -247,24 +247,33 @@ See the [Example Folder](./example/database) for some examples of custom databas
 
 ### Available examples
 Currently available database type examples:
-- [template.py](./example/database/template.py) (only requirements are in the template file)
+- [abstractdb.py](./example/database/abstractdb.py) (the abstract class that can be extended to help create a custom databaseclass)
 - [sqlite3.py](./example/database/sqlite3.py) (for a sqlite3 database connection, this configuration is used by default in robotdashboard)
 - [mysql.py](./example/database/mysql.py) (for a mysql database connection)
+
+Basic implementation by using the abstract class:
+```
+from robotframework_dashboard.abstractdb import AbstractDatabaseProcessor
+
+class DatabaseProcessor(AbstractDatabaseProcessor):
+    # your implemntation of the abstract methods in AbstractDatabaseProcessor
+```
 
 If you have made an implementation that is not yet an example please feel free to add it through a pull request or submit it in an issue. This way you can help other people implement their own solutions!!
 
 ### Custom Class Requirements
 - File: The filename can be anything as long as it is a **python file**
-- Class: The you should name the **class DatabaseProcessor**
+- Class: You should name the **class DatabaseProcessor**
 - Methods: 
     - **\_\_init\_\_(self, database_path: Path):**, should handle creation of the database and tables if necessary
     - **open_database(self):**, should open the database connection and set it like self.connection
     - **close_database(self):**, should close the database connection
-    - **insert_output_data(self, output_data: dict, tags: list):**, should be able to handle the output_data dict and the run tags that are provided. Look at the example implementations for the content of output_data and tags.
+    - **insert_output_data(self, output_data: dict, tags: list, run_alias: str, path: Path):**, should be able to handle the output_data dict and the run tags that are provided. Look at the example implementations for the content of output_data, tags, run_alias and path.
     - **get_data(self):**, should retrieve all data (runs/suites/tests/keywords) from all tables in the form of a dictionary containing the 4 data types. In which each data type is a list of dicts with entries. Example:
     {'runs': [{"run_start": "2024-10-13 22:33:19", "full_name": "Robotframework-Dashboard", "name": "Robotframework-Dashboard", "total": 6, "passed": 4, "failed": 1, "skipped": 1, "elapsed_s": "6.313", "start_time": "2024-10-13 22:33:19.673821", "tags": ""}, {"run_start"...}]}
-    - **list_runs(self):**, should print out the runs in the database with useful identiefiers. This function can be empty as long as it exists. It is purely for the command line overview.
-    - **remove_runs(self, remove_runs):**, should be able to handle either indexes to be removed, or run_starts that are provided which can then be used to delete the data in the database.
+    - **list_runs(self):**, should print out the runs in the database with useful identifiers. This function must be implemented but can be empty if you don't need it. It is purely for the command line overview.
+    - **remove_runs(self, remove_runs: list):**, remove_runs can contain all of the following: index, run_start, alias or tag, in a list where they are provided like so: ['run_start=...', 'index=1', etc.] make sure your remove_runs function handles this correctly.
+    - **OPTIONAL: update_output_path(self, log_path: str):**, this function is optional and only required when running the server and using the uselogs functionality, in which you have to store the log.html's on the server. If you don't need it you can skip this function.
 - Do not use relative imports! This will not work on runtime!
 
 <a name="Dashboard-Server"></a>
