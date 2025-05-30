@@ -161,14 +161,13 @@
             padding: 8px 12px;
             border-radius: 8px;
             top: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%);
+            right: -90px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             opacity: 0;
             border: 1px solid #1e293b;
             z-index: 9999;
             visibility: hidden;
-            max-width: min(90vw, 400px);
+            max-width: min(90vw, 360px);
             width: max-content;
             overflow-wrap: break-word;
             text-align: left;
@@ -389,6 +388,16 @@
                                 data-bs-target="#hideModal" id="customizeView">
                                 Settings
                             </button>
+                        </div>
+                        <div class="col-auto btn-group" role="group" id="sectionIndicator">
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto"
+                                data-target="runStatisticsSection">Runs</button>
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto"
+                                data-target="suiteStatisticsSection">Suites</button>
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto"
+                                data-target="testStatisticsSection">Tests</button>
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto"
+                                data-target="keywordStatisticsSection">Keywords</button>
                         </div>
                         <div class="col-auto mt-auto">
                             <a href="/">
@@ -1599,6 +1608,75 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             }
         }
 
+        // function to update the section (menu) buttons with the correct eventlisteners
+        // also sets up the automatic highlighting of the section that is most visible in the top
+        // 20-50% percent of the screen
+        function setup_section_buttons() {
+            const sectionButtons = document.querySelectorAll("#sectionIndicator .btn");
+            const sectionMap = {
+                runStatisticsSection: sectionButtons[0],
+                suiteStatisticsSection: sectionButtons[1],
+                testStatisticsSection: sectionButtons[2],
+                keywordStatisticsSection: sectionButtons[3]
+            };
+
+            const sections = Object.keys(sectionMap).map(id => document.getElementById(id));
+            function update_active_section() {
+                const viewportHeight = window.innerHeight;
+                const viewportTop = viewportHeight * 0.2;
+                const viewportBottom = viewportHeight * 0.5;
+                let bestMatch = null;
+                let bestMatchAmount = 0;
+                sections.forEach(section => {
+                    if (!section) return; // safety check
+                    const rect = section.getBoundingClientRect();
+                    // Calculate overlap in the 20%-50% viewport vertical range
+                    const top = Math.max(rect.top, viewportTop);
+                    const bottom = Math.min(rect.bottom, viewportBottom);
+                    const overlap = bottom - top;
+                    if (overlap > bestMatchAmount) {
+                        bestMatch = section;
+                        bestMatchAmount = overlap;
+                    }
+                });
+
+                // Highlight the matching button
+                sectionButtons.forEach(btn => btn.classList.remove("active"));
+                if (bestMatch && sectionMap[bestMatch.id]) {
+                    sectionMap[bestMatch.id].classList.add("active");
+                }
+            }
+
+            window.addEventListener("scroll", update_active_section);
+            // Initial call to set active on load
+            update_active_section();
+
+            sectionButtons.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    if (btn.innerText === "Runs") {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: "smooth"
+                        });
+                    } else {
+                        const target = document.getElementById(btn.dataset.target);
+                        if (target) {
+                            const stickyTop = document.getElementById("filterSection");
+                            const stickyHeight = stickyTop ? stickyTop.offsetHeight : 0;
+
+                            const targetTop = target.getBoundingClientRect().top + window.pageYOffset;
+
+                            window.scrollTo({
+                                top: targetTop - stickyHeight - 8,
+                                behavior: "smooth"
+                            });
+                        }
+                    }
+                });
+            });
+        }
+
+        // function to fill the information icons with the correct data
         function setup_information_icons() {
             const informationButtons = document.querySelectorAll(".information")
             for (let button of informationButtons) {
@@ -2361,6 +2439,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 create_suite_duration_graph();
                 create_suite_most_failed_graph();
             });
+            // update the local storage for the suite path buttons on first load
+            update_switch_local_storage("useSuitePathsSuiteSection", useSuitePathsSuiteSection, true);
             document.getElementById("resetSuiteFolder").addEventListener("click", (e) => {
                 create_suite_folder_donut_graph("");
             });
@@ -2384,6 +2464,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 create_test_most_failed_graph();
                 create_test_recent_most_failed_graph();
             });
+            // update the local storage for the suite path buttons on first load
+            update_switch_local_storage("useSuitePathsTestSection", useSuitePathsTestSection, true);
             document.getElementById("testTagsSelect").addEventListener("change", (e) => {
                 setup_tests_in_select();
                 create_test_statistics_graph();
@@ -5114,6 +5196,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 setup_section_order();
                 setup_graph_order();
                 setup_collapsables();
+                setup_section_buttons();
                 setup_eventlisteners_graph_view_buttons();
                 setup_eventlisteners_filter_buttons();
 
@@ -5370,8 +5453,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             setup_customize_view_local_storage();
             setup_customize_view_content();
             update_customize_view_local_storage();
-            update_switch_local_storage("useSuitePathsSuiteSection", useSuitePathsSuiteSection, true);
-            update_switch_local_storage("useSuitePathsTestSection", useSuitePathsTestSection, true);
             setup_eventlisteners_section_filter_buttons();
             setup_run_amount_filter();
             setup_lowest_highest_dates();
