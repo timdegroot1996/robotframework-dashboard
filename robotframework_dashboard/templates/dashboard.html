@@ -147,6 +147,10 @@
             margin-bottom: 0rem;
         }
 
+        body.lock-scroll {
+            overflow: hidden;
+        }
+
         .information[data-title]:hover::after {
             opacity: 1;
             visibility: visible;
@@ -437,7 +441,7 @@
                 <!-- Run Statistics -->
                 <div class="col canvas pb-5" id="runStatisticsCanvas">
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="runStatisticsGraphPercentages">Percentages</button>
+                        id="runStatisticsGraphPercentages">Percentage</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatisticsGraphAmount">Amount</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatisticsGraphLine">Timeline</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
@@ -531,10 +535,8 @@
                 </div>
                 <!-- Run Duration -->
                 <div class="col canvas pb-5" id="runDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDurationGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDurationGraphLine">Line
-                        View</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDurationGraphBar">Bar</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDurationGraphLine">Line</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="runDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDurationClose" hidden>Close</button>
@@ -626,7 +628,7 @@
                 <!-- Suite Statistics -->
                 <div class="col canvas pb-5" id="suiteStatisticsCanvas">
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="suiteStatisticsGraphPercentages">Percentages</button>
+                        id="suiteStatisticsGraphPercentages">Percentage</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="suiteStatisticsGraphAmount">Amount</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
@@ -641,10 +643,8 @@
                 </div>
                 <!-- Suite Duration -->
                 <div class="col canvas pb-5" id="suiteDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteDurationGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteDurationGraphLine">Line
-                        View</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteDurationGraphBar">Bar</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteDurationGraphLine">Line</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="suiteDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteDurationClose" hidden>Close</button>
@@ -655,11 +655,9 @@
                 <!-- Suite Most Failed -->
                 <div class="col canvas pb-5" id="suiteMostFailedCanvas">
                     <div id="suiteMostFailedVertical">
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteMostFailedGraphBar">Bar
-                            View</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteMostFailedGraphBar">Bar</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="suiteMostFailedGraphTimeline">Timeline
-                            View</button>
+                            id="suiteMostFailedGraphTimeline">Timeline</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="suiteMostFailedFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteMostFailedClose"
@@ -729,8 +727,8 @@
                 <!-- Test Statistics -->
                 <div class="col canvas canvas-vertical" id="testStatisticsCanvas">
                     <div id="testStatisticsVertical">
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testStatisticsGraphTimeline">Timeline
-                            View</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                            id="testStatisticsGraphTimeline">Timeline</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testStatisticsFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testStatisticsClose"
@@ -742,10 +740,8 @@
                 </div>
                 <!-- Test Duration -->
                 <div class="col canvas pb-5" id="testDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationGraphLine">Line
-                        View</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationGraphBar">Bar</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationGraphLine">Line</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="testDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationClose" hidden>Close</button>
@@ -755,8 +751,8 @@
                 </div>
                 <!-- Test Duration Deviation -->
                 <div class="col canvas pb-5" id="testDurationDeviationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationDeviationGraphBar">Boxplot
-                        View</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                        id="testDurationDeviationGraphBar">Boxplot</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="testDurationDeviationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationDeviationClose"
@@ -768,10 +764,9 @@
                 <!-- Test Messages -->
                 <div class="col canvas pb-5" id="testMessagesCanvas">
                     <div id="testMessagesVertical">
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMessagesGraphTimeline">Timeline
-                            View</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                            id="testMessagesGraphTimeline">Timeline</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testMessagesFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMessagesClose"
@@ -790,10 +785,9 @@
                         <div class="btn-group form-switch me-1">
                             <input class="form-check-input mb-3" type="checkbox" role="switch" id="ignoreSkips">
                         </div>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyGraphTimeline">Timeline
-                            View</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                            id="testMostFlakyGraphTimeline">Timeline</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testMostFlakyFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyClose"
@@ -812,10 +806,10 @@
                         <div class="btn-group form-switch me-1">
                             <input class="form-check-input mb-3" type="checkbox" role="switch" id="ignoreSkipsRecent">
                         </div>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFlakyGraphBar">Bar
-                            View</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testRecentMostFlakyGraphTimeline">Timeline View</button>
+                            id="testRecentMostFlakyGraphBar">Bar</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                            id="testRecentMostFlakyGraphTimeline">Timeline</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testRecentMostFlakyFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFlakyClose"
@@ -828,10 +822,9 @@
                 <!-- Test Most Failed -->
                 <div class="col canvas pb-5" id="testMostFailedCanvas">
                     <div id="testMostFailedVertical">
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFailedGraphBar">Bar
-                            View</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFailedGraphTimeline">Timeline
-                            View</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFailedGraphBar">Bar</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                            id="testMostFailedGraphTimeline">Timeline</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testMostFailedFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFailedClose"
@@ -844,11 +837,10 @@
                 <!-- Test Recent Most Failed -->
                 <div class="col canvas pb-5" id="testRecentMostFailedCanvas">
                     <div id="testRecentMostFailedVertical">
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFailedGraphBar">Bar
-                            View</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testRecentMostFailedGraphTimeline">Timeline
-                            View</button>
+                            id="testRecentMostFailedGraphBar">Bar</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                            id="testRecentMostFailedGraphTimeline">Timeline</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testRecentMostFailedFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFailedClose"
@@ -892,7 +884,7 @@
                 <!-- Keyword Statistics -->
                 <div class="col canvas pb-5" id="keywordStatisticsCanvas">
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordStatisticsGraphPercentages">Percentages</button>
+                        id="keywordStatisticsGraphPercentages">Percentage</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordStatisticsGraphAmount">Amount</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
@@ -907,10 +899,8 @@
                 </div>
                 <!-- Keyword Times Run -->
                 <div class="col canvas pb-5" id="keywordTimesRunCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTimesRunGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTimesRunGraphLine">Line
-                        View</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTimesRunGraphBar">Bar</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTimesRunGraphLine">Line</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordTimesRunFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTimesRunClose"
@@ -921,10 +911,10 @@
                 </div>
                 <!-- Keyword Total Duration -->
                 <div class="col canvas pb-5" id="keywordTotalDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTotalDurationGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTotalDurationGraphLine">Line
-                        View</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                        id="keywordTotalDurationGraphBar">Bar</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                        id="keywordTotalDurationGraphLine">Line</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordTotalDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTotalDurationClose"
@@ -935,10 +925,10 @@
                 </div>
                 <!-- Keyword Average Duration -->
                 <div class="col canvas pb-5" id="keywordAverageDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordAverageDurationGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordAverageDurationGraphLine">Line
-                        View</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                        id="keywordAverageDurationGraphBar">Bar</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                        id="keywordAverageDurationGraphLine">Line</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordAverageDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordAverageDurationClose"
@@ -949,10 +939,9 @@
                 </div>
                 <!-- Keyword Min Duration -->
                 <div class="col canvas pb-5" id="keywordMinDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMinDurationGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMinDurationGraphLine">Line
-                        View</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMinDurationGraphBar">Bar</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                        id="keywordMinDurationGraphLine">Line</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordMinDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMinDurationClose"
@@ -963,10 +952,9 @@
                 </div>
                 <!-- Keyword Max Duration -->
                 <div class="col canvas pb-5" id="keywordMaxDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMaxDurationGraphBar">Bar
-                        View</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMaxDurationGraphLine">Line
-                        View</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMaxDurationGraphBar">Bar</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                        id="keywordMaxDurationGraphLine">Line</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                         id="keywordMaxDurationFullscreen">Fullscreen</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMaxDurationClose"
@@ -978,10 +966,10 @@
                 <!-- Keyword Most Failed -->
                 <div class="col canvas pb-5" id="keywordMostFailedCanvas">
                     <div id="keywordMostFailedVertical">
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMostFailedGraphBar">Bar
-                            View</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="keywordMostFailedGraphTimeline">Timeline View</button>
+                            id="keywordMostFailedGraphBar">Bar</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                            id="keywordMostFailedGraphTimeline">Timeline</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="keywordMostFailedFullscreen">Fullscreen</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMostFailedClose"
@@ -1620,6 +1608,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 keywordStatisticsSection: sectionButtons[3]
             };
 
+            sectionButtons.forEach(btn => btn.hidden = false); // unhide all
+            const sectionHide = JSON.parse(localStorage.getItem("sectionHide")); // get hidden sections
+            sectionHide.forEach(hiddenSection => sectionMap[`${space_to_camelcase(hiddenSection)}Section`].hidden = true) // hide section menu buttons that should be hidden
+
             const sections = Object.keys(sectionMap).map(id => document.getElementById(id));
             function update_active_section() {
                 const viewportHeight = window.innerHeight;
@@ -1653,24 +1645,16 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
             sectionButtons.forEach(btn => {
                 btn.addEventListener("click", () => {
-                    if (btn.innerText === "Runs") {
+                    const target = document.getElementById(btn.dataset.target);
+                    if (target) {
+                        const stickyTop = document.getElementById("filterSection");
+                        const stickyHeight = stickyTop ? stickyTop.offsetHeight : 0;
+                        const targetTop = target.getBoundingClientRect().top + window.pageYOffset;
+                        const top = targetTop < 200 ? 0 : targetTop - stickyHeight - 8; // exception for the section at the top, scroll to 0
                         window.scrollTo({
-                            top: 0,
-                            behavior: "smooth"
+                            top: top,
+                            behavior: "auto"
                         });
-                    } else {
-                        const target = document.getElementById(btn.dataset.target);
-                        if (target) {
-                            const stickyTop = document.getElementById("filterSection");
-                            const stickyHeight = stickyTop ? stickyTop.offsetHeight : 0;
-
-                            const targetTop = target.getBoundingClientRect().top + window.pageYOffset;
-
-                            window.scrollTo({
-                                top: targetTop - stickyHeight - 8,
-                                behavior: "smooth"
-                            });
-                        }
                     }
                 });
             });
@@ -2026,21 +2010,21 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 if (document.getElementById(buttonId)) {
                     if (document.documentElement.classList.contains("dark-mode")) {
                         if (button.toLowerCase() === graphType) {
-                            document.getElementById(buttonId).classList.add("disabled");
+                            document.getElementById(buttonId).classList.add("active");
                             document.getElementById(buttonId).classList.remove("btn-outline-light");
                             document.getElementById(buttonId).classList.add("btn-outline-light");
                         } else {
-                            document.getElementById(buttonId).classList.remove("disabled");
+                            document.getElementById(buttonId).classList.remove("active");
                             document.getElementById(buttonId).classList.remove("btn-outline-light");
                             document.getElementById(buttonId).classList.add("btn-outline-light");
                         }
                     } else {
                         if (button.toLowerCase() === graphType) {
-                            document.getElementById(buttonId).classList.add("disabled");
+                            document.getElementById(buttonId).classList.add("active");
                             document.getElementById(buttonId).classList.remove("btn-outline-dark");
                             document.getElementById(buttonId).classList.add("btn-outline-dark");
                         } else {
-                            document.getElementById(buttonId).classList.remove("disabled");
+                            document.getElementById(buttonId).classList.remove("active");
                             document.getElementById(buttonId).classList.remove("btn-outline-dark");
                             document.getElementById(buttonId).classList.add("btn-outline-dark");
                         }
@@ -2315,7 +2299,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     document.getElementById(`${fullscreenButton}Canvas`).classList.add("fullscreen");
                     document.getElementById(`${fullscreenButton}Close`).hidden = false;
                     document.getElementById(`${fullscreenButton}Fullscreen`).hidden = true;
-                    document.body.style.overflow = "hidden";
+                    document.body.classList.add("lock-scroll");
                     window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
                     if (fullscreenButton == "runDonut") {
                         create_run_donut_total_graph();
@@ -2330,7 +2314,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     document.getElementById(`${fullscreenButton}Canvas`).classList.remove("fullscreen");
                     document.getElementById(`${fullscreenButton}Close`).hidden = true;
                     document.getElementById(`${fullscreenButton}Fullscreen`).hidden = false;
-                    document.body.style.overflow = "auto";
+                    document.body.classList.remove("lock-scroll");
                     window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
                     if (fullscreenButton == "runDonut") {
                         create_run_donut_total_graph();
@@ -2338,7 +2322,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     if (fullscreenButton == "suiteFolderDonut") {
                         create_suite_folder_fail_donut_graph();
                     }
-                    scrollTo(0, lastScrollY, "auto")
+                    window.scrollTo({
+                        top: lastScrollY,
+                        behavior: "auto"
+                    });
                 });
             }
         }
@@ -5196,7 +5183,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 setup_section_order();
                 setup_graph_order();
                 setup_collapsables();
-                setup_section_buttons();
                 setup_eventlisteners_graph_view_buttons();
                 setup_eventlisteners_filter_buttons();
 
@@ -5204,10 +5190,14 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 requestAnimationFrame(() => {
                     setup_spinner(true);
                     setup_all_graphs();
+                    setup_section_buttons();
 
                     requestAnimationFrame(() => {
                         if (lastScrollY > 0) {
-                            scrollTo(0, lastScrollY, "auto")
+                            window.scrollTo({
+                                top: lastScrollY,
+                                behavior: "auto"
+                            });
                         }
                     })
                 })
