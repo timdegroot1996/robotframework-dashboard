@@ -42,7 +42,7 @@ def main():
     robotdashboard.initialize_database(suppress=False)
     # 2. Processing output XML(s)
     robotdashboard.process_outputs(
-        outputs=arguments.outputs, output_folder_path=arguments.output_folder_path
+        output_file_info_list=arguments.outputs, output_folder_config=arguments.output_folder_path
     )
     # 3. Listing all available runs in the database
     robotdashboard.print_runs()

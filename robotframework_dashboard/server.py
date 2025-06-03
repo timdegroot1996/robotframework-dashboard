@@ -376,7 +376,7 @@ class ApiServer:
                 if add_output.output_path != None:
                     input = add_output.output_path
                     outputs = [[add_output.output_path, add_output.output_tags]]
-                    console = self.robotdashboard.process_outputs(outputs=outputs)
+                    console = self.robotdashboard.process_outputs(output_file_info_list=outputs)
                 if add_output.output_folder_path != None:
                     input = add_output.output_folder_path
                     output_folder_path = [
@@ -384,7 +384,7 @@ class ApiServer:
                         add_output.output_tags,
                     ]
                     console = self.robotdashboard.process_outputs(
-                        output_folder_path=output_folder_path
+                        output_folder_config=output_folder_path
                     )
                 if add_output.output_data != None:
                     input = ""
@@ -399,7 +399,7 @@ class ApiServer:
                     file.write(add_output.output_data)
                     file.close()
                     outputs = [[output_path, add_output.output_tags]]
-                    console = self.robotdashboard.process_outputs(outputs=outputs)
+                    console = self.robotdashboard.process_outputs(output_file_info_list=outputs)
                     remove(input)
                 console += self.robotdashboard.create_dashboard()
                 response = {

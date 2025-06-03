@@ -27,6 +27,13 @@ class AbstractDatabaseProcessor(ABC):
         pass
 
     @abstractmethod
+    def run_start_exists(self, run_start: str) -> bool:
+        """Mandatory: This function is called to check if the output is already present in the database, this is done to save time on needless reprocessing.
+        If you want a very simple implementation without complex logic you can simply "return False". This will work but will reprocess needlessly.
+        """
+        pass
+
+    @abstractmethod
     def insert_output_data(
         self, output_data: dict, tags: list, run_alias: str, path: Path
     ) -> None:

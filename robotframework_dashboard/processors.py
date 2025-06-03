@@ -7,8 +7,8 @@ from pathlib import Path
 class OutputProcessor:
     """This class creates an output processor that collects all the relevant data for the database"""
 
-    def get_output_data(self, output_path: Path):
-        """This is the main function that is actually called by robotdashboard"""
+    def get_run_start(self, output_path: Path):
+        """Function to get the run_start to do a check if it is not already present in the database"""
         output = ExecutionResult(output_path)
         if hasattr(output, "generation_time"):
             generation_time = output.generation_time
@@ -28,7 +28,13 @@ class OutputProcessor:
                                 generation_time, "%Y%m%d %H:%M:%S.%f"
                             )
                         break
+        return generation_time
+
+    def get_output_data(self, output_path: Path):
+        """This is the main function that is actually called by robotdashboard"""
+        generation_time = self.get_run_start(output_path)
         run_list, suite_list, test_list, keyword_list = [], [], [], []
+        output = ExecutionResult(output_path)
         output.visit(RunProcessor(generation_time, run_list))
         output.visit(SuiteProcessor(generation_time, suite_list))
         output.visit(TestProcessor(generation_time, test_list))

@@ -72,86 +72,83 @@ class RobotDashboard:
             )
         return console
 
-    def process_outputs(self, outputs=None, output_folder_path=None):
-        """Function that processes the outputs and output_folder_path that were set when instantiating the RobotDashboard class"""
+    def process_outputs(self, output_file_info_list=None, output_folder_config=None):
+        """Function that processes output XML files and inserts the data into the database.
+
+        Parameters:
+            output_file_info_list (list of tuples): Each tuple contains (file_path, tags).
+            output_folder_config (tuple): (folder_path, tags)
+        """
         self.database.open_database()
-        console = ""
-        if outputs or output_folder_path:
-            console += self._print_console(f" 2. Processing output XML(s)")
-            if outputs:
-                for output in outputs:
-                    try:
-                        output_path = join(getcwd(), output[0])
-                        output_basename = basename(output_path)
-                        tags = output[1]
-                        start = time()
-                        console += self._print_console(
-                            f"  Processing output XML '{output_basename}'"
-                        )
-                        output_data = OutputProcessor().get_output_data(output_path)
-                        run_alias = (
-                            str(output_basename)
-                            .replace("output_", "")
-                            .replace(".xml", "")
-                        )
-                        self.database.insert_output_data(
-                            output_data, tags, run_alias, output_path
-                        )
-                        end = time()
-                        console += self._print_console(
-                            f"  Processed output XML '{output_basename}' in {round(end-start, 2)} seconds"
-                        )
-                    except Exception as error:
-                        console += self._print_console(
-                            f"  ERROR: Could not process output XML '{output_basename}', error: {error}"
-                        )
-            if output_folder_path:
-                if exists(output_folder_path[0]):
-                    for subdir, dirs, files in walk(output_folder_path[0]):
-                        for file in files:
-                            try:
-                                if "output" in file and ".xml" in file:
-                                    start = time()
-                                    output_path = join(getcwd(), subdir, file)
-                                    output_basename = basename(output_path)
-                                    console += self._print_console(
-                                        f"  Processing output XML '{output_basename}'"
-                                    )
-                                    output_data = OutputProcessor().get_output_data(
-                                        output_path
-                                    )
-                                    run_alias = (
-                                        str(basename(file))
-                                        .replace("output_", "")
-                                        .replace(".xml", "")
-                                    )
-                                    self.database.insert_output_data(
-                                        output_data,
-                                        output_folder_path[1],
-                                        run_alias,
-                                        output_path,
-                                    )
-                                    end = time()
-                                    console += self._print_console(
-                                        f"  Processed output XML '{output_basename}' in {round(end-start, 2)} seconds"
-                                    )
-                            except Exception as error:
-                                console += self._print_console(
-                                    f"  ERROR: Could not process found output file '{file}', error: {error}"
-                                )
-                else:
-                    console += self._print_console(
-                        f"  ERROR: Could not process output folder '{output_folder_path}', error: the path does not exist!"
+        console = self._print_console(" 2. Processing output XML(s)")
+
+        if not output_file_info_list and not output_folder_config:
+            console += self._print_console("  skipping step")
+            console += self._print_console("=" * 86)
+            self.database.close_database()
+            return console
+
+        if output_file_info_list:
+            for file_path, tags in output_file_info_list:
+                try:
+                    full_path = join(getcwd(), file_path)
+                    run_alias = (
+                        basename(full_path).replace("output_", "").replace(".xml", "")
                     )
-        else:
-            console += self._print_console(
-                f" 2. Processing output XML(s)\n  skipping step"
-            )
-        console += self._print_console(
-            "======================================================================================"
-        )
+                    console += self._process_single_output(full_path, tags, run_alias)
+                except Exception as e:
+                    console += self._print_console(
+                        f"  ERROR: Could not process output XML '{file_path}', error: {e}"
+                    )
+
+        if output_folder_config:
+            folder_path, tags = output_folder_config
+            if not exists(folder_path):
+                console += self._print_console(
+                    f"  ERROR: Could not process output folder '{folder_path}', path does not exist!"
+                )
+            else:
+                for subdir, _, files in walk(folder_path):
+                    for file in files:
+                        if "output" in file and file.endswith(".xml"):
+                            try:
+                                full_path = join(getcwd(), subdir, file)
+                                run_alias = file.replace("output_", "").replace(
+                                    ".xml", ""
+                                )
+                                console += self._process_single_output(
+                                    full_path, tags, run_alias
+                                )
+                            except Exception as e:
+                                console += self._print_console(
+                                    f"  ERROR: Could not process found output file '{file}', error: {e}"
+                                )
+
+        console += self._print_console("=" * 86)
         self.database.close_database()
         return console
+
+    def _process_single_output(self, output_path, tags, run_alias=None):
+        """Function that processes a single XML output file and inserts it into the database."""
+        output_basename = basename(output_path)
+        start = time()
+        console = self._print_console(f"  Processing output XML '{output_basename}'")
+
+        run_start = OutputProcessor().get_run_start(output_path)
+        if not self.database.run_start_exists(run_start):
+            output_data = OutputProcessor().get_output_data(output_path)
+            self.database.insert_output_data(output_data, tags, run_alias, output_path)
+
+            end = time()
+            console += self._print_console(
+                f"  Processed output XML '{output_basename}' in {round(end - start, 2)} seconds"
+            )
+            return console
+        else:
+            console += self._print_console(
+                f"   ERROR: you are trying to add the same output again, run_start: {run_start}, output: {output_basename}"
+            )
+            return console
 
     def print_runs(self):
         """Function that prints the runs currently in the database to the console"""

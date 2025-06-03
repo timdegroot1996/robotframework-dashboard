@@ -269,6 +269,7 @@ If you have made an implementation that is not yet an example please feel free t
     - **\_\_init\_\_(self, database_path: Path):**, should handle creation of the database and tables if necessary
     - **open_database(self):**, should open the database connection and set it like self.connection
     - **close_database(self):**, should close the database connection
+    - **run_start_exists(self, run_start: str):**, should check if the run_start that is provided is already present in the database and return True if it does, False if it doesn't, for simple implementations you can simply return False and not check this. There will be an error in a later stage but processing will needlessly be completely done.
     - **insert_output_data(self, output_data: dict, tags: list, run_alias: str, path: Path):**, should be able to handle the output_data dict and the run tags that are provided. Look at the example implementations for the content of output_data, tags, run_alias and path.
     - **get_data(self):**, should retrieve all data (runs/suites/tests/keywords) from all tables in the form of a dictionary containing the 4 data types. In which each data type is a list of dicts with entries. Example:
     {'runs': [{"run_start": "2024-10-13 22:33:19", "full_name": "Robotframework-Dashboard", "name": "Robotframework-Dashboard", "total": 6, "passed": 4, "failed": 1, "skipped": 1, "elapsed_s": "6.313", "start_time": "2024-10-13 22:33:19.673821", "tags": ""}, {"run_start"...}]}

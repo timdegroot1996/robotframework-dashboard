@@ -16,6 +16,7 @@ INSERT_INTO_TESTS = """ INSERT INTO tests (run_start, full_name, name, passed, f
 INSERT_INTO_KEYWORDS = """ INSERT INTO keywords (run_start, name, passed, failed, skipped, times_run, total_time_s, average_time_s, min_time_s, max_time_s, run_alias) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) """
 
 SELECT_FROM_RUNS = """ SELECT * FROM runs """
+SELECT_RUN_STARTS_FROM_RUNS = """ SELECT run_start FROM runs """
 SELECT_RUN_DATA = """ SELECT name, run_start, run_alias, tags FROM runs """
 SELECT_FROM_SUITES = """ SELECT * FROM suites """
 SELECT_FROM_TESTS = """ SELECT * FROM tests """
@@ -103,6 +104,17 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         """This function is called to close the connection to the database"""
         self.connection.disconnect()
         self.connection.close()
+
+    def run_start_exists(self, run_start: str):
+        cursor = self.connection.cursor()
+        cursor.execute(SELECT_RUN_STARTS_FROM_RUNS)
+        run_rows = cursor.fetchall()
+        rows = []
+        keys = ["run_start"]
+        for row in run_rows:
+            rows.append(self._dict_from_row(row, keys))
+        run_starts = [item['run_start'] for item in rows]
+        return f'{run_start}' in run_starts
 
     def insert_output_data(self, output_data: dict, tags: list, run_alias: str, path: Path):
         """This function inserts the data of an output file into the database"""

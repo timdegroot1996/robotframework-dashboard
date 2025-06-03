@@ -4772,6 +4772,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 Failed: [206, 62, 1], // Red
             };
             const colorRGB = baseColors[type] || baseColors['All'];
+            if (data.length == 0) { return [[], []]}
             const graphData = {
                 datasets: [{
                     label: 'Test Execution Heatmap',

@@ -23,6 +23,14 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         self.connection = sqlite3.connect(self.database_path)
         self.connection.row_factory = sqlite3.Row
 
+    def run_start_exists(self, run_start: str):
+        run_rows = self.connection.cursor().execute(SELECT_RUN_STARTS_FROM_RUNS).fetchall()
+        rows = []
+        for row in run_rows:
+            rows.append(self._dict_from_row(row))
+        run_starts = [item['run_start'] for item in rows]
+        return f'{run_start}' in run_starts
+
     def _create_tables(self):
         """Helper function to create the tables (they use IF NOT EXISTS to not override)"""
 
@@ -108,7 +116,7 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
             self._insert_keywords(output_data["keywords"], run_alias)
         except Exception as error:
             print(
-                f"   ERROR: you are probably trying to add the same output again, {error}"
+                f"   ERROR: something went wrong with the database: {error}"
             )
 
     def _insert_runs(self, runs: list, tags: list, run_alias: str, path: Path):
