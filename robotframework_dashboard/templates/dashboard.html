@@ -16,6 +16,9 @@
     <script type="text/javascript"
         src="https://unpkg.com/@sgratzl/chartjs-chart-boxplot@3.6.0/build/index.umd.min.js"></script>
 
+    <!-- ChartJs heatamp/matrix plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js"></script>
+
     <!-- DataTables and Bootstrap imports -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css"
         rel="stylesheet" />
@@ -543,6 +546,26 @@
                     <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
                         id="runDurationInformation"></button>
                     <canvas id="runDurationGraph"></canvas>
+                </div>
+                <!-- Run Heatmap -->
+                <div class="col canvas pb-5" id="runHeatmapCanvas">
+                    <div class="btn-group">
+                        <label class="form-check-label mb-3" for="heatMapTestType">Status</label>
+                    </div>
+                    <div class="btn-group">
+                        <select class="form-select form-select-sm" id="heatMapTestType" style="margin-bottom:12px">
+                            <option value="All">All</option>
+                            <option value="Passed">Passed</option>
+                            <option value="Failed">Failed</option>
+                            <option value="Skipped">Skipped</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runHeatmapGraphHeatmap">Heatmap</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runHeatmapFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runHeatmapClose" hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="runHeatmapInformation"></button>
+                    <canvas id="runHeatmapGraph"></canvas>
                 </div>
                 <!-- Run Table -->
                 <div class="col" id="runTableCanvas">
@@ -1155,6 +1178,12 @@
 - Bar: Displays total run durations represented as vertical bars.
 - Line: Displays the same data but over a time axis for clearer trend analysis.`,
 
+            runHeatmapInformation: `This graph visualizes a heatmap of when tests are executed the most:
+- All: Displays how many tests ran during the hours of the week days.
+- Passed: Displays the same data but only passed tests.
+- Failed: Displays the same data but only failed tests.
+- Skipped: Displays the same data but only skipped tests.`,
+
             suiteFolderDonutInformation: `This graph contains two donut charts:
 - The first donut displays the top-level folders of the suites and the amount of tests each folder contains.
 - The second donut displays the same folder structure but only for the most recent run and only includes failed tests.
@@ -1329,6 +1358,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         var runDonutGraph;
         var runDonutTotalGraph;
         var runDurationGraph;
+        var runHeatmapGraph;
         var runTable;
         var suiteFolderDonutGraph;
         var suiteFolderFailDonutGraph;
@@ -1388,6 +1418,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             "Run Donut",
             "Run Stats",
             "Run Duration",
+            "Run Heatmap",
             "Run Table",
             "Suite Folder Donut",
             "Suite Statistics",
@@ -1945,6 +1976,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 runDonutTotalGraphType: "donut",
                 runStatsGraphType: "stats",
                 runDurationGraphType: "line",
+                runHeatmapGraphType: "heatmap",
                 suiteFolderDonutGraphType: "donut",
                 suiteStatisticsGraphType: "percentages",
                 suiteDurationGraphType: "line",
@@ -2009,7 +2041,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to change which button is highlighted styling wise
         function update_button_selection(camelButtonName, graphType) {
-            const buttons = ["Bar", "Line", "Timeline", "Percentages", "Amount", "Donut", "Stats"]; // All possible button types
+            const buttons = ["Bar", "Line", "Timeline", "Percentages", "Amount", "Donut", "Stats", "Heatmap"]; // All possible button types
             buttons.forEach(button => {
                 const buttonId = `${camelButtonName}Graph${button}`;
                 if (document.getElementById(buttonId)) {
@@ -2291,10 +2323,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             });
 
             // eventlisteners for fullscreen buttons
-            const fullscreenButtons = ["runStatistics", "runDonut", "runStats", "runDuration", "suiteFolderDonut", "suiteStatistics",
-                "suiteDuration", "suiteMostFailed", "testStatistics", "testDuration", "testDurationDeviation",
-                "testMessages", "testMostFlaky", "testRecentMostFlaky", "testMostFailed", "testRecentMostFailed",
-                "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
+            const fullscreenButtons = ["runStatistics", "runDonut", "runStats", "runDuration", "runHeatmap",
+                "suiteFolderDonut", "suiteStatistics", "suiteDuration", "suiteMostFailed", "testStatistics",
+                "testDuration", "testDurationDeviation", "testMessages", "testMostFlaky", "testRecentMostFlaky",
+                "testMostFailed", "testRecentMostFailed", "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
                 "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration", "keywordMostFailed"]
             for (let fullscreenButton of fullscreenButtons) {
                 document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", (e) => {
@@ -2350,13 +2382,18 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 onlyFailedFolders = !onlyFailedFolders;
                 create_suite_folder_donut_graph("");
             });
+
+            document.getElementById("heatMapTestType").addEventListener("change", (e) => {
+                create_run_heatmap_graph();
+            });
             // eventlisteners for buttons to change graph views
             const graphChangeButtons = {
                 "run_statistics": "Percentages,Line,Amount",
                 "run_donut": "Donut",
                 "run_stats": "Stats",
                 "run_duration": "Bar,Line",
-                "suite_donut_folder": "Donut",
+                "run_heatmap": "Heatmap",
+                "suite_folder_donut": "Donut",
                 "suite_statistics": "Percentages,Line,Amount",
                 "suite_duration": "Bar,Line",
                 "suite_most_failed": "Bar,Timeline",
@@ -2380,6 +2417,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 // Dynamically trigger the graph creation function
                 update_graph_type(`${camelButtonName}GraphType`, graphType)
                 window[`create_${graphChangeButton}_graph`]();
+                if (graphChangeButton == 'run_donut') { create_run_donut_total_graph(); }
+                if (graphChangeButton == 'suite_folder_donut') { create_suite_folder_fail_donut_graph(); }
                 // Update the UI to enable/disable buttons accordingly
                 update_button_selection(camelButtonName, graphType)
             }
@@ -2870,6 +2909,32 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             runDurationGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(runDurationGraph, event)
             });
+        }
+
+        // function to create the run heatmap
+        function create_run_heatmap_graph() {
+            if (runHeatmapGraph) {
+                runHeatmapGraph.destroy();
+            }
+            const data = get_heatmap_graph_data(filteredTests);
+            const graphData = data[0]
+            const callbackData = data[1]
+            var config = get_graph_config("heatmap", graphData, `Heatmap Graph`, "Hour", "Day");
+            delete config.options.onClick;
+            config.options.plugins.tooltip = {
+                callbacks: {
+                    title: () => null,
+                    label: ctx => {
+                        const { x, y, v } = ctx.raw;
+                        return `Day: ${callbackData[Math.floor(y - 0.5)]}, Hour: ${Math.floor(x - 0.5)}, Amount: ${v}`;
+                    }
+                }
+            }
+            config.options.scales.y.ticks = {
+                stepSize: 1,
+                callback: val => callbackData[val] || ''
+            }
+            runHeatmapGraph = new Chart("runHeatmapGraph", config);
         }
 
         // function to create run table in the run section
@@ -4255,6 +4320,65 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     },
                 };
             }
+            if (graphType == 'heatmap') {
+                config = {
+                    type: 'matrix',
+                    data: graphData,
+                    options: {
+                        ...baseConfig,
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                position: 'bottom',
+                                min: 0,
+                                max: 24,
+                                offset: false,
+                                grid: {
+                                    display: true,
+                                    drawTicks: true,
+                                    tickLength: 8,
+                                },
+                                ticks: {
+                                    minRotation: 45,
+                                    maxRotation: 45,
+                                    stepSize: 1,
+                                    callback: val => `${val}:00`
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Hour'
+                                }
+                            },
+                            y: {
+                                type: 'linear',
+                                reverse: true,
+                                min: 0,
+                                max: 7,
+                                offset: false,
+                                grid: {
+                                    display: true,
+                                    drawTicks: true,
+                                    tickLength: 8,
+                                },
+                                ticks: {
+                                    stepSize: 1,
+                                    callback: val => days[val] || ''
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Day'
+                                }
+                            }
+                        },
+                        plugins: {
+                            ...baseConfig.plugins,
+                            legend: {
+                                display: false
+                            },
+                        }
+                    }
+                }
+            }
             if (!showLegends) {
                 config.options = config.options || {};
                 config.options.plugins = config.options.plugins || {};
@@ -4620,6 +4744,51 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
             }
             return [graphData, callbackData]
+        }
+
+        function get_heatmap_graph_data(filteredData) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const type = document.getElementById("heatMapTestType").value; // All, Passed, Failed, Skipped
+            const counts = new Map();
+            for (const value of filteredData) {
+                if (type !== "All") {
+                    const key = type.toLowerCase(); // 'passed', 'failed', 'skipped'
+                    if (!value[key] == 1) continue;
+                }
+                const date = new Date(value.start_time);
+                const x = date.getHours() + 0.5;
+                const y = date.getDay() + 0.5;
+                const key = `${x},${y}`;
+                counts.set(key, (counts.get(key) || 0) + 1);
+            }
+            const data = Array.from(counts.entries()).map(([key, count]) => {
+                const [x, y] = key.split(',').map(Number);
+                return { x, y, v: count };
+            });
+            const baseColors = {
+                All: [0, 123, 255], // Blue
+                Passed: [151, 189, 97], // Green
+                Skipped: [254, 216, 79], // Yellow
+                Failed: [206, 62, 1], // Red
+            };
+            const colorRGB = baseColors[type] || baseColors['All'];
+            const graphData = {
+                datasets: [{
+                    label: 'Test Execution Heatmap',
+                    data: data,
+                    backgroundColor(ctx) {
+                        const v = ctx.dataset.data[ctx.dataIndex].v;
+                        const maxV = Math.max(...ctx.dataset.data.map(d => d.v));
+                        let alpha = v / maxV;
+                        alpha = Math.max(alpha, 0.2); 
+                        return `rgba(${colorRGB[0]}, ${colorRGB[1]}, ${colorRGB[2]}, ${alpha})`;
+                    },
+                    width: ({ chart }) => (chart.chartArea?.width || 0) / 24 - 1,
+                    height: ({ chart }) => (chart.chartArea?.height || 0) / 7 - 1,
+                    ...barConfig,
+                }]
+            };
+            return [graphData, days];
         }
 
         // function to prepare the data in the correct format for duration graphs
@@ -5246,6 +5415,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             create_run_donut_total_graph();
             create_run_stats_graph();
             create_run_duration_graph();
+            create_run_heatmap_graph();
             create_run_table();
             create_suite_statistics_graph();
             create_suite_folder_donut_graph();
