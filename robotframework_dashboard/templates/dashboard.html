@@ -16,7 +16,7 @@
     <script type="text/javascript"
         src="https://unpkg.com/@sgratzl/chartjs-chart-boxplot@3.6.0/build/index.umd.min.js"></script>
 
-    <!-- ChartJs heatamp/matrix plugin -->
+    <!-- ChartJs heatmap/matrix plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js"></script>
 
     <!-- DataTables and Bootstrap imports -->
@@ -558,6 +558,38 @@
                             <option value="Passed">Passed</option>
                             <option value="Failed">Failed</option>
                             <option value="Skipped">Skipped</option>
+                        </select>
+                    </div>
+                                      <div class="btn-group">
+                        <label class="form-check-label mb-3" for="heatMapHour">Hour</label>
+                    </div>
+                    <div class="btn-group">
+                        <select class="form-select form-select-sm" id="heatMapHour" style="margin-bottom:12px">
+                            <option value="All">All</option>
+                            <option value="0">00:00</option>
+                            <option value="1">01:00</option>
+                            <option value="2">02:00</option>
+                            <option value="3">03:00</option>
+                            <option value="4">04:00</option>
+                            <option value="5">05:00</option>
+                            <option value="6">06:00</option>
+                            <option value="7">07:00</option>
+                            <option value="8">08:00</option>
+                            <option value="9">09:00</option>
+                            <option value="10">10:00</option>
+                            <option value="11">11:00</option>
+                            <option value="12">12:00</option>
+                            <option value="13">13:00</option>
+                            <option value="14">14:00</option>
+                            <option value="15">15:00</option>
+                            <option value="16">16:00</option>
+                            <option value="17">17:00</option>
+                            <option value="18">18:00</option>
+                            <option value="19">19:00</option>
+                            <option value="20">20:00</option>
+                            <option value="21">21:00</option>
+                            <option value="22">22:00</option>
+                            <option value="23">23:00</option>
                         </select>
                     </div>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runHeatmapGraphHeatmap">Heatmap</button>
@@ -1169,9 +1201,9 @@
 
             runStatsInformation: `This section provides key statistics:
 - Executed: Total counts of Runs, Suites, Tests, and Keywords that have been executed.
-- Unique Tests: Number of distinct test cases across all runs.
+- Unique Tests: Displays the number of distinct test cases across all runs.
 - Outcomes: Total Passed, Failed, and Skipped tests, including their percentages relative to the full test set.
-- Duration: Shows the cumulative runtime of all runs, the average runtime per run, and the average duration of individual tests.
+- Duration: Displays the cumulative runtime of all runs, the average runtime per run, and the average duration of individual tests.
 - Pass Rate: Displays the average run-level pass rate, helping evaluate overall reliability over time.`,
 
             runDurationInformation: `This graph visualizes the duration of each run:
@@ -1179,10 +1211,11 @@
 - Line: Displays the same data but over a time axis for clearer trend analysis.`,
 
             runHeatmapInformation: `This graph visualizes a heatmap of when tests are executed the most:
-- All: Displays how many tests ran during the hours of the week days.
+- All: Displays how many tests ran during the hours or minutes of the week days.
 - Passed: Displays the same data but only passed tests.
 - Failed: Displays the same data but only failed tests.
-- Skipped: Displays the same data but only skipped tests.`,
+- Skipped: Displays the same data but only skipped tests.
+- Hour: Displays only that hour so you get insights per minute.`,
 
             suiteFolderDonutInformation: `This graph contains two donut charts:
 - The first donut displays the top-level folders of the suites and the amount of tests each folder contains.
@@ -1402,6 +1435,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         var showLegends = true; // used to keep track of global legend setting
         var showAliases = false; // used to keep track of global alias setting
         var showMilliseconds = false; // used to keep track of global millisecond setting
+        var heatMapHourAll = true; // used to keep track of the heatmap setting, is it set to an hour or all
         var previousFolder = ""; // used to update the suite folder donut to the previous folder with the button
         var lastScrollY = 0; // used to scroll back to where you were previously
         var maxGraphsPerRow = 2; // used to determine how many graphs to show per row
@@ -2382,8 +2416,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 onlyFailedFolders = !onlyFailedFolders;
                 create_suite_folder_donut_graph("");
             });
-
             document.getElementById("heatMapTestType").addEventListener("change", (e) => {
+                create_run_heatmap_graph();
+            });
+            document.getElementById("heatMapHour").addEventListener("change", (e) => {
+                heatMapHourAll = document.getElementById("heatMapHour").value == "All" ? true : false;
                 create_run_heatmap_graph();
             });
             // eventlisteners for buttons to change graph views
@@ -2926,7 +2963,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     title: () => null,
                     label: ctx => {
                         const { x, y, v } = ctx.raw;
-                        return `Day: ${callbackData[Math.floor(y - 0.5)]}, Hour: ${Math.floor(x - 0.5)}, Amount: ${v}`;
+                        if (heatMapHourAll) {
+                            return `Day: ${callbackData[Math.floor(y - 0.5)]}, Hour: ${Math.floor(x - 0.5)}, Amount: ${v}`;
+                        } else { 
+                            return `Day: ${callbackData[Math.floor(y - 0.5)]}, Minute: ${Math.floor(x - 0.5)}, Amount: ${v}`;
+                        }
                     }
                 }
             }
@@ -4331,7 +4372,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                                 type: 'linear',
                                 position: 'bottom',
                                 min: 0,
-                                max: 24,
+                                max: heatMapHourAll ? 24 : 60,
                                 offset: false,
                                 grid: {
                                     display: true,
@@ -4342,11 +4383,18 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                                     minRotation: 45,
                                     maxRotation: 45,
                                     stepSize: 1,
-                                    callback: val => `${val}:00`
+                                    callback: function (val) {
+                                        if (heatMapHourAll) {
+                                            return `${val}:00`
+                                        } else {
+                                            const hour = document.getElementById('heatMapHour').value;
+                                            return `${('0'+hour).slice(-2)}:${('0'+val).slice(-2)}`
+                                        }
+                                    },
                                 },
                                 title: {
                                     display: true,
-                                    text: 'Hour'
+                                    text: heatMapHourAll ? 'Hour' : "Minute",
                                 }
                             },
                             y: {
@@ -4359,10 +4407,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                                     display: true,
                                     drawTicks: true,
                                     tickLength: 8,
-                                },
-                                ticks: {
-                                    stepSize: 1,
-                                    callback: val => days[val] || ''
                                 },
                                 title: {
                                     display: true,
@@ -4749,17 +4793,27 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         function get_heatmap_graph_data(filteredData) {
             const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             const type = document.getElementById("heatMapTestType").value; // All, Passed, Failed, Skipped
+            const hour = document.getElementById("heatMapHour").value;
             const counts = new Map();
             for (const value of filteredData) {
                 if (type !== "All") {
                     const key = type.toLowerCase(); // 'passed', 'failed', 'skipped'
-                    if (!value[key] == 1) continue;
+                    if (value[key] != 1) continue;
                 }
                 const date = new Date(value.start_time);
-                const x = date.getHours() + 0.5;
-                const y = date.getDay() + 0.5;
-                const key = `${x},${y}`;
-                counts.set(key, (counts.get(key) || 0) + 1);
+                if (hour === "All") {
+                    const x = date.getHours() + 0.5;
+                    const y = date.getDay() + 0.5;
+                    const key = `${x},${y}`;
+                    counts.set(key, (counts.get(key) || 0) + 1);
+                } else {
+                    if (date.getHours() != parseInt(hour)) continue;
+                    const x = date.getMinutes() + 0.5;
+                    const y = date.getDay() + 0.5;
+                    const key = `${x},${y}`;
+                    counts.set(key, (counts.get(key) || 0) + 1);
+                }
+                
             }
             const data = Array.from(counts.entries()).map(([key, count]) => {
                 const [x, y] = key.split(',').map(Number);
@@ -4784,7 +4838,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         alpha = Math.max(alpha, 0.2); 
                         return `rgba(${colorRGB[0]}, ${colorRGB[1]}, ${colorRGB[2]}, ${alpha})`;
                     },
-                    width: ({ chart }) => (chart.chartArea?.width || 0) / 24 - 1,
+                    width: ({ chart }) => (chart.chartArea?.width || 0) / (heatMapHourAll ? 24 : 60) - 1,
                     height: ({ chart }) => (chart.chartArea?.height || 0) / 7 - 1,
                     ...barConfig,
                 }]

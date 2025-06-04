@@ -134,9 +134,10 @@ class RobotDashboard:
         start = time()
         console = self._print_console(f"  Processing output XML '{output_basename}'")
 
-        run_start = OutputProcessor().get_run_start(output_path)
+        outputProcessor = OutputProcessor(output_path)
+        run_start = outputProcessor.get_run_start()
         if not self.database.run_start_exists(run_start):
-            output_data = OutputProcessor().get_output_data(output_path)
+            output_data = outputProcessor.get_output_data()
             self.database.insert_output_data(output_data, tags, run_alias, output_path)
 
             end = time()
