@@ -1666,6 +1666,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             window[name] = undefined;
         });
 
+        // All possible button types
+        const buttonTypes = ["Bar", "Line", "Timeline", "Percentages", "Amount", "Donut", "Stats", "Heatmap"]; 
+
         /////////////////////////////
         // GENERIC SETUP FUNCTIONS //
         /////////////////////////////
@@ -2223,8 +2226,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to change which button is highlighted styling wise
         function update_button_selection(camelButtonName, graphType) {
-            const buttons = ["Bar", "Line", "Timeline", "Percentages", "Amount", "Donut", "Stats", "Heatmap"]; // All possible button types
-            buttons.forEach(button => {
+            buttonTypes.forEach(button => {
                 const buttonId = `${camelButtonName}Graph${button}`;
                 if (document.getElementById(buttonId)) {
                     if (document.documentElement.classList.contains("dark-mode")) {
