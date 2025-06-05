@@ -560,7 +560,7 @@
                             <option value="Skipped">Skipped</option>
                         </select>
                     </div>
-                                      <div class="btn-group">
+                    <div class="btn-group">
                         <label class="form-check-label mb-3" for="heatMapHour">Hour</label>
                     </div>
                     <div class="btn-group">
@@ -1105,12 +1105,32 @@
                                     id="toggleMilliseconds" />
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-6 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleAnimations">Graphs: Show Drawing
+                                    Animations</label>
+                            </div>
+                            <div class="col btn-group form-switch ms-2">
+                                <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                    id="toggleAnimations" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleAnimationDuration">Graphs: Animation
+                                    Duration (milliseconds)</label>
+                            </div>
+                            <div class="col-1 ps-0 mt-1">
+                                <input class="form-control form-control-sm" type="number"
+                                    id="toggleAnimationDuration" />
+                            </div>
+                        </div>
                         <div class="row pb-4">
                             <div class="col-6 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleMaxGraphsPerRow">Graphs: Maximum Graphs
                                     Per Row</label>
                             </div>
-                            <div class="col-auto ps-0 mt-1">
+                            <div class="col-1 ps-0 mt-1">
                                 <select class="form-select form-select-sm" id="toggleMaxGraphsPerRow">
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -1189,126 +1209,6 @@
 
         // information svg
         const informationSVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="21" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" /><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" /></svg>';
-        const informationTitles = {
-            runStatisticsInformation: `This graph shows the statistics of the runs represented in multiple formats:
-- Percentages: Displays the distribution of passed/failed/skipped tests per run, where 100% equals all tests combined.
-- Amount: Displays the actual number of passed/failed/skipped tests per run.
-- Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times.`,
-
-            runDonutInformation: `This graph contains two donut charts:
-- The first donut displays the total percentage of passed, failed, and skipped tests across all runs.
-- The second donut displays the same breakdown, but only for the most recent run.`,
-
-            runStatsInformation: `This section provides key statistics:
-- Executed: Total counts of Runs, Suites, Tests, and Keywords that have been executed.
-- Unique Tests: Displays the number of distinct test cases across all runs.
-- Outcomes: Total Passed, Failed, and Skipped tests, including their percentages relative to the full test set.
-- Duration: Displays the cumulative runtime of all runs, the average runtime per run, and the average duration of individual tests.
-- Pass Rate: Displays the average run-level pass rate, helping evaluate overall reliability over time.`,
-
-            runDurationInformation: `This graph visualizes the duration of each run:
-- Bar: Displays total run durations represented as vertical bars.
-- Line: Displays the same data but over a time axis for clearer trend analysis.`,
-
-            runHeatmapInformation: `This graph visualizes a heatmap of when tests are executed the most:
-- All: Displays how many tests ran during the hours or minutes of the week days.
-- Passed: Displays the same data but only passed tests.
-- Failed: Displays the same data but only failed tests.
-- Skipped: Displays the same data but only skipped tests.
-- Hour: Displays only that hour so you get insights per minute.`,
-
-            suiteFolderDonutInformation: `This graph contains two donut charts:
-- The first donut displays the top-level folders of the suites and the amount of tests each folder contains.
-- The second donut displays the same folder structure but only for the most recent run and only includes failed tests.
-- Clicking on a folder updates the chart with the subfolders/suites it contains.
-- Navigating folders also updates Suite Statistics and Suite Duration.
-- "Go Up" navigates to the parent folder level.
-- "Only Failed Folders" filters to show only folders with failing tests.`,
-
-            suiteStatisticsInformation: `This graph provides suite-level statistics in three formats:
-- Percentages: Displays the passed/failed/skipped rate of test suites per run.
-- Amount: Displays the actual number of passed/failed/skipped suites per run.
-- Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times.`,
-
-            suiteDurationInformation: `This graph visualizes the duration of each suite:
-- Bar: Displays total suite durations represented as vertical bars.
-- Line: Displays the same data but over a time axis for clearer trend analysis.`,
-
-            suiteMostFailedInformation: `This graph highlights the test suites with the most failures:
-- Bar: Displays suites ranked by number of failures represented as vertical bars.
-- Timeline: Displays when failures occurred to identify clustering over time.
-- The default view shows the Top 10 most failed suites; fullscreen expands this to the Top 50.`,
-
-            testStatisticsInformation: `This graph displays the statistics of the tests in a timeline format.`,
-
-            testDurationInformation: `This graph tracks how long individual tests take to run:
-- Bar: Displays test durations represented as vertical bars.
-- Line: Displays the same data but over a time axis for clearer trend analysis.`,
-
-            testDurationDeviationInformation: `This boxplot chart displays how much test durations deviate from the average, represented as vertical bars.
-It helps identify tests with inconsistent execution times, which might be flaky or worth investigating`,
-
-            testMessagesInformation: `This graph presents the most frequently occurring fail/skip test messages:
-- Bar: Displays messages ranked by number of occurrences represented as vertical bars.
-- Timeline: Displays when those messages occurred to reveal noisy periods or problem spikes.
-- The regular view shows the Top 10 most frequent messages; fullscreen mode expands this to the Top 50.
-- To generalize messages (e.g., group similar messages), use the -m/--messageconfig option in the CLI (--help or README).`,
-
-            testMostFlakyInformation: `This graph identifies the flakiest tests based on status flips (passed/failed/skipped):
-- Bar: Displays tests ranked by frequency of status changes represented as vertical bars.
-- Timeline: Displays when the status changes occurred across runs.
-- The regular view shows the Top 10 flaky tests; fullscreen mode expands the list to the Top 50.
-- "Ignore Skips" filters to only count passed/failed as status flips and not skips.`,
-
-            testRecentMostFlakyInformation: `This graph identifies the most recently flaky tests based on status flips:
-- Bar: Displays tests ranked by frequency of recent status changes represented as vertical bars.
-- Timeline: Displays when the status changes occurred across runs.
-- The most recent flaky tests are listed first.
-- The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.
-- "Ignore Skips" filters to only count passed/failed as status flips and not skips.`,
-
-            testMostFailedInformation: `This graph lists the most failed tests overall:
-- Bar: Displays tests ranked by total number of failures represented as vertical bars.
-- Timeline: Displays when failures occurred across runs.
-- The regular view shows the Top 10 most failed tests; fullscreen mode expands the list to the Top 50.`,
-
-            testRecentMostFailedInformation: `This graph lists the most recently failed tests:
-- Bar: Displays tests ranked by number of recent failures represented as vertical bars.
-- Timeline: Displays when failures occurred across runs.
-- The most recently failed tests are listed first.
-- The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.`,
-
-            keywordStatisticsInformation: `This graph presents keyword execution results in multiple formats:
-- Percentages: Displays the distribution of passed/failed/skipped statuses for each keyword per run.
-- Amount: Displays raw counts of each status per run.
-- Line: Displays the same data but over a time axis.`,
-
-            keywordTimesRunInformation: `This graph shows how frequently each keyword was executed:
-- Bar: Displays times run per keyword represented as vertical bars.
-- Line: Displays the same data but over a time axis.`,
-
-            keywordTotalDurationInformation: `This graph visualizes total execution time of keywords:
-- Bar: Displays the cumulative time each keyword ran during each run represented as vertical bars.
-- Line: Displays the same data but over a time axis.`,
-
-            keywordAverageDurationInformation: `This graph shows the average execution time per keyword:
-- Bar: Displays the average duration for each keyword represented as vertical bars.
-- Line: Displays the same data but over a time axis.`,
-
-            keywordMinDurationInformation: `This graph shows the fastest observed execution time for each keyword per run:
-- Bar: Displays minimum durations represented as vertical bars.
-- Line: Displays the same data but over a time axis.`,
-
-            keywordMaxDurationInformation: `This graph shows the slowest observed execution time for each keyword per run:
-- Bar: Displays maximum durations represented as vertical bars.
-- Line: Displays the same data but over a time axis.`,
-
-            keywordMostFailedInformation: `This graph lists the most failed keywords overall:
-- Bar: Displays keywords ranked by total number of failures represented as vertical bars.
-- Timeline: Displays when failures occurred across runs.
-- The regular view shows the Top 10 most failed keywords; fullscreen mode expands the list to the Top 50.`,
-
-        };
 
         // colors
         const passedBackgroundBorderColor = "#97bd61";
@@ -1386,44 +1286,13 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         const server = "placeholder_server"
         if (!message_config.includes("placeholder_message_config")) { message_config = JSON.parse(message_config) }
 
-        // create graphs
-        var runStatisticsGraph;
-        var runDonutGraph;
-        var runDonutTotalGraph;
-        var runDurationGraph;
-        var runHeatmapGraph;
-        var runTable;
-        var suiteFolderDonutGraph;
-        var suiteFolderFailDonutGraph;
-        var suiteStatisticsGraph;
-        var suiteDurationGraph;
-        var suiteMostFailedGraph;
-        var suiteTable;
-        var testStatisticsGraph;
-        var testDurationGraph;
-        var testDurationDeviationGraph;
-        var testMessagesGraph
-        var testMostFlakyGraph;
-        var testRecentMostFlakyGraph;
-        var testMostFailedGraph;
-        var testRecentMostFailedGraph;
-        var testTable;
-        var keywordStatisticsGraph;
-        var keywordTimesRunGraph;
-        var keywordTotalDurationGraph;
-        var keywordAverageDurationGraph;
-        var keywordMinDurationGraph;
-        var keywordMaxDurationGraph;
-        var keywordMostFailedGraph;
-        var keywordTable;
-
         // filtered data vars
         var filteredRuns;
         var filteredSuites;
         var filteredTests;
         var filteredKeywords;
 
-        // var to keep track of the checkbox statuses
+        // vars to keep track of certain global settings
         var useSuitePathsSuiteSection = false;
         var useSuitePathsTestSection = false;
         var ignoreSkips = false; // test most flaky graph
@@ -1439,6 +1308,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         var previousFolder = ""; // used to update the suite folder donut to the previous folder with the button
         var lastScrollY = 0; // used to scroll back to where you were previously
         var maxGraphsPerRow = 2; // used to determine how many graphs to show per row
+        var animationEnabled = true; // used to determine if animations are on or off
+        var animationDuration = 1500; // used to set the milliseconds it takes to animate the graphs
 
         // add items in hide modal
         const hideSections = [
@@ -1447,41 +1318,353 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             "Test Statistics",
             "Keyword Statistics",
         ]
-        const hideGraphs = [
-            "Run Statistics",
-            "Run Donut",
-            "Run Stats",
-            "Run Duration",
-            "Run Heatmap",
-            "Run Table",
-            "Suite Folder Donut",
-            "Suite Statistics",
-            "Suite Duration",
-            "Suite Most Failed",
-            "Suite Table",
-            "Test Statistics",
-            "Test Duration",
-            "Test Duration Deviation",
-            "Test Messages",
-            "Test Most Flaky",
-            "Test Recent Most Flaky",
-            "Test Most Failed",
-            "Test Recent Most Failed",
-            "Test Table",
-            "Keyword Statistics",
-            "Keyword Times Run",
-            "Keyword Total Duration",
-            "Keyword Average Duration",
-            "Keyword Min Duration",
-            "Keyword Max Duration",
-            "Keyword Most Failed",
-            "Keyword Table"
-        ]
-        var hideItem = `<li class="hideItem list-group-item list-group-item-action d-flex {type}">
-            <div class="hideItemText">{value}</div>
-            <button class="btn btn-sm moveUp"></button>
-            <button class="btn btn-sm moveDown"></button>
-            </li>`
+        const graphMetadata = [
+            {
+                key: "runStatistics",
+                label: "Run Statistics",
+                defaultType: "percentages",
+                viewOptions: ["Percentages", "Line", "Amount"],
+                hasFullscreenButton: true,
+                information: `This graph shows the statistics of the runs represented in multiple formats:
+- Percentages: Displays the distribution of passed/failed/skipped tests per run, where 100% equals all tests combined.
+- Amount: Displays the actual number of passed/failed/skipped tests per run.
+- Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times.`,
+            },
+            {
+                key: "runDonut",
+                label: "Run Donut",
+                defaultType: "donut",
+                viewOptions: ["Donut"],
+                hasFullscreenButton: true,
+                information: `This graph contains two donut charts:
+- The first donut displays the total percentage of passed, failed, and skipped tests across all runs.
+- The second donut displays the same breakdown, but only for the most recent run.`,
+            },
+            {
+                key: "runDonutTotal",
+                label: "Run Donut Total",
+                defaultType: "donut",
+                viewOptions: ["Donut"],
+                hasFullscreenButton: false,
+                information: null,
+            },
+            {
+                key: "runStats",
+                label: "Run Stats",
+                defaultType: "stats",
+                viewOptions: ["Stats"],
+                hasFullscreenButton: true,
+                information: `This section provides key statistics:
+- Executed: Total counts of Runs, Suites, Tests, and Keywords that have been executed.
+- Unique Tests: Displays the number of distinct test cases across all runs.
+- Outcomes: Total Passed, Failed, and Skipped tests, including their percentages relative to the full test set.
+- Duration: Displays the cumulative runtime of all runs, the average runtime per run, and the average duration of individual tests.
+- Pass Rate: Displays the average run-level pass rate, helping evaluate overall reliability over time.`,
+            },
+            {
+                key: "runDuration",
+                label: "Run Duration",
+                defaultType: "line",
+                viewOptions: ["Bar", "Line"],
+                hasFullscreenButton: true,
+                information: `This graph visualizes the duration of each run:
+- Bar: Displays total run durations represented as vertical bars.
+- Line: Displays the same data but over a time axis for clearer trend analysis.`,
+            },
+            {
+                key: "runHeatmap",
+                label: "Run Heatmap",
+                defaultType: "heatmap",
+                viewOptions: ["Heatmap"],
+                hasFullscreenButton: true,
+                information: `This graph visualizes a heatmap of when tests are executed the most:
+- All: Displays how many tests ran during the hours or minutes of the week days.
+- Passed: Displays the same data but only passed tests.
+- Failed: Displays the same data but only failed tests.
+- Skipped: Displays the same data but only skipped tests.
+- Hour: Displays only that hour so you get insights per minute.`,
+            },
+            {
+                key: "runTable",
+                label: "Run Table",
+                defaultType: "table",
+                viewOptions: ["Table"],
+                hasFullscreenButton: false,
+                information: null,
+            },
+            {
+                key: "suiteFolderDonut",
+                label: "Suite Folder Donut",
+                defaultType: "donut",
+                viewOptions: ["Donut"],
+                hasFullscreenButton: true,
+                information: `This graph contains two donut charts:
+- The first donut displays the top-level folders of the suites and the amount of tests each folder contains.
+- The second donut displays the same folder structure but only for the most recent run and only includes failed tests.
+- Clicking on a folder updates the chart with the subfolders/suites it contains.
+- Navigating folders also updates Suite Statistics and Suite Duration.
+- "Go Up" navigates to the parent folder level.
+- "Only Failed Folders" filters to show only folders with failing tests.`,
+            },
+            {
+                key: "suiteFolderFailDonut",
+                label: "Suite Folder Fail Donut",
+                defaultType: "donut",
+                viewOptions: ["Donut"],
+                hasFullscreenButton: false,
+                information: null,
+            },
+            {
+                key: "suiteStatistics",
+                label: "Suite Statistics",
+                defaultType: "percentages",
+                viewOptions: ["Percentages", "Line", "Amount"],
+                hasFullscreenButton: true,
+                information: `This graph provides suite-level statistics in three formats:
+- Percentages: Displays the passed/failed/skipped rate of test suites per run.
+- Amount: Displays the actual number of passed/failed/skipped suites per run.
+- Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times.`,
+            },
+            {
+                key: "suiteDuration",
+                label: "Suite Duration",
+                defaultType: "line",
+                viewOptions: ["Bar", "Line"],
+                hasFullscreenButton: true,
+                information: `This graph visualizes the duration of each suite:
+- Bar: Displays total suite durations represented as vertical bars.
+- Line: Displays the same data but over a time axis for clearer trend analysis.`,
+            },
+            {
+                key: "suiteMostFailed",
+                label: "Suite Most Failed",
+                defaultType: "bar",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                information: `This graph highlights the test suites with the most failures:
+- Bar: Displays suites ranked by number of failures represented as vertical bars.
+- Timeline: Displays when failures occurred to identify clustering over time.
+- The default view shows the Top 10 most failed suites; fullscreen expands this to the Top 50.`,
+            },
+            {
+                key: "suiteTable",
+                label: "Suite Table",
+                defaultType: "table",
+                viewOptions: ["Table"],
+                hasFullscreenButton: false,
+                information: null,
+            },
+            {
+                key: "testStatistics",
+                label: "Test Statistics",
+                defaultType: "timeline",
+                viewOptions: ["Timeline"],
+                hasFullscreenButton: true,
+                information: `This graph displays the statistics of the tests in a timeline format.`,
+            },
+            {
+                key: "testDuration",
+                label: "Test Duration",
+                defaultType: "line",
+                viewOptions: ["Bar", "Line"],
+                hasFullscreenButton: true,
+                information: `This graph tracks how long individual tests take to run:
+- Bar: Displays test durations represented as vertical bars.
+- Line: Displays the same data but over a time axis for clearer trend analysis.`,
+            },
+            {
+                key: "testDurationDeviation",
+                label: "Test Duration Deviation",
+                defaultType: "bar",
+                viewOptions: ["Bar"],
+                hasFullscreenButton: true,
+                information: `This boxplot chart displays how much test durations deviate from the average, represented as vertical bars.
+It helps identify tests with inconsistent execution times, which might be flaky or worth investigating`,
+            },
+            {
+                key: "testMessages",
+                label: "Test Messages",
+                defaultType: "timeline",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                information: `This graph presents the most frequently occurring fail/skip test messages:
+- Bar: Displays messages ranked by number of occurrences represented as vertical bars.
+- Timeline: Displays when those messages occurred to reveal noisy periods or problem spikes.
+- The regular view shows the Top 10 most frequent messages; fullscreen mode expands this to the Top 50.
+- To generalize messages (e.g., group similar messages), use the -m/--messageconfig option in the CLI (--help or README).`,
+            },
+            {
+                key: "testMostFlaky",
+                label: "Test Most Flaky",
+                defaultType: "timeline",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                information: `This graph identifies the flakiest tests based on status flips (passed/failed/skipped):
+- Bar: Displays tests ranked by frequency of status changes represented as vertical bars.
+- Timeline: Displays when the status changes occurred across runs.
+- The regular view shows the Top 10 flaky tests; fullscreen mode expands the list to the Top 50.
+- "Ignore Skips" filters to only count passed/failed as status flips and not skips.`,
+            },
+            {
+                key: "testRecentMostFlaky",
+                label: "Test Recent Most Flaky",
+                defaultType: "timeline",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                information: `This graph identifies the most recently flaky tests based on status flips:
+- Bar: Displays tests ranked by frequency of recent status changes represented as vertical bars.
+- Timeline: Displays when the status changes occurred across runs.
+- The most recent flaky tests are listed first.
+- The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.
+- "Ignore Skips" filters to only count passed/failed as status flips and not skips.`,
+            },
+            {
+                key: "testMostFailed",
+                label: "Test Most Failed",
+                defaultType: "timeline",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                information: `This graph lists the most failed tests overall:
+- Bar: Displays tests ranked by total number of failures represented as vertical bars.
+- Timeline: Displays when failures occurred across runs.
+- The regular view shows the Top 10 most failed tests; fullscreen mode expands the list to the Top 50.`,
+            },
+            {
+                key: "testRecentMostFailed",
+                label: "Test Recent Most Failed",
+                defaultType: "timeline",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                information: `This graph lists the most recently failed tests:
+- Bar: Displays tests ranked by number of recent failures represented as vertical bars.
+- Timeline: Displays when failures occurred across runs.
+- The most recently failed tests are listed first.
+- The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.`,
+            },
+            {
+                key: "testTable",
+                label: "Test Table",
+                defaultType: "table",
+                viewOptions: ["Table"],
+                hasFullscreenButton: false,
+                information: null,
+            },
+            {
+                key: "keywordStatistics",
+                label: "Keyword Statistics",
+                defaultType: "percentages",
+                viewOptions: ["Percentages", "Line", "Amount"],
+                hasFullscreenButton: true,
+                information: `This graph presents keyword execution results in multiple formats:
+- Percentages: Displays the distribution of passed/failed/skipped statuses for each keyword per run.
+- Amount: Displays raw counts of each status per run.
+- Line: Displays the same data but over a time axis.`,
+            },
+            {
+                key: "keywordTimesRun",
+                label: "Keyword Times Run",
+                defaultType: "line",
+                viewOptions: ["Bar", "Line"],
+                hasFullscreenButton: true,
+                information: `This graph shows how frequently each keyword was executed:
+- Bar: Displays times run per keyword represented as vertical bars.
+- Line: Displays the same data but over a time axis.`,
+            },
+            {
+                key: "keywordTotalDuration",
+                label: "Keyword Total Duration",
+                defaultType: "line",
+                viewOptions: ["Bar", "Line"],
+                hasFullscreenButton: true,
+                information: `This graph visualizes total execution time of keywords:
+- Bar: Displays the cumulative time each keyword ran during each run represented as vertical bars.
+- Line: Displays the same data but over a time axis.`,
+            },
+            {
+                key: "keywordAverageDuration",
+                label: "Keyword Average Duration",
+                defaultType: "line",
+                viewOptions: ["Bar", "Line"],
+                hasFullscreenButton: true,
+                information: `This graph shows the average execution time per keyword:
+- Bar: Displays the average duration for each keyword represented as vertical bars.
+- Line: Displays the same data but over a time axis.`,
+            },
+            {
+                key: "keywordMinDuration",
+                label: "Keyword Min Duration",
+                defaultType: "line",
+                viewOptions: ["Bar", "Line"],
+                hasFullscreenButton: true,
+                information: `This graph shows the fastest observed execution time for each keyword per run:
+- Bar: Displays minimum durations represented as vertical bars.
+- Line: Displays the same data but over a time axis.`,
+            },
+            {
+                key: "keywordMaxDuration",
+                label: "Keyword Max Duration",
+                defaultType: "line",
+                viewOptions: ["Bar", "Line"],
+                hasFullscreenButton: true,
+                information: `This graph shows the slowest observed execution time for each keyword per run:
+- Bar: Displays maximum durations represented as vertical bars.
+- Line: Displays the same data but over a time axis.`,
+            },
+            {
+                key: "keywordMostFailed",
+                label: "Keyword Most Failed",
+                defaultType: "timeline",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                information: `This graph lists the most failed keywords overall:
+- Bar: Displays keywords ranked by total number of failures represented as vertical bars.
+- Timeline: Displays when failures occurred across runs.
+- The regular view shows the Top 10 most failed keywords; fullscreen mode expands the list to the Top 50.`,
+            },
+            {
+                key: "keywordTable",
+                label: "Keyword Table",
+                defaultType: "table",
+                viewOptions: ["Table"],
+                hasFullscreenButton: false,
+                information: null,
+            },
+        ];
+
+        // hideGraphs (contains all graphs that can be hidden or shown)
+        const hideGraphs = graphMetadata
+            .map(graph => graph.label)
+            .filter(label => label !== "Run Donut Total" && label !== "Suite Folder Fail Donut");
+        // fullscreenButtons (contains all graphs that have a fullscreen/close button)
+        const fullscreenButtons = graphMetadata
+            .filter(graph => graph.hasFullscreenButton)
+            .map(graph => graph.key);
+        // defaultGraphTypes (stored in localstorge like percentage, bar etc.)
+        const defaultGraphTypes = {};
+        graphMetadata.forEach(graph => {
+            defaultGraphTypes[`${graph.key}GraphType`] = graph.defaultType;
+        });
+        // graphChangeButtons (adds the eventlisteners to the buttons ike percentage, bar, etc.)
+        const excludeKeys = ["runDonutTotal", "suiteFolderFailDonut"];
+        const graphChangeButtons = {};
+        graphMetadata.forEach(graph => {
+            if (!excludeKeys.includes(graph.key) && graph.type !== "Table") {
+                const snakeKey = camelcase_to_underscore(graph.key);
+                graphChangeButtons[snakeKey] = graph.viewOptions.join(',');
+            }
+        });
+        // informationTitles (contains the text for the information popups for the graphs)
+        const informationTitles = {};
+        graphMetadata.forEach(graph => {
+            if (graph.information) {
+                informationTitles[`${graph.key}Information`] = graph.information;
+            }
+        });
+        // graphVars
+        const graphVars = graphMetadata.map(g => g.defaultType === "table" ? g.key : `${g.key}Graph`);
+        graphVars.forEach(name => {
+            window[name] = undefined;
+        });
 
         /////////////////////////////
         // GENERIC SETUP FUNCTIONS //
@@ -1500,76 +1683,70 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // theme function based on browser/machine color scheme
         function setup_theme() {
-            Chart.defaults.font.size = graphFontSize
+            Chart.defaults.font.size = graphFontSize;
+            const html = document.documentElement;
+            const toggle = document.getElementById("toggleTheme");
+
+            function swap_button_classes(from1, to1, from2, to2) {
+                // bootstrap buttons theme swap (outline and regular)
+                document.querySelectorAll(from1).forEach(btn => {
+                    btn.classList.remove(from1.replace('.', ''));
+                    btn.classList.add(to1);
+                });
+                document.querySelectorAll(from2).forEach(btn => {
+                    btn.classList.remove(from2.replace('.', ''));
+                    btn.classList.add(to2);
+                });
+            }
+
             function set_light_mode() {
                 // bootstrap dark-mode attribute
                 document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "light");
                 // bootstrap default color
-                document.documentElement.style.setProperty("--bs-body-bg", "#fff");
+                html.style.setProperty("--bs-body-bg", "#fff");
                 // bootstrap buttons light -> dark
-                const buttonsOutlineLight = document.querySelectorAll(".btn-outline-light")
-                const buttonsLight = document.querySelectorAll(".btn-light")
-                for (const button of buttonsOutlineLight) {
-                    button.classList.remove("btn-outline-light");
-                    button.classList.add("btn-outline-dark");
-                }
-                for (const button of buttonsLight) {
-                    button.classList.remove("btn-light");
-                    button.classList.add("btn-dark");
-                }
+                swap_button_classes(".btn-outline-light", "btn-outline-dark", ".btn-light", "btn-dark");
                 // chartjs default graph settings
                 Chart.defaults.color = "#666";
                 Chart.defaults.borderColor = "rgba(0,0,0,0.1)";
                 Chart.defaults.backgroundColor = "rgba(0,0,0,0.1)";
                 Chart.defaults.elements.line.borderColor = "rgba(0,0,0,0.1)";
-                // set toggle in correct state if not already, needed on first load to set based on media or localstorage
-                if (document.getElementById("toggleTheme").checked) {
-                    document.getElementById("toggleTheme").checked = false
-                }
+                // set toggle in correct state if not already, needed on first load
+                if (toggle.checked) toggle.checked = false;
             }
 
             function set_dark_mode() {
                 // bootstrap dark-mode attribute
                 document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "dark");
-                // bootstrap light buttons -> dark
-                document.documentElement.style.setProperty("--bs-body-bg", "rgba(30, 41, 59, 0.9)");
+                // bootstrap background color
+                html.style.setProperty("--bs-body-bg", "rgba(30, 41, 59, 0.9)");
                 // bootstrap buttons dark -> light
-                const buttonsOutlineLight = document.querySelectorAll(".btn-outline-dark")
-                const buttonsLight = document.querySelectorAll(".btn-dark")
-                for (const button of buttonsOutlineLight) {
-                    button.classList.remove("btn-outline-dark");
-                    button.classList.add("btn-outline-light");
-                }
-                for (const button of buttonsLight) {
-                    button.classList.remove("btn-dark");
-                    button.classList.add("btn-light");
-                }
+                swap_button_classes(".btn-outline-dark", "btn-outline-light", ".btn-dark", "btn-light");
                 // chartjs default graph settings
                 Chart.defaults.color = "#eee";
                 Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
                 Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
                 Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
-                if (!document.getElementById("toggleTheme").checked) {
-                    document.getElementById("toggleTheme").checked = true
-                }
+                if (!toggle.checked) toggle.checked = true;
             }
 
+            // detect theme preference
             const theme = localStorage.getItem("theme");
-            const root = document.documentElement;
-            const isDark = root.classList.contains("dark-mode");
+            const isDark = html.classList.contains("dark-mode");
+
             if (theme === "light") {
-                if (isDark) root.classList.remove("dark-mode");
+                if (isDark) html.classList.remove("dark-mode");
                 set_light_mode();
             } else if (theme === "dark") {
-                if (!isDark) root.classList.add("dark-mode");
+                if (!isDark) html.classList.add("dark-mode");
                 set_dark_mode();
             } else {
                 // No theme in localStorage, fall back to system preference
                 if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                    root.classList.add("dark-mode");
+                    html.classList.add("dark-mode");
                     set_dark_mode();
                 } else {
-                    root.classList.remove("dark-mode");
+                    html.classList.remove("dark-mode");
                     set_light_mode();
                 }
             }
@@ -1593,45 +1770,45 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to update the filter row when scrolling
         function setup_scroll_eventlistener() {
-            var scrollTimer, lastScrollFireTime = 0;
-            window.addEventListener("scroll", function (event) {
-                var minScrollTime = 200;
-                var now = new Date().getTime();
-
+            let scrollTimer, lastScrollFireTime = 0;
+            const minScrollTime = 200;
+            let isCollapsed = false;
+            window.addEventListener("scroll", function () {
+                const now = Date.now();
                 function process_scroll() {
-                    var scroll = this.scrollY;
-                    if (scroll > 100) {
-                        document.getElementById("stats").hidden = true
-                        document.getElementById("runsLabel").hidden = true
-                        document.getElementById("runTagLabel").hidden = true
-                        document.getElementById("fromDateLabel").hidden = true
-                        document.getElementById("fromTimeLabel").hidden = true
-                        document.getElementById("toDateLabel").hidden = true
-                        document.getElementById("toTimeLabel").hidden = true
-                        document.getElementById("amountLabel").hidden = true
-                        document.getElementById("filterRowPadding").classList.add("pb-2")
-                    } else {
-                        document.getElementById("stats").hidden = false
-                        document.getElementById("stats").hidden = false
-                        document.getElementById("runsLabel").hidden = false
-                        document.getElementById("runTagLabel").hidden = false
-                        document.getElementById("fromDateLabel").hidden = false
-                        document.getElementById("fromTimeLabel").hidden = false
-                        document.getElementById("toDateLabel").hidden = false
-                        document.getElementById("toTimeLabel").hidden = false
-                        document.getElementById("amountLabel").hidden = false
-                        document.getElementById("filterRowPadding").classList.remove("pb-2")
+                    const scroll = window.scrollY;
+                    if (scroll > 120 && !isCollapsed) {
+                        isCollapsed = true;
+                        document.getElementById("stats").hidden = true;
+                        document.getElementById("runsLabel").hidden = true;
+                        document.getElementById("runTagLabel").hidden = true;
+                        document.getElementById("fromDateLabel").hidden = true;
+                        document.getElementById("fromTimeLabel").hidden = true;
+                        document.getElementById("toDateLabel").hidden = true;
+                        document.getElementById("toTimeLabel").hidden = true;
+                        document.getElementById("amountLabel").hidden = true;
+                        document.getElementById("filterRowPadding").classList.add("pb-2");
+                    } else if (scroll < 80 && isCollapsed) {
+                        isCollapsed = false;
+                        document.getElementById("stats").hidden = false;
+                        document.getElementById("runsLabel").hidden = false;
+                        document.getElementById("runTagLabel").hidden = false;
+                        document.getElementById("fromDateLabel").hidden = false;
+                        document.getElementById("fromTimeLabel").hidden = false;
+                        document.getElementById("toDateLabel").hidden = false;
+                        document.getElementById("toTimeLabel").hidden = false;
+                        document.getElementById("amountLabel").hidden = false;
+                        document.getElementById("filterRowPadding").classList.remove("pb-2");
                     }
                 }
-
                 if (!scrollTimer) {
-                    if (now - lastScrollFireTime > (3 * minScrollTime)) {
-                        process_scroll();   // fire immediately on first scroll
+                    if (now - lastScrollFireTime > 3 * minScrollTime) {
+                        process_scroll();
                         lastScrollFireTime = now;
                     }
                     scrollTimer = setTimeout(function () {
                         scrollTimer = null;
-                        lastScrollFireTime = new Date().getTime();
+                        lastScrollFireTime = Date.now();
                         process_scroll();
                     }, minScrollTime);
                 }
@@ -2003,35 +2180,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 }
             }
 
-            // Graph type defaults (unchanged)
-            const defaultGraphTypes = {
-                runStatisticsGraphType: "percentages",
-                runDonutGraphType: "donut",
-                runDonutTotalGraphType: "donut",
-                runStatsGraphType: "stats",
-                runDurationGraphType: "line",
-                runHeatmapGraphType: "heatmap",
-                suiteFolderDonutGraphType: "donut",
-                suiteStatisticsGraphType: "percentages",
-                suiteDurationGraphType: "line",
-                suiteMostFailedGraphType: "bar",
-                testStatisticsGraphType: "timeline",
-                testDurationGraphType: "line",
-                testDurationDeviationGraphType: "bar",
-                testMessagesGraphType: "timeline",
-                testMostFlakyGraphType: "timeline",
-                testRecentMostFlakyGraphType: "timeline",
-                testMostFailedGraphType: "timeline",
-                testRecentMostFailedGraphType: "timeline",
-                keywordStatisticsGraphType: "percentages",
-                keywordTimesRunGraphType: "bar",
-                keywordTotalDurationGraphType: "line",
-                keywordAverageDurationGraphType: "line",
-                keywordMinDurationGraphType: "bar",
-                keywordMaxDurationGraphType: "bar",
-                keywordMostFailedGraphType: "timeline",
-            };
-
             let storedTypes = localStorage.getItem("graphTypes");
             if (!storedTypes) {
                 localStorage.setItem("graphTypes", JSON.stringify(defaultGraphTypes));
@@ -2114,6 +2262,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             let graphShowItems = "", graphHideItems = "";
             let sectionShowItems = "", sectionHideItems = "";
 
+            const hideItem = `<li class="hideItem list-group-item list-group-item-action d-flex {type}">
+                <div class="hideItemText">{value}</div>
+                <button class="btn btn-sm moveUp"></button>
+                <button class="btn btn-sm moveDown"></button>
+                </li>`
+
             for (let graph of [...graphShow, ...graphHide]) {
                 const element = hideItem.replaceAll("{value}", graph).replaceAll("{type}", "graph");
                 if (graphHide.includes(graph)) {
@@ -2194,127 +2348,99 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         /////////////////////////////
 
         // function to create customized view eventlisteners
-        function setup_customize_view_button_eventlisteners() {
-            // update the theme
-            document.getElementById("toggleTheme").addEventListener("click", function () {
-                toggle_theme()
-            });
+        function setup_settings_eventlisteners() {
+            // function to create setting toggle handlers
+            function create_toggle_handler({ key, elementId, globalVarName, isCheckbox = true, isNumber = false }) {
+                return function (load = false) {
+                    let storage = JSON.parse(localStorage.getItem(key));
+                    const element = document.getElementById(elementId);
 
-            // update all graphs to not have date labels
-            function toggle_labels(load = false) {
-                var storage = JSON.parse(localStorage.getItem("showDateLabels"));
-                const toggle = document.getElementById("toggleLabels")
-                if (!load) {
-                    storage = !storage
-                }
-                if (storage === true) {
-                    showDateLabels = true
-                    toggle.checked = true
-                } else if (storage === false) {
-                    showDateLabels = false
-                    toggle.checked = false
-                } else {
-                    toggle.checked = showDateLabels // first load and default value
-                }
-                localStorage.setItem("showDateLabels", JSON.stringify(showDateLabels));
-                if (!load) { setup_data_and_graphs() }
-            }
-            toggle_labels(true) // run once on load to setup correctly
-            document.getElementById("toggleLabels").addEventListener("click", function () {
-                toggle_labels(false)
-            });
-
-            // helper function to update the legend setting where needed
-            function toggle_legends(load = false) {
-                var storage = JSON.parse(localStorage.getItem("showLegends"));
-                const toggle = document.getElementById("toggleLegends")
-                if (!load) {
-                    storage = !storage
-                }
-                if (storage === true) {
-                    showLegends = true
-                    toggle.checked = true
-                } else if (storage === false) {
-                    showLegends = false
-                    toggle.checked = false
-                } else {
-                    toggle.checked = showLegends // first load and default value
-                }
-                localStorage.setItem("showLegends", JSON.stringify(showLegends));
-                if (!load) { setup_data_and_graphs() }
-            }
-            toggle_legends(true) // run once on load to setup correctly
-            document.getElementById("toggleLegends").addEventListener("click", function () {
-                toggle_legends(false)
-            });
-
-            // update all graphs to not use either aliases or run_starts
-            function toggle_aliases(load = false) {
-                var storage = JSON.parse(localStorage.getItem("showAliases"));
-                const toggle = document.getElementById("toggleAliases")
-                if (!load) {
-                    storage = !storage
-                }
-                if (storage === true) {
-                    showAliases = true
-                    toggle.checked = true
-                } else if (storage === false) {
-                    showAliases = false
-                    toggle.checked = false
-                } else {
-                    toggle.checked = showAliases // first load and default value
-                }
-                localStorage.setItem("showAliases", JSON.stringify(showAliases));
-                if (!load) { setup_data_and_graphs() }
-            }
-            toggle_aliases(true) // run once on load to setup correctly
-            document.getElementById("toggleAliases").addEventListener("click", function () {
-                toggle_aliases(false)
-            });
-
-            // update all graphs to use run_starts with or without milliseconds
-            function toggle_milliseconds(load = false) {
-                var storage = JSON.parse(localStorage.getItem("showMilliseconds"));
-                const toggle = document.getElementById("toggleMilliseconds")
-                if (!load) {
-                    storage = !storage
-                }
-                if (storage === true) {
-                    showMilliseconds = true
-                    toggle.checked = true
-                } else if (storage === false) {
-                    showMilliseconds = false
-                    toggle.checked = false
-                } else {
-                    toggle.checked = showMilliseconds // first load and default value
-                }
-                localStorage.setItem("showMilliseconds", JSON.stringify(showMilliseconds));
-                if (!load) { setup_data_and_graphs() }
-            }
-            toggle_milliseconds(true) // run once on load to setup correctly
-            document.getElementById("toggleMilliseconds").addEventListener("click", function () {
-                toggle_milliseconds(false)
-            });
-
-            // update the max graphs per row limit
-            function toggle_graph_limit(load = false) {
-                var storage = parseInt(JSON.parse(localStorage.getItem("maxGraphsPerRow")));
-                const toggle = document.getElementById("toggleMaxGraphsPerRow")
-                if (load) {
-                    if (storage) { // update from storage if it exists
-                        maxGraphsPerRow = storage
+                    if (load) {
+                        if (isNumber) {
+                            if (storage) window[globalVarName] = parseInt(storage);
+                            element.value = window[globalVarName];
+                        } else {
+                            if (typeof storage === "boolean") window[globalVarName] = storage;
+                            element.checked = window[globalVarName];
+                        }
+                    } else {
+                        if (isNumber) {
+                            window[globalVarName] = parseInt(element.value);
+                        } else {
+                            window[globalVarName] = !window[globalVarName];
+                            element.checked = window[globalVarName];
+                        }
+                        localStorage.setItem(key, JSON.stringify(window[globalVarName]));
+                        setup_data_and_graphs();
                     }
-                    toggle.value = maxGraphsPerRow // on first load always set the toggle to the correct value
-                } else { // not first load so the toggle changed, update value and storage accordingly
-                    maxGraphsPerRow = toggle.value
-                }
-                localStorage.setItem("maxGraphsPerRow", JSON.stringify(maxGraphsPerRow));
-                if (!load) { setup_data_and_graphs() }
+                };
             }
-            toggle_graph_limit(true) // run once on load to setup correctly
-            document.getElementById("toggleMaxGraphsPerRow").addEventListener("change", function () {
-                toggle_graph_limit(false)
+
+            // Declare all toggle handlers
+            const toggle_labels = create_toggle_handler({
+                key: "showDateLabels",
+                elementId: "toggleLabels",
+                globalVarName: "showDateLabels"
             });
+
+            const toggle_legends = create_toggle_handler({
+                key: "showLegends",
+                elementId: "toggleLegends",
+                globalVarName: "showLegends"
+            });
+
+            const toggle_aliases = create_toggle_handler({
+                key: "showAliases",
+                elementId: "toggleAliases",
+                globalVarName: "showAliases"
+            });
+
+            const toggle_milliseconds = create_toggle_handler({
+                key: "showMilliseconds",
+                elementId: "toggleMilliseconds",
+                globalVarName: "showMilliseconds"
+            });
+
+            const toggle_graph_limit = create_toggle_handler({
+                key: "maxGraphsPerRow",
+                elementId: "toggleMaxGraphsPerRow",
+                globalVarName: "maxGraphsPerRow",
+                isCheckbox: false,
+                isNumber: true
+            });
+
+            const toggle_animations = create_toggle_handler({
+                key: "animationEnabled",
+                elementId: "toggleAnimations",
+                globalVarName: "animationEnabled"
+            });
+
+            const toggle_animation_duration = create_toggle_handler({
+                key: "animationDuration",
+                elementId: "toggleAnimationDuration",
+                globalVarName: "animationDuration",
+                isCheckbox: false,
+                isNumber: true
+            });
+
+            // Initial load
+            toggle_labels(true);
+            toggle_legends(true);
+            toggle_aliases(true);
+            toggle_milliseconds(true);
+            toggle_graph_limit(true);
+            toggle_animations(true);
+            toggle_animation_duration(true);
+
+            // Add event listeners
+            document.getElementById("toggleLabels").addEventListener("click", () => toggle_labels());
+            document.getElementById("toggleLegends").addEventListener("click", () => toggle_legends());
+            document.getElementById("toggleAliases").addEventListener("click", () => toggle_aliases());
+            document.getElementById("toggleMilliseconds").addEventListener("click", () => toggle_milliseconds());
+            document.getElementById("toggleMaxGraphsPerRow").addEventListener("change", () => toggle_graph_limit());
+            document.getElementById("toggleAnimations").addEventListener("click", () => toggle_animations());
+            document.getElementById("toggleAnimationDuration").addEventListener("change", () => toggle_animation_duration());
+            document.getElementById("toggleTheme").addEventListener("click", () => toggle_theme());
 
             // update all graphs based on new hidden graphs/sections
             document.getElementById("saveSettings").addEventListener("click", function () {
@@ -2355,13 +2481,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 if (previousFolder == "" && folder == "") { return }
                 create_suite_folder_donut_graph(folder)
             });
-
             // eventlisteners for fullscreen buttons
-            const fullscreenButtons = ["runStatistics", "runDonut", "runStats", "runDuration", "runHeatmap",
-                "suiteFolderDonut", "suiteStatistics", "suiteDuration", "suiteMostFailed", "testStatistics",
-                "testDuration", "testDurationDeviation", "testMessages", "testMostFlaky", "testRecentMostFlaky",
-                "testMostFailed", "testRecentMostFailed", "keywordStatistics", "keywordTimesRun", "keywordTotalDuration",
-                "keywordAverageDuration", "keywordMinDuration", "keywordMaxDuration", "keywordMostFailed"]
             for (let fullscreenButton of fullscreenButtons) {
                 document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", (e) => {
                     lastScrollY = window.scrollY
@@ -2423,32 +2543,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 heatMapHourAll = document.getElementById("heatMapHour").value == "All" ? true : false;
                 create_run_heatmap_graph();
             });
-            // eventlisteners for buttons to change graph views
-            const graphChangeButtons = {
-                "run_statistics": "Percentages,Line,Amount",
-                "run_donut": "Donut",
-                "run_stats": "Stats",
-                "run_duration": "Bar,Line",
-                "run_heatmap": "Heatmap",
-                "suite_folder_donut": "Donut",
-                "suite_statistics": "Percentages,Line,Amount",
-                "suite_duration": "Bar,Line",
-                "suite_most_failed": "Bar,Timeline",
-                "test_duration": "Bar,Line",
-                "test_duration_deviation": "Bar",
-                "test_messages": "Bar,Timeline",
-                "test_most_flaky": "Bar,Timeline",
-                "test_recent_most_flaky": "Bar,Timeline",
-                "test_most_failed": "Bar,Timeline",
-                "test_recent_most_failed": "Bar,Timeline",
-                "keyword_statistics": "Percentages,Line,Amount",
-                "keyword_times_run": "Bar,Line",
-                "keyword_total_duration": "Bar,Line",
-                "keyword_average_duration": "Bar,Line",
-                "keyword_min_duration": "Bar,Line",
-                "keyword_max_duration": "Bar,Line",
-                "keyword_most_failed": "Bar,Timeline"
-            };
 
             function handle_graph_change_type_button_click(graphChangeButton, graphType, camelButtonName) {
                 // Dynamically trigger the graph creation function
@@ -2965,7 +3059,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         const { x, y, v } = ctx.raw;
                         if (heatMapHourAll) {
                             return `Day: ${callbackData[Math.floor(y - 0.5)]}, Hour: ${Math.floor(x - 0.5)}, Amount: ${v}`;
-                        } else { 
+                        } else {
                             return `Day: ${callbackData[Math.floor(y - 0.5)]}, Minute: ${Math.floor(x - 0.5)}, Amount: ${v}`;
                         }
                     }
@@ -4109,26 +4203,29 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // function to retrieve the required graph config for chartjs, based on the different type of graphs
+        // Generate a Chart.js config object based on the graph type and data
         function get_graph_config(graphType, graphData, graphTitle, xTitle, yTitle, dataSets = true) {
-            // Common base config to reduce repetition
+            if (dataSets && graphType === "line") {
+                graphData = { datasets: graphData };
+            }
+
             const baseConfig = {
                 onClick: (event, chartElement) => {
-                    if (chartElement.length) {
-                        open_log_file(event, chartElement)
-                    }
+                    if (chartElement.length) open_log_file(event, chartElement);
                 },
                 normalized: true,
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: {
-                    delay: (context) => {
-                        const dataLength = context.chart.data.datasets.reduce((largest, current) =>
-                            current.data.length > largest.data.length ? current : largest
-                        ).data.length;
-                        const delay = 1500 / dataLength;
-                        return context.dataIndex * delay;
-                    },
-                },
+                animation: animationEnabled
+                    ? {
+                        delay: (ctx) => {
+                            const dataLength = ctx.chart.data.datasets.reduce(
+                                (a, b) => (b.data.length > a.data.length ? b : a)
+                            ).data.length;
+                            return ctx.dataIndex * (animationDuration / dataLength);
+                        },
+                    }
+                    : false,
                 plugins: {
                     title: {
                         display: true,
@@ -4139,42 +4236,32 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     },
                 },
             };
-            // Common scales configuration
+
             const commonScales = {
                 x: {
-                    title: {
-                        display: true,
-                        text: xTitle,
-                    },
+                    title: { display: true, text: xTitle },
                     ticks: {
                         minRotation: 45,
                         maxRotation: 45,
-                        callback: function (value, index) {
+                        callback(value) {
                             return this.getLabelForValue(value).slice(0, 40);
                         },
                     },
                 },
                 y: {
-                    title: {
-                        display: true,
-                        text: yTitle,
-                    },
+                    title: { display: true, text: yTitle },
                     beginAtZero: true,
                     grace: "5%",
                     ticks: {
-                        callback: function (value, index) {
+                        callback(value) {
                             return this.getLabelForValue(value).slice(0, 40);
                         },
                     },
                 },
             };
-            if (dataSets && graphType == "line") {
-                graphData = { datasets: graphData };
-            }
-            var config
-            // Configuration for "line" graph
-            if (graphType === "line") {
-                config = {
+
+            const configMap = {
+                line: () => ({
                     type: "line",
                     data: graphData,
                     options: {
@@ -4184,57 +4271,40 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                             x: {
                                 ...commonScales.x,
                                 type: "time",
-                                time: {
-                                    tooltipFormat: "dd.MM.yyyy HH:mm:ss",
-                                },
+                                time: { tooltipFormat: "dd.MM.yyyy HH:mm:ss" },
                                 ticks: {
+                                    ...commonScales.x.ticks,
                                     maxTicksLimit: 10,
-                                    minRotation: 45,
-                                    maxRotation: 45,
-                                    callback: function (value, index) {
-                                        return this.getLabelForValue(value).slice(0, 40);
-                                    },
                                 },
                             },
                         },
                     },
-                };
-            }
-            // Configuration for "bar" graph
-            if (graphType === "bar") {
-                config = {
+                }),
+                bar: () => ({
                     type: "bar",
                     data: graphData,
                     options: {
                         ...baseConfig,
                         scales: {
                             ...commonScales,
-                            y: {
-                                ...commonScales.y,
-                                stacked: true,
-                            },
+                            y: { ...commonScales.y, stacked: true },
                         },
-                        interaction: {
-                            mode: "x",
-                        },
+                        interaction: { mode: "x" },
                         plugins: {
                             ...baseConfig.plugins,
                             tooltip: {
-                                filter: (tooltipItem) => tooltipItem.dataset.data[tooltipItem.dataIndex] > 0,
+                                filter: (item) => item.dataset.data[item.dataIndex] > 0,
                             },
                             datalabels: {
-                                color: "#000000",
+                                color: "#000",
                                 align: "center",
                                 anchor: "center",
-                                formatter: (value) => value > 0 ? value : null,
+                                formatter: (val) => (val > 0 ? val : null),
                             },
                         },
                     },
-                };
-            }
-            // Configuration for "timeline" graph
-            if (graphType === "timeline") {
-                config = {
+                }),
+                timeline: () => ({
                     type: "bar",
                     data: graphData,
                     options: {
@@ -4242,23 +4312,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         indexAxis: "y",
                         scales: {
                             ...commonScales,
-                            y: {
-                                ...commonScales.y,
-                                stacked: true,
-                            },
+                            y: { ...commonScales.y, stacked: true },
                         },
                         plugins: {
                             ...baseConfig.plugins,
-                            legend: {
-                                display: false,
-                            },
+                            legend: { display: false },
                         },
                     },
-                };
-            }
-            // Configuration for "boxplot" graph
-            if (graphType === "boxplot") {
-                config = {
+                }),
+                boxplot: () => ({
                     type: "boxplot",
                     data: graphData,
                     options: {
@@ -4267,169 +4329,135 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                             ...commonScales,
                             x: {
                                 ...commonScales.x,
-                                ticks: {
-                                    minRotation: 45,
-                                    maxRotation: 45,
-                                    callback: function (value, index) {
-                                        return this.getLabelForValue(value).slice(0, 40);
-                                    },
-                                },
+                                ticks: commonScales.x.ticks,
                             },
                         },
                         plugins: {
                             ...baseConfig.plugins,
-                            tooltip: {
-                                enabled: true,
-                            },
-                            legend: {
-                                display: false,
-                            },
+                            tooltip: { enabled: true },
+                            legend: { display: false },
                         },
                     },
-                };
-            }
-            if (graphType == "donut") {
-                config = {
+                }),
+                donut: () => ({
                     type: "doughnut",
                     data: graphData,
                     options: {
                         ...baseConfig,
-                        animation: {
-                            duration: 2000,
-                        },
+                        animation: animationEnabled ? { duration: animationDuration } : false,
                         radius: "90%",
                         plugins: {
                             ...baseConfig.plugins,
                             tooltip: {
                                 callbacks: {
                                     title: function (tooltipItem) {
-                                        if (tooltipItem[0].element.$datalabels[0]._model) {
-                                            return tooltipItem[0].element.$datalabels[0]._model.lines[0];
-                                        } else {
-                                            return `${tooltipItem[0].label}: ${tooltipItem[0].formattedValue}`
-                                        }
-                                    }
-                                }
+                                        const label = tooltipItem[0].label;
+                                        const value = tooltipItem[0].formattedValue;
+                                        const datalabelModel = tooltipItem[0].element?.$datalabels?.[0]?._model;
+                                        return datalabelModel?.lines?.[0] || `${label}: ${value}`;
+                                    },
+                                },
                             },
                             legend: {
                                 display: true,
                                 labels: {
-                                    generateLabels: function (chart) {
+                                    generateLabels(chart) {
                                         const dataset = chart.data.datasets[0];
                                         const meta = chart.getDatasetMeta(0);
                                         const labels = chart.data.labels;
-                                        const defaultColor = Chart.defaults.color;
 
                                         return labels.map((label, i) => {
                                             const style = meta.controller.getStyle(i);
-                                            const isHidden = !chart.isDatasetVisible(0) || meta.data[i].hidden;
+                                            const hidden = !chart.isDatasetVisible(0) || meta.data[i].hidden;
 
                                             return {
-                                                text: label.split('.').pop(),
+                                                text: label.split(".").pop(),
                                                 fillStyle: style.backgroundColor,
                                                 strokeStyle: style.borderColor,
                                                 lineWidth: style.borderWidth,
-                                                lineCap: style.borderCapStyle || 'butt',
+                                                lineCap: style.borderCapStyle || "butt",
                                                 lineDash: style.borderDash || [],
                                                 lineDashOffset: style.borderDashOffset || 0,
-                                                pointStyle: style.pointStyle || 'circle',
+                                                pointStyle: style.pointStyle || "circle",
                                                 rotation: style.rotation || 0,
-                                                hidden: isHidden,
+                                                hidden,
                                                 index: i,
                                                 datasetIndex: 0,
-                                                fontColor: defaultColor,
-                                                hidden: chart._hiddenIndices?.[i] ?? false,
+                                                fontColor: Chart.defaults.color,
                                             };
                                         });
-                                    }
+                                    },
                                 },
                             },
                             datalabels: {
                                 ...dataLabelConfig,
                                 align: "center",
                                 anchor: "center",
-                                formatter: function (value, context) {
-                                    if (value == 0) { return null }
+                                formatter(value, context) {
+                                    if (value === 0) return null;
                                     const total = graphData.datasets[0].data.reduce((a, b) => a + b, 0);
                                     const percentage = Math.round((value / total) * 100);
-                                    if (percentage <= 5) { return null }
-                                    const label = graphData.labels[context.dataIndex].split(".").pop()
+                                    if (percentage <= 5) return null;
+                                    const label = graphData.labels[context.dataIndex].split(".").pop();
                                     return `${label}: ${value} (${percentage}%)`;
-                                }
+                                },
                             },
                         },
                     },
-                };
-            }
-            if (graphType == 'heatmap') {
-                config = {
-                    type: 'matrix',
+                }),
+                heatmap: () => ({
+                    type: "matrix",
                     data: graphData,
                     options: {
                         ...baseConfig,
                         scales: {
                             x: {
-                                type: 'linear',
-                                position: 'bottom',
+                                type: "linear",
+                                position: "bottom",
                                 min: 0,
                                 max: heatMapHourAll ? 24 : 60,
                                 offset: false,
-                                grid: {
-                                    display: true,
-                                    drawTicks: true,
-                                    tickLength: 8,
-                                },
+                                grid: { display: true, drawTicks: true, tickLength: 8 },
                                 ticks: {
                                     minRotation: 45,
                                     maxRotation: 45,
                                     stepSize: 1,
-                                    callback: function (val) {
-                                        if (heatMapHourAll) {
-                                            return `${val}:00`
-                                        } else {
-                                            const hour = document.getElementById('heatMapHour').value;
-                                            return `${('0'+hour).slice(-2)}:${('0'+val).slice(-2)}`
-                                        }
+                                    callback: (val) => {
+                                        if (heatMapHourAll) return `${val}:00`;
+                                        const hour = document.getElementById("heatMapHour").value;
+                                        return `${("0" + hour).slice(-2)}:${("0" + val).slice(-2)}`;
                                     },
                                 },
                                 title: {
                                     display: true,
-                                    text: heatMapHourAll ? 'Hour' : "Minute",
-                                }
+                                    text: heatMapHourAll ? "Hour" : "Minute",
+                                },
                             },
                             y: {
-                                type: 'linear',
+                                type: "linear",
                                 reverse: true,
                                 min: 0,
                                 max: 7,
                                 offset: false,
-                                grid: {
-                                    display: true,
-                                    drawTicks: true,
-                                    tickLength: 8,
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Day'
-                                }
-                            }
+                                grid: { display: true, drawTicks: true, tickLength: 8 },
+                                title: { display: true, text: "Day" },
+                            },
                         },
                         plugins: {
                             ...baseConfig.plugins,
-                            legend: {
-                                display: false
-                            },
-                        }
-                    }
-                }
-            }
+                            legend: { display: false },
+                        },
+                    },
+                }),
+            };
+
+            const config = configMap[graphType]?.();
+            // Global legend toggle
             if (!showLegends) {
-                config.options = config.options || {};
-                config.options.plugins = config.options.plugins || {};
                 config.options.plugins.legend = config.options.plugins.legend || {};
                 config.options.plugins.legend.display = false;
             }
-            return config
+            return config;
         }
 
         // helper function to more easily use the logic of filtering suite graph data based on the selected filters
@@ -4813,7 +4841,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     const key = `${x},${y}`;
                     counts.set(key, (counts.get(key) || 0) + 1);
                 }
-                
+
             }
             const data = Array.from(counts.entries()).map(([key, count]) => {
                 const [x, y] = key.split(',').map(Number);
@@ -4826,7 +4854,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 Failed: [206, 62, 1], // Red
             };
             const colorRGB = baseColors[type] || baseColors['All'];
-            if (data.length == 0) { return [[], []]}
+            if (data.length == 0) { return [[], []] }
             const graphData = {
                 datasets: [{
                     label: 'Test Execution Heatmap',
@@ -4835,7 +4863,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         const v = ctx.dataset.data[ctx.dataIndex].v;
                         const maxV = Math.max(...ctx.dataset.data.map(d => d.v));
                         let alpha = v / maxV;
-                        alpha = Math.max(alpha, 0.2); 
+                        alpha = Math.max(alpha, 0.2);
                         return `rgba(${colorRGB[0]}, ${colorRGB[1]}, ${colorRGB[2]}, ${alpha})`;
                     },
                     width: ({ chart }) => (chart.chartArea?.width || 0) / (heatMapHourAll ? 24 : 60) - 1,
@@ -5668,7 +5696,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             setup_theme();
             setup_stats();
             setup_information_icons();
-            setup_customize_view_button_eventlisteners();
+            setup_settings_eventlisteners();
             setup_customize_view_arrow_eventlisteners();
             setup_customize_view_local_storage();
             setup_customize_view_content();
