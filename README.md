@@ -56,6 +56,8 @@ The Dashboard will provide information across your runs across all levels.
 - Show/hide graph labels (run_starts or aliases)
 - Show/hide graph alias labels (instead of default run_starts)
 - Show/hide milliseconds in run_start labels
+- Show/hide graph animations
+- Set the duration of the graph animations
 - Set maximum graphs per row to 1, 2, 3 or 4
 
 ### Availabel Filters/Graphs
