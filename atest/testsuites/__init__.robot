@@ -7,7 +7,7 @@ Suite Teardown    Run Teardown Only Once    keyword=Teardown
 *** Keywords ***
 Teardown
     Remove Index
-    Move All Screenshots
+    # Move All Screenshots
 
 Remove Index
     Remove File    path=index.txt
