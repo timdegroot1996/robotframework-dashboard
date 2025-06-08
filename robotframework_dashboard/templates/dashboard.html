@@ -346,7 +346,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-auto">
+                        <div class="col-1">
                             <label class="form-label form-label-sm" for="runs" id="runsLabel">Runs</label>
                             <select class="form-select form-select-sm" id="runs"></select>
                         </div>
@@ -385,6 +385,10 @@
                             <input class="form-control form-control-sm" type="number" min=0 id="amount"
                                 title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
                                 value="10">
+                        </div>
+                        <div class="col-1" id="metadataFilter" hidden>
+                            <label class="form-label form-label-sm" for="metadata" id="metadataLabel">Metadata</label>
+                            <select class="form-select form-select-sm" id="metadata"></select>
                         </div>
                         <div class="col-auto d-flex">
                             <button class="btn btn-outline-light btn-sm mt-auto" id="resetFilters">Reset
@@ -1118,7 +1122,7 @@
                         <div class="row">
                             <div class="col-6 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleAnimationDuration">Graphs: Animation
-                                    Duration (milliseconds)</label>
+                                    Duration (Milliseconds)</label>
                             </div>
                             <div class="col-1 ps-0 mt-1">
                                 <input class="form-control form-control-sm" type="number"
@@ -1667,7 +1671,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         });
 
         // All possible button types
-        const buttonTypes = ["Bar", "Line", "Timeline", "Percentages", "Amount", "Donut", "Stats", "Heatmap"]; 
+        const buttonTypes = ["Bar", "Line", "Timeline", "Percentages", "Amount", "Donut", "Stats", "Heatmap"];
 
         /////////////////////////////
         // GENERIC SETUP FUNCTIONS //
@@ -1790,6 +1794,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         document.getElementById("toDateLabel").hidden = true;
                         document.getElementById("toTimeLabel").hidden = true;
                         document.getElementById("amountLabel").hidden = true;
+                        document.getElementById("metadataLabel").hidden = true;
                         document.getElementById("filterRowPadding").classList.add("pb-2");
                     } else if (scroll < 80 && isCollapsed) {
                         isCollapsed = false;
@@ -1801,6 +1806,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         document.getElementById("toDateLabel").hidden = false;
                         document.getElementById("toTimeLabel").hidden = false;
                         document.getElementById("amountLabel").hidden = false;
+                        document.getElementById("metadataLabel").hidden = false;
                         document.getElementById("filterRowPadding").classList.remove("pb-2");
                     }
                 }
@@ -2467,7 +2473,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // function to setup eventlisteners for filter buttons
         function setup_eventlisteners_filter_buttons() {
             // eventlisteners for filters (runTags is done separately because of different usage)
-            const filters = ["runs", "fromDate", "fromTime", "toDate", "toTime", "amount"]
+            const filters = ["runs", "fromDate", "fromTime", "toDate", "toTime", "amount", "metadata"]
             for (let f of filters) {
                 document.getElementById(f).addEventListener("change", setup_data_and_graphs);
             }
@@ -2588,6 +2594,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 document.getElementById("runs").value = "All";
                 document.getElementById("runTag").value = "All";
                 document.getElementById("amount").value = filteredAmountDefault;
+                document.getElementById("metadata").value = "All";
                 setup_lowest_highest_dates(runs);
                 setup_data_and_graphs();
             });
@@ -2692,6 +2699,28 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById("fromTime").value = lowest.toISOString().split("T")[1].substring(0, 5);
             document.getElementById("toDate").value = highest.toISOString().split("T")[0];
             document.getElementById("toTime").value = highest.toISOString().split("T")[1].substring(0, 5);
+        }
+
+        // function to setup metadata filter if there is metadata in the data
+        function setup_metadata_filter() {
+            var metadataItems = new Set();
+            for (const run of runs) {
+                const jsonStr = run.metadata.replace(/'/g, '"');
+                const parsed = JSON.parse(jsonStr);
+                parsed.forEach(item => metadataItems.add(item));
+            }
+            metadataItems = Array.from(metadataItems).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+            const metadataFilter = document.getElementById("metadataFilter");
+            if (metadataItems.length > 0) {
+                metadataFilter.hidden = false;
+                const optionsHtml = metadataItems
+                    .map(label => `<option value="${label}">${label}</option>`)
+                    .join("");
+                const metadataSelect = document.getElementById("metadata");
+                metadataSelect.innerHTML = `<option value="All">All</option>` + optionsHtml;
+            } else {
+                metadataFilter.hidden = true;
+            }
         }
 
         // function to update the available runs to select in the filters
@@ -2933,6 +2962,19 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             return filteredRuns
         }
 
+        // function to filter the runs based on the selected metadata key:value pair
+        function filter_metadata(filteredRuns) {
+            const selectedMetadata = document.getElementById("metadata").value;
+            if (selectedMetadata == '' || selectedMetadata == 'All') return filteredRuns;
+            var filteredData = []
+            for (const run of filteredRuns) {
+                if (run.metadata.includes(selectedMetadata)) {
+                    filteredData.push(run)
+                }
+            }
+            return filteredData
+        }
+
         // function to filter suites/tests/keywords based on the already filtered runs
         function filter_data(data) {
             var validRunStarts = [];
@@ -3093,6 +3135,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     run.start_time,
                     run.tags,
                     run.run_alias,
+                    run.metadata,
                 ]);
             }
             runTable = new DataTable("#runTable", {
@@ -3111,7 +3154,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     { title: "elapsed_s" },
                     { title: "start_time" },
                     { title: "tags" },
-                    { title: "alias" }
+                    { title: "alias" },
+                    { title: "metadata" },
                 ],
                 data: data,
             });
@@ -5474,6 +5518,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             filteredRuns = filter_runtags(filteredRuns);
             filteredRuns = filter_dates(filteredRuns);
             filteredRuns = filter_amount(filteredRuns);
+            filteredRuns = filter_metadata(filteredRuns);
             // filter suites and tests based on filtered runs
             filteredSuites = filter_data(filteredSuites);
             filteredTests = filter_data(filteredTests);
@@ -5706,6 +5751,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             setup_eventlisteners_section_filter_buttons();
             setup_run_amount_filter();
             setup_lowest_highest_dates();
+            setup_metadata_filter();
             setup_runs_in_select_filter_buttons();
             setup_runtags_in_select_filter_buttons();
             setup_data_and_graphs();

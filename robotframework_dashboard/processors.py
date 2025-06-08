@@ -2,10 +2,12 @@ from robot.api import ExecutionResult, ResultVisitor
 from robot.result.model import TestCase, TestSuite, Keyword
 from datetime import datetime
 from pathlib import Path
+from re import sub
 
 
 class OutputProcessor:
     """This class creates an output processor that collects all the relevant data for the database"""
+
     def __init__(self, output_path: Path):
         self.output_path = output_path
         self.execution_result = ExecutionResult(output_path)
@@ -39,8 +41,11 @@ class OutputProcessor:
         self.execution_result.visit(RunProcessor(self.generation_time, run_list))
         self.execution_result.visit(SuiteProcessor(self.generation_time, suite_list))
         self.execution_result.visit(TestProcessor(self.generation_time, test_list))
-        self.execution_result.visit(KeywordProcessor(self.generation_time, keyword_list))
+        self.execution_result.visit(
+            KeywordProcessor(self.generation_time, keyword_list)
+        )
         average_keyword_list = self.calculate_keyword_averages(keyword_list)
+        run_list, suite_list = self.merge_run_and_suite_metadata(run_list, suite_list)
         return {
             "runs": run_list,
             "suites": suite_list,
@@ -93,6 +98,38 @@ class OutputProcessor:
             )
         return average_keyword_list
 
+    def merge_run_and_suite_metadata(self, run_list: list, suite_list: list):
+        new_suite_list = []
+        suite_metadata_items = []
+
+        def clean_metadata_value(s):
+            s = s.replace("'", "")
+            s = s.replace('"', "")
+            return s
+
+        for suite in suite_list:
+            for k, v in suite[-1].items():
+                cleaned_key = clean_metadata_value(str(k))
+                cleaned_value = clean_metadata_value(str(v))
+                suite_metadata_items.append(f"{cleaned_key}: {cleaned_value}")
+            suite = suite[:-1]
+            new_suite_list.append(suite)
+
+        run_metadata = run_list[0][-1]
+        run_metadata_items = []
+        for k, v in run_metadata.items():
+            cleaned_key = clean_metadata_value(str(k))
+            cleaned_value = clean_metadata_value(str(v))
+            run_metadata_items.append(f"{cleaned_key}: {cleaned_value}")
+        run_metadata_items += suite_metadata_items
+
+        # Convert tuple to list, update last element, then back to tuple
+        run = list(run_list[0])
+        run[-1] = str(list(set(run_metadata_items)))
+        run_list[0] = tuple(run)
+
+        return run_list, new_suite_list
+
 
 class RunProcessor(ResultVisitor):
     """Processer to get the run data"""
@@ -129,6 +166,7 @@ class RunProcessor(ResultVisitor):
                 stats.skipped,
                 elapsed_time,
                 start_time,
+                suite.metadata,
             )
         )
 
@@ -173,6 +211,7 @@ class SuiteProcessor(ResultVisitor):
                     elapsed_time,
                     start_time,
                     suite.id,
+                    suite.metadata,
                 )
             )
 

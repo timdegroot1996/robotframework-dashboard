@@ -1,4 +1,4 @@
-CREATE_RUNS = """ CREATE TABLE IF NOT EXISTS runs ("run_start" TEXT, "full_name" TEXT, "name" TEXT, "total" INTEGER, "passed" INTEGER, "failed" INTEGER, "skipped" INTEGER, "elapsed_s" TEXT, "start_time" TEXT, "tags" TEXT, "run_alias" TEXT, "path" TEXT, unique(run_start, full_name)); """
+CREATE_RUNS = """ CREATE TABLE IF NOT EXISTS runs ("run_start" TEXT, "full_name" TEXT, "name" TEXT, "total" INTEGER, "passed" INTEGER, "failed" INTEGER, "skipped" INTEGER, "elapsed_s" TEXT, "start_time" TEXT, "tags" TEXT, "run_alias" TEXT, "path" TEXT, "metadata" TEXT, unique(run_start, full_name)); """
 CREATE_SUITES = """ CREATE TABLE IF NOT EXISTS suites ("run_start" TEXT, "full_name" TEXT, "name" TEXT, "total" INTEGER, "passed" INTEGER, "failed" INTEGER, "skipped" INTEGER, "elapsed_s" TEXT, "start_time" TEXT, "run_alias" TEXT, "id" TEXT); """
 CREATE_TESTS = """ CREATE TABLE IF NOT EXISTS tests ("run_start" TEXT, "full_name" TEXT, "name" TEXT, "passed" INTEGER, "failed" INTEGER, "skipped" INTEGER, "elapsed_s" TEXT, "start_time" TEXT, "message" TEXT, "tags" TEXT, "run_alias" TEXT, "id" TEXT); """
 CREATE_KEYWORDS = """ CREATE TABLE IF NOT EXISTS keywords ("run_start" TEXT, "name" TEXT, "passed" INTEGER, "failed" INTEGER, "skipped" INTEGER, "times_run" TEXT, "total_time_s" TEXT, "average_time_s" TEXT, "min_time_s" TEXT, "max_time_s" TEXT, "run_alias" TEXT); """
@@ -9,6 +9,7 @@ RUN_TABLE_EXISTS = (
 RUN_TABLE_LENGTH = """PRAGMA table_info(runs);"""
 RUN_TABLE_UPDATE_ALIAS = """ALTER TABLE runs ADD COLUMN run_alias TEXT;"""
 RUN_TABLE_UPDATE_PATH = """ALTER TABLE runs ADD COLUMN path TEXT;"""
+RUN_TABLE_UPDATE_METADATA = """ALTER TABLE runs ADD COLUMN metadata TEXT;"""
 
 SUITE_TABLE_LENGTH = """PRAGMA table_info(suites);"""
 SUITE_TABLE_UPDATE_ALIAS = """ALTER TABLE suites ADD COLUMN run_alias TEXT;"""
@@ -22,7 +23,7 @@ TEST_TABLE_UPDATE_ID = """ALTER TABLE tests ADD COLUMN id TEXT;"""
 KEYWORD_TABLE_LENGTH = """PRAGMA table_info(keywords);"""
 KEYWORD_TABLE_UPDATE_ALIAS = """ALTER TABLE keywords ADD COLUMN run_alias TEXT;"""
 
-INSERT_INTO_RUNS = """ INSERT INTO runs VALUES (?,?,?,?,?,?,?,?,?,?,?,?) """
+INSERT_INTO_RUNS = """ INSERT INTO runs VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) """
 INSERT_INTO_SUITES = """ INSERT INTO suites VALUES (?,?,?,?,?,?,?,?,?,?,?) """
 INSERT_INTO_TESTS = """ INSERT INTO tests VALUES (?,?,?,?,?,?,?,?,?,?,?,?) """
 INSERT_INTO_KEYWORDS = """ INSERT INTO keywords VALUES (?,?,?,?,?,?,?,?,?,?,?) """

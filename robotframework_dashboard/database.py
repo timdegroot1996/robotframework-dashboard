@@ -55,6 +55,7 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
             # run/suite/test/keyword: run_alias added in 0.6.0
             # run: path added in 0.8.1
             # suite/test: id was added in 0.8.4
+            # run: metadata was added in 0.9.5
             run_table_length = get_runs_length()
             if run_table_length == 10:
                 self.connection.cursor().execute(RUN_TABLE_UPDATE_ALIAS)
@@ -62,6 +63,10 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
                 run_table_length = get_runs_length()
             if run_table_length == 11:
                 self.connection.cursor().execute(RUN_TABLE_UPDATE_PATH)
+                self.connection.commit()
+                run_table_length = get_runs_length()
+            if run_table_length == 12:
+                self.connection.cursor().execute(RUN_TABLE_UPDATE_METADATA)
                 self.connection.commit()
                 run_table_length = get_runs_length()
 
@@ -123,10 +128,9 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         """Helper function to insert the run data with the run tags"""
         full_runs = []
         for run in runs:
-            run += (",".join(tags),)
-            run += (run_alias,)
-            run += (str(path),)
-            full_runs.append(run)
+            *rest, last = run
+            new_run = tuple(rest) + (",".join(tags), run_alias, str(path)) + (last,)
+            full_runs.append(new_run)
         self.connection.executemany(INSERT_INTO_RUNS, full_runs)
         self.connection.commit()
 
