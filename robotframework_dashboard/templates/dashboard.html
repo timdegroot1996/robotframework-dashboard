@@ -178,7 +178,7 @@
             padding: 8px 12px;
             border-radius: 8px;
             top: calc(100% + 8px);
-            right: -90px;
+            right: -70px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             opacity: 0;
             border: 1px solid #1e293b;
@@ -355,14 +355,15 @@
                             <h1>"placeholder_dashboard_title"</h1>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-1">
-                            <label class="form-label form-label-sm" for="runs" id="runsLabel">Runs</label>
+                    <div class="row ps-1">
+                        <div class="col-auto mt-1 ps-2 pe-2">
+                            <label class="form-label form-label-sm mb-0" for="runs" id="runsLabel">Runs</label>
                             <select class="form-select form-select-sm" id="runs"></select>
                         </div>
-                        <div class="col-auto">
+                        <div class="col-auto mt-1 ps-2 pe-2" id="runTagFilter">
                             <div class="selectBox" id="selectRunTags">
-                                <label class="form-label form-label-sm" for="runTag" id="runTagLabel">Run Tags</label>
+                                <label class="form-label form-label-sm mb-0" for="runTag" id="runTagLabel">Run
+                                    Tags</label>
                                 <select class="form-select form-select-sm">
                                     <option>Select Tags</option>
                                 </select>
@@ -372,45 +373,47 @@
                                 <ul class="list-group" id="runTag"></ul>
                             </div>
                         </div>
-                        <div class="col-auto">
-                            <label class="form-label form-label-sm" for="fromDate" id="fromDateLabel">From Date</label>
+                        <div class="col-auto mt-1 ps-2 pe-2">
+                            <label class="form-label form-label-sm mb-0" for="fromDate" id="fromDateLabel">From
+                                Date</label>
                             <input class="form-control form-control-sm" id="fromDate" type="date" />
                         </div>
-                        <div class="col-auto">
-                            <label class="form-label form-label-sm" for="fromTime" id="fromTimeLabel">From Time</label>
+                        <div class="col-auto mt-1 ps-2 pe-2">
+                            <label class="form-label form-label-sm mb-0" for="fromTime" id="fromTimeLabel">From
+                                Time</label>
                             <input class="form-control form-control-sm" id="fromTime" type="time" />
                         </div>
-                        <div class="col-auto">
-                            <label class="form-label form-label-sm" for="toDate" id="toDateLabel">To Date</label>
+                        <div class="col-auto mt-1 ps-2 pe-2">
+                            <label class="form-label form-label-sm mb-0" for="toDate" id="toDateLabel">To Date</label>
                             <input class="form-control form-control-sm" id="toDate" type="date" />
                         </div>
-                        <div class="col-auto">
-                            <label class="form-label form-label-sm" for="toTime" id="toTimeLabel">To Time</label>
+                        <div class="col-auto mt-1 ps-2 pe-2">
+                            <label class="form-label form-label-sm mb-0" for="toTime" id="toTimeLabel">To Time</label>
                             <input class="form-control form-control-sm" id="toTime" type="time" />
                         </div>
-                        <div class="col-auto">
-                            <label class="form-label form-label-sm" for="amount" id="amountLabel"
-                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">Run
-                                Amount</label>
+                        <div class="col-auto mt-1 ps-2 pe-2">
+                            <label class="form-label form-label-sm mb-0" for="amount" id="amountLabel"
+                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">Amount</label>
                             <input class="form-control form-control-sm" type="number" min=0 id="amount"
                                 title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
                                 value="10">
                         </div>
-                        <div class="col-1" id="metadataFilter" hidden>
-                            <label class="form-label form-label-sm" for="metadata" id="metadataLabel">Metadata</label>
+                        <div class="col-auto mt-1 ps-2 pe-2" id="metadataFilter" hidden>
+                            <label class="form-label form-label-sm mb-0" for="metadata"
+                                id="metadataLabel">Metadata</label>
                             <select class="form-select form-select-sm" id="metadata"></select>
                         </div>
-                        <div class="col-auto d-flex">
+                        <div class="col-auto mt-1 ps-2 pe-2 d-flex">
                             <button class="btn btn-outline-light btn-sm mt-auto" id="resetFilters">Reset
                                 Filters</button>
                         </div>
-                        <div class="col-auto d-flex">
+                        <div class="col-auto mt-1 ps-2 pe-2 d-flex">
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto" data-bs-toggle="modal"
                                 data-bs-target="#hideModal" id="customizeView">
                                 Settings
                             </button>
                         </div>
-                        <div class="col-auto btn-group" role="group" id="sectionIndicator">
+                        <div class="col-auto mt-1 ps-2 pe-2 btn-group" role="group" id="sectionIndicator">
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto"
                                 data-target="runStatisticsSection">Runs</button>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto"
@@ -422,7 +425,7 @@
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto"
                                 data-target="compareStatisticsSection">Compare</button>
                         </div>
-                        <div class="col-auto mt-auto">
+                        <div class="col-auto mt-1 ps-2 pe-2 d-flex">
                             <a href="/">
                                 <button class="btn btn-outline-light btn-sm" id="openDashboard" hidden>Open Admin
                                     Page</button>
@@ -2806,6 +2809,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         function setup_metadata_filter() {
             var metadataItems = new Set();
             for (const run of runs) {
+                if (!run.metadata) continue;
                 const jsonStr = run.metadata.replace(/'/g, '"');
                 const parsed = JSON.parse(jsonStr);
                 parsed.forEach(item => metadataItems.add(item));
@@ -2867,7 +2871,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const tagsSelect = document.getElementById("runTag");
             tagsSelect.innerHTML = andOrTags + listItems;
             document.getElementById("All").checked = true;
-
+            if (tags.length > 0) {
+                document.getElementById("runTagFilter").hidden = false
+            } else {
+                document.getElementById("runTagFilter").hidden = true
+            }
         }
 
         // function to update the available runs in the selects
