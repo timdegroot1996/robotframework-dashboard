@@ -426,7 +426,7 @@
                                 data-target="compareStatisticsSection">Compare</button>
                         </div>
                         <div class="col-auto mt-1 ps-2 pe-2 d-flex">
-                            <a href="/">
+                            <a class="mt-auto" href="/">
                                 <button class="btn btn-outline-light btn-sm" id="openDashboard" hidden>Open Admin
                                     Page</button>
                             </a>
@@ -631,6 +631,8 @@
                     </div>
                 </div>
             </div>
+            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card compareData -->
+            <div id="compareDataHidden" hidden></div>
             <div class="card-body collapse show" id="compareData"></div>
         </div>
 
@@ -1292,6 +1294,12 @@
                 information: `This graph displays the statistics of the tests in a timeline format.`,
                 html: `<div class="col canvas canvas-vertical" id="testStatisticsCanvas">
                     <div id="testStatisticsVertical">
+                        <div class="btn-group me-1">
+                            <label class="form-check-label mb-3" for="testOnlyChanges">Only Changes</label>
+                        </div>
+                        <div class="btn-group form-switch me-1">
+                            <input class="form-check-input mb-3" type="checkbox" role="switch" id="testOnlyChanges">
+                        </div>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
                             id="testStatisticsGraphTimeline">Timeline</button>
                         <button class="btn btn-outline-light btn-sm mb-3 mt-1"
@@ -1692,21 +1700,30 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 </div>`,
             },
             {
-                key: "compareDetails",
-                label: "Compare Details",
-                defaultType: "bar",
-                viewOptions: ["Bar"],
+                key: "compareTests",
+                label: "Compare Tests",
+                defaultType: "timeline",
+                viewOptions: ["Timeline"],
                 hasFullscreenButton: true,
                 information: `Some information that shows on the popup`,
-                html: `<div class="col canvas pb-5" id="compareDetailsCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareDetailsGraphBar">Bar</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="compareDetailsFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareDetailsClose"
-                        hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="compareDetailsInformation"></button>
-                    <canvas id="compareDetailsGraph"></canvas>
+                html: `<div class="col canvas canvas-vertical" id="compareTestsCanvas">
+                    <div id="compareTestsVertical">
+                        <div class="btn-group me-1">
+                            <label class="form-check-label mb-3" for="compareOnlyChanges">Only Changes</label>
+                        </div>
+                        <div class="btn-group form-switch me-1">
+                            <input class="form-check-input mb-3" type="checkbox" role="switch" id="compareOnlyChanges">
+                        </div>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                            id="compareTestsGraphTimeline">Timeline</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                            id="compareTestsFullscreen">Fullscreen</button>
+                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareTestsClose"
+                            hidden>Close</button>
+                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                            id="compareTestsInformation"></button>
+                        <canvas id="compareTestsGraph"></canvas>
+                    </div>
                 </div>`,
             },
         ];
@@ -2645,6 +2662,13 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 heatMapHourAll = document.getElementById("heatMapHour").value == "All" ? true : false;
                 create_run_heatmap_graph();
             });
+            document.getElementById("testOnlyChanges").addEventListener("change", () => {
+                create_test_statistics_graph();
+            });
+            document.getElementById("compareOnlyChanges").addEventListener("change", () => {
+                create_compare_tests_graph();
+            });
+
 
             function handle_graph_change_type_button_click(graphChangeButton, graphType, camelButtonName) {
                 // Dynamically trigger the graph creation function
@@ -2764,7 +2788,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 if (element) {
                     element.addEventListener('change', () => {
                         create_compare_statistics_graph();
-                        create_compare_details_graph();
+                        create_compare_tests_graph();
                     });
                 }
             });
@@ -2871,7 +2895,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const tagsSelect = document.getElementById("runTag");
             tagsSelect.innerHTML = andOrTags + listItems;
             document.getElementById("All").checked = true;
-            if (tags.length > 0) {
+            if (tags.size > 0) {
                 document.getElementById("runTagFilter").hidden = false
             } else {
                 document.getElementById("runTagFilter").hidden = true
@@ -2882,12 +2906,13 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         function setup_runs_in_compare_selects() {
             const selects = compareRunIds.map(id => document.getElementById(id));
             const items = filteredRuns.map(run => showAliases ? run.run_alias : run.run_start);
+            selects.forEach(select => select.innerHTML = "")
             selects.forEach(select => {
                 select.options.add(new Option("None", "None"));
                 items.forEach(item => select.options.add(new Option(item, item)));
             });
-            selects[0].selectedIndex = 1;
-            selects[1].selectedIndex = 2;
+            selects[0].selectedIndex = selects[0].options.length - 1;
+            selects[1].selectedIndex = selects[1].options.length - 2;
         }
 
         // function to update the available suites to select in the suite filters
@@ -3544,65 +3569,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             if (testStatisticsGraph) {
                 testStatisticsGraph.destroy();
             }
-            const suiteSelectTests = document.getElementById("suiteSelectTests").value;
-            const testSelect = document.getElementById("testSelect").value;
-            const testTagsSelect = document.getElementById("testTagsSelect").value;
-            var [labels, runStarts, datasets] = [[], [], []];
-            for (test of filteredTests) {
-                if (useSuitePathsTestSection) {
-                    if (suiteSelectTests != "All" && test.full_name != `${suiteSelectTests}.${test.name}`) {
-                        continue;
-                    }
-                } else {
-                    if (suiteSelectTests != "All" && !test.full_name.includes(`.${suiteSelectTests}.${test.name}`) && test.full_name != `${suiteSelectTests}.${test.name}`) {
-                        continue;
-                    }
-                }
-                if (testSelect != "All" && test.name != testSelect) {
-                    continue;
-                }
-                if (testTagsSelect != "All" && !test.tags.replace(/\[|\]/g, "").split(",").includes(testTagsSelect)) {
-                    continue
-                }
-                if (!labels.includes(test.name)) {
-                    labels.push(test.name);
-                }
-                if (showAliases) {
-                    if (!runStarts.includes(test.run_alias)) {
-                        runStarts.push(test.run_alias);
-                    }
-                    var runAxis = runStarts.indexOf(test.run_alias)
-                } else {
-                    if (!runStarts.includes(test.run_start)) {
-                        runStarts.push(test.run_start);
-                    }
-                    var runAxis = runStarts.indexOf(test.run_start)
-                }
-                if (test.passed == 1) {
-                    datasets.push({
-                        label: test.name,
-                        data: [{ x: [runAxis, runAxis + 1], y: test.name }],
-                        ...passedConfig,
-                    });
-                } else if (test.failed == 1) {
-                    datasets.push({
-                        label: test.name,
-                        data: [{ x: [runAxis, runAxis + 1], y: test.name }],
-                        ...failedConfig,
-                    });
-                } else if (test.skipped == 1) {
-                    datasets.push({
-                        label: test.name,
-                        data: [{ x: [runAxis, runAxis + 1], y: test.name }],
-                        ...skippedConfig,
-                    });
-                }
-            }
-            datasets = convert_timeline_data(datasets)
-            var graphData = {
-                labels: labels,
-                datasets: datasets,
-            };
+            const data = get_test_statistics_data(filteredTests);
+            const graphData = data[0]
+            const runStarts = data[1]
             var config = get_graph_config("timeline", graphData, "Test Statistics", "Run", "Test");
             config.options.plugins.tooltip = {
                 callbacks: {
@@ -4241,9 +4210,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             }
             const graphData = get_compare_statistics_graph_data(filteredRuns);
             const config = get_graph_config("bar", graphData, `Run Statistics`, "Run", "Amount");
-            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             config.options.scales.y.stacked = false;
-            console.log(config)
             compareStatisticsGraph = new Chart("compareStatisticsGraph", config);
             compareStatisticsGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(compareStatisticsGraph, event)
@@ -4251,8 +4218,46 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // function to create the compare statistics in the compare section
-        function create_compare_details_graph() {
-            console.log('created create_compare_details_graph')
+        function create_compare_tests_graph() {
+            if (compareTestsGraph) {
+                compareTestsGraph.destroy();
+            }
+            const data = get_test_statistics_data(filteredTests);
+            const graphData = data[0]
+            const runStarts = data[1]
+            var config = get_graph_config("timeline", graphData, "Test Statistics", "Run", "Test");
+            config.options.plugins.tooltip = {
+                callbacks: {
+                    label: function (context) {
+                        return runStarts[context.raw.x[0]];
+                    },
+                },
+            };
+            config.options.scales.x = {
+                ticks: {
+                    minRotation: 45,
+                    maxRotation: 45,
+                    stepSize: 1,
+                    callback: function (value, index, ticks) {
+                        return runStarts[this.getLabelForValue(value)];
+                    },
+                },
+                title: {
+                    display: true,
+                    text: "Run",
+                },
+            };
+            config.options.onClick = (event, chartElement) => {
+                if (chartElement.length) {
+                    open_log_file(event, chartElement, runStarts)
+                }
+            };
+            if (!showDateLabels) { config.options.scales.x.ticks.display = false }
+            update_height("compareTestsVertical", config.data.labels.length, config.options.plugins.title.text, "timeline");
+            compareTestsGraph = new Chart("compareTestsGraph", config);
+            compareTestsGraph.canvas.addEventListener("click", (event) => {
+                open_log_from_label(compareTestsGraph, event)
+            });
         }
 
         ///////////////////////////////////
@@ -4726,6 +4731,98 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 ],
             };
             return [statisticsData, names];
+        }
+
+        function get_test_statistics_data(filteredTests) {
+            const suiteSelectTests = document.getElementById("suiteSelectTests").value;
+            const testSelect = document.getElementById("testSelect").value;
+            const testTagsSelect = document.getElementById("testTagsSelect").value;
+            const testOnlyChanges = document.getElementById("testOnlyChanges").checked;
+            const compareOnlyChanges = document.getElementById("compareOnlyChanges").checked;
+            const selectedRuns = [...new Set(
+                compareRunIds
+                    .map(id => document.getElementById(id).value)
+                    .filter(val => val !== "None")
+            )];
+            var [labels, runStarts, datasets] = [[], [], []];
+            for (test of filteredTests) {
+                if (!compareMode) {
+                    if (useSuitePathsTestSection) {
+                        if (suiteSelectTests != "All" && test.full_name != `${suiteSelectTests}.${test.name}`) {
+                            continue;
+                        }
+                    } else {
+                        if (suiteSelectTests != "All" && !test.full_name.includes(`.${suiteSelectTests}.${test.name}`) && test.full_name != `${suiteSelectTests}.${test.name}`) {
+                            continue;
+                        }
+                    }
+                    if (testSelect != "All" && test.name != testSelect) {
+                        continue;
+                    }
+                    if (testTagsSelect != "All" && !test.tags.replace(/\[|\]/g, "").split(",").includes(testTagsSelect)) {
+                        continue
+                    }
+                } else {
+                    if (!(selectedRuns.includes(test.run_start) || selectedRuns.includes(test.run_alias))) continue;
+                }
+                if (!labels.includes(test.name)) {
+                    labels.push(test.name);
+                }
+                if (showAliases) {
+                    if (!runStarts.includes(test.run_alias)) {
+                        runStarts.push(test.run_alias);
+                    }
+                    var runAxis = runStarts.indexOf(test.run_alias)
+                } else {
+                    if (!runStarts.includes(test.run_start)) {
+                        runStarts.push(test.run_start);
+                    }
+                    var runAxis = runStarts.indexOf(test.run_start)
+                }
+                if (test.passed == 1) {
+                    datasets.push({
+                        label: test.name,
+                        data: [{ x: [runAxis, runAxis + 1], y: test.name }],
+                        ...passedConfig,
+                    });
+                } else if (test.failed == 1) {
+                    datasets.push({
+                        label: test.name,
+                        data: [{ x: [runAxis, runAxis + 1], y: test.name }],
+                        ...failedConfig,
+                    });
+                } else if (test.skipped == 1) {
+                    datasets.push({
+                        label: test.name,
+                        data: [{ x: [runAxis, runAxis + 1], y: test.name }],
+                        ...skippedConfig,
+                    });
+                }
+            }
+            datasets = convert_timeline_data(datasets)
+            if (testOnlyChanges || compareOnlyChanges) {
+                const unique = {}
+                for (const dataset of datasets) {
+                    if (unique[dataset.label]) {
+                        unique[dataset.label] = unique[dataset.label] + 1
+                    } else {
+                        unique[dataset.label] = 1
+                    }
+                }
+                const labelsToRemove = []
+                for (const label of Object.keys(unique)) {
+                    if (unique[label] == 1) {
+                        labelsToRemove.push(label)
+                    }
+                }
+                datasets = datasets.filter(dataset => !labelsToRemove.includes(dataset.label))
+                labels = labels.filter(label => !labelsToRemove.includes(label))
+            }
+            const graphData = {
+                labels: labels,
+                datasets: datasets,
+            };
+            return [graphData, runStarts]
         }
 
         // function to prepare the data in the correct format for last run donut graphs
@@ -5728,8 +5825,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 create_keyword_table();
             } else {
                 create_compare_statistics_graph();
-                create_compare_details_graph();
-                console.log('creating compare graphs')
+                create_compare_tests_graph();
             }
         }
 
@@ -5778,6 +5874,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             if (sectionDataElement.children.length > 0) {
                 sectionDataElement.innerHTML = ""
             }
+            // remove the entire section if it exists
+            if (sectionDataHiddenElement.children.length > 0) {
+                sectionDataHiddenElement.innerHTML = ""
+            }
 
             const chevronRow = `<div class="row" id="${lowerCaseSection}Chevron{index}">
                                     <div class="col-auto">
@@ -5794,7 +5894,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                             </div>`
 
             // helper function to create the chevron rows and data rows in the sections
-            function position_graph(graph) {
+            function position_graph(graph, sectionElement, hidden = false) {
                 const camelCaseGraph = space_to_camelcase(graph)
                 const graphDataElement = document.getElementById(camelCaseGraph + "Canvas")
                 if (graphDataElement) {
@@ -5802,14 +5902,14 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 }
 
                 const canvas = graphMetadata.find(g => g.label === graph).html
-                if (sectionDataElement.lastChild == null) {
+                if (sectionElement.lastChild == null) {
                     // no row yet
                     if (graph.includes("Table")) {
-                        sectionDataElement.innerHTML = chevronRow
+                        sectionElement.innerHTML = chevronRow
                             .replaceAll("{index}", "1")
                             .replace("{title}", graph)
                             .replace("collapse-icon", "collapse-icon collapsed")
-                        sectionDataElement.insertAdjacentHTML(
+                        sectionElement.insertAdjacentHTML(
                             "beforeend",
                             dataRow
                                 .replace("{index}", "1")
@@ -5817,29 +5917,29 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                                 .replace("collapse show", "collapse")
                         )
                     } else {
-                        sectionDataElement.innerHTML = chevronRow
+                        sectionElement.innerHTML = chevronRow
                             .replaceAll("{index}", "1")
                             .replace("{title}", graph)
-                        sectionDataElement.insertAdjacentHTML(
+                        sectionElement.insertAdjacentHTML(
                             "beforeend",
                             dataRow
                                 .replace("{index}", "1")
                                 .replace("{canvas}", canvas))
                     }
                 } else {
-                    const lastRow = sectionDataElement.lastChild
+                    const lastRow = sectionElement.lastChild
                     const index = parseInt(lastRow.id.match(/\d+/)[0], 10) + 1
 
                     if (graph.includes("Table")) {
                         // tables always start a new row
-                        sectionDataElement.insertAdjacentHTML(
+                        sectionElement.insertAdjacentHTML(
                             "beforeend",
                             chevronRow
                                 .replaceAll("{index}", `${index}`)
                                 .replace("{title}", graph)
                                 .replace("collapse-icon", "collapse-icon collapsed")
                         )
-                        sectionDataElement.insertAdjacentHTML(
+                        sectionElement.insertAdjacentHTML(
                             "beforeend",
                             dataRow
                                 .replace("{index}", `${index}`)
@@ -5850,27 +5950,27 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         const isTableRow = [...lastRow.children].some(child => child.id && child.id.includes("Table"))
                         if (isTableRow) {
                             // current row is a table row, start new row
-                            sectionDataElement.insertAdjacentHTML(
+                            sectionElement.insertAdjacentHTML(
                                 "beforeend",
                                 chevronRow.replaceAll("{index}", `${index}`).replace("{title}", graph)
                             )
-                            sectionDataElement.insertAdjacentHTML(
+                            sectionElement.insertAdjacentHTML(
                                 "beforeend",
                                 dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas)
                             )
                         } else {
                             // add to current row
                             lastRow.insertAdjacentHTML("beforeend", canvas)
-                            const titleElement = sectionDataElement.children[sectionDataElement.children.length - 2].querySelector(".sectionTitle")
+                            const titleElement = sectionElement.children[sectionElement.children.length - 2].querySelector(".sectionTitle")
                             titleElement.innerText += ` & ${graph}`
                         }
                     } else {
                         // max reached so new row
-                        sectionDataElement.insertAdjacentHTML(
+                        sectionElement.insertAdjacentHTML(
                             "beforeend",
                             chevronRow.replaceAll("{index}", `${index}`).replace("{title}", graph)
                         )
-                        sectionDataElement.insertAdjacentHTML(
+                        sectionElement.insertAdjacentHTML(
                             "beforeend",
                             dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas)
                         )
@@ -5882,16 +5982,14 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const graphShowList = JSON.parse(localStorage.getItem("graphShow"));
             for (let graph of graphShowList) {
                 if (graph.startsWith(section)) {
-                    position_graph(graph)
+                    position_graph(graph, sectionDataElement)
                 }
             }
             // move the hidden items to temp hidden to keep the HTML available for reconfiguration
             const graphHideList = JSON.parse(localStorage.getItem("graphHide"));
             for (let graph of graphHideList) {
                 if (graph.startsWith(section)) {
-                    const camelCaseGraph = space_to_camelcase(graph)
-                    const graphDataElement = document.getElementById(camelCaseGraph + "Canvas")
-                    sectionDataHiddenElement.appendChild(graphDataElement)
+                    position_graph(graph, sectionDataHiddenElement, true)
                 }
             }
         }
