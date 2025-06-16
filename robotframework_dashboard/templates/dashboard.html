@@ -154,6 +154,12 @@
             overflow: hidden;
         }
 
+        #settings,
+        #database,
+        .nav-item {
+            cursor: pointer;
+        }
+
         .rounded-start-sm {
             border-top-left-radius: 0.25rem !important;
             border-bottom-left-radius: 0.25rem !important;
@@ -236,13 +242,6 @@
             margin-top: 1rem;
             margin-bottom: 1rem;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .sticky-top {
-            padding-top: 6px;
-            margin: 0 -0.75rem 0 -0.75rem;
-            padding-left: 0.75rem;
-            padding-right: 0.75rem;
         }
 
         .dt-container {
@@ -346,99 +345,40 @@
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="sticky-top" id="filterSection">
-            <div class="row border-bottom pb-1" id="filterRowPadding">
-                <div class="col-10">
-                    <div class="row">
-                        <div class="col-auto">
-                            <h1>"placeholder_dashboard_title"</h1>
-                        </div>
-                    </div>
-                    <div class="row ps-1">
-                        <div class="col-auto mt-1 ps-2 pe-2">
-                            <label class="form-label form-label-sm mb-0" for="runs" id="runsLabel">Runs</label>
-                            <select class="form-select form-select-sm" id="runs"></select>
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2" id="runTagFilter">
-                            <div class="selectBox" id="selectRunTags">
-                                <label class="form-label form-label-sm mb-0" for="runTag" id="runTagLabel">Run
-                                    Tags</label>
-                                <select class="form-select form-select-sm">
-                                    <option>Select Tags</option>
-                                </select>
-                                <div class="overSelect"></div>
-                            </div>
-                            <div id="checkboxes">
-                                <ul class="list-group" id="runTag"></ul>
-                            </div>
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2">
-                            <label class="form-label form-label-sm mb-0" for="fromDate" id="fromDateLabel">From
-                                Date</label>
-                            <input class="form-control form-control-sm" id="fromDate" type="date" />
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2">
-                            <label class="form-label form-label-sm mb-0" for="fromTime" id="fromTimeLabel">From
-                                Time</label>
-                            <input class="form-control form-control-sm" id="fromTime" type="time" />
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2">
-                            <label class="form-label form-label-sm mb-0" for="toDate" id="toDateLabel">To Date</label>
-                            <input class="form-control form-control-sm" id="toDate" type="date" />
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2">
-                            <label class="form-label form-label-sm mb-0" for="toTime" id="toTimeLabel">To Time</label>
-                            <input class="form-control form-control-sm" id="toTime" type="time" />
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2">
-                            <label class="form-label form-label-sm mb-0" for="amount" id="amountLabel"
-                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">Amount</label>
-                            <input class="form-control form-control-sm" type="number" min=0 id="amount"
-                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
-                                value="10">
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2" id="metadataFilter" hidden>
-                            <label class="form-label form-label-sm mb-0" for="metadata"
-                                id="metadataLabel">Metadata</label>
-                            <select class="form-select form-select-sm" id="metadata"></select>
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2 d-flex">
-                            <button class="btn btn-outline-light btn-sm mt-auto" id="resetFilters">Reset
-                                Filters</button>
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2 d-flex">
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto" data-bs-toggle="modal"
-                                data-bs-target="#hideModal" id="customizeView">
-                                Settings
-                            </button>
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2 btn-group" role="group" id="sectionIndicator">
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto"
-                                data-target="runStatisticsSection">Runs</button>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto"
-                                data-target="suiteStatisticsSection">Suites</button>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto"
-                                data-target="testStatisticsSection">Tests</button>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto"
-                                data-target="keywordStatisticsSection">Keywords</button>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto"
-                                data-target="compareStatisticsSection">Compare</button>
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2 d-flex">
-                            <a class="mt-auto" href="/">
-                                <button class="btn btn-outline-light btn-sm" id="openDashboard" hidden>Open Admin
-                                    Page</button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-2 stats pb-1">
-                    <span id="stats"></span>
-                </div>
-            </div>
+    <nav class="navbar navbar-expand-lg sticky-top navbar-dark ps-3 pe-3 border-bottom pb-1" id="navigation">
+        <div class="navbar-nav ms-4">
+            <a class="nav-link p-2" id="rflogo" href="https://robotframework.org/" target="_blank"
+                title="Robot Framework"></a>
+            <a class="nav-item nav-link" id="menuOverview">Overview</span></a>
+            <a class="nav-item nav-link active" id="menuDashboard">Dashboard</a>
+            <a class="nav-item nav-link" id="runStatisticsSectionNav">Runs</a>
+            <a class="nav-item nav-link" id="suiteStatisticsSectionNav">Suites</a>
+            <a class="nav-item nav-link" id="testStatisticsSectionNav">Tests</a>
+            <a class="nav-item nav-link" id="keywordStatisticsSectionNav">Keywords</a>
+            <a class="nav-item nav-link" id="menuCompare">Compare</a>
+            <a class="nav-item nav-link" id="openDashboard" href="/" hidden>Admin Page</a>
         </div>
+        <ul class="navbar-nav flex-row flex-wrap ms-md-auto me-4">
+            <li class="nav-item">
+                <a class="nav-link p-2" id="filters" data-bs-toggle="modal" data-bs-target="#filtersModal"
+                    title="Filters"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link p-2" id="settings" data-bs-toggle="modal" data-bs-target="#settingsModal"
+                    title="Settings"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link p-2" id="database" data-bs-toggle="modal" data-bs-target="#databaseModal"
+                    title="Database Summary"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link p-2" target="_blank" id="github" title="GitHub"
+                    href="https://github.com/timdegroot1996/robotframework-dashboard"></a>
+            </li>
+        </ul>
+    </nav>
 
+    <div class="container-fluid">
         <div class="text-center mt-5" id="loading" hidden>
             <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
                 <span class="sr-only"></span>
@@ -636,12 +576,99 @@
             <div class="card-body collapse show" id="compareData"></div>
         </div>
 
+        <!-- Modal for the filter -->
+        <div class="modal fade" id="filtersModal" tabindex="-1" aria-labelledby="filtersModalLabel"
+            data-bs-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title" id="filtersModalLabel">Filters</h1>
+                        <div>
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
+                                id="resetFilters">Reset Filters</button>
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
+                                data-bs-dismiss="modal">Save</button>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-auto mt-1 ps-2 pe-2">
+                            <label class="form-label form-label-sm mb-0" for="runs" id="runsLabel">Runs</label>
+                            <select class="form-select form-select-sm" id="runs"></select>
+                        </div>
+                        <div class="col-auto mt-1 ps-2 pe-2" id="runTagFilter">
+                            <div class="selectBox" id="selectRunTags">
+                                <label class="form-label form-label-sm mb-0" for="runTag" id="runTagLabel">Run
+                                    Tags</label>
+                                <select class="form-select form-select-sm">
+                                    <option>Select Tags</option>
+                                </select>
+                                <div class="overSelect"></div>
+                            </div>
+                            <div id="checkboxes">
+                                <ul class="list-group" id="runTag"></ul>
+                            </div>
+                        </div>
+                        <div class="col-auto mt-1 ps-2 pe-2">
+                            <label class="form-label form-label-sm mb-0" for="fromDate" id="fromDateLabel">From
+                                Date</label>
+                            <input class="form-control form-control-sm" id="fromDate" type="date" />
+                        </div>
+                        <div class="col-auto mt-1 ps-2 pe-2">
+                            <label class="form-label form-label-sm mb-0" for="fromTime" id="fromTimeLabel">From
+                                Time</label>
+                            <input class="form-control form-control-sm" id="fromTime" type="time" />
+                        </div>
+                        <div class="col-auto mt-1 ps-2 pe-2">
+                            <label class="form-label form-label-sm mb-0" for="toDate" id="toDateLabel">To Date</label>
+                            <input class="form-control form-control-sm" id="toDate" type="date" />
+                        </div>
+                        <div class="col-auto mt-1 ps-2 pe-2">
+                            <label class="form-label form-label-sm mb-0" for="toTime" id="toTimeLabel">To Time</label>
+                            <input class="form-control form-control-sm" id="toTime" type="time" />
+                        </div>
+                        <div class="col-auto mt-1 ps-2 pe-2">
+                            <label class="form-label form-label-sm mb-0" for="amount" id="amountLabel"
+                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">Amount</label>
+                            <input class="form-control form-control-sm" type="number" min=0 id="amount"
+                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
+                                value="10">
+                        </div>
+                        <div class="col-auto mt-1 ps-2 pe-2" id="metadataFilter" hidden>
+                            <label class="form-label form-label-sm mb-0" for="metadata"
+                                id="metadataLabel">Metadata</label>
+                            <select class="form-select form-select-sm" id="metadata"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for the database details -->
+        <div class="modal fade" id="databaseModal" tabindex="-1" aria-labelledby="databaseModalLabel"
+            data-bs-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title" id="databaseModalLabel">Database Summary</h1>
+                        <div>
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
+                                data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <span id="stats"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Modal for hiding graphs/sections -->
-        <div class="modal fade" id="hideModal" tabindex="-1" aria-labelledby="hideModalLabel" data-bs-backdrop="static">
+        <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
+            data-bs-backdrop="static">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title" id="hideModalLabel">Settings</h1>
+                        <h1 class="modal-title" id="settingsModalLabel">Settings</h1>
                         <div>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto" data-bs-dismiss="modal"
                                 id="resetGraphConfig">Reset View</button>
@@ -659,15 +686,6 @@
                             </div>
                             <div class="col btn-group form-switch ms-2">
                                 <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleTheme" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleCompare">Mode: Show Compare View
-                                    (Defaults to Dashboard view)</label>
-                            </div>
-                            <div class="col btn-group form-switch ms-2">
-                                <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleCompare" />
                             </div>
                         </div>
                         <div class="row">
@@ -730,7 +748,8 @@
                         </div>
                         <div class="row pb-4">
                             <div class="col-6 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleMaxGraphsPerRow">Graphs: Maximum Graphs
+                                <label class="form-check-label mt-1" for="toggleMaxGraphsPerRow">Graphs: Maximum
+                                    Graphs
                                     Per Row</label>
                             </div>
                             <div class="col-1 ps-0 mt-1">
@@ -794,24 +813,25 @@
         // GLOBAL VARIABLE SECTION //
         /////////////////////////////
 
-        // collapse/expand buttons icons/svgs
-        const arrowRight =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g><path fill="currentColor" d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
-        const arrowRightSmall =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><g><path fill="currentColor" d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
-        const arrowDown =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
-        const arrowDownSmall =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
-        const arrowLeft =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g transform="scale(-1,1) translate(-52,0)"><path fill="currentColor" d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"/></g></svg>';
-        const arrowDownVerySmall =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
-        const arrowUpVerySmall =
-            '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52" transform="matrix(-1,1.2246467991473532e-16,-1.2246467991473532e-16,-1,0,0)"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"></path></svg>';
-
-        // information svg
+        // svgs
+        const arrowRight = '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g><path fill="currentColor" d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
+        const arrowRightSmall = '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><g><path fill="currentColor" d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"></path></g></svg>';
+        const arrowDown = '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
+        const arrowDownSmall = '<svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
+        const arrowLeft = '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g transform="scale(-1,1) translate(-52,0)"><path fill="currentColor" d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"/></g></svg>';
+        const arrowDownVerySmall = '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
+        const arrowUpVerySmall = '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52" transform="matrix(-1,1.2246467991473532e-16,-1.2246467991473532e-16,-1,0,0)"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"></path></svg>';
         const informationSVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="21" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" /><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" /></svg>';
+        const githubDarkSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M12 1C5.923 1 1 5.923 1 12c0 4.867 3.149 8.979 7.521 10.436.55.096.756-.233.756-.522 0-.262-.013-1.128-.013-2.049-2.764.509-3.479-.674-3.699-1.292-.124-.317-.66-1.293-1.127-1.554-.385-.207-.936-.715-.014-.729.866-.014 1.485.797 1.691 1.128.99 1.663 2.571 1.196 3.204.907.096-.715.385-1.196.701-1.471-2.448-.275-5.005-1.224-5.005-5.432 0-1.196.426-2.186 1.128-2.956-.111-.275-.496-1.402.11-2.915 0 0 .921-.288 3.024 1.128a10.193 10.193 0 0 1 2.75-.371c.936 0 1.871.123 2.75.371 2.104-1.43 3.025-1.128 3.025-1.128.605 1.513.221 2.64.111 2.915.701.77 1.127 1.747 1.127 2.956 0 4.222-2.571 5.157-5.019 5.432.399.344.743 1.004.743 2.035 0 1.471-.014 2.654-.014 3.025 0 .289.206.632.756.522C19.851 20.979 23 16.854 23 12c0-6.077-4.922-11-11-11Z"></path></svg>';
+        const githubLightSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12 1C5.923 1 1 5.923 1 12c0 4.867 3.149 8.979 7.521 10.436.55.096.756-.233.756-.522 0-.262-.013-1.128-.013-2.049-2.764.509-3.479-.674-3.699-1.292-.124-.317-.66-1.293-1.127-1.554-.385-.207-.936-.715-.014-.729.866-.014 1.485.797 1.691 1.128.99 1.663 2.571 1.196 3.204.907.096-.715.385-1.196.701-1.471-2.448-.275-5.005-1.224-5.005-5.432 0-1.196.426-2.186 1.128-2.956-.111-.275-.496-1.402.11-2.915 0 0 .921-.288 3.024 1.128a10.193 10.193 0 0 1 2.75-.371c.936 0 1.871.123 2.75.371 2.104-1.43 3.025-1.128 3.025-1.128.605 1.513.221 2.64.111 2.915.701.77 1.127 1.747 1.127 2.956 0 4.222-2.571 5.157-5.019 5.432.399.344.743 1.004.743 2.035 0 1.471-.014 2.654-.014 3.025 0 .289.206.632.756.522C19.851 20.979 23 16.854 23 12c0-6.077-4.922-11-11-11Z"></path></svg>';
+        const settingsDarkSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm-1.5 0a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path><path fill="white" d="M12 1c.266 0 .532.009.797.028.763.055 1.345.617 1.512 1.304l.352 1.45c.019.078.09.171.225.221.247.089.49.19.728.302.13.061.246.044.315.002l1.275-.776c.603-.368 1.411-.353 1.99.147.402.349.78.726 1.128 1.129.501.578.515 1.386.147 1.99l-.776 1.274c-.042.069-.058.185.002.315.112.238.213.481.303.728.048.135.142.205.22.225l1.45.352c.687.167 1.249.749 1.303 1.512.038.531.038 1.063 0 1.594-.054.763-.616 1.345-1.303 1.512l-1.45.352c-.078.019-.171.09-.221.225-.089.248-.19.491-.302.728-.061.13-.044.246-.002.315l.776 1.275c.368.603.353 1.411-.147 1.99-.349.402-.726.78-1.129 1.128-.578.501-1.386.515-1.99.147l-1.274-.776c-.069-.042-.185-.058-.314.002a8.606 8.606 0 0 1-.729.303c-.135.048-.205.142-.225.22l-.352 1.45c-.167.687-.749 1.249-1.512 1.303-.531.038-1.063.038-1.594 0-.763-.054-1.345-.616-1.512-1.303l-.352-1.45c-.019-.078-.09-.171-.225-.221a8.138 8.138 0 0 1-.728-.302c-.13-.061-.246-.044-.315-.002l-1.275.776c-.603.368-1.411.353-1.99-.147-.402-.349-.78-.726-1.128-1.129-.501-.578-.515-1.386-.147-1.99l.776-1.274c.042-.069.058-.185-.002-.314a8.606 8.606 0 0 1-.303-.729c-.048-.135-.142-.205-.22-.225l-1.45-.352c-.687-.167-1.249-.749-1.304-1.512a11.158 11.158 0 0 1 0-1.594c.055-.763.617-1.345 1.304-1.512l1.45-.352c.078-.019.171-.09.221-.225.089-.248.19-.491.302-.728.061-.13.044-.246.002-.315l-.776-1.275c-.368-.603-.353-1.411.147-1.99.349-.402.726-.78 1.129-1.128.578-.501 1.386-.515 1.99-.147l1.274.776c.069.042.185.058.315-.002.238-.112.481-.213.728-.303.135-.048.205-.142.225-.22l.352-1.45c.167-.687.749-1.249 1.512-1.304C11.466 1.01 11.732 1 12 1Zm-.69 1.525c-.055.004-.135.05-.161.161l-.353 1.45a1.832 1.832 0 0 1-1.172 1.277 7.147 7.147 0 0 0-.6.249 1.833 1.833 0 0 1-1.734-.074l-1.274-.776c-.098-.06-.186-.036-.228 0a9.774 9.774 0 0 0-.976.976c-.036.042-.06.131 0 .228l.776 1.274c.314.529.342 1.18.074 1.734a7.147 7.147 0 0 0-.249.6 1.831 1.831 0 0 1-1.278 1.173l-1.45.351c-.11.027-.156.107-.16.162a9.63 9.63 0 0 0 0 1.38c.004.055.05.135.161.161l1.45.353a1.832 1.832 0 0 1 1.277 1.172c.074.204.157.404.249.6.268.553.24 1.204-.074 1.733l-.776 1.275c-.06.098-.036.186 0 .228.301.348.628.675.976.976.042.036.131.06.228 0l1.274-.776a1.83 1.83 0 0 1 1.734-.075c.196.093.396.176.6.25a1.831 1.831 0 0 1 1.173 1.278l.351 1.45c.027.11.107.156.162.16a9.63 9.63 0 0 0 1.38 0c.055-.004.135-.05.161-.161l.353-1.45a1.834 1.834 0 0 1 1.172-1.278 6.82 6.82 0 0 0 .6-.248 1.831 1.831 0 0 1 1.733.074l1.275.776c.098.06.186.036.228 0 .348-.301.675-.628.976-.976.036-.042.06-.131 0-.228l-.776-1.275a1.834 1.834 0 0 1-.075-1.733c.093-.196.176-.396.25-.6a1.831 1.831 0 0 1 1.278-1.173l1.45-.351c.11-.027.156-.107.16-.162a9.63 9.63 0 0 0 0-1.38c-.004-.055-.05-.135-.161-.161l-1.45-.353c-.626-.152-1.08-.625-1.278-1.172a6.576 6.576 0 0 0-.248-.6 1.833 1.833 0 0 1 .074-1.734l.776-1.274c.06-.098.036-.186 0-.228a9.774 9.774 0 0 0-.976-.976c-.042-.036-.131-.06-.228 0l-1.275.776a1.831 1.831 0 0 1-1.733.074 6.88 6.88 0 0 0-.6-.249 1.835 1.835 0 0 1-1.173-1.278l-.351-1.45c-.027-.11-.107-.156-.162-.16a9.63 9.63 0 0 0-1.38 0Z"></path></svg>'
+        const settingsLightSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm-1.5 0a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path><path d="M12 1c.266 0 .532.009.797.028.763.055 1.345.617 1.512 1.304l.352 1.45c.019.078.09.171.225.221.247.089.49.19.728.302.13.061.246.044.315.002l1.275-.776c.603-.368 1.411-.353 1.99.147.402.349.78.726 1.128 1.129.501.578.515 1.386.147 1.99l-.776 1.274c-.042.069-.058.185.002.315.112.238.213.481.303.728.048.135.142.205.22.225l1.45.352c.687.167 1.249.749 1.303 1.512.038.531.038 1.063 0 1.594-.054.763-.616 1.345-1.303 1.512l-1.45.352c-.078.019-.171.09-.221.225-.089.248-.19.491-.302.728-.061.13-.044.246-.002.315l.776 1.275c.368.603.353 1.411-.147 1.99-.349.402-.726.78-1.129 1.128-.578.501-1.386.515-1.99.147l-1.274-.776c-.069-.042-.185-.058-.314.002a8.606 8.606 0 0 1-.729.303c-.135.048-.205.142-.225.22l-.352 1.45c-.167.687-.749 1.249-1.512 1.303-.531.038-1.063.038-1.594 0-.763-.054-1.345-.616-1.512-1.303l-.352-1.45c-.019-.078-.09-.171-.225-.221a8.138 8.138 0 0 1-.728-.302c-.13-.061-.246-.044-.315-.002l-1.275.776c-.603.368-1.411.353-1.99-.147-.402-.349-.78-.726-1.128-1.129-.501-.578-.515-1.386-.147-1.99l.776-1.274c.042-.069.058-.185-.002-.314a8.606 8.606 0 0 1-.303-.729c-.048-.135-.142-.205-.22-.225l-1.45-.352c-.687-.167-1.249-.749-1.304-1.512a11.158 11.158 0 0 1 0-1.594c.055-.763.617-1.345 1.304-1.512l1.45-.352c.078-.019.171-.09.221-.225.089-.248.19-.491.302-.728.061-.13.044-.246.002-.315l-.776-1.275c-.368-.603-.353-1.411.147-1.99.349-.402.726-.78 1.129-1.128.578-.501 1.386-.515 1.99-.147l1.274.776c.069.042.185.058.315-.002.238-.112.481-.213.728-.303.135-.048.205-.142.225-.22l.352-1.45c.167-.687.749-1.249 1.512-1.304C11.466 1.01 11.732 1 12 1Zm-.69 1.525c-.055.004-.135.05-.161.161l-.353 1.45a1.832 1.832 0 0 1-1.172 1.277 7.147 7.147 0 0 0-.6.249 1.833 1.833 0 0 1-1.734-.074l-1.274-.776c-.098-.06-.186-.036-.228 0a9.774 9.774 0 0 0-.976.976c-.036.042-.06.131 0 .228l.776 1.274c.314.529.342 1.18.074 1.734a7.147 7.147 0 0 0-.249.6 1.831 1.831 0 0 1-1.278 1.173l-1.45.351c-.11.027-.156.107-.16.162a9.63 9.63 0 0 0 0 1.38c.004.055.05.135.161.161l1.45.353a1.832 1.832 0 0 1 1.277 1.172c.074.204.157.404.249.6.268.553.24 1.204-.074 1.733l-.776 1.275c-.06.098-.036.186 0 .228.301.348.628.675.976.976.042.036.131.06.228 0l1.274-.776a1.83 1.83 0 0 1 1.734-.075c.196.093.396.176.6.25a1.831 1.831 0 0 1 1.173 1.278l.351 1.45c.027.11.107.156.162.16a9.63 9.63 0 0 0 1.38 0c.055-.004.135-.05.161-.161l.353-1.45a1.834 1.834 0 0 1 1.172-1.278 6.82 6.82 0 0 0 .6-.248 1.831 1.831 0 0 1 1.733.074l1.275.776c.098.06.186.036.228 0 .348-.301.675-.628.976-.976.036-.042.06-.131 0-.228l-.776-1.275a1.834 1.834 0 0 1-.075-1.733c.093-.196.176-.396.25-.6a1.831 1.831 0 0 1 1.278-1.173l1.45-.351c.11-.027.156-.107.16-.162a9.63 9.63 0 0 0 0-1.38c-.004-.055-.05-.135-.161-.161l-1.45-.353c-.626-.152-1.08-.625-1.278-1.172a6.576 6.576 0 0 0-.248-.6 1.833 1.833 0 0 1 .074-1.734l.776-1.274c.06-.098.036-.186 0-.228a9.774 9.774 0 0 0-.976-.976c-.042-.036-.131-.06-.228 0l-1.275.776a1.831 1.831 0 0 1-1.733.074 6.88 6.88 0 0 0-.6-.249 1.835 1.835 0 0 1-1.173-1.278l-.351-1.45c-.027-.11-.107-.156-.162-.16a9.63 9.63 0 0 0-1.38 0Z"></path></svg>'
+        const databaseDarkSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M12 1.25c2.487 0 4.773.402 6.466 1.079.844.337 1.577.758 2.112 1.264.536.507.922 1.151.922 1.907v12.987l-.026.013h.026c0 .756-.386 1.4-.922 1.907-.535.506-1.268.927-2.112 1.264-1.693.677-3.979 1.079-6.466 1.079s-4.774-.402-6.466-1.079c-.844-.337-1.577-.758-2.112-1.264C2.886 19.9 2.5 19.256 2.5 18.5h.026l-.026-.013V5.5c0-.756.386-1.4.922-1.907.535-.506 1.268-.927 2.112-1.264C7.226 1.652 9.513 1.25 12 1.25ZM4 14.371v4.116l-.013.013H4c0 .211.103.487.453.817.351.332.898.666 1.638.962 1.475.589 3.564.971 5.909.971 2.345 0 4.434-.381 5.909-.971.739-.296 1.288-.63 1.638-.962.349-.33.453-.607.453-.817h.013L20 18.487v-4.116a7.85 7.85 0 0 1-1.534.8c-1.693.677-3.979 1.079-6.466 1.079s-4.774-.402-6.466-1.079a7.843 7.843 0 0 1-1.534-.8ZM20 12V7.871a7.85 7.85 0 0 1-1.534.8C16.773 9.348 14.487 9.75 12 9.75s-4.774-.402-6.466-1.079A7.85 7.85 0 0 1 4 7.871V12c0 .21.104.487.453.817.35.332.899.666 1.638.961 1.475.59 3.564.972 5.909.972 2.345 0 4.434-.382 5.909-.972.74-.295 1.287-.629 1.638-.96.35-.33.453-.607.453-.818ZM4 5.5c0 .211.103.487.453.817.351.332.898.666 1.638.962 1.475.589 3.564.971 5.909.971 2.345 0 4.434-.381 5.909-.971.739-.296 1.288-.63 1.638-.962.349-.33.453-.607.453-.817 0-.211-.103-.487-.453-.817-.351-.332-.898-.666-1.638-.962-1.475-.589-3.564-.971-5.909-.971-2.345 0-4.434.381-5.909.971-.739.296-1.288.63-1.638.962C4.104 5.013 4 5.29 4 5.5Z"></path></svg>'
+        const databaseLightSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12 1.25c2.487 0 4.773.402 6.466 1.079.844.337 1.577.758 2.112 1.264.536.507.922 1.151.922 1.907v12.987l-.026.013h.026c0 .756-.386 1.4-.922 1.907-.535.506-1.268.927-2.112 1.264-1.693.677-3.979 1.079-6.466 1.079s-4.774-.402-6.466-1.079c-.844-.337-1.577-.758-2.112-1.264C2.886 19.9 2.5 19.256 2.5 18.5h.026l-.026-.013V5.5c0-.756.386-1.4.922-1.907.535-.506 1.268-.927 2.112-1.264C7.226 1.652 9.513 1.25 12 1.25ZM4 14.371v4.116l-.013.013H4c0 .211.103.487.453.817.351.332.898.666 1.638.962 1.475.589 3.564.971 5.909.971 2.345 0 4.434-.381 5.909-.971.739-.296 1.288-.63 1.638-.962.349-.33.453-.607.453-.817h.013L20 18.487v-4.116a7.85 7.85 0 0 1-1.534.8c-1.693.677-3.979 1.079-6.466 1.079s-4.774-.402-6.466-1.079a7.843 7.843 0 0 1-1.534-.8ZM20 12V7.871a7.85 7.85 0 0 1-1.534.8C16.773 9.348 14.487 9.75 12 9.75s-4.774-.402-6.466-1.079A7.85 7.85 0 0 1 4 7.871V12c0 .21.104.487.453.817.35.332.899.666 1.638.961 1.475.59 3.564.972 5.909.972 2.345 0 4.434-.382 5.909-.972.74-.295 1.287-.629 1.638-.96.35-.33.453-.607.453-.818ZM4 5.5c0 .211.103.487.453.817.351.332.898.666 1.638.962 1.475.589 3.564.971 5.909.971 2.345 0 4.434-.381 5.909-.971.739-.296 1.288-.63 1.638-.962.349-.33.453-.607.453-.817 0-.211-.103-.487-.453-.817-.351-.332-.898-.666-1.638-.962-1.475-.589-3.564-.971-5.909-.971-2.345 0-4.434.381-5.909.971-.739.296-1.288.63-1.638.962C4.104 5.013 4 5.29 4 5.5Z"></path></svg>'
+        const filterDarkSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M11 18.25a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1-.75-.75Zm-8-12a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 3 6.25Zm13 6a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 0 1.5h-3.5a.75.75 0 0 1-.75-.75ZM8.75 16a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3a.75.75 0 0 1 .75-.75Z"></path><path fill="white" d="M3 18.25a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Zm0-6a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1-.75-.75ZM16.75 10a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3a.75.75 0 0 1 .75-.75ZM14 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75ZM11.25 4a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3a.75.75 0 0 1 .75-.75Z"></path></svg>'
+        const filterLightSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M11 18.25a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1-.75-.75Zm-8-12a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 3 6.25Zm13 6a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 0 1.5h-3.5a.75.75 0 0 1-.75-.75ZM8.75 16a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3a.75.75 0 0 1 .75-.75Z"></path><path d="M3 18.25a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Zm0-6a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1-.75-.75ZM16.75 10a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3a.75.75 0 0 1 .75-.75ZM14 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75ZM11.25 4a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3a.75.75 0 0 1 .75-.75Z"></path></svg>'
+        const rflogoDarkSVG = '<svg data-v-266d6681="" data-v-7dd69bf4="" version="1.1" id="face" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="fill-white"><path fill="white" data-v-266d6681="" id="path" d="M5,10.2c0-1.9,1.5-3.4,3.4-3.4c1.9,0,3.4,1.5,3.4,3.4c0,0.7-0.6,1.2-1.2,1.2c-0.7,0-1.2-0.6-1.2-1.2 c0-0.5-0.4-0.9-0.9-0.9c-0.5,0-0.9,0.4-0.9,0.9c0,0.7-0.6,1.2-1.2,1.2S5,10.9,5,10.2 M19,15.9c0,0.7-0.6,1.2-1.2,1.2H6.4 c-0.7,0-1.2-0.6-1.2-1.2c0-0.7,0.6-1.2,1.2-1.2h11.5C18.5,14.7,19,15.3,19,15.9 M13.7,10.9c-0.4-0.6-0.2-1.3,0.3-1.7l2.9-1.9 c0.6-0.4,1.3-0.2,1.7,0.3c0.4,0.6,0.2,1.3-0.3,1.7l-2.9,1.9c-0.2,0.1-0.5,0.2-0.7,0.2C14.3,11.5,13.9,11.3,13.7,10.9 M21.5,18.5 c0,0.2-0.1,0.5-0.3,0.6l-2.1,2.1c-0.2,0.2-0.4,0.3-0.6,0.3h-13c-0.2,0-0.5-0.1-0.6-0.3l-2.1-2.1c-0.2-0.2-0.3-0.4-0.3-0.6v-13 c0-0.2,0.1-0.5,0.3-0.6l2.1-2.1C5,2.6,5.2,2.5,5.5,2.5h13c0.2,0,0.5,0.1,0.6,0.3l2.1,2.1c0.2,0.2,0.3,0.4,0.3,0.6V18.5z M23.3,3.4 l-2.8-2.8C20.1,0.2,19.6,0,19,0H5C4.4,0,3.9,0.2,3.4,0.7L0.7,3.4C0.2,3.9,0,4.4,0,5v14c0,0.6,0.2,1.2,0.7,1.6l2.8,2.8 C3.9,23.8,4.4,24,5,24h14c0.6,0,1.2-0.2,1.6-0.7l2.8-2.8c0.4-0.4,0.7-1,0.7-1.6V5C24,4.4,23.8,3.9,23.3,3.4"></path></svg>'
+        const rflogoLightSVG = '<svg data-v-266d6681="" data-v-7dd69bf4="" version="1.1" id="face" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="fill-white"><path data-v-266d6681="" id="path" d="M5,10.2c0-1.9,1.5-3.4,3.4-3.4c1.9,0,3.4,1.5,3.4,3.4c0,0.7-0.6,1.2-1.2,1.2c-0.7,0-1.2-0.6-1.2-1.2 c0-0.5-0.4-0.9-0.9-0.9c-0.5,0-0.9,0.4-0.9,0.9c0,0.7-0.6,1.2-1.2,1.2S5,10.9,5,10.2 M19,15.9c0,0.7-0.6,1.2-1.2,1.2H6.4 c-0.7,0-1.2-0.6-1.2-1.2c0-0.7,0.6-1.2,1.2-1.2h11.5C18.5,14.7,19,15.3,19,15.9 M13.7,10.9c-0.4-0.6-0.2-1.3,0.3-1.7l2.9-1.9 c0.6-0.4,1.3-0.2,1.7,0.3c0.4,0.6,0.2,1.3-0.3,1.7l-2.9,1.9c-0.2,0.1-0.5,0.2-0.7,0.2C14.3,11.5,13.9,11.3,13.7,10.9 M21.5,18.5 c0,0.2-0.1,0.5-0.3,0.6l-2.1,2.1c-0.2,0.2-0.4,0.3-0.6,0.3h-13c-0.2,0-0.5-0.1-0.6-0.3l-2.1-2.1c-0.2-0.2-0.3-0.4-0.3-0.6v-13 c0-0.2,0.1-0.5,0.3-0.6l2.1-2.1C5,2.6,5.2,2.5,5.5,2.5h13c0.2,0,0.5,0.1,0.6,0.3l2.1,2.1c0.2,0.2,0.3,0.4,0.3,0.6V18.5z M23.3,3.4 l-2.8-2.8C20.1,0.2,19.6,0,19,0H5C4.4,0,3.9,0.2,3.4,0.7L0.7,3.4C0.2,3.9,0,4.4,0,5v14c0,0.6,0.2,1.2,0.7,1.6l2.8,2.8 C3.9,23.8,4.4,24,5,24h14c0.6,0,1.2-0.2,1.6-0.7l2.8-2.8c0.4-0.4,0.7-1,0.7-1.6V5C24,4.4,23.8,3.9,23.3,3.4"></path></svg>'
 
         // colors
         const passedBackgroundBorderColor = "#97bd61";
@@ -913,7 +933,9 @@
         var maxGraphsPerRow = 2; // used to determine how many graphs to show per row
         var animationEnabled = true; // used to determine if animations are on or off
         var animationDuration = 1500; // used to set the milliseconds it takes to animate the graphs
-        var compareMode = false; // used to set the dashboard to compare mode or regular view
+        var menuOverview = false; // used to set the dashboard to overview mode
+        var menuCompare = false; // used to set the dashboard to compare mode
+        var menuDashboard = true; // used to set the dashboard to normal mode
 
         // add datalabels plugin
         Chart.register(ChartDataLabels);
@@ -957,8 +979,8 @@
                 viewOptions: ["Donut"],
                 hasFullscreenButton: true,
                 information: `This graph contains two donut charts:
-- The first donut displays the total percentage of passed, failed, and skipped tests across all runs.
-- The second donut displays the same breakdown, but only for the most recent run.`,
+- The first donut displays the percentage of passed, failed, and skipped tests for the most recent run..
+- The second donut displays the total percentage of passed, failed, and skipped tests across all runs`,
                 html: `<div class="col canvas pb-5" id="runDonutCanvas">
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDonutGraphDonut">Donut</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDonutFullscreen">Fullscreen</button>
@@ -1814,6 +1836,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 Chart.defaults.borderColor = "rgba(0,0,0,0.1)";
                 Chart.defaults.backgroundColor = "rgba(0,0,0,0.1)";
                 Chart.defaults.elements.line.borderColor = "rgba(0,0,0,0.1)";
+                // menu icons
+                document.getElementById('github').innerHTML = githubLightSVG;
+                document.getElementById('settings').innerHTML = settingsLightSVG;
+                document.getElementById('database').innerHTML = databaseLightSVG;
+                document.getElementById('filters').innerHTML = filterLightSVG;
+                document.getElementById('rflogo').innerHTML = rflogoLightSVG;
+                // menu theme
+                document.getElementById('navigation').classList.remove('navbar-dark')
+                document.getElementById('navigation').classList.add('navbar-light')
                 // set toggle in correct state if not already, needed on first load
                 if (toggle.checked) toggle.checked = false;
             }
@@ -1830,6 +1861,16 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
                 Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
                 Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
+                // menu icons
+                document.getElementById('github').innerHTML = githubDarkSVG;
+                document.getElementById('settings').innerHTML = settingsDarkSVG;
+                document.getElementById('database').innerHTML = databaseDarkSVG;
+                document.getElementById('filters').innerHTML = filterDarkSVG;
+                document.getElementById('rflogo').innerHTML = rflogoDarkSVG;
+                // menu theme
+                document.getElementById('navigation').classList.remove('navbar-light')
+                document.getElementById('navigation').classList.add('navbar-dark')
+                // set toggle in correct state if not already, needed on first load
                 if (!toggle.checked) toggle.checked = true;
             }
 
@@ -1857,67 +1898,19 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // set default values
         function setup_stats() {
-            document.getElementById("stats").innerHTML = `<i><a id="version" href="https://github.com/timdegroot1996/robotframework-dashboard" target="_blank">"placeholder_version"</a></i><br>
-            <b>Database Summary</b><br>
-            Runs: ${runs.length}<br>
-            Suites: ${suites.length}<br>
-            Tests: ${tests.length}<br>
-            Keywords: ${keywords.length}`;
+            document.getElementById("stats").innerHTML = `<table class='table table-striped'>
+                <tr><td>Version</td><td>"placeholder_version"</td></tr>
+                <tr><td>Runs</td><td>${runs.length}</td></tr>
+                <tr><td>Suites</td><td>${suites.length}</td></tr>
+                <tr><td>Tests</td><td>${tests.length}</td></tr>
+                <tr><td>Keywords</td><td>${keywords.length}</td></tr>
+            </table>`
 
             filteredAmountDefault = filteredAmount
             document.getElementById("amount").value = filteredAmount
             if (server) {
                 document.getElementById("openDashboard").hidden = false
             }
-        }
-
-        // function to update the filter row when scrolling
-        function setup_scroll_eventlistener() {
-            let scrollTimer, lastScrollFireTime = 0;
-            const minScrollTime = 200;
-            let isCollapsed = false;
-            window.addEventListener("scroll", function () {
-                const now = Date.now();
-                function process_scroll() {
-                    const scroll = window.scrollY;
-                    if (scroll > 120 && !isCollapsed) {
-                        isCollapsed = true;
-                        document.getElementById("stats").hidden = true;
-                        document.getElementById("runsLabel").hidden = true;
-                        document.getElementById("runTagLabel").hidden = true;
-                        document.getElementById("fromDateLabel").hidden = true;
-                        document.getElementById("fromTimeLabel").hidden = true;
-                        document.getElementById("toDateLabel").hidden = true;
-                        document.getElementById("toTimeLabel").hidden = true;
-                        document.getElementById("amountLabel").hidden = true;
-                        document.getElementById("metadataLabel").hidden = true;
-                        document.getElementById("filterRowPadding").classList.add("pb-2");
-                    } else if (scroll < 80 && isCollapsed) {
-                        isCollapsed = false;
-                        document.getElementById("stats").hidden = false;
-                        document.getElementById("runsLabel").hidden = false;
-                        document.getElementById("runTagLabel").hidden = false;
-                        document.getElementById("fromDateLabel").hidden = false;
-                        document.getElementById("fromTimeLabel").hidden = false;
-                        document.getElementById("toDateLabel").hidden = false;
-                        document.getElementById("toTimeLabel").hidden = false;
-                        document.getElementById("amountLabel").hidden = false;
-                        document.getElementById("metadataLabel").hidden = false;
-                        document.getElementById("filterRowPadding").classList.remove("pb-2");
-                    }
-                }
-                if (!scrollTimer) {
-                    if (now - lastScrollFireTime > 3 * minScrollTime) {
-                        process_scroll();
-                        lastScrollFireTime = now;
-                    }
-                    scrollTimer = setTimeout(function () {
-                        scrollTimer = null;
-                        lastScrollFireTime = Date.now();
-                        process_scroll();
-                    }, minScrollTime);
-                }
-            });
         }
 
         // function to setup all collapse buttons and icons
@@ -1952,22 +1945,24 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // also sets up the automatic highlighting of the section that is most visible in the top
         // 20-50% percent of the screen
         function setup_section_buttons() {
-            const sectionButtons = document.querySelectorAll("#sectionIndicator .btn");
+            const sectionButtons = [
+                document.getElementById("runStatisticsSectionNav"),
+                document.getElementById("suiteStatisticsSectionNav"),
+                document.getElementById("testStatisticsSectionNav"),
+                document.getElementById("keywordStatisticsSectionNav"),
+            ];
             const sectionMap = {
                 runStatisticsSection: sectionButtons[0],
                 suiteStatisticsSection: sectionButtons[1],
                 testStatisticsSection: sectionButtons[2],
                 keywordStatisticsSection: sectionButtons[3],
-                compareStatisticsSection: sectionButtons[4]
             };
 
             sectionButtons.forEach(btn => btn.hidden = false); // unhide all
+            sectionButtons.forEach(btn => btn.classList.remove('active')); // unhide all
             const sectionHide = JSON.parse(localStorage.getItem("sectionHide")); // get hidden sections
             sectionHide.forEach(hiddenSection => sectionMap[`${space_to_camelcase(hiddenSection)}Section`].hidden = true) // hide section menu buttons that should be hidden
-            for (const button of sectionButtons) { // hide section buttons that are not relevant depending on compare mode or regular mode
-                const isCompare = button.innerText === "Compare";
-                button.hidden = compareMode ? !isCompare : isCompare;
-            }
+
             // fix button rounding after hiding the correct ones
             const buttons = Array.from(document.querySelectorAll(`#sectionIndicator .btn`))
                 .filter(btn => !btn.hidden);
@@ -2013,9 +2008,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
             sectionButtons.forEach(btn => {
                 btn.addEventListener("click", () => {
-                    const target = document.getElementById(btn.dataset.target);
+                    const target = document.getElementById(btn.id.slice(0, -3));
                     if (target) {
-                        const stickyTop = document.getElementById("filterSection");
+                        const stickyTop = document.getElementById("navigation");
                         const stickyHeight = stickyTop ? stickyTop.offsetHeight : 0;
                         const targetTop = target.getBoundingClientRect().top + window.pageYOffset;
                         const top = targetTop < 200 ? 0 : targetTop - stickyHeight - 8; // exception for the section at the top, scroll to 0
@@ -2487,13 +2482,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
             }
 
-            // Declare all toggle handlers
-            const toggle_compare = create_toggle_handler({
-                key: "compareMode",
-                elementId: "toggleCompare",
-                globalVarName: "compareMode"
-            });
-
             const toggle_labels = create_toggle_handler({
                 key: "showDateLabels",
                 elementId: "toggleLabels",
@@ -2541,7 +2529,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             });
 
             // Initial load
-            toggle_compare(true);
             toggle_labels(true);
             toggle_legends(true);
             toggle_aliases(true);
@@ -2551,7 +2538,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             toggle_animation_duration(true);
 
             // Add event listeners
-            document.getElementById("toggleCompare").addEventListener("click", () => toggle_compare());
             document.getElementById("toggleLabels").addEventListener("click", () => toggle_labels());
             document.getElementById("toggleLegends").addEventListener("click", () => toggle_legends());
             document.getElementById("toggleAliases").addEventListener("click", () => toggle_aliases());
@@ -2581,6 +2567,64 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             });
         }
 
+        // function to setup the menu eventlisteners
+        function setup_menu_eventlisteners() {
+            function update_menu(item) {
+                // const overviewStatisticsSection = document.getElementById("compareStatisticsSection")
+                localStorage.setItem('menu', item)
+                document.getElementById('menuOverview').classList.remove('active')
+                document.getElementById('menuDashboard').classList.remove('active')
+                document.getElementById('menuCompare').classList.remove('active')
+                document.getElementById(item).classList.add('active')
+                const dashboardSectionShowList = JSON.parse(localStorage.getItem("sectionShow"));
+                const dashboardSectionHideList = JSON.parse(localStorage.getItem("sectionHide"));
+                const compareStatisticsSection = document.getElementById("compareStatisticsSection");
+                const sectionButtons = [
+                    document.getElementById("runStatisticsSectionNav"),
+                    document.getElementById("suiteStatisticsSectionNav"),
+                    document.getElementById("testStatisticsSectionNav"),
+                    document.getElementById("keywordStatisticsSectionNav"),
+                ];
+                if (item == 'menuOverview') {
+                    menuOverview = true
+                    menuDashboard = false
+                    menuCompare = false
+                    sectionButtons.forEach(btn => btn.hidden = true)
+                    compareStatisticsSection.hidden = false
+                    for (let section of [...dashboardSectionHideList, ...dashboardSectionShowList]) {
+                        document.getElementById(`${space_to_camelcase(section + " Section")}`).hidden = true
+                    }
+                } else if (item == 'menuDashboard') {
+                    menuOverview = false
+                    menuDashboard = true
+                    menuCompare = false
+                    sectionButtons.forEach(btn => btn.hidden = false)
+                    compareStatisticsSection.hidden = false
+                } else if (item == 'menuCompare') {
+                    menuOverview = false
+                    menuDashboard = false
+                    menuCompare = true
+                    compareStatisticsSection.hidden = false
+                    sectionButtons.forEach(btn => btn.hidden = true)
+                    for (let section of [...dashboardSectionHideList, ...dashboardSectionShowList]) {
+                        document.getElementById(`${space_to_camelcase(section + " Section")}`).hidden = true
+                    }
+                }
+                setup_data_and_graphs();
+            }
+
+            document.getElementById('menuOverview').addEventListener('click', () => update_menu('menuOverview'))
+            document.getElementById('menuDashboard').addEventListener('click', () => update_menu('menuDashboard'))
+            document.getElementById('menuCompare').addEventListener('click', () => update_menu('menuCompare'))
+
+            const menuStorage = localStorage.getItem('menu');
+            if (menuStorage) {
+                update_menu(menuStorage)
+            } else {
+                update_menu('menuDashboard')
+            }
+        }
+
         // function to setup eventlisteners for filter buttons
         function setup_eventlisteners_filter_buttons() {
             // eventlisteners for filters (runTags is done separately because of different usage)
@@ -2605,7 +2649,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", () => {
                     lastScrollY = window.scrollY
                     inFullscreen = !inFullscreen;
-                    $("#filterSection").hide();
+                    $("#navigation").hide();
                     document.getElementById(`${fullscreenButton}Canvas`).classList.add("fullscreen");
                     document.getElementById(`${fullscreenButton}Close`).hidden = false;
                     document.getElementById(`${fullscreenButton}Fullscreen`).hidden = true;
@@ -2620,7 +2664,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 });
                 document.getElementById(`${fullscreenButton}Close`).addEventListener("click", () => {
                     inFullscreen = !inFullscreen;
-                    $("#filterSection").show();
+                    $("#navigation").show();
                     document.getElementById(`${fullscreenButton}Canvas`).classList.remove("fullscreen");
                     document.getElementById(`${fullscreenButton}Close`).hidden = true;
                     document.getElementById(`${fullscreenButton}Fullscreen`).hidden = false;
@@ -4746,7 +4790,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             )];
             var [labels, runStarts, datasets] = [[], [], []];
             for (test of filteredTests) {
-                if (!compareMode) {
+                if (!menuCompare) {
                     if (useSuitePathsTestSection) {
                         if (suiteSelectTests != "All" && test.full_name != `${suiteSelectTests}.${test.name}`) {
                             continue;
@@ -5743,7 +5787,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 requestAnimationFrame(() => {
                     setup_spinner(true);
                     setup_dasbhoard_graphs();
-                    setup_section_buttons();
+                    if (menuDashboard) {
+                        setup_section_buttons();
+                    }
 
                     requestAnimationFrame(() => {
                         if (lastScrollY > 0) {
@@ -5792,7 +5838,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function that updates all graphs based on the new filtered data and hidden choices
         function setup_dasbhoard_graphs() {
-            if (!compareMode) {
+            if (menuOverview) {
+            }
+            if (menuDashboard) {
                 create_run_statistics_graph();
                 create_run_donut_graph();
                 create_run_donut_total_graph();
@@ -5823,7 +5871,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 create_keyword_max_duration_graph();
                 create_keyword_most_failed_graph();
                 create_keyword_table();
-            } else {
+            }
+            if (menuCompare) {
                 create_compare_statistics_graph();
                 create_compare_tests_graph();
             }
@@ -5843,20 +5892,31 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             for (let section of sectionHideList) {
                 document.getElementById(`${space_to_camelcase(section + " Section")}`).hidden = true
             }
-            // extra handling to set correctly if in compare view
+            // extra handling to set correctly if you are in a specific view
             const compareStatisticsSection = document.getElementById("compareStatisticsSection")
-            if (compareMode) {
+            if (menuOverview) {
+                // overviewStatisticsSection.hidden = false
+                for (let section of [...sectionShowList, ...sectionHideList]) {
+                    document.getElementById(`${space_to_camelcase(section + " Section")}`).hidden = true
+                }
+                compareStatisticsSection.hidden = true
+            }
+            if (menuDashboard) {
+                // overviewStatisticsSection.hidden = true
+                compareStatisticsSection.hidden = true
+            }
+            if (menuCompare) {
+                // overviewStatisticsSection.hidden = true
                 for (let section of [...sectionShowList, ...sectionHideList]) {
                     document.getElementById(`${space_to_camelcase(section + " Section")}`).hidden = true
                 }
                 compareStatisticsSection.hidden = false
-            } else {
-                compareStatisticsSection.hidden = true
             }
         }
 
         // function to order the grphs according to the localstorage config
         function setup_graph_order() {
+            // setup_graphs("Overview")
             setup_graphs("Run")
             setup_graphs("Suite")
             setup_graphs("Test")
@@ -6001,8 +6061,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // function that triggers all functions that should be executed when the dashboard is loaded first
         // in the correct order!
         function main() {
-            setup_scroll_eventlistener();
             setup_stats();
+            setup_menu_eventlisteners();
             setup_settings_eventlisteners();
             setup_customize_view_arrow_eventlisteners();
             setup_customize_view_local_storage();
