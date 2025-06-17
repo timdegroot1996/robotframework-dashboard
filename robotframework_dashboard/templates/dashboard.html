@@ -379,7 +379,7 @@
     </nav>
 
     <div class="container-fluid">
-        <div class="text-center mt-5" id="loading" hidden>
+        <div class="text-center mt-5" id="loading">
             <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
                 <span class="sr-only"></span>
             </div>
@@ -2570,14 +2570,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // function to setup the menu eventlisteners
         function setup_menu_eventlisteners() {
             function update_menu(item) {
-                // const overviewStatisticsSection = document.getElementById("compareStatisticsSection")
-                localStorage.setItem('menu', item)
-                document.getElementById('menuOverview').classList.remove('active')
-                document.getElementById('menuDashboard').classList.remove('active')
-                document.getElementById('menuCompare').classList.remove('active')
-                document.getElementById(item).classList.add('active')
-                const dashboardSectionShowList = JSON.parse(localStorage.getItem("sectionShow"));
-                const dashboardSectionHideList = JSON.parse(localStorage.getItem("sectionHide"));
+                localStorage.setItem('menu', item);
+                menuOverview = item === 'menuOverview';
+                menuDashboard = item === 'menuDashboard';
+                menuCompare = item === 'menuCompare';
+                ['menuOverview', 'menuDashboard', 'menuCompare'].forEach(id => {
+                    document.getElementById(id).classList.toggle('active', id === item);
+                });
+                const dashboardSectionShowList = JSON.parse(localStorage.getItem("sectionShow")) || [];
+                const dashboardSectionHideList = JSON.parse(localStorage.getItem("sectionHide")) || [];
                 const compareStatisticsSection = document.getElementById("compareStatisticsSection");
                 const sectionButtons = [
                     document.getElementById("runStatisticsSectionNav"),
@@ -2585,30 +2586,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     document.getElementById("testStatisticsSectionNav"),
                     document.getElementById("keywordStatisticsSectionNav"),
                 ];
-                if (item == 'menuOverview') {
-                    menuOverview = true
-                    menuDashboard = false
-                    menuCompare = false
-                    sectionButtons.forEach(btn => btn.hidden = true)
-                    compareStatisticsSection.hidden = false
-                    for (let section of [...dashboardSectionHideList, ...dashboardSectionShowList]) {
-                        document.getElementById(`${space_to_camelcase(section + " Section")}`).hidden = true
-                    }
-                } else if (item == 'menuDashboard') {
-                    menuOverview = false
-                    menuDashboard = true
-                    menuCompare = false
-                    sectionButtons.forEach(btn => btn.hidden = false)
-                    compareStatisticsSection.hidden = false
-                } else if (item == 'menuCompare') {
-                    menuOverview = false
-                    menuDashboard = false
-                    menuCompare = true
-                    compareStatisticsSection.hidden = false
-                    sectionButtons.forEach(btn => btn.hidden = true)
-                    for (let section of [...dashboardSectionHideList, ...dashboardSectionShowList]) {
-                        document.getElementById(`${space_to_camelcase(section + " Section")}`).hidden = true
-                    }
+                if (menuOverview || menuCompare) {
+                    sectionButtons.forEach(btn => btn.hidden = true);
+                    compareStatisticsSection.hidden = false;
+                    [...dashboardSectionShowList, ...dashboardSectionHideList].forEach(section => {
+                        const el = document.getElementById(space_to_camelcase(section + " Section"));
+                        if (el) el.hidden = true;
+                    });
+                }
+                if (menuDashboard) {
+                    sectionButtons.forEach(btn => btn.hidden = false);
+                    compareStatisticsSection.hidden = false;
                 }
                 setup_data_and_graphs();
             }
@@ -2617,12 +2605,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById('menuDashboard').addEventListener('click', () => update_menu('menuDashboard'))
             document.getElementById('menuCompare').addEventListener('click', () => update_menu('menuCompare'))
 
-            const menuStorage = localStorage.getItem('menu');
-            if (menuStorage) {
-                update_menu(menuStorage)
-            } else {
-                update_menu('menuDashboard')
-            }
+            update_menu(localStorage.getItem('menu') || 'menuDashboard');
         }
 
         // function to setup eventlisteners for filter buttons
@@ -5765,28 +5748,24 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // function to update all graph data, function is called when updating filters and when the page loads
         function setup_data_and_graphs() {
             lastScrollY = window.scrollY;
-            setup_spinner(false)
+            setup_spinner(false);
 
-            // Let the browser render before continuing
+            // Let the spinner render before starting heavy setup
             requestAnimationFrame(() => {
-                // prepare the data based on the filters
                 setup_filtered_data_and_filters();
-                // set the order based on customize view config
                 setup_section_order();
                 setup_graph_order();
-                // set eventlisteners after all sections and graphs have been rendered
                 setup_collapsables();
                 setup_information_icons();
                 setup_eventlisteners_filter_buttons();
                 setup_eventlisteners_graph_view_buttons();
                 setup_button_highlighting();
-                // apply the theme to all buttons
                 setup_theme();
 
-                // Let the browser render again to make the graph animations clean
                 requestAnimationFrame(() => {
                     setup_spinner(true);
                     setup_dasbhoard_graphs();
+
                     if (menuDashboard) {
                         setup_section_buttons();
                     }
@@ -5798,8 +5777,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                                 behavior: "auto"
                             });
                         }
-                    })
-                })
+                    });
+                });
             });
         }
 
@@ -5880,37 +5859,39 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to order the sections according to the localstorage config
         function setup_section_order() {
-            var prevId = "#loading"
-            const sectionShowList = JSON.parse(localStorage.getItem("sectionShow"));
-            for (let section of sectionShowList) {
-                var nextId = `#${space_to_camelcase(section + " Section")}`
-                document.getElementById(`${space_to_camelcase(section + " Section")}`).hidden = false
-                $(nextId).insertAfter(prevId)
-                prevId = nextId
-            }
-            const sectionHideList = JSON.parse(localStorage.getItem("sectionHide"));
-            for (let section of sectionHideList) {
-                document.getElementById(`${space_to_camelcase(section + " Section")}`).hidden = true
-            }
-            // extra handling to set correctly if you are in a specific view
-            const compareStatisticsSection = document.getElementById("compareStatisticsSection")
-            if (menuOverview) {
-                // overviewStatisticsSection.hidden = false
-                for (let section of [...sectionShowList, ...sectionHideList]) {
-                    document.getElementById(`${space_to_camelcase(section + " Section")}`).hidden = true
+            const sectionShowList = JSON.parse(localStorage.getItem("sectionShow")) || [];
+            const sectionHideList = JSON.parse(localStorage.getItem("sectionHide")) || [];
+            const allSections = [...sectionShowList, ...sectionHideList];
+            const compareStatisticsSection = document.getElementById("compareStatisticsSection");
+            let prevId = "#loading";
+            // Show and reorder visible sections
+            for (const section of sectionShowList) {
+                const sectionId = space_to_camelcase(section + " Section");
+                const sectionEl = document.getElementById(sectionId);
+                if (sectionEl) {
+                    sectionEl.hidden = false;
+                    $(`#${sectionId}`).insertAfter(prevId);
+                    prevId = `#${sectionId}`;
                 }
-                compareStatisticsSection.hidden = true
             }
+            // Hide all hidden sections
+            for (const section of sectionHideList) {
+                const sectionId = space_to_camelcase(section + " Section");
+                const sectionEl = document.getElementById(sectionId);
+                if (sectionEl) sectionEl.hidden = true;
+            }
+
+            // View-specific overrides
+            if (menuOverview || menuCompare) {
+                allSections.forEach(section => {
+                    const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
+                    if (sectionEl) sectionEl.hidden = true;
+                });
+                compareStatisticsSection.hidden = menuOverview;
+            }
+
             if (menuDashboard) {
-                // overviewStatisticsSection.hidden = true
-                compareStatisticsSection.hidden = true
-            }
-            if (menuCompare) {
-                // overviewStatisticsSection.hidden = true
-                for (let section of [...sectionShowList, ...sectionHideList]) {
-                    document.getElementById(`${space_to_camelcase(section + " Section")}`).hidden = true
-                }
-                compareStatisticsSection.hidden = false
+                compareStatisticsSection.hidden = true;
             }
         }
 
