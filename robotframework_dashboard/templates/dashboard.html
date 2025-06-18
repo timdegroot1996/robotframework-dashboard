@@ -351,10 +351,10 @@
                 title="Robot Framework"></a>
             <a class="nav-item nav-link" id="menuOverview">Overview</span></a>
             <a class="nav-item nav-link active" id="menuDashboard">Dashboard</a>
-            <a class="nav-item nav-link" id="runStatisticsSectionNav">Runs</a>
-            <a class="nav-item nav-link" id="suiteStatisticsSectionNav">Suites</a>
-            <a class="nav-item nav-link" id="testStatisticsSectionNav">Tests</a>
-            <a class="nav-item nav-link" id="keywordStatisticsSectionNav">Keywords</a>
+            <a class="nav-item nav-link" id="runStatisticsSectionNav"><i>Runs</i></a>
+            <a class="nav-item nav-link" id="suiteStatisticsSectionNav"><i>Suites</i></a>
+            <a class="nav-item nav-link" id="testStatisticsSectionNav"><i>Tests</i></a>
+            <a class="nav-item nav-link" id="keywordStatisticsSectionNav"><i>Keywords</i></a>
             <a class="nav-item nav-link" id="menuCompare">Compare</a>
             <a class="nav-item nav-link" id="openDashboard" href="/" hidden>Admin Page</a>
         </div>
@@ -383,6 +383,23 @@
             <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
                 <span class="sr-only"></span>
             </div>
+        </div>
+
+        <div class="card" id="overviewStatisticsSection" hidden>
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-auto align-self-center">
+                        <div class="btn btn-sm collapse-icon" id="overviewDetailsButton" data-bs-toggle="collapse"
+                            data-bs-target="#runData" aria-expanded="true" aria-controls="runData"></div>
+                    </div>
+                    <div class="col-3">
+                        <h4 id="overviewTitle"></h4>
+                    </div>
+                </div>
+            </div>
+            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card overviewData -->
+            <div id="overviewDataHidden" hidden></div>
+            <div class="card-body collapse show" id="overviewData"></div>
         </div>
 
         <div class="card" id="runStatisticsSection" hidden>
@@ -832,6 +849,8 @@
         const filterLightSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M11 18.25a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1-.75-.75Zm-8-12a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 3 6.25Zm13 6a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 0 1.5h-3.5a.75.75 0 0 1-.75-.75ZM8.75 16a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3a.75.75 0 0 1 .75-.75Z"></path><path d="M3 18.25a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Zm0-6a.75.75 0 0 1 .75-.75h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1-.75-.75ZM16.75 10a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3a.75.75 0 0 1 .75-.75ZM14 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75ZM11.25 4a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3a.75.75 0 0 1 .75-.75Z"></path></svg>'
         const rflogoDarkSVG = '<svg data-v-266d6681="" data-v-7dd69bf4="" version="1.1" id="face" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="fill-white"><path fill="white" data-v-266d6681="" id="path" d="M5,10.2c0-1.9,1.5-3.4,3.4-3.4c1.9,0,3.4,1.5,3.4,3.4c0,0.7-0.6,1.2-1.2,1.2c-0.7,0-1.2-0.6-1.2-1.2 c0-0.5-0.4-0.9-0.9-0.9c-0.5,0-0.9,0.4-0.9,0.9c0,0.7-0.6,1.2-1.2,1.2S5,10.9,5,10.2 M19,15.9c0,0.7-0.6,1.2-1.2,1.2H6.4 c-0.7,0-1.2-0.6-1.2-1.2c0-0.7,0.6-1.2,1.2-1.2h11.5C18.5,14.7,19,15.3,19,15.9 M13.7,10.9c-0.4-0.6-0.2-1.3,0.3-1.7l2.9-1.9 c0.6-0.4,1.3-0.2,1.7,0.3c0.4,0.6,0.2,1.3-0.3,1.7l-2.9,1.9c-0.2,0.1-0.5,0.2-0.7,0.2C14.3,11.5,13.9,11.3,13.7,10.9 M21.5,18.5 c0,0.2-0.1,0.5-0.3,0.6l-2.1,2.1c-0.2,0.2-0.4,0.3-0.6,0.3h-13c-0.2,0-0.5-0.1-0.6-0.3l-2.1-2.1c-0.2-0.2-0.3-0.4-0.3-0.6v-13 c0-0.2,0.1-0.5,0.3-0.6l2.1-2.1C5,2.6,5.2,2.5,5.5,2.5h13c0.2,0,0.5,0.1,0.6,0.3l2.1,2.1c0.2,0.2,0.3,0.4,0.3,0.6V18.5z M23.3,3.4 l-2.8-2.8C20.1,0.2,19.6,0,19,0H5C4.4,0,3.9,0.2,3.4,0.7L0.7,3.4C0.2,3.9,0,4.4,0,5v14c0,0.6,0.2,1.2,0.7,1.6l2.8,2.8 C3.9,23.8,4.4,24,5,24h14c0.6,0,1.2-0.2,1.6-0.7l2.8-2.8c0.4-0.4,0.7-1,0.7-1.6V5C24,4.4,23.8,3.9,23.3,3.4"></path></svg>'
         const rflogoLightSVG = '<svg data-v-266d6681="" data-v-7dd69bf4="" version="1.1" id="face" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="fill-white"><path data-v-266d6681="" id="path" d="M5,10.2c0-1.9,1.5-3.4,3.4-3.4c1.9,0,3.4,1.5,3.4,3.4c0,0.7-0.6,1.2-1.2,1.2c-0.7,0-1.2-0.6-1.2-1.2 c0-0.5-0.4-0.9-0.9-0.9c-0.5,0-0.9,0.4-0.9,0.9c0,0.7-0.6,1.2-1.2,1.2S5,10.9,5,10.2 M19,15.9c0,0.7-0.6,1.2-1.2,1.2H6.4 c-0.7,0-1.2-0.6-1.2-1.2c0-0.7,0.6-1.2,1.2-1.2h11.5C18.5,14.7,19,15.3,19,15.9 M13.7,10.9c-0.4-0.6-0.2-1.3,0.3-1.7l2.9-1.9 c0.6-0.4,1.3-0.2,1.7,0.3c0.4,0.6,0.2,1.3-0.3,1.7l-2.9,1.9c-0.2,0.1-0.5,0.2-0.7,0.2C14.3,11.5,13.9,11.3,13.7,10.9 M21.5,18.5 c0,0.2-0.1,0.5-0.3,0.6l-2.1,2.1c-0.2,0.2-0.4,0.3-0.6,0.3h-13c-0.2,0-0.5-0.1-0.6-0.3l-2.1-2.1c-0.2-0.2-0.3-0.4-0.3-0.6v-13 c0-0.2,0.1-0.5,0.3-0.6l2.1-2.1C5,2.6,5.2,2.5,5.5,2.5h13c0.2,0,0.5,0.1,0.6,0.3l2.1,2.1c0.2,0.2,0.3,0.4,0.3,0.6V18.5z M23.3,3.4 l-2.8-2.8C20.1,0.2,19.6,0,19,0H5C4.4,0,3.9,0.2,3.4,0.7L0.7,3.4C0.2,3.9,0,4.4,0,5v14c0,0.6,0.2,1.2,0.7,1.6l2.8,2.8 C3.9,23.8,4.4,24,5,24h14c0.6,0,1.2-0.2,1.6-0.7l2.8-2.8c0.4-0.4,0.7-1,0.7-1.6V5C24,4.4,23.8,3.9,23.3,3.4"></path></svg>'
+        const clockDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M12.5 7.25a.75.75 0 0 0-1.5 0v5.5c0 .27.144.518.378.651l3.5 2a.75.75 0 0 0 .744-1.302L12.5 12.315V7.25Z"></path><path fill="white" d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z"></path></svg>`
+        const clockLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12.5 7.25a.75.75 0 0 0-1.5 0v5.5c0 .27.144.518.378.651l3.5 2a.75.75 0 0 0 .744-1.302L12.5 12.315V7.25Z"></path><path d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z"></path></svg>`
 
         // colors
         const passedBackgroundBorderColor = "#97bd61";
@@ -942,6 +961,7 @@
 
         // add items in hide modal
         const hideSections = [
+            "Overview Statistics",
             "Run Statistics",
             "Suite Statistics",
             "Test Statistics",
@@ -2038,12 +2058,14 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         function setup_spinner(hide) {
             if (hide) {
                 $("#loading").fadeOut(100)
+                $("#overviewStatisticsSection").fadeIn()
                 $("#runStatisticsSection").fadeIn()
                 $("#suiteStatisticsSection").fadeIn()
                 $("#testStatisticsSection").fadeIn()
                 $("#keywordStatisticsSection").fadeIn()
                 $("#compareStatisticsSection").fadeIn()
             } else {
+                $("#overviewStatisticsSection").hide()
                 $("#runStatisticsSection").hide()
                 $("#suiteStatisticsSection").hide()
                 $("#testStatisticsSection").hide()
@@ -2577,6 +2599,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 ['menuOverview', 'menuDashboard', 'menuCompare'].forEach(id => {
                     document.getElementById(id).classList.toggle('active', id === item);
                 });
+                const overviewStatisticsSection = document.getElementById("overviewStatisticsSection");
                 const dashboardSectionShowList = JSON.parse(localStorage.getItem("sectionShow")) || [];
                 const dashboardSectionHideList = JSON.parse(localStorage.getItem("sectionHide")) || [];
                 const compareStatisticsSection = document.getElementById("compareStatisticsSection");
@@ -2586,16 +2609,27 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     document.getElementById("testStatisticsSectionNav"),
                     document.getElementById("keywordStatisticsSectionNav"),
                 ];
-                if (menuOverview || menuCompare) {
+                if (menuOverview) {
+                    overviewStatisticsSection.hidden = false;
                     sectionButtons.forEach(btn => btn.hidden = true);
-                    compareStatisticsSection.hidden = false;
                     [...dashboardSectionShowList, ...dashboardSectionHideList].forEach(section => {
                         const el = document.getElementById(space_to_camelcase(section + " Section"));
                         if (el) el.hidden = true;
                     });
+                    compareStatisticsSection.hidden = true;
                 }
                 if (menuDashboard) {
+                    overviewStatisticsSection.hidden = true;
                     sectionButtons.forEach(btn => btn.hidden = false);
+                    compareStatisticsSection.hidden = true;
+                }
+                if (menuCompare) {
+                    overviewStatisticsSection.hidden = true;
+                    sectionButtons.forEach(btn => btn.hidden = true);
+                    [...dashboardSectionShowList, ...dashboardSectionHideList].forEach(section => {
+                        const el = document.getElementById(space_to_camelcase(section + " Section"));
+                        if (el) el.hidden = true;
+                    });
                     compareStatisticsSection.hidden = false;
                 }
                 setup_data_and_graphs();
@@ -3166,6 +3200,23 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         //////////////////////////////////////
         // GRAPH & TABLE CREATION FUNCTIONS //
         //////////////////////////////////////
+
+        // function to create overview statistics blocks in the overview section
+        function create_overview_statistics_graphs() {
+            const data = {}
+            for (const run of filteredRuns) {
+                data[run.name] = { 'stats': [run.passed, run.failed, run.skipped] }
+                if (data[run.name]['duration']) {
+                    console.log('exists')
+                    data[run.name]['duration'] = data[run.name]['duration'].push(run.elapsed_s)
+                } else {
+                    data[run.name]['duration'] = [run.elapsed_s]
+                }
+            }
+            for (const key of Object.keys(data)) {
+                console.log(key, data[key])
+            }
+        }
 
         // function to create run statistics graph in the run section
         function create_run_statistics_graph() {
@@ -5801,6 +5852,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             // set titles with amount of filtered items
             const runAmount = Object.keys(filteredRuns).length
             const message = `<h6>showing ${runAmount} of ${filteredAmount} runs</h6>`
+            document.getElementById("overviewTitle").innerHTML = `Overview Statistics`;
             document.getElementById("runTitle").innerHTML = `Run Statistics (${runAmount}) ${message}`;
             document.getElementById("suiteTitle").innerHTML = `Suite Statistics (${Object.keys(filteredSuites).length}) ${message}`;
             document.getElementById("testTitle").innerHTML = `Test Statistics (${Object.keys(filteredTests).length}) ${message}`;
@@ -5818,6 +5870,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // function that updates all graphs based on the new filtered data and hidden choices
         function setup_dasbhoard_graphs() {
             if (menuOverview) {
+                create_overview_statistics_graphs();
             }
             if (menuDashboard) {
                 create_run_statistics_graph();
@@ -5859,6 +5912,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to order the sections according to the localstorage config
         function setup_section_order() {
+            const overviewStatisticsSection = document.getElementById("overviewStatisticsSection");
             const sectionShowList = JSON.parse(localStorage.getItem("sectionShow")) || [];
             const sectionHideList = JSON.parse(localStorage.getItem("sectionHide")) || [];
             const allSections = [...sectionShowList, ...sectionHideList];
@@ -5882,16 +5936,27 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             }
 
             // View-specific overrides
-            if (menuOverview || menuCompare) {
+            if (menuOverview) {
+                overviewStatisticsSection.hidden = false;
                 allSections.forEach(section => {
                     const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
                     if (sectionEl) sectionEl.hidden = true;
                 });
-                compareStatisticsSection.hidden = menuOverview;
+                compareStatisticsSection.hidden = true;
             }
 
             if (menuDashboard) {
+                overviewStatisticsSection.hidden = true;
                 compareStatisticsSection.hidden = true;
+            }
+
+            if (menuCompare) {
+                overviewStatisticsSection.hidden = true;
+                allSections.forEach(section => {
+                    const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
+                    if (sectionEl) sectionEl.hidden = true;
+                });
+                compareStatisticsSection.hidden = false;
             }
         }
 
