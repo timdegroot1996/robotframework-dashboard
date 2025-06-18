@@ -77,7 +77,8 @@
             color-scheme: dark;
         }
 
-        .dark-mode .canvas {
+        .dark-mode .canvas,
+        .dark-mode .overview-card .card {
             background: rgba(30, 41, 59, 0.9);
         }
 
@@ -326,20 +327,42 @@
             font-size: 2rem;
         }
 
-        .green-text {
+        .green-text,
+        .text-passed {
             color: rgba(151, 189, 97, 0.9);
         }
 
-        .red-text {
+        .border-passed {
+            border-color: rgba(151, 189, 97, 0.9);
+        }
+
+        .red-text,
+        .text-failed {
             color: rgba(206, 62, 1, 0.9);
+        }
+
+        .border-failed {
+            border-color: rgba(206, 62, 1, 0.9);
         }
 
         .yellow-text {
             color: rgba(254, 216, 79, 0.9);
         }
 
+        .border-skipped {
+            border-color: rgba(254, 216, 79, 0.9);
+        }
+
         .blue-text {
             color: dodgerblue;
+        }
+
+        .overview-canvas {
+            height: 200px;
+        }
+
+        .overview-card {
+            cursor: pointer;
         }
     </style>
 </head>
@@ -392,8 +415,35 @@
                         <div class="btn btn-sm collapse-icon" id="overviewDetailsButton" data-bs-toggle="collapse"
                             data-bs-target="#runData" aria-expanded="true" aria-controls="runData"></div>
                     </div>
-                    <div class="col-3">
+                    <div class="col-5">
                         <h4 id="overviewTitle"></h4>
+                    </div>
+                    <div class="col-auto">
+                        <div class="btn-group ms-1">
+                            <label class="form-check-label mt-2" for="useRunTags">Use Run Tags</label>
+                        </div>
+                        <div class="btn-group form-switch ms-1">
+                            <input class="form-check-input mt-2" type="checkbox" role="switch" id="useRunTags" />
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="btn-group">
+                            <label class="form-check-label" for="overviewDurationPercentage">Percentage</label>
+                        </div>
+                        <div class="btn-group">
+                            <select class="form-select form-select-sm mt-1" id="overviewDurationPercentage">
+                                <option value="10">10</option>
+                                <option value="20" selected>20</option>
+                                <option value="30">30</option>
+                                <option value="40">40</option>
+                                <option value="50">50</option>
+                                <option value="60">60</option>
+                                <option value="70">70</option>
+                                <option value="80">80</option>
+                                <option value="90">90</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -935,6 +985,10 @@
         var filteredKeywords;
 
         // vars to keep track of certain global settings
+        var overviewGraphs = [];
+        var selectedRunSetting = '';
+        var selectedTagSetting = '';
+        var useRunTags = false;
         var useSuitePathsSuiteSection = false;
         var useSuitePathsTestSection = false;
         var ignoreSkips = false; // test most flaky graph
@@ -961,7 +1015,6 @@
 
         // add items in hide modal
         const hideSections = [
-            "Overview Statistics",
             "Run Statistics",
             "Suite Statistics",
             "Test Statistics",
@@ -2571,14 +2624,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
             // update all graphs based on new hidden graphs/sections
             document.getElementById("saveSettings").addEventListener("click", function () {
-                document.getElementById("runs").focus()
                 update_customize_view_local_storage();
                 setup_data_and_graphs();
             });
 
             // remove the entire customized view configuration
             document.getElementById("resetGraphConfig").addEventListener("click", function () {
-                document.getElementById("runs").focus()
                 localStorage.setItem("sectionHide", JSON.stringify([]));
                 localStorage.setItem("graphHide", JSON.stringify([]));
                 localStorage.setItem("sectionShow", JSON.stringify(hideSections));
@@ -2589,52 +2640,19 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             });
         }
 
+        function update_menu(item) {
+            localStorage.setItem('menu', item);
+            menuOverview = item === 'menuOverview';
+            menuDashboard = item === 'menuDashboard';
+            menuCompare = item === 'menuCompare';
+            ['menuOverview', 'menuDashboard', 'menuCompare'].forEach(id => {
+                document.getElementById(id).classList.toggle('active', id === item);
+            });
+            setup_data_and_graphs(true);
+        }
+
         // function to setup the menu eventlisteners
         function setup_menu_eventlisteners() {
-            function update_menu(item) {
-                localStorage.setItem('menu', item);
-                menuOverview = item === 'menuOverview';
-                menuDashboard = item === 'menuDashboard';
-                menuCompare = item === 'menuCompare';
-                ['menuOverview', 'menuDashboard', 'menuCompare'].forEach(id => {
-                    document.getElementById(id).classList.toggle('active', id === item);
-                });
-                const overviewStatisticsSection = document.getElementById("overviewStatisticsSection");
-                const dashboardSectionShowList = JSON.parse(localStorage.getItem("sectionShow")) || [];
-                const dashboardSectionHideList = JSON.parse(localStorage.getItem("sectionHide")) || [];
-                const compareStatisticsSection = document.getElementById("compareStatisticsSection");
-                const sectionButtons = [
-                    document.getElementById("runStatisticsSectionNav"),
-                    document.getElementById("suiteStatisticsSectionNav"),
-                    document.getElementById("testStatisticsSectionNav"),
-                    document.getElementById("keywordStatisticsSectionNav"),
-                ];
-                if (menuOverview) {
-                    overviewStatisticsSection.hidden = false;
-                    sectionButtons.forEach(btn => btn.hidden = true);
-                    [...dashboardSectionShowList, ...dashboardSectionHideList].forEach(section => {
-                        const el = document.getElementById(space_to_camelcase(section + " Section"));
-                        if (el) el.hidden = true;
-                    });
-                    compareStatisticsSection.hidden = true;
-                }
-                if (menuDashboard) {
-                    overviewStatisticsSection.hidden = true;
-                    sectionButtons.forEach(btn => btn.hidden = false);
-                    compareStatisticsSection.hidden = true;
-                }
-                if (menuCompare) {
-                    overviewStatisticsSection.hidden = true;
-                    sectionButtons.forEach(btn => btn.hidden = true);
-                    [...dashboardSectionShowList, ...dashboardSectionHideList].forEach(section => {
-                        const el = document.getElementById(space_to_camelcase(section + " Section"));
-                        if (el) el.hidden = true;
-                    });
-                    compareStatisticsSection.hidden = false;
-                }
-                setup_data_and_graphs();
-            }
-
             document.getElementById('menuOverview').addEventListener('click', () => update_menu('menuOverview'))
             document.getElementById('menuDashboard').addEventListener('click', () => update_menu('menuDashboard'))
             document.getElementById('menuCompare').addEventListener('click', () => update_menu('menuCompare'))
@@ -2762,7 +2780,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to handle the eventlisteners for all filter options in the sections
         function setup_eventlisteners_section_filter_buttons() {
-            // function to keep track of the checkboxes for the runtags
+            update_switch_local_storage("useRunTags", useRunTags, true);
+            document.getElementById("useRunTags").addEventListener("click", function () {
+                useRunTags = !useRunTags
+                update_switch_local_storage("useRunTags", useRunTags);
+                create_overview_statistics_graphs();
+            });
+            document.getElementById("overviewDurationPercentage").addEventListener("change", function () {
+                create_overview_statistics_graphs();
+            });
             function show_checkboxes() {
                 const checkboxes = document.getElementById("checkboxes");
                 showingRunTags = !showingRunTags;
@@ -2771,7 +2797,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById("selectRunTags").addEventListener("click", show_checkboxes);
             document.getElementById("resetFilters").addEventListener("click", function () {
                 document.getElementById("runs").value = "All";
-                document.getElementById("runTag").value = "All";
+                const tagElements = document.getElementById("runTag").getElementsByTagName("input");
+                for (const input of tagElements) {
+                    input.checked = false;
+                    if (input.id == "All") input.checked = true;
+                }
                 document.getElementById("amount").value = filteredAmountDefault;
                 document.getElementById("metadata").value = "All";
                 setup_lowest_highest_dates(runs);
@@ -3085,8 +3115,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to filter run data based on the runs (aka run name) filter
         function filter_runs(runs) {
+            if (selectedRunSetting != '') {
+                document.getElementById("runs").value = selectedRunSetting
+                selectedRunSetting = ''
+            }
             const selectedRun = document.getElementById("runs").value;
-            // If "All" is selected, return the original array of runs
             if (selectedRun === "All") {
                 var selectedRuns = runs
             } else {
@@ -3099,6 +3132,18 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         function filter_runtags(runs) {
             const tagElements = document.getElementById("runTag").getElementsByTagName("input");
             const useOrTags = document.getElementById("useOrTags").checked;
+
+            if (selectedTagSetting != '') {
+                for (const input of tagElements) {
+                    input.checked = false;
+                    if (input.id === selectedTagSetting) {
+                        input.checked = true;
+                    }
+                }
+                useOrTags.checked = false;
+                selectedTagSetting = ''
+            }
+
             const selectedTags = Array.from(tagElements)
                 .filter(tagElement => tagElement.checked)
                 .map(tagElement => tagElement.id);
@@ -3203,18 +3248,141 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to create overview statistics blocks in the overview section
         function create_overview_statistics_graphs() {
-            const data = {}
-            for (const run of filteredRuns) {
-                data[run.name] = { 'stats': [run.passed, run.failed, run.skipped] }
-                if (data[run.name]['duration']) {
-                    console.log('exists')
-                    data[run.name]['duration'] = data[run.name]['duration'].push(run.elapsed_s)
+            for (const g of overviewGraphs) window[g].destroy();
+            overviewGraphs = [];
+
+            const useRunTags = document.getElementById("useRunTags").checked;
+            const data = {};
+            for (const run of runs) {
+                var name = '';
+                if (useRunTags) {
+                    const tags = run.tags.split(",")
+                    var foundTag = false;
+                    for (const tag of tags) {
+                        if (tag.startsWith('project_')) {
+                            name = tag;
+                            foundTag = true;
+                            break
+                        }
+                    }
+                    if (!foundTag) name = run.name;
                 } else {
-                    data[run.name]['duration'] = [run.elapsed_s]
+                    name = run.name;
                 }
+
+                if (!data[name]) {
+                    data[name] = { stats: [], duration: [], passed_runs: [] };
+                }
+                data[name].duration.push(run.elapsed_s);
+                data[name].stats = [run.passed, run.failed, run.skipped, run.elapsed_s, run.path];
+                data[name].passed_runs.push(run.failed === 0 ? 1 : 0);
             }
-            for (const key of Object.keys(data)) {
-                console.log(key, data[key])
+            const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
+            const compare_to_average = (duration, avg, percent) => {
+                const t = parseFloat(percent) / 100;
+                return duration < avg * (1 - t) ? 'text-passed' :
+                    duration > avg * (1 + t) ? 'text-failed' : '';
+            };
+
+            const overviewCard = (name, stats, duration, status, amount, compares, passed_runs, log_path, log_name) => `
+            <div class="col-4 overview-card" id="${name}Card">
+                <div class="card border-2 border-${status}">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col text-center"><h5 class="card-title mb-0">${name}</h5></div>
+                            <div class="col-auto"><h5>#${amount}</h5></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5 overview-canvas">
+                                <canvas id="${name}Graph"></canvas>
+                            </div>
+                            <div class="col-auto d-flex align-items-center">
+                                <div>
+                                    <div class="green-text">Passed: <strong>${stats[0]}</strong></div>
+                                    <div class="red-text">Failed: <strong>${stats[1]}</strong></div>
+                                    <div class="yellow-text">Skipped: <strong>${stats[2]}</strong></div>
+                                </div>
+                            </div>
+                            <div class="col-auto d-flex align-items-center">
+                                <div>
+                                    <div class="${compares}">Duration: <strong>${Math.round(duration)}s</strong></div>
+                                    <div>Passed Runs: <strong>${passed_runs}%</strong></div>
+                                    <a href="${log_path}" target="_blank" onclick="event.stopPropagation()">${log_name}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+            let overviewHTML = '';
+            const overviewDurationPercentage = document.getElementById('overviewDurationPercentage').value;
+            const keys = Object.keys(data);
+            document.getElementById("overviewTitle").innerHTML = `Overview Statistics <h6>showing ${Object.keys(runs).length} runs in ${keys.length} projects</h6`;
+            keys.forEach((key, i) => {
+                const d = data[key];
+                const [passed, failed, skipped, duration, rawPath] = d.stats;
+                const path = rawPath.replace('output', 'log').replace('.xml', '.html');
+                const amount = d.duration.length;
+                if (amount > 1) d.duration.pop(); // remove current run for averaging
+                const average = avg(d.duration);
+                const compares = compare_to_average(duration, average, overviewDurationPercentage);
+                const passedRuns = (d.passed_runs.reduce((a, b) => a + b, 0) / d.passed_runs.length * 100).toFixed(2);
+                const status = failed > 0 ? 'failed' : skipped > 0 ? 'skipped' : 'passed';
+                const log_path = use_logs ? path : '';
+                const log_name = use_logs ? 'log.html' : '';
+
+                if (i % 3 === 0) overviewHTML += '<div class="row">';
+                overviewHTML += overviewCard(key, d.stats, duration, status, amount, compares, passedRuns, log_path, log_name);
+                if (i % 3 === 2 || i === keys.length - 1) overviewHTML += '</div>';
+            });
+
+            document.getElementById('overviewData').innerHTML = overviewHTML;
+
+            for (const key of keys) {
+                document.getElementById(`${key}Card`).addEventListener('click', () => {
+                    // reset any previous run name or run tag
+                    document.getElementById("runs").value = "All";
+                    const tagElements = document.getElementById("runTag").getElementsByTagName("input");
+                    for (const input of tagElements) {
+                        input.checked = false;
+                        if (input.id == "All") input.checked = true;
+                    }
+                    // set the correct value based on prefix
+                    if (key.startsWith('project_')) {
+                        selectedTagSetting = key;
+                    } else {
+                        selectedRunSetting = key;
+                    }
+                    update_menu('menuDashboard')
+                });
+                const el = document.getElementById(`${key}Graph`);
+                const [passed, failed, skipped] = data[key].stats;
+                const chartData = {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [],
+                        borderColor: [],
+                        hoverOffset: 4
+                    }]
+                };
+                const pushIf = (label, value, bg, border) => {
+                    if (value > 0) {
+                        chartData.labels.push(label);
+                        chartData.datasets[0].data.push(value);
+                        chartData.datasets[0].backgroundColor.push(bg);
+                        chartData.datasets[0].borderColor.push(border);
+                    }
+                };
+                pushIf('passed', passed, passedBackgroundColor, passedBackgroundBorderColor);
+                pushIf('failed', failed, failedBackgroundColor, failedBackgroundBorderColor);
+                pushIf('skipped', skipped, skippedBackgroundColor, skippedBackgroundBorderColor);
+
+                const config = get_graph_config('donut', chartData, 'Last Run Status');
+                delete config.options.plugins.datalabels;
+                window[`${key}Graph`] = new Chart(el, config);
+                overviewGraphs.push(`${key}Graph`);
             }
         }
 
@@ -5797,7 +5965,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         ///////////////////////////////////
 
         // function to update all graph data, function is called when updating filters and when the page loads
-        function setup_data_and_graphs() {
+        function setup_data_and_graphs(menuUpdate = false) {
             lastScrollY = window.scrollY;
             setup_spinner(false);
 
@@ -5821,14 +5989,16 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         setup_section_buttons();
                     }
 
-                    requestAnimationFrame(() => {
-                        if (lastScrollY > 0) {
-                            window.scrollTo({
-                                top: lastScrollY,
-                                behavior: "auto"
-                            });
-                        }
-                    });
+                    if (!menuUpdate) {
+                        requestAnimationFrame(() => {
+                            if (lastScrollY > 0) {
+                                window.scrollTo({
+                                    top: lastScrollY,
+                                    behavior: "auto"
+                                });
+                            }
+                        });
+                    }
                 });
             });
         }
@@ -5852,7 +6022,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             // set titles with amount of filtered items
             const runAmount = Object.keys(filteredRuns).length
             const message = `<h6>showing ${runAmount} of ${filteredAmount} runs</h6>`
-            document.getElementById("overviewTitle").innerHTML = `Overview Statistics`;
             document.getElementById("runTitle").innerHTML = `Run Statistics (${runAmount}) ${message}`;
             document.getElementById("suiteTitle").innerHTML = `Suite Statistics (${Object.keys(filteredSuites).length}) ${message}`;
             document.getElementById("testTitle").innerHTML = `Test Statistics (${Object.keys(filteredTests).length}) ${message}`;
@@ -5917,8 +6086,14 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const sectionHideList = JSON.parse(localStorage.getItem("sectionHide")) || [];
             const allSections = [...sectionShowList, ...sectionHideList];
             const compareStatisticsSection = document.getElementById("compareStatisticsSection");
+            const sectionButtons = [
+                document.getElementById("runStatisticsSectionNav"),
+                document.getElementById("suiteStatisticsSectionNav"),
+                document.getElementById("testStatisticsSectionNav"),
+                document.getElementById("keywordStatisticsSectionNav"),
+            ];
             let prevId = "#loading";
-            // Show and reorder visible sections
+            // Show and reorder visible dashboard sections
             for (const section of sectionShowList) {
                 const sectionId = space_to_camelcase(section + " Section");
                 const sectionEl = document.getElementById(sectionId);
@@ -5928,7 +6103,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     prevId = `#${sectionId}`;
                 }
             }
-            // Hide all hidden sections
+            // Hide all hidden dashboard sections
             for (const section of sectionHideList) {
                 const sectionId = space_to_camelcase(section + " Section");
                 const sectionEl = document.getElementById(sectionId);
@@ -5937,25 +6112,24 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
             // View-specific overrides
             if (menuOverview) {
+                allSections.forEach(section => {
+                    const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
+                    if (sectionEl) sectionEl.hidden = true;
+                });
+                sectionButtons.forEach(btn => btn.hidden = true);
+                compareStatisticsSection.hidden = true;
                 overviewStatisticsSection.hidden = false;
+            } else if (menuDashboard) {
+                overviewStatisticsSection.hidden = true;
+                compareStatisticsSection.hidden = true;
+                sectionButtons.forEach(btn => btn.hidden = false);
+            } else if (menuCompare) {
                 allSections.forEach(section => {
                     const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
                     if (sectionEl) sectionEl.hidden = true;
                 });
-                compareStatisticsSection.hidden = true;
-            }
-
-            if (menuDashboard) {
+                sectionButtons.forEach(btn => btn.hidden = true);
                 overviewStatisticsSection.hidden = true;
-                compareStatisticsSection.hidden = true;
-            }
-
-            if (menuCompare) {
-                overviewStatisticsSection.hidden = true;
-                allSections.forEach(section => {
-                    const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
-                    if (sectionEl) sectionEl.hidden = true;
-                });
                 compareStatisticsSection.hidden = false;
             }
         }
