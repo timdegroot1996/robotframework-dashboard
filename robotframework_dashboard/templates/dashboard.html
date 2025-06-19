@@ -363,6 +363,7 @@
 
         .overview-card {
             cursor: pointer;
+            min-width: 300px;
         }
 
         .overview-card .card {
@@ -372,7 +373,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg sticky-top navbar-dark ps-3 pe-3 border-bottom pb-1" id="navigation">
+    <nav class="navbar navbar-expand-sm sticky-top navbar-dark ps-4 pe-4 border-bottom pb-1" id="navigation">
         <div class="navbar-nav ms-4">
             <a class="nav-link p-2" id="rflogo" href="https://robotframework.org/" target="_blank"
                 title="Robot Framework"></a>
@@ -391,12 +392,23 @@
                     title="Filters"></a>
             </li>
             <li class="nav-item">
+                <a class="nav-link p-2" id="customizeView" data-bs-toggle="modal" data-bs-target="#customizeModal"
+                    title="Customize View"></a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link p-2" id="settings" data-bs-toggle="modal" data-bs-target="#settingsModal"
                     title="Settings"></a>
             </li>
             <li class="nav-item">
+                <a class="nav-link p-2" id="toggleTheme" title="Theme"></a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link p-2" id="database" data-bs-toggle="modal" data-bs-target="#databaseModal"
                     title="Database Summary"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link p-2" target="_blank" id="bug" title="Report a bug or feature request"
+                    href="https://github.com/timdegroot1996/robotframework-dashboard/issues"></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link p-2" target="_blank" id="github" title="GitHub"
@@ -448,6 +460,15 @@
                                 <option value="100">100</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                            id="overviewStatisticsInformation"
+                            data-title="This section shows the projects and their associated runs:
+- Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
+- Passed runs represent the percentage of runs with zero failures.
+- You can define your own projects or groupings by appending '-o path/to/output.xml:project_yourprojectname' when generating results.
+- If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle."></button>
                     </div>
                 </div>
             </div>
@@ -648,17 +669,16 @@
         </div>
 
         <!-- Modal for the filter -->
-        <div class="modal fade" id="filtersModal" tabindex="-1" aria-labelledby="filtersModalLabel"
-            data-bs-backdrop="static">
+        <div class="modal fade" id="filtersModal" tabindex="-1" aria-labelledby="filtersModalLabel">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title" id="filtersModalLabel">Filters</h1>
                         <div>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
-                                id="resetFilters">Reset Filters</button>
+                                id="resetFilters" data-bs-dismiss="modal">Reset Filters</button>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
-                                data-bs-dismiss="modal">Save</button>
+                                data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                     <div class="modal-body">
@@ -714,9 +734,8 @@
             </div>
         </div>
 
-        <!-- Modal for the database details -->
-        <div class="modal fade" id="databaseModal" tabindex="-1" aria-labelledby="databaseModalLabel"
-            data-bs-backdrop="static">
+        <!-- Database Details Modal -->
+        <div class="modal fade" id="databaseModal" tabindex="-1" aria-labelledby="databaseModalLabel">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -733,34 +752,20 @@
             </div>
         </div>
 
-        <!-- Modal for hiding graphs/sections -->
-        <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
-            data-bs-backdrop="static">
-            <div class="modal-dialog modal-xl">
+        <!-- Settings Modal -->
+        <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title" id="settingsModalLabel">Settings</h1>
                         <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto" data-bs-dismiss="modal"
-                                id="resetGraphConfig">Reset View</button>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
-                                data-bs-dismiss="modal" id="saveSettings">Save</button>
+                                data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                     <div class="modal-body">
-                        <div class="row border-bottom">
-                            <h2>General</h2>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-6 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleTheme">Theme: Dark Mode</label>
-                            </div>
-                            <div class="col btn-group form-switch ms-2">
-                                <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleTheme" />
-                            </div>
-                        </div>
                         <div class="row">
-                            <div class="col-6 btn-group ms-1">
+                            <div class="col-8 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleLegends">Graphs: Show
                                     Legends</label>
                             </div>
@@ -769,7 +774,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6 btn-group ms-1">
+                            <div class="col-8 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleLabels">Graphs: Show Run Start/Alias
                                     Labels On Axes</label>
                             </div>
@@ -778,7 +783,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6 btn-group ms-1">
+                            <div class="col-8 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleAliases">Graphs: Show Alias Labels
                                     (Defaults
                                     to Run Start Labels)</label>
@@ -788,7 +793,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6 btn-group ms-1">
+                            <div class="col-8 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleMilliseconds">Graphs: Show
                                     Milliseconds Run Start Labels</label>
                             </div>
@@ -798,7 +803,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6 btn-group ms-1">
+                            <div class="col-8 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleAnimations">Graphs: Show Drawing
                                     Animations</label>
                             </div>
@@ -808,22 +813,22 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6 btn-group ms-1">
+                            <div class="col-8 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleAnimationDuration">Graphs: Animation
                                     Duration (Milliseconds)</label>
                             </div>
-                            <div class="col-1 ps-0 mt-1">
+                            <div class="col-2 ps-0 mt-1">
                                 <input class="form-control form-control-sm" type="number"
                                     id="toggleAnimationDuration" />
                             </div>
                         </div>
                         <div class="row pb-4">
-                            <div class="col-6 btn-group ms-1">
+                            <div class="col-8 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleMaxGraphsPerRow">Graphs: Maximum
                                     Graphs
                                     Per Row</label>
                             </div>
-                            <div class="col-1 ps-0 mt-1">
+                            <div class="col-2 ps-0 mt-1">
                                 <select class="form-select form-select-sm" id="toggleMaxGraphsPerRow">
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -832,12 +837,28 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row border-bottom pt-1">
-                            <h2>Customize View</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customize View Modal -->
+        <div class="modal fade" id="customizeModal" tabindex="-1" aria-labelledby="customizeModalLabel">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title" id="customizeModalLabel">Customize View</h1>
+                        <div>
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto" data-bs-dismiss="modal"
+                                id="resetGraphConfig">Reset View</button>
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
+                                data-bs-dismiss="modal">Close</button>
                         </div>
-                        <div class="row mt-2">
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
                             <div class="col">
-                                <h4 class="ms-1">Show Sections</h4>
+                                <h4 class="ms-1 mb-2">Show Sections</h4>
                                 <div class="border border-3 rounded-3">
                                     <ol id="sectionShow" class="list-group list-group-numbered"></ol>
                                 </div>
@@ -849,13 +870,13 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <h4 class="ms-1">Hide Sections</h4>
+                                <h4 class="ms-1 mb-2">Hide Sections</h4>
                                 <div class="border border-3 rounded-3">
                                     <ol id="sectionHide" class="list-group"></ol>
                                 </div>
                             </div>
                             <div class="col">
-                                <h4 class="ms-1">Show Graphs</h4>
+                                <h4 class="ms-1 mb-2">Show Graphs</h4>
                                 <div class="border border-3 rounded-3">
                                     <ol id="graphShow" class="list-group list-group-numbered"></ol>
                                 </div>
@@ -867,7 +888,7 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <h4 class="ms-1">Hide Graphs</h4>
+                                <h4 class="ms-1 mb-2">Hide Graphs</h4>
                                 <div class="border border-3 rounded-3">
                                     <ol id="graphHide" class="list-group"></ol>
                                 </div>
@@ -905,6 +926,12 @@
         const rflogoLightSVG = '<svg data-v-266d6681="" data-v-7dd69bf4="" version="1.1" id="face" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="fill-white"><path data-v-266d6681="" id="path" d="M5,10.2c0-1.9,1.5-3.4,3.4-3.4c1.9,0,3.4,1.5,3.4,3.4c0,0.7-0.6,1.2-1.2,1.2c-0.7,0-1.2-0.6-1.2-1.2 c0-0.5-0.4-0.9-0.9-0.9c-0.5,0-0.9,0.4-0.9,0.9c0,0.7-0.6,1.2-1.2,1.2S5,10.9,5,10.2 M19,15.9c0,0.7-0.6,1.2-1.2,1.2H6.4 c-0.7,0-1.2-0.6-1.2-1.2c0-0.7,0.6-1.2,1.2-1.2h11.5C18.5,14.7,19,15.3,19,15.9 M13.7,10.9c-0.4-0.6-0.2-1.3,0.3-1.7l2.9-1.9 c0.6-0.4,1.3-0.2,1.7,0.3c0.4,0.6,0.2,1.3-0.3,1.7l-2.9,1.9c-0.2,0.1-0.5,0.2-0.7,0.2C14.3,11.5,13.9,11.3,13.7,10.9 M21.5,18.5 c0,0.2-0.1,0.5-0.3,0.6l-2.1,2.1c-0.2,0.2-0.4,0.3-0.6,0.3h-13c-0.2,0-0.5-0.1-0.6-0.3l-2.1-2.1c-0.2-0.2-0.3-0.4-0.3-0.6v-13 c0-0.2,0.1-0.5,0.3-0.6l2.1-2.1C5,2.6,5.2,2.5,5.5,2.5h13c0.2,0,0.5,0.1,0.6,0.3l2.1,2.1c0.2,0.2,0.3,0.4,0.3,0.6V18.5z M23.3,3.4 l-2.8-2.8C20.1,0.2,19.6,0,19,0H5C4.4,0,3.9,0.2,3.4,0.7L0.7,3.4C0.2,3.9,0,4.4,0,5v14c0,0.6,0.2,1.2,0.7,1.6l2.8,2.8 C3.9,23.8,4.4,24,5,24h14c0.6,0,1.2-0.2,1.6-0.7l2.8-2.8c0.4-0.4,0.7-1,0.7-1.6V5C24,4.4,23.8,3.9,23.3,3.4"></path></svg>'
         const clockDarkSVG = `<svg class="mb-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path fill="white" d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>`
         const clockLightSVG = `<svg class="mb-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>`
+        const sunSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M12 19a7 7 0 1 1 0-14 7 7 0 0 1 0 14Zm0-1.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 1 0 0 11Zm-5.657.157a.75.75 0 0 1 0 1.06l-1.768 1.768a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.767-1.768a.75.75 0 0 1 1.061 0ZM3.515 3.515a.75.75 0 0 1 1.06 0l1.768 1.768a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L3.515 4.575a.75.75 0 0 1 0-1.06ZM12 0a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 12 0ZM4 12a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h2.5A.75.75 0 0 1 4 12Zm8 8a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0v-2.5A.75.75 0 0 1 12 20Zm12-8a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h2.5A.75.75 0 0 1 24 12Zm-6.343 5.657a.75.75 0 0 1 1.06 0l1.768 1.768a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-1.768-1.767a.75.75 0 0 1 0-1.061Zm2.828-14.142a.75.75 0 0 1 0 1.06l-1.768 1.768a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l1.767-1.768a.75.75 0 0 1 1.061 0Z"></path></svg>`
+        const moonSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M14.768 3.96v.001l-.002-.005a9.08 9.08 0 0 0-.218-.779c-.13-.394.21-.8.602-.67.29.096.575.205.855.328l.01.005A10.002 10.002 0 0 1 12 22a10.002 10.002 0 0 1-9.162-5.985l-.004-.01a9.722 9.722 0 0 1-.329-.855c-.13-.392.277-.732.67-.602.257.084.517.157.78.218l.004.002A9 9 0 0 0 14.999 6a9.09 9.09 0 0 0-.231-2.04ZM16.5 6c0 5.799-4.701 10.5-10.5 10.5-.426 0-.847-.026-1.26-.075A8.5 8.5 0 1 0 16.425 4.74c.05.413.075.833.075 1.259Z"></path></svg>`
+        const brushDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M19.642 6.653c-1.31 1.812-3.251 3.86-4.945 5.575l-.091.092-2.69-2.69.098-.098c1.69-1.71 3.732-3.656 5.544-4.962.911-.657 1.715-1.115 2.353-1.318.652-.207.915-.091 1.039.033.113.113.231.367.019 1.02-.207.635-.668 1.436-1.327 2.348ZM10.9 10.736l2.605 2.605c-.88.754-1.684 1.294-2.378 1.655a4.832 4.832 0 0 0-1.892-1.89c.36-.69.903-1.482 1.665-2.37Zm-3.086 1.856a4.825 4.825 0 0 0-4.33 1.328c-.525.525-.88 1.302-1.13 2.079-.256.795-.43 1.682-.541 2.507a19.055 19.055 0 0 0-.173 2.216c-.004.3.003.567.022.778.009.104.022.212.044.31.01.05.027.113.053.18.02.051.074.178.19.295.117.117.245.17.297.19.066.026.13.043.178.054.099.021.207.035.31.044.211.019.479.025.779.021.603-.008 1.39-.06 2.216-.172.825-.112 1.711-.285 2.507-.54.776-.25 1.553-.606 2.079-1.132a4.825 4.825 0 0 0 1.327-4.333c1.209-.6 2.622-1.618 4.121-3.135 1.694-1.714 3.709-3.835 5.093-5.75.688-.952 1.258-1.904 1.538-2.764.274-.842.334-1.826-.384-2.544-.72-.719-1.703-.672-2.555-.401-.865.275-1.822.843-2.776 1.53-1.92 1.384-4.036 3.407-5.733 5.125-1.5 1.518-2.53 2.896-3.132 4.114Zm1.44 2.388a3.33 3.33 0 0 1 0 4.71c-.271.27-.774.537-1.478.763-.684.22-1.477.378-2.248.482-.769.104-1.495.152-2.035.16a9.247 9.247 0 0 1-.351-.002 9.182 9.182 0 0 1-.002-.35c.007-.542.055-1.267.16-2.036.104-.771.261-1.564.481-2.249.227-.703.493-1.206.764-1.478a3.33 3.33 0 0 1 4.71 0Z"></path></svg>`
+        const brushLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M19.642 6.653c-1.31 1.812-3.251 3.86-4.945 5.575l-.091.092-2.69-2.69.098-.098c1.69-1.71 3.732-3.656 5.544-4.962.911-.657 1.715-1.115 2.353-1.318.652-.207.915-.091 1.039.033.113.113.231.367.019 1.02-.207.635-.668 1.436-1.327 2.348ZM10.9 10.736l2.605 2.605c-.88.754-1.684 1.294-2.378 1.655a4.832 4.832 0 0 0-1.892-1.89c.36-.69.903-1.482 1.665-2.37Zm-3.086 1.856a4.825 4.825 0 0 0-4.33 1.328c-.525.525-.88 1.302-1.13 2.079-.256.795-.43 1.682-.541 2.507a19.055 19.055 0 0 0-.173 2.216c-.004.3.003.567.022.778.009.104.022.212.044.31.01.05.027.113.053.18.02.051.074.178.19.295.117.117.245.17.297.19.066.026.13.043.178.054.099.021.207.035.31.044.211.019.479.025.779.021.603-.008 1.39-.06 2.216-.172.825-.112 1.711-.285 2.507-.54.776-.25 1.553-.606 2.079-1.132a4.825 4.825 0 0 0 1.327-4.333c1.209-.6 2.622-1.618 4.121-3.135 1.694-1.714 3.709-3.835 5.093-5.75.688-.952 1.258-1.904 1.538-2.764.274-.842.334-1.826-.384-2.544-.72-.719-1.703-.672-2.555-.401-.865.275-1.822.843-2.776 1.53-1.92 1.384-4.036 3.407-5.733 5.125-1.5 1.518-2.53 2.896-3.132 4.114Zm1.44 2.388a3.33 3.33 0 0 1 0 4.71c-.271.27-.774.537-1.478.763-.684.22-1.477.378-2.248.482-.769.104-1.495.152-2.035.16a9.247 9.247 0 0 1-.351-.002 9.182 9.182 0 0 1-.002-.35c.007-.542.055-1.267.16-2.036.104-.771.261-1.564.481-2.249.227-.703.493-1.206.764-1.478a3.33 3.33 0 0 1 4.71 0Z"></path></svg>`
+        const bugDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M7.72.22a.75.75 0 0 1 1.06 0l1.204 1.203A4.98 4.98 0 0 1 12 1c.717 0 1.4.151 2.016.423L15.22.22a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-.971.972A4.991 4.991 0 0 1 17 6v1.104a2.755 2.755 0 0 1 1.917 1.974l1.998-.999a.75.75 0 0 1 .67 1.342L19 10.714V13.5l3.25.003a.75.75 0 0 1 0 1.5L19 15.001V16c0 .568-.068 1.134-.204 1.686l.04.018 2.75 1.375a.75.75 0 1 1-.671 1.342l-2.638-1.319A6.998 6.998 0 0 1 12 23a6.998 6.998 0 0 1-6.197-3.742l-2.758 1.181a.752.752 0 0 1-1.064-.776.752.752 0 0 1 .474-.602l2.795-1.199A6.976 6.976 0 0 1 5 16v-.996H1.75a.75.75 0 0 1 0-1.5H5v-2.79L2.415 9.42a.75.75 0 0 1 .67-1.342l1.998.999A2.756 2.756 0 0 1 7 7.104V6a4.99 4.99 0 0 1 1.69-3.748l-.97-.972a.75.75 0 0 1 0-1.06ZM6.5 9.75V16a5.5 5.5 0 1 0 11 0V9.75c0-.69-.56-1.25-1.25-1.25h-8.5c-.69 0-1.25.56-1.25 1.25ZM8.5 7h7V6a3.5 3.5 0 1 0-7 0Z"></path></svg>`
+        const bugLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M7.72.22a.75.75 0 0 1 1.06 0l1.204 1.203A4.98 4.98 0 0 1 12 1c.717 0 1.4.151 2.016.423L15.22.22a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-.971.972A4.991 4.991 0 0 1 17 6v1.104a2.755 2.755 0 0 1 1.917 1.974l1.998-.999a.75.75 0 0 1 .67 1.342L19 10.714V13.5l3.25.003a.75.75 0 0 1 0 1.5L19 15.001V16c0 .568-.068 1.134-.204 1.686l.04.018 2.75 1.375a.75.75 0 1 1-.671 1.342l-2.638-1.319A6.998 6.998 0 0 1 12 23a6.998 6.998 0 0 1-6.197-3.742l-2.758 1.181a.752.752 0 0 1-1.064-.776.752.752 0 0 1 .474-.602l2.795-1.199A6.976 6.976 0 0 1 5 16v-.996H1.75a.75.75 0 0 1 0-1.5H5v-2.79L2.415 9.42a.75.75 0 0 1 .67-1.342l1.998.999A2.756 2.756 0 0 1 7 7.104V6a4.99 4.99 0 0 1 1.69-3.748l-.97-.972a.75.75 0 0 1 0-1.06ZM6.5 9.75V16a5.5 5.5 0 1 0 11 0V9.75c0-.69-.56-1.25-1.25-1.25h-8.5c-.69 0-1.25.56-1.25 1.25ZM8.5 7h7V6a3.5 3.5 0 1 0-7 0Z"></path></svg>`
 
         // colors
         const passedBackgroundBorderColor = "#97bd61";
@@ -1919,6 +1946,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 document.getElementById('database').innerHTML = databaseLightSVG;
                 document.getElementById('filters').innerHTML = filterLightSVG;
                 document.getElementById('rflogo').innerHTML = rflogoLightSVG;
+                document.getElementById('toggleTheme').innerHTML = moonSVG;
+                document.getElementById('customizeView').innerHTML = brushLightSVG;
+                document.getElementById('bug').innerHTML = bugLightSVG;
                 // menu theme
                 document.getElementById('navigation').classList.remove('navbar-dark')
                 document.getElementById('navigation').classList.add('navbar-light')
@@ -1944,6 +1974,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 document.getElementById('database').innerHTML = databaseDarkSVG;
                 document.getElementById('filters').innerHTML = filterDarkSVG;
                 document.getElementById('rflogo').innerHTML = rflogoDarkSVG;
+                document.getElementById('toggleTheme').innerHTML = sunSVG;
+                document.getElementById('customizeView').innerHTML = brushDarkSVG;
+                document.getElementById('bug').innerHTML = bugDarkSVG;
                 // menu theme
                 document.getElementById('navigation').classList.remove('navbar-light')
                 document.getElementById('navigation').classList.add('navbar-dark')
@@ -2106,7 +2139,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             for (let button of informationButtons) {
                 button.innerHTML = informationSVG;
                 const id = button.id;
-                const title = informationTitles[id];
+                var title = informationTitles[id];
+                if (id == 'overviewStatisticsInformation') continue;
                 button.setAttribute('data-title', title)
             }
         }
@@ -2534,6 +2568,19 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to create customized view eventlisteners
         function setup_settings_eventlisteners() {
+            // function to catch the closing of the modal by not clicking a button
+            $("#customizeModal").on("hidden.bs.modal", function () {
+                update_customize_view_local_storage();
+                setup_data_and_graphs();
+            });
+            // function to catch the closing of the filter modal
+            $("#filtersModal").on("hidden.bs.modal", function () {
+                setup_data_and_graphs();
+            });
+            // function to catch the closing of the settings modal
+            $("#settingsModal").on("hidden.bs.modal", function () {
+                setup_data_and_graphs();
+            });
             // function to create setting toggle handlers
             function create_toggle_handler({ key, elementId, globalVarName, isCheckbox = true, isNumber = false }) {
                 return function (load = false) {
@@ -2556,7 +2603,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                             element.checked = window[globalVarName];
                         }
                         localStorage.setItem(key, JSON.stringify(window[globalVarName]));
-                        setup_data_and_graphs();
                     }
                 };
             }
@@ -2626,12 +2672,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById("toggleAnimationDuration").addEventListener("change", () => toggle_animation_duration());
             document.getElementById("toggleTheme").addEventListener("click", () => toggle_theme());
 
-            // update all graphs based on new hidden graphs/sections
-            document.getElementById("saveSettings").addEventListener("click", function () {
-                update_customize_view_local_storage();
-                setup_data_and_graphs();
-            });
-
             // remove the entire customized view configuration
             document.getElementById("resetGraphConfig").addEventListener("click", function () {
                 localStorage.setItem("sectionHide", JSON.stringify([]));
@@ -2639,8 +2679,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 localStorage.setItem("sectionShow", JSON.stringify(hideSections));
                 localStorage.setItem("graphShow", JSON.stringify(hideGraphs));
                 setup_customize_view_content();
-                update_customize_view_local_storage();
-                setup_data_and_graphs();
             });
         }
 
@@ -2666,13 +2704,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to setup eventlisteners for filter buttons
         function setup_eventlisteners_filter_buttons() {
-            // eventlisteners for filters (runTags is done separately because of different usage)
-            const filters = ["runs", "fromDate", "fromTime", "toDate", "toTime", "amount", "metadata"]
-            for (let f of filters) {
-                document.getElementById(f).addEventListener("change", setup_data_and_graphs);
-            }
-
-            // has to be added after the creation of the secctions and graphs
+            // has to be added after the creation of the sections and graphs
             document.getElementById("suiteFolderDonutGoUp").addEventListener("click", function () {
                 function remove_last_folder(path) {
                     const parts = path.split(".");
@@ -2809,7 +2841,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 document.getElementById("amount").value = filteredAmountDefault;
                 document.getElementById("metadata").value = "All";
                 setup_lowest_highest_dates(runs);
-                setup_data_and_graphs();
             });
             document.getElementById("suiteSelectSuites").addEventListener("change", () => {
                 create_suite_duration_graph();
@@ -2969,7 +3000,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 });
             });
             const andOrTags = `
-                <li class="list-group-item d-flex small" onclick="setup_data_and_graphs()">
+                <li class="list-group-item d-flex small">
                     <div class="btn-group form-switch">
                         <input class="form-check-input" type="checkbox" role="switch" id="useOrTags" />
                     </div>
@@ -2979,7 +3010,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 </li>
             `;
             const listItemTemplate = (value) => `
-                <li class="list-group-item list-group-item-action d-flex small" onclick="setup_data_and_graphs()">
+                <li class="list-group-item list-group-item-action d-flex small">
                     <input class="form-check-input me-1" type="checkbox" value="" id="${value}">
                     <label class="form-check-label ms-2" for="${value}">${value}</label>
                 </li>
@@ -3297,17 +3328,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                             <div class="col-auto"><h5>#${amount}</h5></div>
                         </div>
                         <div class="row">
-                            <div class="col-5 overview-canvas">
+                            <div class="col-4 overview-canvas">
                                 <canvas id="${name}Graph"></canvas>
                             </div>
-                            <div class="col-auto d-flex align-items-center">
+                            <div class="col-3 d-flex align-items-center">
                                 <div>
                                     <div class="green-text">Passed: <strong>${stats[0]}</strong></div>
                                     <div class="red-text">Failed: <strong>${stats[1]}</strong></div>
                                     <div class="yellow-text">Skipped: <strong>${stats[2]}</strong></div>
                                 </div>
                             </div>
-                            <div class="col-auto d-flex align-items-center">
+                            <div class="col-5 d-flex align-items-center" style="overflow:auto;">
                                 <div>
                                     <div class="${compares}">${svg} <i>${Math.round(duration)}s</i></div>
                                     <div>Passed Runs: <strong>${passed_runs}%</strong></div>
@@ -3321,7 +3352,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
             let overviewHTML = '';
             const overviewDurationPercentage = document.getElementById('overviewDurationPercentage').value;
-            const keys = Object.keys(data);
+            const keys = Object.keys(data).sort();
             const svg = document.getElementsByTagName("html")[0].getAttribute("data-bs-theme") == "dark" ? clockDarkSVG : clockLightSVG;
             document.getElementById("overviewTitle").innerHTML = `Overview Statistics <h6>showing ${Object.keys(runs).length} runs in ${keys.length} projects</h6`;
             keys.forEach((key, i) => {
