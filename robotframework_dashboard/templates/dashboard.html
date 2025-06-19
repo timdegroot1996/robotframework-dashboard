@@ -49,10 +49,6 @@
             background-color: #eee;
         }
 
-        #version {
-            color: #eee;
-        }
-
         .form-switch .form-check-input:not(:checked) {
             background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='black'/></svg>");
             border-color: black;
@@ -105,8 +101,7 @@
         .dark-mode .list-group-item:not(.disabled),
         .dark-mode .form-label,
         .dark-mode .form-control,
-        .dark-mode .form-select,
-        .dark-mode #version {
+        .dark-mode .form-select {
             color: #eee;
         }
 
@@ -384,9 +379,12 @@
             <a class="nav-item nav-link" id="testStatisticsSectionNav"><i>Tests</i></a>
             <a class="nav-item nav-link" id="keywordStatisticsSectionNav"><i>Keywords</i></a>
             <a class="nav-item nav-link" id="menuCompare">Compare</a>
-            <a class="nav-item nav-link" id="openDashboard" href="/" hidden>Admin Page</a>
+            <a class="nav-item nav-link" id="openDashboard" href="/" hidden>Admin</a>
         </div>
         <ul class="navbar-nav flex-row flex-wrap ms-md-auto me-4">
+            <li class="nav-item" style="cursor: auto;">
+                <a class="nav-link disabled" id="version">"placeholder_version"</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link p-2" id="filters" data-bs-toggle="modal" data-bs-target="#filtersModal"
                     title="Filters"></a>
@@ -675,8 +673,8 @@
                     <div class="modal-header">
                         <h1 class="modal-title" id="filtersModalLabel">Filters</h1>
                         <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
-                                id="resetFilters" data-bs-dismiss="modal">Reset Filters</button>
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3" id="resetFilters"
+                                data-bs-dismiss="modal">Reset Filters</button>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
                                 data-bs-dismiss="modal">Close</button>
                         </div>
@@ -2009,7 +2007,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // set default values
         function setup_stats() {
             document.getElementById("stats").innerHTML = `<table class='table table-striped'>
-                <tr><td>Version</td><td>"placeholder_version"</td></tr>
                 <tr><td>Runs</td><td>${runs.length}</td></tr>
                 <tr><td>Suites</td><td>${suites.length}</td></tr>
                 <tr><td>Tests</td><td>${tests.length}</td></tr>
