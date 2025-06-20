@@ -3342,7 +3342,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
             const overviewCard = (name, stats, duration, status, amount, compares, passed_runs, log_path, log_name, svg) => `
             <div class="col-4 overview-card" id="${name}Card">
-                <div class="card border-2 border-${status}">
+                <div class="card border-3 border-${status}">
                     <div class="card-body">
                         <div class="row">
                             <div class="col text-center"><h5 class="card-title mb-0">${name}</h5></div>
@@ -3354,15 +3354,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                             </div>
                             <div class="col-3 d-flex align-items-center">
                                 <div>
-                                    <div class="green-text">Passed: <strong>${stats[0]}</strong></div>
-                                    <div class="red-text">Failed: <strong>${stats[1]}</strong></div>
-                                    <div class="yellow-text">Skipped: <strong>${stats[2]}</strong></div>
+                                    <div class="green-text">Passed: ${stats[0]}</div>
+                                    <div class="red-text">Failed: ${stats[1]}</div>
+                                    <div class="yellow-text">Skipped: ${stats[2]}</div>
                                 </div>
                             </div>
                             <div class="col-5 d-flex align-items-center" style="overflow:auto;">
                                 <div>
                                     <div class="${compares}">${svg} <i>${Math.round(duration)}s</i></div>
-                                    <div>Passed Runs: <strong>${passed_runs}%</strong></div>
+                                    <div>Passed Runs: ${passed_runs}%</div>
                                     <a href="${log_path}" target="_blank" onclick="event.stopPropagation()">${log_name}</a>
                                 </div>
                             </div>

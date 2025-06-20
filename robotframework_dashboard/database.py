@@ -55,7 +55,7 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
             # run/suite/test/keyword: run_alias added in 0.6.0
             # run: path added in 0.8.1
             # suite/test: id was added in 0.8.4
-            # run: metadata was added in 0.9.5
+            # run: metadata was added in 1.0.0
             run_table_length = get_runs_length()
             if run_table_length == 10:
                 self.connection.cursor().execute(RUN_TABLE_UPDATE_ALIAS)
