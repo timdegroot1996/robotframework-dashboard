@@ -364,6 +364,26 @@
         .overview-card .card {
             border-radius: 1rem
         }
+
+        @media print {
+            table {
+                width: 100%;
+                page-break-inside: auto;
+            }
+
+            .canvas {
+                width: 100%;
+                overflow: hidden;
+                page-break-inside: avoid;
+                break-inside: avoid;
+                display: block;
+            }
+
+            canvas {
+                height: auto !important;
+                max-width: 100% !important;
+            }
+        }
     </style>
 </head>
 
@@ -2040,6 +2060,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             if (server) {
                 document.getElementById("openDashboard").hidden = false
             }
+
+            window.onbeforeprint = () => {
+                return new Promise(res => setTimeout(res, animationDuration + 500)); // allow rendering time
+            };
         }
 
         // function to setup all collapse buttons and icons
@@ -4564,7 +4588,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             });
         }
 
-         // function to create the compare statistics in the compare section
+        // function to create the compare statistics in the compare section
         function create_compare_suite_duration_graph() {
             if (compareSuiteDurationGraph) {
                 compareSuiteDurationGraph.destroy();
@@ -6012,49 +6036,35 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         function get_compare_suite_duration_data(filteredData) {
-            var labels = new Set()
-            const data = {}
-            const datasets = []
+            const labelSet = new Set();
+            const dataMap = new Map();
+            const datasets = [];
             const selectedRuns = [...new Set(
                 compareRunIds
-                    .map(id => document.getElementById(id).value)
-                    .filter(val => val !== "None")
+                    .map(id => document.getElementById(id)?.value)
+                    .filter(val => val && val !== "None")
             )];
-            for (const selected of selectedRuns) {
-                for (const value of filteredData) {
-                    if (!(selected == value.run_start || selected == value.run_alias)) continue;
-                    labels.add(value.name)
-                    if (data[selected]) {
-                        data[selected].push(value.elapsed_s)
-                    } else {
-                        data[selected] = [value.elapsed_s]
+
+            for (const value of filteredData) {
+                for (const run of selectedRuns) {
+                    if (value.run_start === run || value.run_alias === run) {
+                        labelSet.add(value.name);
+                        if (!dataMap.has(run)) dataMap.set(run, []);
+                        dataMap.get(run).push(value.elapsed_s);
                     }
                 }
+            }
+            for (const run of selectedRuns) {
                 datasets.push({
-                    label: selected,
-                    data: data[selected],
-                    fill: true,  
-                })
+                    label: run,
+                    data: dataMap.get(run) || [],
+                    fill: true
+                });
             }
-            labels = [...labels]
-            // const datasets = []
-            // for (const label of labels) {
-            //     const filtered = data.filter(value => value.name == label)
-            //     const datavalues = []
-            //     for (const value of filtered) {
-            //         datavalues.push(value.elapsed_s)
-            //     }
-            //     datasets.push({
-            //         label: label,
-            //         data: datavalues,
-            //         fill: true,
-            //     })
-            // }
-            const graphData = {
-                labels: labels,
-                datasets: datasets,
-            }
-            return graphData
+            return {
+                labels: [...labelSet],
+                datasets
+            };
         }
 
         // function to update the height of the test statistics graph and enable scrolling
