@@ -1846,6 +1846,24 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 </div>`,
             },
             {
+                key: "compareSuiteDuration",
+                label: "Compare Suite Duration",
+                defaultType: "radar",
+                viewOptions: ["Radar"],
+                hasFullscreenButton: true,
+                information: `This graph displays the duration per suite in a radar format.`,
+                html: `<div class="col canvas pb-5" id="compareSuiteDurationCanvas">
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareSuiteDurationGraphRadar">Radar</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                        id="compareSuiteDurationFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareSuiteDurationClose"
+                        hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="compareSuiteDurationInformation"></button>
+                    <canvas id="compareSuiteDurationGraph"></canvas>
+                </div>`,
+            },
+            {
                 key: "compareTests",
                 label: "Compare Tests",
                 defaultType: "timeline",
@@ -1870,24 +1888,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                             id="compareTestsInformation"></button>
                         <canvas id="compareTestsGraph"></canvas>
                     </div>
-                </div>`,
-            },
-            {
-                key: "compareSuiteDuration",
-                label: "Compare Suite Duration",
-                defaultType: "radar",
-                viewOptions: ["Radar"],
-                hasFullscreenButton: true,
-                information: `This graph displays the duration per suite in a radar format.`,
-                html: `<div class="col canvas pb-5" id="compareSuiteDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareSuiteDurationGraphRadar">Radar</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="compareSuiteDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareSuiteDurationClose"
-                        hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="compareSuiteDurationInformation"></button>
-                    <canvas id="compareSuiteDurationGraph"></canvas>
                 </div>`,
             },
         ];
@@ -2958,8 +2958,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 if (element) {
                     element.addEventListener('change', () => {
                         create_compare_statistics_graph();
-                        create_compare_tests_graph();
                         create_compare_suite_duration_graph();
+                        create_compare_tests_graph();
                     });
                 }
             });
@@ -4540,9 +4540,16 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const config = get_graph_config("bar", graphData, `Run Statistics`, "Run", "Amount");
             config.options.scales.y.stacked = false;
             compareStatisticsGraph = new Chart("compareStatisticsGraph", config);
-            compareStatisticsGraph.canvas.addEventListener("click", (event) => {
-                open_log_from_label(compareStatisticsGraph, event)
-            });
+        }
+
+        // function to create the compare statistics in the compare section
+        function create_compare_suite_duration_graph() {
+            if (compareSuiteDurationGraph) {
+                compareSuiteDurationGraph.destroy();
+            }
+            const graphData = get_compare_suite_duration_data(filteredSuites);
+            const config = get_graph_config("radar", graphData, "Suite Duration");
+            compareSuiteDurationGraph = new Chart("compareSuiteDurationGraph", config);
         }
 
         // function to create the compare statistics in the compare section
@@ -4588,17 +4595,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             });
         }
 
-        // function to create the compare statistics in the compare section
-        function create_compare_suite_duration_graph() {
-            if (compareSuiteDurationGraph) {
-                compareSuiteDurationGraph.destroy();
-            }
-            const graphData = get_compare_suite_duration_data(filteredSuites);
-            const config = get_graph_config("radar", graphData, "Suite Duration");
-            delete config.options.onClick;
-            compareSuiteDurationGraph = new Chart("compareSuiteDurationGraph", config);
-        }
-
         ///////////////////////////////////
         // GRAPH DATA & CONFIG FUNCTIONS //
         ///////////////////////////////////
@@ -4617,9 +4613,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     var run
                     const identifier = chart.config._config.options.indexAxis === "y" ? Object.values(ticks).map(item => item.label) : data.labels // exception for timelines
                     if (showAliases) {
-                        run = runs.find(run => run.run_alias === identifier[i])
+                        run = filteredRuns.find(run => run.run_alias === identifier[i])
                     } else {
-                        run = runs.find(run => run.run_start === identifier[i])
+                        run = filteredRuns.find(run => run.run_start === identifier[i])
                     }
                     if (run) {
                         const path = transform_file_path(run.path)
@@ -4650,8 +4646,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var name = ""
             var id = ""
             var runStart = runs.find(run => run.path === path).run_start
-            if (graphId.includes("suite")) {
-                if (graphId == "suiteStatisticsGraph") {
+            if (graphId.includes("suite") || graphId.includes("Suite")) {
+                if (graphId == "suiteStatisticsGraph" || graphId == "compareSuiteDurationGraph") {
                     name = event.chart.tooltip.title[0].split(": ").pop()
                 } else if (graphId == "suiteDurationGraph") {
                     name = event.chart.tooltip.body[0].lines[0].split(": ")[0]
@@ -4660,7 +4656,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 }
                 id = suites.find(suite => suite.name === name && suite.run_start === runStart)
             } else { // it contains a test
-                if (graphId == "testStatisticsGraph" || graphId == "testMostFlakyGraph" || graphId == "testRecentMostFlakyGraph" || graphId == "testMostFailedGraph" || graphId == "testRecentMostFailedGraph") {
+                if (graphId == "testStatisticsGraph" || graphId == "testMostFlakyGraph" || graphId == "testRecentMostFlakyGraph" || graphId == "testMostFailedGraph" || graphId == "testRecentMostFailedGraph" || graphId == "compareTestsGraph") {
                     name = chartElement[0].element.$context.raw.y
                 } else if (graphId == "testDurationGraph") {
                     if (graphType == "bar") {
@@ -4693,6 +4689,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 runStart = callbackData[index]
             } else if (graphType == "line" && !graphId.includes("Statistics")) {
                 runStart = format_date_to_string(new Date(chartElement[0].element.$context.raw.x))
+            } else if (graphId == "compareStatisticsGraph" || graphId == "compareSuiteDurationGraph") {
+                const index = chartElement[0].datasetIndex
+                runStart = event.chart.data.datasets[index].label
             } else {
                 const index = chartElement[0].index
                 runStart = event.chart.data.labels[index]
@@ -5567,7 +5566,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 return graphData;
             }
             else if (graphType === "line") {
-                const labels = [];
                 const sets = new Map();
                 for (const value of filteredData) {
                     if (!should_include(value)) continue;
@@ -5575,7 +5573,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     const run_start = new Date(value.run_start);
                     const roundedValue = Math.round(value[objectDataAttribute] * 100) / 100;
                     if (!sets.has(name)) {
-                        labels.push(name);
                         sets.set(name, [{ x: run_start, y: roundedValue }]);
                     } else {
                         sets.get(name).push({ x: run_start, y: roundedValue });
@@ -6233,8 +6230,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             }
             if (menuCompare) {
                 create_compare_statistics_graph();
-                create_compare_tests_graph();
                 create_compare_suite_duration_graph();
+                create_compare_tests_graph();
             }
         }
 
