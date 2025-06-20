@@ -1813,7 +1813,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "bar",
                 viewOptions: ["Bar"],
                 hasFullscreenButton: true,
-                information: `Some information that shows on the popup`,
+                information: `This graph displays the overall statistics of the selected runs.`,
                 html: `<div class="col canvas pb-5" id="compareStatisticsCanvas">
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareStatisticsGraphBar">Bar</button>
                     <button class="btn btn-outline-light btn-sm mb-3 mt-1"
@@ -1831,7 +1831,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "timeline",
                 viewOptions: ["Timeline"],
                 hasFullscreenButton: true,
-                information: `Some information that shows on the popup`,
+                information: `This graph displays the statistics of the tests in a timeline format.`,
                 html: `<div class="col canvas canvas-vertical" id="compareTestsCanvas">
                     <div id="compareTestsVertical">
                         <div class="btn-group me-1">
@@ -1850,6 +1850,24 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                             id="compareTestsInformation"></button>
                         <canvas id="compareTestsGraph"></canvas>
                     </div>
+                </div>`,
+            },
+            {
+                key: "compareSuiteDuration",
+                label: "Compare Suite Duration",
+                defaultType: "radar",
+                viewOptions: ["Radar"],
+                hasFullscreenButton: true,
+                information: `This graph displays the duration per suite in a radar format.`,
+                html: `<div class="col canvas pb-5" id="compareSuiteDurationCanvas">
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareSuiteDurationGraphRadar">Radar</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
+                        id="compareSuiteDurationFullscreen">Fullscreen</button>
+                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareSuiteDurationClose"
+                        hidden>Close</button>
+                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
+                        id="compareSuiteDurationInformation"></button>
+                    <canvas id="compareSuiteDurationGraph"></canvas>
                 </div>`,
             },
         ];
@@ -1890,7 +1908,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         });
 
         // All possible button types
-        const buttonTypes = ["Bar", "Line", "Timeline", "Percentages", "Amount", "Donut", "Stats", "Heatmap"];
+        const buttonTypes = ["Bar", "Line", "Timeline", "Percentages", "Amount", "Donut", "Stats", "Heatmap", "Radar"];
 
         // Run compare filter Id's
         const compareRunIds = ['compareRun1', 'compareRun2', 'compareRun3', 'compareRun4']
@@ -2917,6 +2935,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     element.addEventListener('change', () => {
                         create_compare_statistics_graph();
                         create_compare_tests_graph();
+                        create_compare_suite_duration_graph();
                     });
                 }
             });
@@ -4545,6 +4564,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             });
         }
 
+         // function to create the compare statistics in the compare section
+        function create_compare_suite_duration_graph() {
+            if (compareSuiteDurationGraph) {
+                compareSuiteDurationGraph.destroy();
+            }
+            const graphData = get_compare_suite_duration_data(filteredSuites);
+            const config = get_graph_config("radar", graphData, "Suite Duration");
+            delete config.options.onClick;
+            compareSuiteDurationGraph = new Chart("compareSuiteDurationGraph", config);
+        }
+
         ///////////////////////////////////
         // GRAPH DATA & CONFIG FUNCTIONS //
         ///////////////////////////////////
@@ -4906,6 +4936,39 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                             ...baseConfig.plugins,
                             legend: { display: false },
                         },
+                    },
+                }),
+                radar: () => ({
+                    type: "radar",
+                    data: graphData,
+                    options: {
+                        ...baseConfig,
+                        elements: {
+                            line: {
+                                borderWidth: 3
+                            },
+                        },
+                        plugins: {
+                            ...baseConfig.plugins,
+                            tooltip: { enabled: true },
+                            legend: { display: true },
+                        },
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    display: true
+                                },
+                                grid: {
+                                    display: true
+                                },
+                                pointLabels: {
+                                    display: true
+                                },
+                                ticks: {
+                                    display: false
+                                }
+                            }
+                        }
                     },
                 }),
             };
@@ -5948,6 +6011,52 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             };
         }
 
+        function get_compare_suite_duration_data(filteredData) {
+            var labels = new Set()
+            const data = {}
+            const datasets = []
+            const selectedRuns = [...new Set(
+                compareRunIds
+                    .map(id => document.getElementById(id).value)
+                    .filter(val => val !== "None")
+            )];
+            for (const selected of selectedRuns) {
+                for (const value of filteredData) {
+                    if (!(selected == value.run_start || selected == value.run_alias)) continue;
+                    labels.add(value.name)
+                    if (data[selected]) {
+                        data[selected].push(value.elapsed_s)
+                    } else {
+                        data[selected] = [value.elapsed_s]
+                    }
+                }
+                datasets.push({
+                    label: selected,
+                    data: data[selected],
+                    fill: true,  
+                })
+            }
+            labels = [...labels]
+            // const datasets = []
+            // for (const label of labels) {
+            //     const filtered = data.filter(value => value.name == label)
+            //     const datavalues = []
+            //     for (const value of filtered) {
+            //         datavalues.push(value.elapsed_s)
+            //     }
+            //     datasets.push({
+            //         label: label,
+            //         data: datavalues,
+            //         fill: true,
+            //     })
+            // }
+            const graphData = {
+                labels: labels,
+                datasets: datasets,
+            }
+            return graphData
+        }
+
         // function to update the height of the test statistics graph and enable scrolling
         function update_height(verticalId, labels, title, graphType) {
             const vertical = document.getElementById(verticalId)
@@ -6115,6 +6224,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             if (menuCompare) {
                 create_compare_statistics_graph();
                 create_compare_tests_graph();
+                create_compare_suite_duration_graph();
             }
         }
 
@@ -6321,7 +6431,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // in the correct order!
         function main() {
             setup_stats();
-            setup_menu_eventlisteners();
             setup_settings_eventlisteners();
             setup_customize_view_arrow_eventlisteners();
             setup_customize_view_local_storage();
@@ -6333,7 +6442,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             setup_metadata_filter();
             setup_runs_in_select_filter_buttons();
             setup_runtags_in_select_filter_buttons();
-            setup_data_and_graphs();
+            setup_menu_eventlisteners();
         }
 
         // trigger of first load
