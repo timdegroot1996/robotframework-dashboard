@@ -3387,7 +3387,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                                 <div>
                                     <div class="${compares}">${svg} <i>${Math.round(duration)}s</i></div>
                                     <div>Passed Runs: ${passed_runs}%</div>
-                                    <a href="${log_path}" target="_blank" onclick="event.stopPropagation()">${log_name}</a>
+                                    <a href="#" onclick="event.stopPropagation(); open_log_from_path('${log_path}'); return false;" target="_blank">${log_name}</a>
                                 </div>
                             </div>
                         </div>
@@ -3403,7 +3403,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             keys.forEach((key, i) => {
                 const d = data[key];
                 const [passed, failed, skipped, duration, rawPath] = d.stats;
-                const path = rawPath.replace('output', 'log').replace('.xml', '.html');
+                const path = transform_file_path(rawPath).replaceAll('\\', '\\\\');
                 const amount = d.duration.length;
                 if (amount > 1) d.duration.pop(); // remove current run for averaging
                 const average = avg(d.duration);
@@ -4623,15 +4623,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                             alert("Log file error: this output didn't have a path in the database so the log file cannot be found!");
                             return
                         }
-                        var fileUrl = ""
-                        if (server) { // server url
-                            fileUrl = `/log?path=${path}`
-                        } else if (window.location.href.includes("file:///")) { // local machine url
-                            fileUrl = `file:///${path}`
-                        } else { // remote machine file server
-                            fileUrl = combine_paths(window.location.href, path)
-                        }
-                        const win = window.open(fileUrl, "_blank")
+                        open_log_from_path(path)
                     }
                 }
             }
@@ -4703,6 +4695,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 return
             }
             path = update_log_path_with_id(path, graphId, chartElement, event)
+            open_log_from_path(path)
+        }
+
+        // function to open the log file
+        function open_log_from_path(path) {
             var fileUrl = ""
             if (server) { // server url
                 fileUrl = `/log?path=${path}`
