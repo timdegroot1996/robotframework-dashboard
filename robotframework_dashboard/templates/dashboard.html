@@ -54,7 +54,7 @@
             border-color: black;
         }
 
-        .information[data-title]::after {
+        .information-graph[data-title]::after {
             background-color: white;
             color: black;
         }
@@ -122,7 +122,7 @@
             color: #eee;
         }
 
-        .dark-mode .information[data-title]::after {
+        .dark-mode .information-graph[data-title]::after {
             background-color: #0f172a;
             color: #eee;
         }
@@ -152,7 +152,19 @@
 
         #settings,
         #database,
-        .nav-item {
+        .nav-item,
+        .information-graph,
+        .bar-graph,
+        .line-graph,
+        .fullscreen-graph,
+        .close-graph,
+        .timeline-graph,
+        .radar-graph,
+        .heatmap-graph,
+        .pie-graph,
+        .percentage-graph,
+        .stats-graph,
+        .boxplot-graph {
             cursor: pointer;
         }
 
@@ -166,13 +178,13 @@
             border-bottom-right-radius: 0.25rem !important;
         }
 
-        .information[data-title]:hover::after {
+        .information-graph[data-title]:hover::after {
             opacity: 1;
             visibility: visible;
             transition: opacity 0.2s ease-in-out;
         }
 
-        .information[data-title]::after {
+        .information-graph[data-title]::after {
             content: attr(data-title);
             white-space: pre-line;
             font-size: 0.95rem;
@@ -193,15 +205,14 @@
             box-sizing: border-box;
         }
 
-        .information[data-title] {
+        .information-graph[data-title] {
             position: relative;
-            cursor: pointer;
         }
 
         .canvas {
             min-width: 400px;
             width: 700px;
-            height: 540px;
+            height: 500px;
             text-align: center;
             padding: 1.5rem;
             border-radius: 16px;
@@ -223,10 +234,6 @@
         .canvas-vertical,
         .canvas.fullscreen {
             overflow-y: auto;
-        }
-
-        canvas {
-            padding-bottom: 1.5rem;
         }
 
         .canvas.fullscreen canvas,
@@ -422,7 +429,8 @@
                     title="Database Summary"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2 information" id="versionInformation" data-title='"placeholder_version"'></a>
+                <a class="nav-link p-2 information-graph" id="versionInformation"
+                    data-title='"placeholder_version"'></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link p-2" target="_blank" id="bug" title="Report a bug or feature request"
@@ -931,7 +939,6 @@
         const arrowLeft = '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 52 52"><g transform="scale(-1,1) translate(-52,0)"><path fill="currentColor" d="M17.9,4.4l20.7,20.5c0.6,0.6,0.6,1.6,0,2.2L17.9,47.6c-0.6,0.6-1.6,0.6-2.2,0l-2.2-2.2c-0.6-0.6-0.6-1.6,0-2.2l16.3-16.1c0.6-0.6,0.6-1.6,0-2.2L13.6,8.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2C16.4,3.9,17.3,3.9,17.9,4.4z"/></g></svg>';
         const arrowDownVerySmall = '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"/></svg>';
         const arrowUpVerySmall = '<svg xmlns="http://www.w3.org/2000/svg" width="8px" height="8px" viewBox="0 0 52 52" transform="matrix(-1,1.2246467991473532e-16,-1.2246467991473532e-16,-1,0,0)"><path fill="currentColor" d="M47.6,17.8L27.1,38.5c-0.6,0.6-1.6,0.6-2.2,0L4.4,17.8c-0.6-0.6-0.6-1.6,0-2.2l2.2-2.2c0.6-0.6,1.6-0.6,2.2,0l16.1,16.3c0.6,0.6,1.6,0.6,2.2,0l16.1-16.2c0.6-0.6,1.6-0.6,2.2,0l2.2,2.2C48.1,16.3,48.1,17.2,47.6,17.8z"></path></svg>';
-        const informationSVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="21" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" /><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" /></svg>';
         const githubDarkSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M12 1C5.923 1 1 5.923 1 12c0 4.867 3.149 8.979 7.521 10.436.55.096.756-.233.756-.522 0-.262-.013-1.128-.013-2.049-2.764.509-3.479-.674-3.699-1.292-.124-.317-.66-1.293-1.127-1.554-.385-.207-.936-.715-.014-.729.866-.014 1.485.797 1.691 1.128.99 1.663 2.571 1.196 3.204.907.096-.715.385-1.196.701-1.471-2.448-.275-5.005-1.224-5.005-5.432 0-1.196.426-2.186 1.128-2.956-.111-.275-.496-1.402.11-2.915 0 0 .921-.288 3.024 1.128a10.193 10.193 0 0 1 2.75-.371c.936 0 1.871.123 2.75.371 2.104-1.43 3.025-1.128 3.025-1.128.605 1.513.221 2.64.111 2.915.701.77 1.127 1.747 1.127 2.956 0 4.222-2.571 5.157-5.019 5.432.399.344.743 1.004.743 2.035 0 1.471-.014 2.654-.014 3.025 0 .289.206.632.756.522C19.851 20.979 23 16.854 23 12c0-6.077-4.922-11-11-11Z"></path></svg>';
         const githubLightSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12 1C5.923 1 1 5.923 1 12c0 4.867 3.149 8.979 7.521 10.436.55.096.756-.233.756-.522 0-.262-.013-1.128-.013-2.049-2.764.509-3.479-.674-3.699-1.292-.124-.317-.66-1.293-1.127-1.554-.385-.207-.936-.715-.014-.729.866-.014 1.485.797 1.691 1.128.99 1.663 2.571 1.196 3.204.907.096-.715.385-1.196.701-1.471-2.448-.275-5.005-1.224-5.005-5.432 0-1.196.426-2.186 1.128-2.956-.111-.275-.496-1.402.11-2.915 0 0 .921-.288 3.024 1.128a10.193 10.193 0 0 1 2.75-.371c.936 0 1.871.123 2.75.371 2.104-1.43 3.025-1.128 3.025-1.128.605 1.513.221 2.64.111 2.915.701.77 1.127 1.747 1.127 2.956 0 4.222-2.571 5.157-5.019 5.432.399.344.743 1.004.743 2.035 0 1.471-.014 2.654-.014 3.025 0 .289.206.632.756.522C19.851 20.979 23 16.854 23 12c0-6.077-4.922-11-11-11Z"></path></svg>';
         const settingsDarkSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm-1.5 0a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path><path fill="white" d="M12 1c.266 0 .532.009.797.028.763.055 1.345.617 1.512 1.304l.352 1.45c.019.078.09.171.225.221.247.089.49.19.728.302.13.061.246.044.315.002l1.275-.776c.603-.368 1.411-.353 1.99.147.402.349.78.726 1.128 1.129.501.578.515 1.386.147 1.99l-.776 1.274c-.042.069-.058.185.002.315.112.238.213.481.303.728.048.135.142.205.22.225l1.45.352c.687.167 1.249.749 1.303 1.512.038.531.038 1.063 0 1.594-.054.763-.616 1.345-1.303 1.512l-1.45.352c-.078.019-.171.09-.221.225-.089.248-.19.491-.302.728-.061.13-.044.246-.002.315l.776 1.275c.368.603.353 1.411-.147 1.99-.349.402-.726.78-1.129 1.128-.578.501-1.386.515-1.99.147l-1.274-.776c-.069-.042-.185-.058-.314.002a8.606 8.606 0 0 1-.729.303c-.135.048-.205.142-.225.22l-.352 1.45c-.167.687-.749 1.249-1.512 1.303-.531.038-1.063.038-1.594 0-.763-.054-1.345-.616-1.512-1.303l-.352-1.45c-.019-.078-.09-.171-.225-.221a8.138 8.138 0 0 1-.728-.302c-.13-.061-.246-.044-.315-.002l-1.275.776c-.603.368-1.411.353-1.99-.147-.402-.349-.78-.726-1.128-1.129-.501-.578-.515-1.386-.147-1.99l.776-1.274c.042-.069.058-.185-.002-.314a8.606 8.606 0 0 1-.303-.729c-.048-.135-.142-.205-.22-.225l-1.45-.352c-.687-.167-1.249-.749-1.304-1.512a11.158 11.158 0 0 1 0-1.594c.055-.763.617-1.345 1.304-1.512l1.45-.352c.078-.019.171-.09.221-.225.089-.248.19-.491.302-.728.061-.13.044-.246.002-.315l-.776-1.275c-.368-.603-.353-1.411.147-1.99.349-.402.726-.78 1.129-1.128.578-.501 1.386-.515 1.99-.147l1.274.776c.069.042.185.058.315-.002.238-.112.481-.213.728-.303.135-.048.205-.142.225-.22l.352-1.45c.167-.687.749-1.249 1.512-1.304C11.466 1.01 11.732 1 12 1Zm-.69 1.525c-.055.004-.135.05-.161.161l-.353 1.45a1.832 1.832 0 0 1-1.172 1.277 7.147 7.147 0 0 0-.6.249 1.833 1.833 0 0 1-1.734-.074l-1.274-.776c-.098-.06-.186-.036-.228 0a9.774 9.774 0 0 0-.976.976c-.036.042-.06.131 0 .228l.776 1.274c.314.529.342 1.18.074 1.734a7.147 7.147 0 0 0-.249.6 1.831 1.831 0 0 1-1.278 1.173l-1.45.351c-.11.027-.156.107-.16.162a9.63 9.63 0 0 0 0 1.38c.004.055.05.135.161.161l1.45.353a1.832 1.832 0 0 1 1.277 1.172c.074.204.157.404.249.6.268.553.24 1.204-.074 1.733l-.776 1.275c-.06.098-.036.186 0 .228.301.348.628.675.976.976.042.036.131.06.228 0l1.274-.776a1.83 1.83 0 0 1 1.734-.075c.196.093.396.176.6.25a1.831 1.831 0 0 1 1.173 1.278l.351 1.45c.027.11.107.156.162.16a9.63 9.63 0 0 0 1.38 0c.055-.004.135-.05.161-.161l.353-1.45a1.834 1.834 0 0 1 1.172-1.278 6.82 6.82 0 0 0 .6-.248 1.831 1.831 0 0 1 1.733.074l1.275.776c.098.06.186.036.228 0 .348-.301.675-.628.976-.976.036-.042.06-.131 0-.228l-.776-1.275a1.834 1.834 0 0 1-.075-1.733c.093-.196.176-.396.25-.6a1.831 1.831 0 0 1 1.278-1.173l1.45-.351c.11-.027.156-.107.16-.162a9.63 9.63 0 0 0 0-1.38c-.004-.055-.05-.135-.161-.161l-1.45-.353c-.626-.152-1.08-.625-1.278-1.172a6.576 6.576 0 0 0-.248-.6 1.833 1.833 0 0 1 .074-1.734l.776-1.274c.06-.098.036-.186 0-.228a9.774 9.774 0 0 0-.976-.976c-.042-.036-.131-.06-.228 0l-1.275.776a1.831 1.831 0 0 1-1.733.074 6.88 6.88 0 0 0-.6-.249 1.835 1.835 0 0 1-1.173-1.278l-.351-1.45c-.027-.11-.107-.156-.162-.16a9.63 9.63 0 0 0-1.38 0Z"></path></svg>'
@@ -946,12 +953,34 @@
         const clockLightSVG = `<svg class="mb-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>`
         const sunSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M12 19a7 7 0 1 1 0-14 7 7 0 0 1 0 14Zm0-1.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 1 0 0 11Zm-5.657.157a.75.75 0 0 1 0 1.06l-1.768 1.768a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.767-1.768a.75.75 0 0 1 1.061 0ZM3.515 3.515a.75.75 0 0 1 1.06 0l1.768 1.768a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L3.515 4.575a.75.75 0 0 1 0-1.06ZM12 0a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 12 0ZM4 12a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h2.5A.75.75 0 0 1 4 12Zm8 8a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0v-2.5A.75.75 0 0 1 12 20Zm12-8a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h2.5A.75.75 0 0 1 24 12Zm-6.343 5.657a.75.75 0 0 1 1.06 0l1.768 1.768a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-1.768-1.767a.75.75 0 0 1 0-1.061Zm2.828-14.142a.75.75 0 0 1 0 1.06l-1.768 1.768a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l1.767-1.768a.75.75 0 0 1 1.061 0Z"></path></svg>`
         const moonSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M14.768 3.96v.001l-.002-.005a9.08 9.08 0 0 0-.218-.779c-.13-.394.21-.8.602-.67.29.096.575.205.855.328l.01.005A10.002 10.002 0 0 1 12 22a10.002 10.002 0 0 1-9.162-5.985l-.004-.01a9.722 9.722 0 0 1-.329-.855c-.13-.392.277-.732.67-.602.257.084.517.157.78.218l.004.002A9 9 0 0 0 14.999 6a9.09 9.09 0 0 0-.231-2.04ZM16.5 6c0 5.799-4.701 10.5-10.5 10.5-.426 0-.847-.026-1.26-.075A8.5 8.5 0 1 0 16.425 4.74c.05.413.075.833.075 1.259Z"></path></svg>`
-        const brushDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M19.642 6.653c-1.31 1.812-3.251 3.86-4.945 5.575l-.091.092-2.69-2.69.098-.098c1.69-1.71 3.732-3.656 5.544-4.962.911-.657 1.715-1.115 2.353-1.318.652-.207.915-.091 1.039.033.113.113.231.367.019 1.02-.207.635-.668 1.436-1.327 2.348ZM10.9 10.736l2.605 2.605c-.88.754-1.684 1.294-2.378 1.655a4.832 4.832 0 0 0-1.892-1.89c.36-.69.903-1.482 1.665-2.37Zm-3.086 1.856a4.825 4.825 0 0 0-4.33 1.328c-.525.525-.88 1.302-1.13 2.079-.256.795-.43 1.682-.541 2.507a19.055 19.055 0 0 0-.173 2.216c-.004.3.003.567.022.778.009.104.022.212.044.31.01.05.027.113.053.18.02.051.074.178.19.295.117.117.245.17.297.19.066.026.13.043.178.054.099.021.207.035.31.044.211.019.479.025.779.021.603-.008 1.39-.06 2.216-.172.825-.112 1.711-.285 2.507-.54.776-.25 1.553-.606 2.079-1.132a4.825 4.825 0 0 0 1.327-4.333c1.209-.6 2.622-1.618 4.121-3.135 1.694-1.714 3.709-3.835 5.093-5.75.688-.952 1.258-1.904 1.538-2.764.274-.842.334-1.826-.384-2.544-.72-.719-1.703-.672-2.555-.401-.865.275-1.822.843-2.776 1.53-1.92 1.384-4.036 3.407-5.733 5.125-1.5 1.518-2.53 2.896-3.132 4.114Zm1.44 2.388a3.33 3.33 0 0 1 0 4.71c-.271.27-.774.537-1.478.763-.684.22-1.477.378-2.248.482-.769.104-1.495.152-2.035.16a9.247 9.247 0 0 1-.351-.002 9.182 9.182 0 0 1-.002-.35c.007-.542.055-1.267.16-2.036.104-.771.261-1.564.481-2.249.227-.703.493-1.206.764-1.478a3.33 3.33 0 0 1 4.71 0Z"></path></svg>`
-        const brushLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M19.642 6.653c-1.31 1.812-3.251 3.86-4.945 5.575l-.091.092-2.69-2.69.098-.098c1.69-1.71 3.732-3.656 5.544-4.962.911-.657 1.715-1.115 2.353-1.318.652-.207.915-.091 1.039.033.113.113.231.367.019 1.02-.207.635-.668 1.436-1.327 2.348ZM10.9 10.736l2.605 2.605c-.88.754-1.684 1.294-2.378 1.655a4.832 4.832 0 0 0-1.892-1.89c.36-.69.903-1.482 1.665-2.37Zm-3.086 1.856a4.825 4.825 0 0 0-4.33 1.328c-.525.525-.88 1.302-1.13 2.079-.256.795-.43 1.682-.541 2.507a19.055 19.055 0 0 0-.173 2.216c-.004.3.003.567.022.778.009.104.022.212.044.31.01.05.027.113.053.18.02.051.074.178.19.295.117.117.245.17.297.19.066.026.13.043.178.054.099.021.207.035.31.044.211.019.479.025.779.021.603-.008 1.39-.06 2.216-.172.825-.112 1.711-.285 2.507-.54.776-.25 1.553-.606 2.079-1.132a4.825 4.825 0 0 0 1.327-4.333c1.209-.6 2.622-1.618 4.121-3.135 1.694-1.714 3.709-3.835 5.093-5.75.688-.952 1.258-1.904 1.538-2.764.274-.842.334-1.826-.384-2.544-.72-.719-1.703-.672-2.555-.401-.865.275-1.822.843-2.776 1.53-1.92 1.384-4.036 3.407-5.733 5.125-1.5 1.518-2.53 2.896-3.132 4.114Zm1.44 2.388a3.33 3.33 0 0 1 0 4.71c-.271.27-.774.537-1.478.763-.684.22-1.477.378-2.248.482-.769.104-1.495.152-2.035.16a9.247 9.247 0 0 1-.351-.002 9.182 9.182 0 0 1-.002-.35c.007-.542.055-1.267.16-2.036.104-.771.261-1.564.481-2.249.227-.703.493-1.206.764-1.478a3.33 3.33 0 0 1 4.71 0Z"></path></svg>`
+        const customizeViewDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect style="stroke: white;" width="7" height="9" x="3" y="3" rx="1"/><rect style="stroke: white;" width="7" height="5" x="14" y="3" rx="1"/><rect style="stroke: white;" width="7" height="9" x="14" y="12" rx="    1"/><rect style="stroke: white;" width="7" height="5" x="3" y="16" rx="1"/></svg>`
+        const customizeViewLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect style="stroke: black;" width="7" height="9" x="3" y="3" rx="1"/><rect style="stroke: black;" width="7" height="5" x="14" y="3" rx="1"/><rect style="stroke: black;" width="7" height="9" x="14" y="12" rx="1"/><rect style="stroke: black;" width="7" height="5" x="3" y="16" rx="1"/></svg>`
         const bugDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M7.72.22a.75.75 0 0 1 1.06 0l1.204 1.203A4.98 4.98 0 0 1 12 1c.717 0 1.4.151 2.016.423L15.22.22a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-.971.972A4.991 4.991 0 0 1 17 6v1.104a2.755 2.755 0 0 1 1.917 1.974l1.998-.999a.75.75 0 0 1 .67 1.342L19 10.714V13.5l3.25.003a.75.75 0 0 1 0 1.5L19 15.001V16c0 .568-.068 1.134-.204 1.686l.04.018 2.75 1.375a.75.75 0 1 1-.671 1.342l-2.638-1.319A6.998 6.998 0 0 1 12 23a6.998 6.998 0 0 1-6.197-3.742l-2.758 1.181a.752.752 0 0 1-1.064-.776.752.752 0 0 1 .474-.602l2.795-1.199A6.976 6.976 0 0 1 5 16v-.996H1.75a.75.75 0 0 1 0-1.5H5v-2.79L2.415 9.42a.75.75 0 0 1 .67-1.342l1.998.999A2.756 2.756 0 0 1 7 7.104V6a4.99 4.99 0 0 1 1.69-3.748l-.97-.972a.75.75 0 0 1 0-1.06ZM6.5 9.75V16a5.5 5.5 0 1 0 11 0V9.75c0-.69-.56-1.25-1.25-1.25h-8.5c-.69 0-1.25.56-1.25 1.25ZM8.5 7h7V6a3.5 3.5 0 1 0-7 0Z"></path></svg>`
         const bugLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M7.72.22a.75.75 0 0 1 1.06 0l1.204 1.203A4.98 4.98 0 0 1 12 1c.717 0 1.4.151 2.016.423L15.22.22a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-.971.972A4.991 4.991 0 0 1 17 6v1.104a2.755 2.755 0 0 1 1.917 1.974l1.998-.999a.75.75 0 0 1 .67 1.342L19 10.714V13.5l3.25.003a.75.75 0 0 1 0 1.5L19 15.001V16c0 .568-.068 1.134-.204 1.686l.04.018 2.75 1.375a.75.75 0 1 1-.671 1.342l-2.638-1.319A6.998 6.998 0 0 1 12 23a6.998 6.998 0 0 1-6.197-3.742l-2.758 1.181a.752.752 0 0 1-1.064-.776.752.752 0 0 1 .474-.602l2.795-1.199A6.976 6.976 0 0 1 5 16v-.996H1.75a.75.75 0 0 1 0-1.5H5v-2.79L2.415 9.42a.75.75 0 0 1 .67-1.342l1.998.999A2.756 2.756 0 0 1 7 7.104V6a4.99 4.99 0 0 1 1.69-3.748l-.97-.972a.75.75 0 0 1 0-1.06ZM6.5 9.75V16a5.5 5.5 0 1 0 11 0V9.75c0-.69-.56-1.25-1.25-1.25h-8.5c-.69 0-1.25.56-1.25 1.25ZM8.5 7h7V6a3.5 3.5 0 1 0-7 0Z"></path></svg>`
-        const versionDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M13 7.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm-3 3.75a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v4.25h.75a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1 0-1.5h.75V12h-.75a.75.75 0 0 1-.75-.75Z"></path><path fill="white" d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z"></path></svg>`
-        const versionLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M13 7.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm-3 3.75a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v4.25h.75a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1 0-1.5h.75V12h-.75a.75.75 0 0 1-.75-.75Z"></path><path d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z"></path></svg>`
+        const informationDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M13 7.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm-3 3.75a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v4.25h.75a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1 0-1.5h.75V12h-.75a.75.75 0 0 1-.75-.75Z"></path><path fill="white" d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z"></path></svg>`
+        const informationLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M13 7.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm-3 3.75a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v4.25h.75a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1 0-1.5h.75V12h-.75a.75.75 0 0 1-.75-.75Z"></path><path d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z"></path></svg>`
+        const percentageDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-percent-icon lucide-square-percent"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="m15 9-6 6" /><path d="M9 9h.01" /><path d="M15 15h.01" /></svg>`;
+        const percentageLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-percent-icon lucide-square-percent"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="m15 9-6 6" /><path d="M9 9h.01" /><path d="M15 15h.01" /></svg>`;
+        const barDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column-big-icon lucide-chart-column-big"><path d="M3 3v16a2 2 0 0 0 2 2h16" /><rect x="15" y="5" width="4" height="12" rx="1" /><rect x="7" y="8" width="4" height="9" rx="1" /></svg>`;
+        const barLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column-big-icon lucide-chart-column-big"><path d="M3 3v16a2 2 0 0 0 2 2h16" /><rect x="15" y="5" width="4" height="12" rx="1" /><rect x="7" y="8" width="4" height="9" rx="1" /></svg>`;
+        const lineDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-line-icon lucide-chart-line"><path d="M3 3v16a2 2 0 0 0 2 2h16" /><path d="m19 9-5 5-4-4-3 3" /></svg>`;
+        const lineLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-line-icon lucide-chart-line"><path d="M3 3v16a2 2 0 0 0 2 2h16" /><path d="m19 9-5 5-4-4-3 3" /></svg>`;
+        const pieDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-pie-icon lucide-chart-pie"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z" /><path d="M21.21 15.89A10 10 0 1 1 8 2.83" /></svg>`;
+        const pieLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-pie-icon lucide-chart-pie"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z" /><path d="M21.21 15.89A10 10 0 1 1 8 2.83" /></svg>`;
+        const statsDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered-icon lucide-list-ordered"><path d="M10 12h11" /><path d="M10 18h11" /><path d="M10 6h11" /><path d="M4 10h2" /><path d="M4 6h1v4" /><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" /></svg>`;
+        const statsLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered-icon lucide-list-ordered"><path d="M10 12h11" /><path d="M10 18h11" /><path d="M10 6h11" /><path d="M4 10h2" /><path d="M4 6h1v4" /><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" /></svg>`;
+        const fullscreenDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-maximize-icon lucide-maximize"><path d="M8 3H5a2 2 0 0 0-2 2v3" /><path d="M21 8V5a2 2 0 0 0-2-2h-3" /><path d="M3 16v3a2 2 0 0 0 2 2h3" /><path d="M16 21h3a2 2 0 0 0 2-2v-3" /></svg>`;
+        const fullscreenLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-maximize-icon lucide-maximize"><path d="M8 3H5a2 2 0 0 0-2 2v3" /><path d="M21 8V5a2 2 0 0 0-2-2h-3" /><path d="M3 16v3a2 2 0 0 0 2 2h3" /><path d="M16 21h3a2 2 0 0 0 2-2v-3" /></svg>`;
+        const boxplotDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-candlestick-icon lucide-chart-candlestick"><path d="M9 5v4"/><rect width="4" height="6" x="7" y="9" rx="1"/><path d="M9 15v2"/><path d="M17 3v2"/><rect width="4" height="8" x="15" y="5" rx="1"/><path d="M17 13v3"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/></svg>`;
+        const boxplotLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-candlestick-icon lucide-chart-candlestick"><path d="M9 5v4"/><rect width="4" height="6" x="7" y="9" rx="1"/><path d="M9 15v2"/><path d="M17 3v2"/><rect width="4" height="8" x="15" y="5" rx="1"/><path d="M17 13v3"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/></svg>`;
+        const heatmapDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-heatmap-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="4" height="4"/><rect x="9" y="3" width="4" height="4"/><rect x="15" y="3" width="4" height="4"/><rect x="3" y="9" width="4" height="4"/><rect x="9" y="9" width="4" height="4"/><rect x="15" y="9" width="4" height="4"/><rect x="3" y="15" width="4" height="4"/><rect x="9" y="15" width="4" height="4"/><rect x="15" y="15" width="4" height="4"/></svg>`;
+        const heatmapLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-heatmap-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="4" height="4"/><rect x="9" y="3" width="4" height="4"/><rect x="15" y="3" width="4" height="4"/><rect x="3" y="9" width="4" height="4"/><rect x="9" y="9" width="4" height="4"/><rect x="15" y="9" width="4" height="4"/><rect x="3" y="15" width="4" height="4"/><rect x="9" y="15" width="4" height="4"/><rect x="15" y="15" width="4" height="4"/></svg>`;
+        const timelineDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-bar-stacked-icon lucide-chart-bar-stacked"><path d="M11 13v4"/><path d="M15 5v4"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="13" width="9" height="4" rx="1"/><rect x="7" y="5" width="12" height="4" rx="1"/></svg>`;
+        const timelineLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-bar-stacked-icon lucide-chart-bar-stacked"><path d="M11 13v4"/><path d="M15 5v4"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="13" width="9" height="4" rx="1"/><rect x="7" y="5" width="12" height="4" rx="1"/></svg>`;
+        const radarDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-radar-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v10l6 6"/></svg>`;
+        const radarLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-radar-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v10l6 6"/></svg>`;
+        const closeDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minimize-icon lucide-minimize"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>`;
+        const closeLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minimize-icon lucide-minimize"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>`;
 
         // colors
         const passedBackgroundBorderColor = "#97bd61";
@@ -1084,15 +1113,12 @@
 - Amount: Displays the actual number of passed/failed/skipped tests per run.
 - Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times.`,
                 html: `<div class="col canvas pb-5" id="runStatisticsCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="runStatisticsGraphPercentages">Percentage</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatisticsGraphAmount">Amount</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatisticsGraphLine">Timeline</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="runStatisticsFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatisticsClose" hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="runStatisticsInformation"></button>
+                    <a class="mb-2 percentage-graph" id="runStatisticsGraphPercentages"></a>
+                    <a class="mb-2 bar-graph" id="runStatisticsGraphAmount"></a>
+                    <a class="mb-2 line-graph" id="runStatisticsGraphLine"></a>
+                    <a class="mb-2 information-graph" id="runStatisticsInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="runStatisticsFullscreen"></a>
+                    <a class="mb-2 close-graph" id="runStatisticsClose" hidden></a>
                     <canvas id="runStatisticsGraph"></canvas>
                 </div>`,
             },
@@ -1106,11 +1132,10 @@
 - The first donut displays the percentage of passed, failed, and skipped tests for the most recent run..
 - The second donut displays the total percentage of passed, failed, and skipped tests across all runs`,
                 html: `<div class="col canvas pb-5" id="runDonutCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDonutGraphDonut">Donut</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDonutFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDonutClose" hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="runDonutInformation"></button>
+                    <a class="mb-2 pie-graph" id="runDonutGraphDonut"></a>
+                    <a class="mb-2 information-graph" id="runDonutInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="runDonutFullscreen"></a>
+                    <a class="mb-2 close-graph" id="runDonutClose" hidden></a>
                     <div class="row donut-charts w-100 h-100">
                         <div class="col-md-6 w-50 h-100">
                             <canvas id="runDonutGraph" class="w-100 h-100"></canvas>
@@ -1142,11 +1167,10 @@
 - Duration: Displays the cumulative runtime of all runs, the average runtime per run, and the average duration of individual tests.
 - Pass Rate: Displays the average run-level pass rate, helping evaluate overall reliability over time.`,
                 html: `<div class="col canvas pb-5" id="runStatsCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatsGraphStats">Stats</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatsFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runStatsClose" hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="runStatsInformation"></button>
+                    <a class="mb-2 stats-graph" id="runStatsGraphStats"></a>
+                    <a class="mb-2 information-graph" id="runStatsInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="runStatsFullscreen"></a>
+                    <a class="mb-2 close-graph" id="runStatsClose" hidden></a>
                     <div class="w-100 h-100">
                         <div class="d-flex flex-column justify-content-between h-75 mt-5">
                             <div class="row text-center mb-4">
@@ -1217,13 +1241,11 @@
 - Bar: Displays total run durations represented as vertical bars.
 - Line: Displays the same data but over a time axis for clearer trend analysis.`,
                 html: `<div class="col canvas pb-5" id="runDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDurationGraphBar">Bar</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDurationGraphLine">Line</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="runDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runDurationClose" hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="runDurationInformation"></button>
+                    <a class="mb-2 bar-graph" id="runDurationGraphBar"></a>
+                    <a class="mb-2 line-graph" id="runDurationGraphLine"></a>
+                    <a class="mb-2 information-graph" id="runDurationInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="runDurationFullscreen"></a>
+                    <a class="mb-2 close-graph" id="runDurationClose" hidden></a>
                     <canvas id="runDurationGraph"></canvas>
                 </div>`,
             },
@@ -1241,10 +1263,10 @@
 - Hour: Displays only that hour so you get insights per minute.`,
                 html: `<div class="col canvas pb-5" id="runHeatmapCanvas">
                     <div class="btn-group">
-                        <label class="form-check-label mb-3" for="heatMapTestType">Status</label>
+                        <label class="form-check-label" for="heatMapTestType">Status</label>
                     </div>
                     <div class="btn-group">
-                        <select class="form-select form-select-sm" id="heatMapTestType" style="margin-bottom:12px">
+                        <select class="form-select form-select-sm" id="heatMapTestType">
                             <option value="All">All</option>
                             <option value="Passed">Passed</option>
                             <option value="Failed">Failed</option>
@@ -1252,10 +1274,10 @@
                         </select>
                     </div>
                     <div class="btn-group">
-                        <label class="form-check-label mb-3" for="heatMapHour">Hour</label>
+                        <label class="form-check-label" for="heatMapHour">Hour</label>
                     </div>
                     <div class="btn-group">
-                        <select class="form-select form-select-sm" id="heatMapHour" style="margin-bottom:12px">
+                        <select class="form-select form-select-sm" id="heatMapHour">
                             <option value="All">All</option>
                             <option value="0">00:00</option>
                             <option value="1">01:00</option>
@@ -1283,11 +1305,10 @@
                             <option value="23">23:00</option>
                         </select>
                     </div>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runHeatmapGraphHeatmap">Heatmap</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runHeatmapFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="runHeatmapClose" hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="runHeatmapInformation"></button>
+                    <a class="mb-2 heatmap-graph" id="runHeatmapGraphHeatmap"></a>
+                    <a class="mb-2 information-graph" id="runHeatmapInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="runHeatmapFullscreen"></a>
+                    <a class="mb-2 close-graph" id="runHeatmapClose" hidden></a>
                     <canvas id="runHeatmapGraph"></canvas>
                 </div>`,
             },
@@ -1316,21 +1337,17 @@
 - "Go Up" navigates to the parent folder level.
 - "Only Failed Folders" filters to show only folders with failing tests.`,
                 html: `<div class="col canvas pb-5" id="suiteFolderDonutCanvas">
-                    <div class="btn-group me-1">
-                        <label class="form-check-label mb-3" for="onlyFailedFolders">Only Failed Folders</label>
+                    <div class="btn-group">
+                        <label class="form-check-label" for="onlyFailedFolders">Only Failed Folders</label>
                     </div>
-                    <div class="btn-group form-switch me-1">
-                        <input class="form-check-input mb-3" type="checkbox" role="switch" id="onlyFailedFolders">
+                    <div class="btn-group form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="onlyFailedFolders">
                     </div>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteFolderDonutGoUp">Go Up</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="suiteFolderDonutGraphDonut">Donut</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="suiteFolderDonutFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteFolderDonutClose"
-                        hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="suiteFolderDonutInformation"></button>
+                    <button class="btn btn-outline-light btn-sm mt-1" id="suiteFolderDonutGoUp">Go Up</button>
+                    <a class="mb-2 pie-graph" id="suiteFolderDonutGraphDonut"></a>
+                    <a class="mb-2 information-graph" id="suiteFolderDonutInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="suiteFolderDonutFullscreen"></a>
+                    <a class="mb-2 close-graph" id="suiteFolderDonutClose" hidden></a>
                     <div class="row donut-charts w-100 h-100">
                         <div class="col-md-6 w-50 h-100">
                             <canvas id="suiteFolderDonutGraph" class="w-100 h-100"></canvas>
@@ -1360,18 +1377,12 @@
 - Amount: Displays the actual number of passed/failed/skipped suites per run.
 - Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times.`,
                 html: `<div class="col canvas pb-5" id="suiteStatisticsCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="suiteStatisticsGraphPercentages">Percentage</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="suiteStatisticsGraphAmount">Amount</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="suiteStatisticsGraphLine">Timeline</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="suiteStatisticsFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteStatisticsClose"
-                        hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="suiteStatisticsInformation"></button>
+                    <a class="mb-2 percentage-graph" id="suiteStatisticsGraphPercentages"></a>
+                    <a class="mb-2 bar-graph" id="suiteStatisticsGraphAmount"></a>
+                    <a class="mb-2 line-graph" id="suiteStatisticsGraphLine"></a>
+                    <a class="mb-2 information-graph" id="suiteStatisticsInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="suiteStatisticsFullscreen"></a>
+                    <a class="mb-2 close-graph" id="suiteStatisticsClose" hidden></a>
                     <canvas id="suiteStatisticsGraph"></canvas>
                 </div>`,
             },
@@ -1385,13 +1396,11 @@
 - Bar: Displays total suite durations represented as vertical bars.
 - Line: Displays the same data but over a time axis for clearer trend analysis.`,
                 html: `<div class="col canvas pb-5" id="suiteDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteDurationGraphBar">Bar</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteDurationGraphLine">Line</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="suiteDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteDurationClose" hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="suiteDurationInformation"></button>
+                    <a class="mb-2 bar-graph" id="suiteDurationGraphBar"></a>
+                    <a class="mb-2 line-graph" id="suiteDurationGraphLine"></a>
+                    <a class="mb-2 information-graph" id="suiteDurationInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="suiteDurationFullscreen"></a>
+                    <a class="mb-2 close-graph" id="suiteDurationClose" hidden></a>
                     <canvas id="suiteDurationGraph"></canvas>
                 </div>`,
             },
@@ -1407,15 +1416,11 @@
 - The default view shows the Top 10 most failed suites; fullscreen expands this to the Top 50.`,
                 html: `<div class="col canvas pb-5" id="suiteMostFailedCanvas">
                     <div id="suiteMostFailedVertical">
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteMostFailedGraphBar">Bar</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="suiteMostFailedGraphTimeline">Timeline</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="suiteMostFailedFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="suiteMostFailedClose"
-                            hidden>Close</button>
-                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                            id="suiteMostFailedInformation"></button>
+                        <a class="mb-2 bar-graph" id="suiteMostFailedGraphBar"></a>
+                        <a class="mb-2 timeline-graph" id="suiteMostFailedGraphTimeline"></a>
+                        <a class="mb-2 information-graph" id="suiteMostFailedInformation"></a>
+                        <a class="mb-2 fullscreen-graph" id="suiteMostFailedFullscreen"></a>
+                        <a class="mb-2 close-graph" id="suiteMostFailedClose" hidden></a>
                         <canvas id="suiteMostFailedGraph"></canvas>
                     </div>
                 </div>`,
@@ -1440,20 +1445,16 @@
                 information: `This graph displays the statistics of the tests in a timeline format.`,
                 html: `<div class="col canvas canvas-vertical" id="testStatisticsCanvas">
                     <div id="testStatisticsVertical">
-                        <div class="btn-group me-1">
-                            <label class="form-check-label mb-3" for="testOnlyChanges">Only Changes</label>
+                        <div class="btn-group">
+                            <label class="form-check-label" for="testOnlyChanges">Only Changes</label>
                         </div>
-                        <div class="btn-group form-switch me-1">
-                            <input class="form-check-input mb-3" type="checkbox" role="switch" id="testOnlyChanges">
+                        <div class="btn-group form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="testOnlyChanges">
                         </div>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testStatisticsGraphTimeline">Timeline</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testStatisticsFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testStatisticsClose"
-                            hidden>Close</button>
-                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                            id="testStatisticsInformation"></button>
+                        <a class="mb-2 timeline-graph" id="testStatisticsGraphTimeline"></a>
+                        <a class="mb-2 information-graph" id="testStatisticsInformation"></a>
+                        <a class="mb-2 fullscreen-graph" id="testStatisticsFullscreen"></a>
+                        <a class="mb-2 close-graph" id="testStatisticsClose" hidden></a>
                         <canvas id="testStatisticsGraph"></canvas>
                     </div>
                 </div>`,
@@ -1468,13 +1469,11 @@
 - Bar: Displays test durations represented as vertical bars.
 - Line: Displays the same data but over a time axis for clearer trend analysis.`,
                 html: `<div class="col canvas pb-5" id="testDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationGraphBar">Bar</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationGraphLine">Line</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="testDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationClose" hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="testDurationInformation"></button>
+                    <a class="mb-2 bar-graph" id="testDurationGraphBar"></a>
+                    <a class="mb-2 line-graph" id="testDurationGraphLine"></a>
+                    <a class="mb-2 information-graph" id="testDurationInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="testDurationFullscreen"></a>
+                    <a class="mb-2 close-graph" id="testDurationClose" hidden></a>
                     <canvas id="testDurationGraph"></canvas>
                 </div>`,
             },
@@ -1487,14 +1486,10 @@
                 information: `This boxplot chart displays how much test durations deviate from the average, represented as vertical bars.
 It helps identify tests with inconsistent execution times, which might be flaky or worth investigating`,
                 html: `<div class="col canvas pb-5" id="testDurationDeviationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="testDurationDeviationGraphBar">Boxplot</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="testDurationDeviationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testDurationDeviationClose"
-                        hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="testDurationDeviationInformation"></button>
+                    <a class="mb-2 boxplot-graph" id="testDurationDeviationGraphBar"></a>
+                    <a class="mb-2 information-graph" id="testDurationDeviationInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="testDurationDeviationFullscreen"></a>
+                    <a class="mb-2 close-graph" id="testDurationDeviationClose" hidden></a>
                     <canvas id="testDurationDeviationGraph"></canvas>
                 </div>`,
             },
@@ -1511,15 +1506,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - To generalize messages (e.g., group similar messages), use the -m/--messageconfig option in the CLI (--help or README).`,
                 html: `<div class="col canvas pb-5" id="testMessagesCanvas">
                     <div id="testMessagesVertical">
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMessagesGraphBar">Bar</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testMessagesGraphTimeline">Timeline</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testMessagesFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMessagesClose"
-                            hidden>Close</button>
-                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                            id="testMessagesInformation"></button>
+                        <a class="mb-2 bar-graph" id="testMessagesGraphBar"></a>
+                        <a class="mb-2 timeline-graph" id="testMessagesGraphTimeline"></a>
+                        <a class="mb-2 information-graph" id="testMessagesInformation"></a>
+                        <a class="mb-2 fullscreen-graph" id="testMessagesFullscreen"></a>
+                        <a class="mb-2 close-graph" id="testMessagesClose" hidden></a>
                         <canvas id="testMessagesGraph"></canvas>
                     </div>
                 </div>`,
@@ -1537,21 +1528,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - "Ignore Skips" filters to only count passed/failed as status flips and not skips.`,
                 html: `<div class="col canvas pb-5" id="testMostFlakyCanvas">
                     <div id="testMostFlakyVertical">
-                        <div class="btn-group me-1">
-                            <label class="form-check-label mb-3" for="ignoreSkips">Ignore Skips</label>
+                        <div class="btn-group">
+                            <label class="form-check-label" for="ignoreSkips">Ignore Skips</label>
                         </div>
-                        <div class="btn-group form-switch me-1">
-                            <input class="form-check-input mb-3" type="checkbox" role="switch" id="ignoreSkips">
+                        <div class="btn-group form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="ignoreSkips">
                         </div>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyGraphBar">Bar</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testMostFlakyGraphTimeline">Timeline</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testMostFlakyFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFlakyClose"
-                            hidden>Close</button>
-                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                            id="testMostFlakyInformation"></button>
+                        <a class="mb-2 bar-graph" id="testMostFlakyGraphBar"></a>
+                        <a class="mb-2 timeline-graph" id="testMostFlakyGraphTimeline"></a>
+                        <a class="mb-2 information-graph" id="testMostFlakyInformation"></a>
+                        <a class="mb-2 fullscreen-graph" id="testMostFlakyFullscreen"></a>
+                        <a class="mb-2 close-graph" id="testMostFlakyClose" hidden></a>
                         <canvas id="testMostFlakyGraph"></canvas>
                     </div>
                 </div>`,
@@ -1570,22 +1557,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - "Ignore Skips" filters to only count passed/failed as status flips and not skips.`,
                 html: `<div class="col canvas pb-5" id="testRecentMostFlakyCanvas">
                     <div id="testRecentMostFlakyVertical">
-                        <div class="btn-group me-1">
-                            <label class="form-check-label mb-3" for="ignoreSkipsRecent">Ignore Skips</label>
+                        <div class="btn-group">
+                            <label class="form-check-label" for="ignoreSkipsRecent">Ignore Skips</label>
                         </div>
-                        <div class="btn-group form-switch me-1">
-                            <input class="form-check-input mb-3" type="checkbox" role="switch" id="ignoreSkipsRecent">
+                        <div class="btn-group form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="ignoreSkipsRecent">
                         </div>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testRecentMostFlakyGraphBar">Bar</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testRecentMostFlakyGraphTimeline">Timeline</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testRecentMostFlakyFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFlakyClose"
-                            hidden>Close</button>
-                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                            id="testRecentMostFlakyInformation"></button>
+                        <a class="mb-2 bar-graph" id="testRecentMostFlakyGraphBar"></a>
+                        <a class="mb-2 timeline-graph" id="testRecentMostFlakyGraphTimeline"></a>
+                        <a class="mb-2 information-graph" id="testRecentMostFlakyInformation"></a>
+                        <a class="mb-2 fullscreen-graph" id="testRecentMostFlakyFullscreen"></a>
+                        <a class="mb-2 close-graph" id="testRecentMostFlakyClose" hidden></a>
                         <canvas id="testRecentMostFlakyGraph"></canvas>
                     </div>
                 </div>`,
@@ -1602,15 +1584,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - The regular view shows the Top 10 most failed tests; fullscreen mode expands the list to the Top 50.`,
                 html: `<div class="col canvas pb-5" id="testMostFailedCanvas">
                     <div id="testMostFailedVertical">
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFailedGraphBar">Bar</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testMostFailedGraphTimeline">Timeline</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testMostFailedFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testMostFailedClose"
-                            hidden>Close</button>
-                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                            id="testMostFailedInformation"></button>
+                        <a class="mb-2 bar-graph" id="testMostFailedGraphBar"></a>
+                        <a class="mb-2 timeline-graph" id="testMostFailedGraphTimeline"></a>
+                        <a class="mb-2 information-graph" id="testMostFailedInformation"></a>
+                        <a class="mb-2 fullscreen-graph" id="testMostFailedFullscreen"></a>
+                        <a class="mb-2 close-graph" id="testMostFailedClose" hidden></a>
                         <canvas id="testMostFailedGraph"></canvas>
                     </div>
                 </div>`,
@@ -1628,16 +1606,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.`,
                 html: `<div class="col canvas pb-5" id="testRecentMostFailedCanvas">
                     <div id="testRecentMostFailedVertical">
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testRecentMostFailedGraphBar">Bar</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testRecentMostFailedGraphTimeline">Timeline</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="testRecentMostFailedFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="testRecentMostFailedClose"
-                            hidden>Close</button>
-                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                            id="testRecentMostFailedInformation"></button>
+                        <a class="mb-2 bar-graph" id="testRecentMostFailedGraphBar"></a>
+                        <a class="mb-2 timeline-graph" id="testRecentMostFailedGraphTimeline"></a>
+                        <a class="mb-2 information-graph" id="testRecentMostFailedInformation"></a>
+                        <a class="mb-2 fullscreen-graph" id="testRecentMostFailedFullscreen"></a>
+                        <a class="mb-2 close-graph" id="testRecentMostFailedClose" hidden></a>
                         <canvas id="testRecentMostFailedGraph"></canvas>
                     </div>
                 </div>`,
@@ -1664,18 +1637,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - Amount: Displays raw counts of each status per run.
 - Line: Displays the same data but over a time axis.`,
                 html: `<div class="col canvas pb-5" id="keywordStatisticsCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordStatisticsGraphPercentages">Percentage</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordStatisticsGraphAmount">Amount</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordStatisticsGraphLine">Timeline</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordStatisticsFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordStatisticsClose"
-                        hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="keywordStatisticsInformation"></button>
+                    <a class="mb-2 percentage-graph" id="keywordStatisticsGraphPercentages"></a>
+                    <a class="mb-2 bar-graph" id="keywordStatisticsGraphAmount"></a>
+                    <a class="mb-2 line-graph" id="keywordStatisticsGraphLine"></a>
+                    <a class="mb-2 information-graph" id="keywordStatisticsInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="keywordStatisticsFullscreen"></a>
+                    <a class="mb-2 close-graph" id="keywordStatisticsClose" hidden></a>
                     <canvas id="keywordStatisticsGraph"></canvas>
                 </div>`,
             },
@@ -1689,14 +1656,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - Bar: Displays times run per keyword represented as vertical bars.
 - Line: Displays the same data but over a time axis.`,
                 html: `<div class="col canvas pb-5" id="keywordTimesRunCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTimesRunGraphBar">Bar</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTimesRunGraphLine">Line</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordTimesRunFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTimesRunClose"
-                        hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="keywordTimesRunInformation"></button>
+                    <a class="mb-2 bar-graph" id="keywordTimesRunGraphBar"></a>
+                    <a class="mb-2 line-graph" id="keywordTimesRunGraphLine"></a>
+                    <a class="mb-2 information-graph" id="keywordTimesRunInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="keywordTimesRunFullscreen"></a>
+                    <a class="mb-2 close-graph" id="keywordTimesRunClose" hidden></a>
                     <canvas id="keywordTimesRunGraph"></canvas>
                 </div>`,
             },
@@ -1710,16 +1674,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - Bar: Displays the cumulative time each keyword ran during each run represented as vertical bars.
 - Line: Displays the same data but over a time axis.`,
                 html: `<div class="col canvas pb-5" id="keywordTotalDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordTotalDurationGraphBar">Bar</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordTotalDurationGraphLine">Line</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordTotalDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordTotalDurationClose"
-                        hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="keywordTotalDurationInformation"></button>
+                    <a class="mb-2 bar-graph" id="keywordTotalDurationGraphBar"></a>
+                    <a class="mb-2 line-graph" id="keywordTotalDurationGraphLine"></a>
+                    <a class="mb-2 information-graph" id="keywordTotalDurationInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="keywordTotalDurationFullscreen"></a>
+                    <a class="mb-2 close-graph" id="keywordTotalDurationClose" hidden></a>
                     <canvas id="keywordTotalDurationGraph"></canvas>
                 </div>`,
             },
@@ -1732,17 +1691,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 information: `This graph shows the average execution time per keyword:
 - Bar: Displays the average duration for each keyword represented as vertical bars.
 - Line: Displays the same data but over a time axis.`,
-                html: `<div class="col canvas pb-5" id="keywordAverageDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordAverageDurationGraphBar">Bar</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordAverageDurationGraphLine">Line</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordAverageDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordAverageDurationClose"
-                        hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="keywordAverageDurationInformation"></button>
+                html: `<div class="col canvas pb-5" id="keywordAverageDurationGraphBar">
+                    <a class="mb-2 bar-graph" id="keywordTotalDurationGraphBar"></a>
+                    <a class="mb-2 line-graph" id="keywordAverageDurationGraphLine"></a>
+                    <a class="mb-2 information-graph" id="keywordAverageDurationInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="keywordAverageDurationFullscreen"></a>
+                    <a class="mb-2 close-graph" id="keywordAverageDurationClose" hidden></a>
                     <canvas id="keywordAverageDurationGraph"></canvas>
                 </div>`,
             },
@@ -1756,15 +1710,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - Bar: Displays minimum durations represented as vertical bars.
 - Line: Displays the same data but over a time axis.`,
                 html: `<div class="col canvas pb-5" id="keywordMinDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMinDurationGraphBar">Bar</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordMinDurationGraphLine">Line</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordMinDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMinDurationClose"
-                        hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="keywordMinDurationInformation"></button>
+                    <a class="mb-2 bar-graph" id="keywordMinDurationGraphBar"></a>
+                    <a class="mb-2 line-graph" id="keywordMinDurationGraphLine"></a>
+                    <a class="mb-2 information-graph" id="keywordMinDurationInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="keywordMinDurationFullscreen"></a>
+                    <a class="mb-2 close-graph" id="keywordMinDurationClose" hidden></a>
                     <canvas id="keywordMinDurationGraph"></canvas>
                 </div>`,
             },
@@ -1778,15 +1728,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - Bar: Displays maximum durations represented as vertical bars.
 - Line: Displays the same data but over a time axis.`,
                 html: `<div class="col canvas pb-5" id="keywordMaxDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMaxDurationGraphBar">Bar</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordMaxDurationGraphLine">Line</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="keywordMaxDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMaxDurationClose"
-                        hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="keywordMaxDurationInformation"></button>
+                    <a class="mb-2 bar-graph" id="keywordMaxDurationGraphBar"></a>
+                    <a class="mb-2 line-graph" id="keywordMaxDurationGraphLine"></a>
+                    <a class="mb-2 information-graph" id="keywordMaxDurationInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="keywordMaxDurationFullscreen"></a>
+                    <a class="mb-2 close-graph" id="keywordMaxDurationClose" hidden></a>
                     <canvas id="keywordMaxDurationGraph"></canvas>
                 </div>`,
             },
@@ -1802,16 +1748,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - The regular view shows the Top 10 most failed keywords; fullscreen mode expands the list to the Top 50.`,
                 html: `<div class="col canvas pb-5" id="keywordMostFailedCanvas">
                     <div id="keywordMostFailedVertical">
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="keywordMostFailedGraphBar">Bar</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="keywordMostFailedGraphTimeline">Timeline</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="keywordMostFailedFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="keywordMostFailedClose"
-                            hidden>Close</button>
-                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                            id="keywordMostFailedInformation"></button>
+                        <a class="mb-2 bar-graph" id="keywordMostFailedGraphBar"></a>
+                        <a class="mb-2 timeline-graph" id="keywordMostFailedGraphTimeline"></a>
+                        <a class="mb-2 information-graph" id="keywordMostFailedInformation"></a>
+                        <a class="mb-2 fullscreen-graph" id="keywordMostFailedFullscreen"></a>
+                        <a class="mb-2 close-graph" id="keywordMostFailedClose" hidden></a>
                         <canvas id="keywordMostFailedGraph"></canvas>
                     </div>
                 </div>`,
@@ -1835,13 +1776,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 hasFullscreenButton: true,
                 information: `This graph displays the overall statistics of the selected runs.`,
                 html: `<div class="col canvas pb-5" id="compareStatisticsCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareStatisticsGraphBar">Bar</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="compareStatisticsFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareStatisticsClose"
-                        hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="compareStatisticsInformation"></button>
+                    <a class="mb-2 bar-graph" id="compareStatisticsGraphBar"></a>
+                    <a class="mb-2 information-graph" id="compareStatisticsInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="compareStatisticsFullscreen"></a>
+                    <a class="mb-2 close-graph" id="compareStatisticsClose" hidden></a>
                     <canvas id="compareStatisticsGraph"></canvas>
                 </div>`,
             },
@@ -1853,13 +1791,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 hasFullscreenButton: true,
                 information: `This graph displays the duration per suite in a radar format.`,
                 html: `<div class="col canvas pb-5" id="compareSuiteDurationCanvas">
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareSuiteDurationGraphRadar">Radar</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                        id="compareSuiteDurationFullscreen">Fullscreen</button>
-                    <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareSuiteDurationClose"
-                        hidden>Close</button>
-                    <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                        id="compareSuiteDurationInformation"></button>
+                    <a class="mb-2 radar-graph" id="compareSuiteDurationGraphRadar"></a>
+                    <a class="mb-2 information-graph" id="compareSuiteDurationInformation"></a>
+                    <a class="mb-2 fullscreen-graph" id="compareSuiteDurationFullscreen"></a>
+                    <a class="mb-2 close-graph" id="compareSuiteDurationClose" hidden></a>
                     <canvas id="compareSuiteDurationGraph"></canvas>
                 </div>`,
             },
@@ -1872,20 +1807,16 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 information: `This graph displays the statistics of the tests in a timeline format.`,
                 html: `<div class="col canvas canvas-vertical" id="compareTestsCanvas">
                     <div id="compareTestsVertical">
-                        <div class="btn-group me-1">
-                            <label class="form-check-label mb-3" for="compareOnlyChanges">Only Changes</label>
+                        <div class="btn-group">
+                            <label class="form-check-label" for="compareOnlyChanges">Only Changes</label>
                         </div>
-                        <div class="btn-group form-switch me-1">
-                            <input class="form-check-input mb-3" type="checkbox" role="switch" id="compareOnlyChanges">
+                        <div class="btn-group form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="compareOnlyChanges">
                         </div>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="compareTestsGraphTimeline">Timeline</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1"
-                            id="compareTestsFullscreen">Fullscreen</button>
-                        <button class="btn btn-outline-light btn-sm mb-3 mt-1" id="compareTestsClose"
-                            hidden>Close</button>
-                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                            id="compareTestsInformation"></button>
+                        <a class="mb-2 timeline-graph" id="compareTestsGraphTimeline"></a>
+                        <a class="mb-2 information-graph" id="compareTestsInformation"></a>
+                        <a class="mb-2 fullscreen-graph" id="compareTestsFullscreen"></a>
+                        <a class="mb-2 close-graph" id="compareTestsClose" hidden></a>
                         <canvas id="compareTestsGraph"></canvas>
                     </div>
                 </div>`,
@@ -1985,14 +1916,26 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 document.getElementById('filters').innerHTML = filterLightSVG;
                 document.getElementById('rflogo').innerHTML = rflogoLightSVG;
                 document.getElementById('toggleTheme').innerHTML = moonSVG;
-                document.getElementById('customizeView').innerHTML = brushLightSVG;
+                document.getElementById('customizeView').innerHTML = customizeViewLightSVG;
                 document.getElementById('bug').innerHTML = bugLightSVG;
-                document.getElementById('versionInformation').innerHTML = versionLightSVG;
                 // menu theme
                 document.getElementById('navigation').classList.remove('navbar-dark')
                 document.getElementById('navigation').classList.add('navbar-light')
                 // set toggle in correct state if not already, needed on first load
                 if (toggle.checked) toggle.checked = false;
+                // graph icons
+                document.querySelectorAll(".percentage-graph").forEach(btn => btn.innerHTML = percentageLightSVG)
+                document.querySelectorAll(".bar-graph").forEach(btn => btn.innerHTML = barLightSVG)
+                document.querySelectorAll(".line-graph").forEach(btn => btn.innerHTML = lineLightSVG)
+                document.querySelectorAll(".pie-graph").forEach(btn => btn.innerHTML = pieLightSVG)
+                document.querySelectorAll(".boxplot-graph").forEach(btn => btn.innerHTML = boxplotLightSVG)
+                document.querySelectorAll(".heatmap-graph").forEach(btn => btn.innerHTML = heatmapLightSVG)
+                document.querySelectorAll(".stats-graph").forEach(btn => btn.innerHTML = statsLightSVG)
+                document.querySelectorAll(".timeline-graph").forEach(btn => btn.innerHTML = timelineLightSVG)
+                document.querySelectorAll(".radar-graph").forEach(btn => btn.innerHTML = radarLightSVG)
+                document.querySelectorAll(".fullscreen-graph").forEach(btn => btn.innerHTML = fullscreenLightSVG)
+                document.querySelectorAll(".close-graph").forEach(btn => btn.innerHTML = closeLightSVG)
+                document.querySelectorAll(".information-graph").forEach(btn => btn.innerHTML = informationLightSVG)
             }
 
             function set_dark_mode() {
@@ -2014,14 +1957,26 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 document.getElementById('filters').innerHTML = filterDarkSVG;
                 document.getElementById('rflogo').innerHTML = rflogoDarkSVG;
                 document.getElementById('toggleTheme').innerHTML = sunSVG;
-                document.getElementById('customizeView').innerHTML = brushDarkSVG;
+                document.getElementById('customizeView').innerHTML = customizeViewDarkSVG;
                 document.getElementById('bug').innerHTML = bugDarkSVG;
-                document.getElementById('versionInformation').innerHTML = versionDarkSVG;
                 // menu theme
                 document.getElementById('navigation').classList.remove('navbar-light')
                 document.getElementById('navigation').classList.add('navbar-dark')
                 // set toggle in correct state if not already, needed on first load
                 if (!toggle.checked) toggle.checked = true;
+                // graph icons
+                document.querySelectorAll(".percentage-graph").forEach(btn => btn.innerHTML = percentageDarkSVG)
+                document.querySelectorAll(".bar-graph").forEach(btn => btn.innerHTML = barDarkSVG)
+                document.querySelectorAll(".line-graph").forEach(btn => btn.innerHTML = lineDarkSVG)
+                document.querySelectorAll(".pie-graph").forEach(btn => btn.innerHTML = pieDarkSVG)
+                document.querySelectorAll(".boxplot-graph").forEach(btn => btn.innerHTML = boxplotDarkSVG)
+                document.querySelectorAll(".heatmap-graph").forEach(btn => btn.innerHTML = heatmapDarkSVG)
+                document.querySelectorAll(".stats-graph").forEach(btn => btn.innerHTML = statsDarkSVG)
+                document.querySelectorAll(".timeline-graph").forEach(btn => btn.innerHTML = timelineDarkSVG)
+                document.querySelectorAll(".radar-graph").forEach(btn => btn.innerHTML = radarDarkSVG)
+                document.querySelectorAll(".fullscreen-graph").forEach(btn => btn.innerHTML = fullscreenDarkSVG)
+                document.querySelectorAll(".close-graph").forEach(btn => btn.innerHTML = closeDarkSVG)
+                document.querySelectorAll(".information-graph").forEach(btn => btn.innerHTML = informationDarkSVG)
             }
 
             // detect theme preference
@@ -2178,9 +2133,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to fill the information icons with the correct data
         function setup_information_icons() {
-            const informationButtons = document.querySelectorAll(".information")
+            const informationButtons = document.querySelectorAll(".information-graph")
             for (let button of informationButtons) {
-                button.innerHTML = informationSVG;
                 const id = button.id;
                 var title = informationTitles[id];
                 if (id == 'overviewStatisticsInformation') continue;
@@ -2487,7 +2441,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var storedTypes = JSON.parse(localStorage.getItem("graphTypes"));
             for (const key in storedTypes) {
                 window[key] = storedTypes[key];
-                update_button_selection(key.replace("GraphType", ""), storedTypes[key]);
+                // update_button_selection(key.replace("GraphType", ""), storedTypes[key]);
             }
         }
 
@@ -2500,20 +2454,20 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // function to change which button is highlighted styling wise
-        function update_button_selection(camelButtonName, graphType) {
-            buttonTypes.forEach(button => {
-                const buttonId = `${camelButtonName}Graph${button}`;
-                const element = document.getElementById(buttonId);
-                if (element) {
-                    const isDark = document.documentElement.classList.contains("dark-mode");
-                    const outlineClass = isDark ? "btn-outline-light" : "btn-outline-dark";
-                    const isActive = button.toLowerCase() === graphType;
-                    element.classList.toggle("active", isActive);
-                    element.classList.remove("btn-outline-light", "btn-outline-dark");
-                    element.classList.add(outlineClass);
-                }
-            });
-        }
+        // function update_button_selection(camelButtonName, graphType) {
+        //     buttonTypes.forEach(button => {
+        //         const buttonId = `${camelButtonName}Graph${button}`;
+        //         const element = document.getElementById(buttonId);
+        //         if (element) {
+        //             const isDark = document.documentElement.classList.contains("dark-mode");
+        //             const outlineClass = isDark ? "btn-outline-light" : "btn-outline-dark";
+        //             const isActive = button.toLowerCase() === graphType;
+        //             element.classList.toggle("active", isActive);
+        //             element.classList.remove("btn-outline-light", "btn-outline-dark");
+        //             element.classList.add(outlineClass);
+        //         }
+        //     });
+        // }
 
         // create the modal with the correct layout based on localstorage
         function setup_customize_view_content() {
@@ -2836,7 +2790,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 if (graphChangeButton == 'run_donut') { create_run_donut_total_graph(); }
                 if (graphChangeButton == 'suite_folder_donut') { create_suite_folder_fail_donut_graph(); }
                 // Update the UI to enable/disable buttons accordingly
-                update_button_selection(camelButtonName, graphType)
+                // update_button_selection(camelButtonName, graphType)
             }
 
             function add_graph_eventlisteners(graphChangeButton, buttonTypes) {
