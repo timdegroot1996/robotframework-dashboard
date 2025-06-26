@@ -699,8 +699,8 @@
                     <div class="modal-header">
                         <h1 class="modal-title" id="filtersModalLabel">Filters</h1>
                         <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3" id="resetFilters"
-                                data-bs-dismiss="modal">Reset Filters</button>
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
+                                id="resetFilters">Reset Filters</button>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
                                 data-bs-dismiss="modal">Close</button>
                         </div>
@@ -743,10 +743,17 @@
                         </div>
                         <div class="col-auto mt-1 ps-2 pe-2">
                             <label class="form-label form-label-sm mb-0" for="amount" id="amountLabel"
-                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">Amount</label>
-                            <input class="form-control form-control-sm" type="number" min=0 id="amount"
-                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
-                                value="10">
+                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">
+                                Amount
+                            </label>
+                            <div class="d-flex align-items-center mt-1">
+                                <input class="form-control form-control-sm flex-grow-1" type="number" min="0"
+                                    id="amount"
+                                    title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
+                                    value="10">
+                                <button type="button" class="btn btn-outline-light btn-sm ms-2 text-nowrap"
+                                    id="allRuns">All Runs</button>
+                            </div>
                         </div>
                         <div class="col-auto mt-1 ps-2 pe-2" id="metadataFilter" hidden>
                             <label class="form-label form-label-sm mb-0" for="metadata"
@@ -873,7 +880,7 @@
                     <div class="modal-header">
                         <h1 class="modal-title" id="customizeModalLabel">Customize View</h1>
                         <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto" data-bs-dismiss="modal"
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto"
                                 id="resetGraphConfig">Reset View</button>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
                                 data-bs-dismiss="modal">Close</button>
@@ -1076,7 +1083,6 @@
             "Suite Statistics",
             "Test Statistics",
             "Keyword Statistics",
-            "Compare Statistics",
         ]
         const graphMetadata = [
             {
@@ -2891,6 +2897,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 document.getElementById("amount").value = filteredAmountDefault;
                 document.getElementById("metadata").value = "All";
                 setup_lowest_highest_dates(runs);
+            });
+            document.getElementById("allRuns").addEventListener("click", function () {
+                document.getElementById("amount").value = Object.keys(runs).length;
             });
             document.getElementById("suiteSelectSuites").addEventListener("change", () => {
                 create_suite_duration_graph();
@@ -5365,7 +5374,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to prepare the data in the correct format for folder donuts
         function get_donut_folder_graph_data(dataType, filteredData, folder) {
-            console.log(folder)
             var labels = new Set()
             const callbackData = {}
             const data = []
