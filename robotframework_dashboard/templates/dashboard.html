@@ -458,41 +458,43 @@
                     <div class="col-4">
                         <h4 id="overviewTitle"></h4>
                     </div>
-                    <div class="col-auto">
-                        <div class="btn-group ms-1">
-                            <label class="form-check-label mt-2" for="useRunTags">Use Run Tags</label>
+                    <div class="d-flex flex-wrap align-items-start col align-items-center">
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-check-label" for="useRunTags">Use Run Tags</label>
+                            </div>
+                            <div class="btn-group form-switch ms-1">
+                                <input class="form-check-input" type="checkbox" role="switch" id="useRunTags" />
+                            </div>
                         </div>
-                        <div class="btn-group form-switch ms-1">
-                            <input class="form-check-input mt-2" type="checkbox" role="switch" id="useRunTags" />
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-check-label" for="overviewDurationPercentage">Percentage</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm mt-1" id="overviewDurationPercentage">
+                                    <option value="10">10</option>
+                                    <option value="20" selected>20</option>
+                                    <option value="30">30</option>
+                                    <option value="40">40</option>
+                                    <option value="50">50</option>
+                                    <option value="60">60</option>
+                                    <option value="70">70</option>
+                                    <option value="80">80</option>
+                                    <option value="90">90</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-check-label" for="overviewDurationPercentage">Percentage</label>
-                        </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm mt-1" id="overviewDurationPercentage">
-                                <option value="10">10</option>
-                                <option value="20" selected>20</option>
-                                <option value="30">30</option>
-                                <option value="40">40</option>
-                                <option value="50">50</option>
-                                <option value="60">60</option>
-                                <option value="70">70</option>
-                                <option value="80">80</option>
-                                <option value="90">90</option>
-                                <option value="100">100</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                            id="overviewStatisticsInformation"
-                            data-title="This section shows the projects and their associated runs:
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-outline-light btn-sm information ms-2 mt-1"
+                                id="overviewStatisticsInformation"
+                                data-title="This section shows the projects and their associated runs:
 - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
 - Passed runs represent the percentage of runs with zero failures.
 - You can define your own projects or groupings by appending '-o path/to/output.xml:project_yourprojectname' when generating results.
 - If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle."></button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -528,36 +530,25 @@
                     <div class="col-3">
                         <h4 id="suiteTitle"></h4>
                     </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="suiteFolder">Folder: </label>
+                    <div class="d-flex flex-wrap align-items-start col align-items-center">
+                        <div class="col-auto d-flex me-2">
+                            <label class="form-label mb-0" for="suiteFolder">Folder:</label>
+                            <p class="form-label mb-0 ms-1" id="suiteFolder">All</p>
                         </div>
-                        <div class="btn-group">
-                            <p class="form-label mt-2" id="suiteFolder">All</p>
+                        <div class="col-auto d-flex me-2">
+                            <button class="btn btn-outline-light btn-sm" id="resetSuiteFolder">Reset Folder</button>
                         </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <button class="btn btn-outline-light btn-sm mt-1" id="resetSuiteFolder">Reset
-                                Folder</button>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="suiteSelectSuites">Suite</label>
-                        </div>
-                        <div class="btn-group">
+                        <div class="col-auto d-flex me-2">
+                            <label class="form-label me-2 mt-1" for="suiteSelectSuites">Suite:</label>
                             <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
                         </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group ms-1">
-                            <label class="form-check-label mt-2" for="useSuitePathsSuiteSection">Use Suite
+                        <div class="col-auto d-flex me-2">
+                            <label class="form-check-label mb-0 me-2" for="useSuitePathsSuiteSection">Use Suite
                                 Paths</label>
-                        </div>
-                        <div class="btn-group form-switch ms-1">
-                            <input class="form-check-input mt-2" type="checkbox" role="switch"
-                                id="useSuitePathsSuiteSection" />
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                    id="useSuitePathsSuiteSection" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -577,38 +568,26 @@
                     <div class="col-3">
                         <h4 id="testTitle"></h4>
                     </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="suiteSelectTests">Suite</label>
-                        </div>
-                        <div class="btn-group">
+                    <div class="d-flex flex-wrap align-items-start col align-items-center">
+                        <div class="col-auto d-flex me-2">
+                            <label class="form-label mb-0 me-2 mt-1" for="suiteSelectTests">Suite:</label>
                             <select class="form-select form-select-sm" id="suiteSelectTests"></select>
                         </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group ms-1">
-                            <label class="form-check-label mt-2" for="useSuitePathsTestSection">Use Suite
+                        <div class="col-auto d-flex me-2">
+                            <label class="form-check-label mb-0 me-2" for="useSuitePathsTestSection">Use Suite
                                 Paths</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                    id="useSuitePathsTestSection" />
+                            </div>
                         </div>
-                        <div class="btn-group form-switch ms-1">
-                            <input class="form-check-input mt-2" type="checkbox" role="switch"
-                                id="useSuitePathsTestSection" />
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="testSelect">Test</label>
-                        </div>
-                        <div class="btn-group">
+                        <div class="col-auto d-flex me-2">
+                            <label class="form-label mb-0 me-2 mt-1" for="testSelect">Test:</label>
                             <select class="form-select form-select-sm" id="testSelect"></select>
                         </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="testTagsSelect">Test Tags</label>
-                        </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="testTagsSelect"></select>
+                        <div class="col-auto d-flex flex-nowrap align-items-center me-2">
+                            <label class="form-label mb-0 me-2 text-nowrap" for="testTagsSelect">Test Tags:</label>
+                            <select class="form-select form-select-sm w-auto" id="testTagsSelect"></select>
                         </div>
                     </div>
                 </div>
@@ -628,12 +607,14 @@
                     <div class="col-3">
                         <h4 id="keywordTitle"></h4>
                     </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="keywordSelect">Keyword</label>
-                        </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="keywordSelect"></select>
+                    <div class="d-flex flex-wrap align-items-start col align-items-center">
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-label mt-2" for="keywordSelect">Keyword</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="keywordSelect"></select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -653,36 +634,38 @@
                     <div class="col-3">
                         <h4 id="compareTitle"></h4>
                     </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="compareRun1">Run 1</label>
+                    <div class="d-flex flex-wrap align-items-start col align-items-center">
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-label ms-1 mt-2" for="compareRun1">Run 1</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="compareRun1"></select>
+                            </div>
                         </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="compareRun1"></select>
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-label ms-1 mt-2" for="compareRun2">Run 2</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="compareRun2"></select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="compareRun2">Run 2</label>
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-label ms-1 mt-2" for="compareRun3">Run 3</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="compareRun3"></select>
+                            </div>
                         </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="compareRun2"></select>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="compareRun3">Run 3</label>
-                        </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="compareRun3"></select>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="compareRun4">Run 4</label>
-                        </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="compareRun4"></select>
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-label ms-1 mt-2" for="compareRun4">Run 4</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="compareRun4"></select>
+                            </div>
                         </div>
                     </div>
                 </div>
