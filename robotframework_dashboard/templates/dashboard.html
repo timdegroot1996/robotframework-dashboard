@@ -818,6 +818,16 @@
                         </div>
                         <div class="row">
                             <div class="col-8 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleAxisTitles">Graphs: Show Axis
+                                    Titles</label>
+                            </div>
+                            <div class="col btn-group form-switch ms-2">
+                                <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                    id="toggleAxisTitles" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-8 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleAnimations">Graphs: Show Drawing
                                     Animations</label>
                             </div>
@@ -1047,6 +1057,7 @@
         var showLegends = true; // used to keep track of global legend setting
         var showAliases = false; // used to keep track of global alias setting
         var showMilliseconds = false; // used to keep track of global millisecond setting
+        var showAxisTitles = true; // used to keep track of global axis title setting
         var heatMapHourAll = true; // used to keep track of the heatmap setting, is it set to an hour or all
         var previousFolder = ""; // used to update the suite folder donut to the previous folder with the button
         var lastScrollY = 0; // used to scroll back to where you were previously
@@ -2670,6 +2681,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 globalVarName: "showMilliseconds"
             });
 
+            const toggle_axis_titles = create_toggle_handler({
+                key: "showAxisTitles",
+                elementId: "toggleAxisTitles",
+                globalVarName: "showAxisTitles"
+            });
+
             const toggle_graph_limit = create_toggle_handler({
                 key: "maxGraphsPerRow",
                 elementId: "toggleMaxGraphsPerRow",
@@ -2697,6 +2714,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             toggle_legends(true);
             toggle_aliases(true);
             toggle_milliseconds(true);
+            toggle_axis_titles(true);
             toggle_graph_limit(true);
             toggle_animations(true);
             toggle_animation_duration(true);
@@ -2706,6 +2724,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById("toggleLegends").addEventListener("click", () => toggle_legends());
             document.getElementById("toggleAliases").addEventListener("click", () => toggle_aliases());
             document.getElementById("toggleMilliseconds").addEventListener("click", () => toggle_milliseconds());
+            document.getElementById("toggleAxisTitles").addEventListener("click", () => toggle_axis_titles());
             document.getElementById("toggleMaxGraphsPerRow").addEventListener("change", () => toggle_graph_limit());
             document.getElementById("toggleAnimations").addEventListener("click", () => toggle_animations());
             document.getElementById("toggleAnimationDuration").addEventListener("change", () => toggle_animation_duration());
@@ -3832,7 +3851,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -3919,7 +3938,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     },
                 },
                 title: {
-                    display: true,
+                    display: showAxisTitles,
                     text: "Run",
                 },
             };
@@ -3985,7 +4004,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Message",
                     },
                 };
@@ -4009,7 +4028,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -4079,7 +4098,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -4130,7 +4149,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -4188,7 +4207,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -4246,7 +4265,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -4471,7 +4490,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -4579,7 +4598,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     },
                 },
                 title: {
-                    display: true,
+                    display: showAxisTitles,
                     text: "Run",
                 },
             };
@@ -4995,10 +5014,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             };
 
             const config = configMap[graphType]?.();
-            // Global legend toggle
             if (!showLegends) {
                 config.options.plugins.legend = config.options.plugins.legend || {};
                 config.options.plugins.legend.display = false;
+            }
+            if (!showAxisTitles) {
+                if (config.options.scales && config.options.scales.x && config.options.scales.x.title) {
+                    config.options.scales.x.title.display = false;
+                }
+                if (config.options.scales && config.options.scales.y && config.options.scales.y.title) {
+                    config.options.scales.y.title.display = false;
+                }
             }
             return config;
         }
