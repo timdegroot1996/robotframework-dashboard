@@ -16,6 +16,10 @@
     <script type="text/javascript"
         src="https://unpkg.com/@sgratzl/chartjs-chart-boxplot@3.6.0/build/index.umd.min.js"></script>
 
+    <!-- Gridstack CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@9.2.1/dist/gridstack.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/gridstack@9.2.1/dist/gridstack-all.min.js"></script>
+
     <!-- ChartJs heatmap/matrix plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js"></script>
 
@@ -34,6 +38,15 @@
         href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==" />
 
     <style>
+        .disable-pointer {
+            pointer-events: none;
+        }
+
+        .grid-stack-item.ui-resizable-resizing,
+        .grid-stack-item.ui-draggable-dragging {
+            user-select: none;
+        }
+
         /* LIGHT MODE STYLING */
         body {
             background-color: #eee;
@@ -142,6 +155,7 @@
         }
 
         h4,
+        h5,
         h6 {
             margin-bottom: 0rem;
         }
@@ -209,14 +223,55 @@
             position: relative;
         }
 
+        .grid-stack-item-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            min-width: 435px;
+            min-height: 300px;
+        }
+
+        .grid-stack-item-content canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .grid-stack {
+            position: relative;
+        }
+
+        .grid-stack-item {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .grid-stack-item-content {
+            cursor: move;
+        }
+
+        .grid-stack>.grid-stack-item {
+            z-index: auto !important;
+        }
+
         .canvas {
-            min-width: 400px;
-            width: 700px;
-            height: 500px;
+            min-width: 435px;
+            min-height: 300px;
             text-align: center;
-            padding: 1.5rem;
+            padding: 1rem;
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        #runStatsCanvas .stat-label,
+        #runStatsCanvas .stat-value {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+        }
+
+        #runStatsCanvas .col {
+            min-width: 0;
         }
 
         .canvas:not(.fullscreen) .donut-charts {
@@ -245,10 +300,6 @@
             margin-top: 1rem;
             margin-bottom: 1rem;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .dt-container {
-            margin-top: 20px;
         }
 
         .stats {
@@ -406,6 +457,7 @@
             <a class="nav-item nav-link" id="testStatisticsSectionNav"><i>Tests</i></a>
             <a class="nav-item nav-link" id="keywordStatisticsSectionNav"><i>Keywords</i></a>
             <a class="nav-item nav-link" id="menuCompare">Compare</a>
+            <a class="nav-item nav-link" id="menuTables">Tables</a>
             <a class="nav-item nav-link" id="openDashboard" href="/" hidden>Admin</a>
         </div>
         <ul class="navbar-nav flex-row flex-wrap ms-md-auto me-4">
@@ -460,20 +512,20 @@
                     <div class="col-4">
                         <h4 id="overviewTitle"></h4>
                     </div>
-                    <div class="col-auto">
+                    <div class="col-auto align-self-center">
                         <div class="btn-group ms-1">
-                            <label class="form-check-label mt-2" for="useRunTags">Use Run Tags</label>
+                            <label class="form-check-label" for="useRunTags">Use Run Tags</label>
                         </div>
-                        <div class="btn-group form-switch ms-1">
-                            <input class="form-check-input mt-2" type="checkbox" role="switch" id="useRunTags" />
+                        <div class="btn-group form-switch ms-1 mb-1">
+                            <input class="form-check-input" type="checkbox" role="switch" id="useRunTags" />
                         </div>
                     </div>
-                    <div class="col-auto">
+                    <div class="col-auto align-self-center">
                         <div class="btn-group">
                             <label class="form-check-label" for="overviewDurationPercentage">Percentage</label>
                         </div>
                         <div class="btn-group">
-                            <select class="form-select form-select-sm mt-1" id="overviewDurationPercentage">
+                            <select class="form-select form-select-sm" id="overviewDurationPercentage">
                                 <option value="10">10</option>
                                 <option value="20" selected>20</option>
                                 <option value="30">30</option>
@@ -487,14 +539,13 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-auto">
-                        <button type="button" class="btn btn-outline-light btn-sm mb-3 mt-1 information"
-                            id="overviewStatisticsInformation"
+                    <div class="col-auto align-self-center">
+                        <a class="information-graph" id="overviewStatisticsInformation"
                             data-title="This section shows the projects and their associated runs:
 - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
 - Passed runs represent the percentage of runs with zero failures.
 - You can define your own projects or groupings by appending '-o path/to/output.xml:project_yourprojectname' when generating results.
-- If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle."></button>
+- If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle."></a>
                     </div>
                 </div>
             </div>
@@ -517,7 +568,7 @@
             </div>
             <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card runData -->
             <div id="runDataHidden" hidden></div>
-            <div class="card-body collapse show" id="runData"></div>
+            <div class="card-body collapse show grid-stack" id="gridRun"></div>
         </div>
 
         <div class="card" id="suiteStatisticsSection" hidden>
@@ -566,7 +617,7 @@
             </div>
             <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card suiteData -->
             <div id="suiteDataHidden" hidden></div>
-            <div class="card-body collapse show" id="suiteData"></div>
+            <div class="card-body collapse show grid-stack" id="gridSuite"></div>
         </div>
 
         <div class="card" id="testStatisticsSection" hidden>
@@ -617,7 +668,7 @@
             </div>
             <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card keywordData -->
             <div id="testDataHidden" hidden></div>
-            <div class="card-body collapse show" id="testData"></div>
+            <div class="card-body collapse show grid-stack" id="gridTest"></div>
         </div>
 
         <div class="card" id="keywordStatisticsSection" hidden>
@@ -642,7 +693,7 @@
             </div>
             <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card keywordData -->
             <div id="keywordDataHidden" hidden></div>
-            <div class="card-body collapse show" id="keywordData"></div>
+            <div class="card-body collapse show grid-stack" id="gridKeyword"></div>
         </div>
 
         <div class="card" id="compareStatisticsSection" hidden>
@@ -691,7 +742,24 @@
             </div>
             <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card compareData -->
             <div id="compareDataHidden" hidden></div>
-            <div class="card-body collapse show" id="compareData"></div>
+            <div class="card-body collapse show grid-stack" id="gridCompare"></div>
+        </div>
+
+        <div class="card" id="tablesStatisticsSection" hidden>
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-auto align-self-center">
+                        <div class="btn btn-sm collapse-icon" id="tablesDetailsButton" data-bs-toggle="collapse"
+                            data-bs-target="#tableData" aria-expanded="true" aria-controls="tableData"></div>
+                    </div>
+                    <div class="col-3">
+                        <h4 id="tablesTitle"></h4>
+                    </div>
+                </div>
+            </div>
+            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card tablesData -->
+            <div id="tableDataHidden" hidden></div>
+            <div class="card-body collapse show grid-stack" id="gridTable"></div>
         </div>
 
         <!-- Modal for the filter -->
@@ -701,9 +769,9 @@
                     <div class="modal-header">
                         <h1 class="modal-title" id="filtersModalLabel">Filters</h1>
                         <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3" id="resetFilters"
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto" id="resetFilters"
                                 data-bs-dismiss="modal">Reset Filters</button>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
                                 data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -767,7 +835,7 @@
                     <div class="modal-header">
                         <h1 class="modal-title" id="databaseModalLabel">Database Summary</h1>
                         <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
                                 data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -785,7 +853,7 @@
                     <div class="modal-header">
                         <h1 class="modal-title" id="settingsModalLabel">Settings</h1>
                         <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
                                 data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -877,7 +945,7 @@
                         <div>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto" data-bs-dismiss="modal"
                                 id="resetGraphConfig">Reset View</button>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
                                 data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -973,8 +1041,8 @@
         const fullscreenLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-maximize-icon lucide-maximize"><path d="M8 3H5a2 2 0 0 0-2 2v3" /><path d="M21 8V5a2 2 0 0 0-2-2h-3" /><path d="M3 16v3a2 2 0 0 0 2 2h3" /><path d="M16 21h3a2 2 0 0 0 2-2v-3" /></svg>`;
         const boxplotDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-candlestick-icon lucide-chart-candlestick"><path d="M9 5v4"/><rect width="4" height="6" x="7" y="9" rx="1"/><path d="M9 15v2"/><path d="M17 3v2"/><rect width="4" height="8" x="15" y="5" rx="1"/><path d="M17 13v3"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/></svg>`;
         const boxplotLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-candlestick-icon lucide-chart-candlestick"><path d="M9 5v4"/><rect width="4" height="6" x="7" y="9" rx="1"/><path d="M9 15v2"/><path d="M17 3v2"/><rect width="4" height="8" x="15" y="5" rx="1"/><path d="M17 13v3"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/></svg>`;
-        const heatmapDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-heatmap-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="4" height="4"/><rect x="9" y="3" width="4" height="4"/><rect x="15" y="3" width="4" height="4"/><rect x="3" y="9" width="4" height="4"/><rect x="9" y="9" width="4" height="4"/><rect x="15" y="9" width="4" height="4"/><rect x="3" y="15" width="4" height="4"/><rect x="9" y="15" width="4" height="4"/><rect x="15" y="15" width="4" height="4"/></svg>`;
-        const heatmapLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-heatmap-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="4" height="4"/><rect x="9" y="3" width="4" height="4"/><rect x="15" y="3" width="4" height="4"/><rect x="3" y="9" width="4" height="4"/><rect x="9" y="9" width="4" height="4"/><rect x="15" y="9" width="4" height="4"/><rect x="3" y="15" width="4" height="4"/><rect x="9" y="15" width="4" height="4"/><rect x="15" y="15" width="4" height="4"/></svg>`;
+        const heatmapDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-scatter-icon lucide-chart-scatter"><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="18.5" cy="5.5" r=".5" fill="currentColor"/><circle cx="11.5" cy="11.5" r=".5" fill="currentColor"/><circle cx="7.5" cy="16.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="14.5" r=".5" fill="currentColor"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/></svg>`;
+        const heatmapLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-scatter-icon lucide-chart-scatter"><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="18.5" cy="5.5" r=".5" fill="currentColor"/><circle cx="11.5" cy="11.5" r=".5" fill="currentColor"/><circle cx="7.5" cy="16.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="14.5" r=".5" fill="currentColor"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/></svg>`;
         const timelineDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-bar-stacked-icon lucide-chart-bar-stacked"><path d="M11 13v4"/><path d="M15 5v4"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="13" width="9" height="4" rx="1"/><rect x="7" y="5" width="12" height="4" rx="1"/></svg>`;
         const timelineLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-bar-stacked-icon lucide-chart-bar-stacked"><path d="M11 13v4"/><path d="M15 5v4"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="13" width="9" height="4" rx="1"/><rect x="7" y="5" width="12" height="4" rx="1"/></svg>`;
         const radarDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-radar-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v10l6 6"/></svg>`;
@@ -1065,6 +1133,7 @@
         var filteredKeywords;
 
         // vars to keep track of certain global settings
+        var grid // variable to update the grid
         var overviewGraphs = [];
         var selectedRunSetting = '';
         var selectedTagSetting = '';
@@ -1088,6 +1157,7 @@
         var animationDuration = 1500; // used to set the milliseconds it takes to animate the graphs
         var menuOverview = false; // used to set the dashboard to overview mode
         var menuCompare = false; // used to set the dashboard to compare mode
+        var menuTables = false; // used to set the dashboard to table mode
         var menuDashboard = true; // used to set the dashboard to normal mode
 
         // add datalabels plugin
@@ -1112,13 +1182,18 @@
 - Percentages: Displays the distribution of passed/failed/skipped tests per run, where 100% equals all tests combined.
 - Amount: Displays the actual number of passed/failed/skipped tests per run.
 - Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times.`,
-                html: `<div class="col canvas pb-5" id="runStatisticsCanvas">
-                    <a class="mb-2 percentage-graph" id="runStatisticsGraphPercentages"></a>
-                    <a class="mb-2 bar-graph" id="runStatisticsGraphAmount"></a>
-                    <a class="mb-2 line-graph" id="runStatisticsGraphLine"></a>
-                    <a class="mb-2 information-graph" id="runStatisticsInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="runStatisticsFullscreen"></a>
-                    <a class="mb-2 close-graph" id="runStatisticsClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="runStatisticsCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Statistics</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 percentage-graph" title="Percentage Graph" id="runStatisticsGraphPercentages"></a>
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="runStatisticsGraphAmount"></a>
+                            <a class="mx-1 line-graph" title="Line Graph" id="runStatisticsGraphLine"></a>
+                            <a class="mx-1 information-graph" id="runStatisticsInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="runStatisticsFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="runStatisticsClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="runStatisticsGraph"></canvas>
                 </div>`,
             },
@@ -1131,11 +1206,16 @@
                 information: `This graph contains two donut charts:
 - The first donut displays the percentage of passed, failed, and skipped tests for the most recent run..
 - The second donut displays the total percentage of passed, failed, and skipped tests across all runs`,
-                html: `<div class="col canvas pb-5" id="runDonutCanvas">
-                    <a class="mb-2 pie-graph" id="runDonutGraphDonut"></a>
-                    <a class="mb-2 information-graph" id="runDonutInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="runDonutFullscreen"></a>
-                    <a class="mb-2 close-graph" id="runDonutClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="runDonutCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Donut</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 pie-graph" title="Pie Graph" id="runDonutGraphDonut"></a>
+                            <a class="mx-1 information-graph" id="runDonutInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="runDonutFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="runDonutClose" hidden></a>
+                        </div>
+                    </div>
                     <div class="row donut-charts w-100 h-100">
                         <div class="col-md-6 w-50 h-100">
                             <canvas id="runDonutGraph" class="w-100 h-100"></canvas>
@@ -1166,13 +1246,18 @@
 - Outcomes: Total Passed, Failed, and Skipped tests, including their percentages relative to the full test set.
 - Duration: Displays the cumulative runtime of all runs, the average runtime per run, and the average duration of individual tests.
 - Pass Rate: Displays the average run-level pass rate, helping evaluate overall reliability over time.`,
-                html: `<div class="col canvas pb-5" id="runStatsCanvas">
-                    <a class="mb-2 stats-graph" id="runStatsGraphStats"></a>
-                    <a class="mb-2 information-graph" id="runStatsInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="runStatsFullscreen"></a>
-                    <a class="mb-2 close-graph" id="runStatsClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="runStatsCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Stats</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 stats-graph" title="Stats" id="runStatsGraphStats"></a>
+                            <a class="mx-1 information-graph" id="runStatsInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="runStatsFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="runStatsClose" hidden></a>
+                        </div>
+                    </div>
                     <div class="w-100 h-100">
-                        <div class="d-flex flex-column justify-content-between h-75 mt-5">
+                        <div class="d-flex flex-column justify-content-between h-75">
                             <div class="row text-center mb-4">
                                 <div class="col">
                                     <div class="stat-label">Executed Runs</div>
@@ -1240,12 +1325,17 @@
                 information: `This graph visualizes the duration of each run:
 - Bar: Displays total run durations represented as vertical bars.
 - Line: Displays the same data but over a time axis for clearer trend analysis.`,
-                html: `<div class="col canvas pb-5" id="runDurationCanvas">
-                    <a class="mb-2 bar-graph" id="runDurationGraphBar"></a>
-                    <a class="mb-2 line-graph" id="runDurationGraphLine"></a>
-                    <a class="mb-2 information-graph" id="runDurationInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="runDurationFullscreen"></a>
-                    <a class="mb-2 close-graph" id="runDurationClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="runDurationCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Duration</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="runDurationGraphBar"></a>
+                            <a class="mx-1 line-graph" title="Line Graph" id="runDurationGraphLine"></a>
+                            <a class="mx-1 information-graph" id="runDurationInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="runDurationFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="runDurationClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="runDurationGraph"></canvas>
                 </div>`,
             },
@@ -1261,55 +1351,60 @@
 - Failed: Displays the same data but only failed tests.
 - Skipped: Displays the same data but only skipped tests.
 - Hour: Displays only that hour so you get insights per minute.`,
-                html: `<div class="col canvas pb-5" id="runHeatmapCanvas">
-                    <div class="btn-group">
-                        <label class="form-check-label" for="heatMapTestType">Status</label>
+                html: `<div class="col canvas pb-4" id="runHeatmapCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Heatmap</h6>
+                        <div class="d-flex">
+                            <div class="mx-1 btn-group">
+                                <label class="form-check-label" for="heatMapTestType">Status</label>
+                            </div>
+                            <div class="mx-1 btn-group">
+                                <select class="form-select form-select-sm" id="heatMapTestType">
+                                    <option value="All">All</option>
+                                    <option value="Passed">Passed</option>
+                                    <option value="Failed">Failed</option>
+                                    <option value="Skipped">Skipped</option>
+                                </select>
+                            </div>
+                            <div class="mx-1 btn-group">
+                                <label class="form-check-label" for="heatMapHour">Hour</label>
+                            </div>
+                            <div class="mx-1 btn-group">
+                                <select class="form-select form-select-sm" id="heatMapHour">
+                                    <option value="All">All</option>
+                                    <option value="0">00:00</option>
+                                    <option value="1">01:00</option>
+                                    <option value="2">02:00</option>
+                                    <option value="3">03:00</option>
+                                    <option value="4">04:00</option>
+                                    <option value="5">05:00</option>
+                                    <option value="6">06:00</option>
+                                    <option value="7">07:00</option>
+                                    <option value="8">08:00</option>
+                                    <option value="9">09:00</option>
+                                    <option value="10">10:00</option>
+                                    <option value="11">11:00</option>
+                                    <option value="12">12:00</option>
+                                    <option value="13">13:00</option>
+                                    <option value="14">14:00</option>
+                                    <option value="15">15:00</option>
+                                    <option value="16">16:00</option>
+                                    <option value="17">17:00</option>
+                                    <option value="18">18:00</option>
+                                    <option value="19">19:00</option>
+                                    <option value="20">20:00</option>
+                                    <option value="21">21:00</option>
+                                    <option value="22">22:00</option>
+                                    <option value="23">23:00</option>
+                                </select>
+                            </div>
+                            <a class="mx-1 heatmap-graph" title="Heatmap Graph" id="runHeatmapGraphHeatmap"></a>
+                            <a class="mx-1 information-graph" id="runHeatmapInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="runHeatmapFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="runHeatmapClose" hidden></a>
+                        </div>
                     </div>
-                    <div class="btn-group">
-                        <select class="form-select form-select-sm" id="heatMapTestType">
-                            <option value="All">All</option>
-                            <option value="Passed">Passed</option>
-                            <option value="Failed">Failed</option>
-                            <option value="Skipped">Skipped</option>
-                        </select>
-                    </div>
-                    <div class="btn-group">
-                        <label class="form-check-label" for="heatMapHour">Hour</label>
-                    </div>
-                    <div class="btn-group">
-                        <select class="form-select form-select-sm" id="heatMapHour">
-                            <option value="All">All</option>
-                            <option value="0">00:00</option>
-                            <option value="1">01:00</option>
-                            <option value="2">02:00</option>
-                            <option value="3">03:00</option>
-                            <option value="4">04:00</option>
-                            <option value="5">05:00</option>
-                            <option value="6">06:00</option>
-                            <option value="7">07:00</option>
-                            <option value="8">08:00</option>
-                            <option value="9">09:00</option>
-                            <option value="10">10:00</option>
-                            <option value="11">11:00</option>
-                            <option value="12">12:00</option>
-                            <option value="13">13:00</option>
-                            <option value="14">14:00</option>
-                            <option value="15">15:00</option>
-                            <option value="16">16:00</option>
-                            <option value="17">17:00</option>
-                            <option value="18">18:00</option>
-                            <option value="19">19:00</option>
-                            <option value="20">20:00</option>
-                            <option value="21">21:00</option>
-                            <option value="22">22:00</option>
-                            <option value="23">23:00</option>
-                        </select>
-                    </div>
-                    <a class="mb-2 heatmap-graph" id="runHeatmapGraphHeatmap"></a>
-                    <a class="mb-2 information-graph" id="runHeatmapInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="runHeatmapFullscreen"></a>
-                    <a class="mb-2 close-graph" id="runHeatmapClose" hidden></a>
-                    <canvas id="runHeatmapGraph"></canvas>
+                    <canvas class="pb-2" id="runHeatmapGraph"></canvas>
                 </div>`,
             },
             {
@@ -1335,20 +1430,25 @@
 - Clicking on a folder updates the chart with the subfolders/suites it contains.
 - Navigating folders also updates Suite Statistics and Suite Duration.
 - "Go Up" navigates to the parent folder level.
-- "Only Failed Folders" filters to show only folders with failing tests.`,
-                html: `<div class="col canvas pb-5" id="suiteFolderDonutCanvas">
-                    <div class="btn-group">
-                        <label class="form-check-label" for="onlyFailedFolders">Only Failed Folders</label>
+- "Only Failed" filters to show only folders with failing tests.`,
+                html: `<div class="col canvas pb-4" id="suiteFolderDonutCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Folders</h6>
+                        <div class="d-flex">
+                            <div class="mx-1 btn-group">
+                                <label class="form-check-label" for="onlyFailedFolders">Only Failed</label>
+                            </div>
+                            <div class="mx-1 btn-group form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="onlyFailedFolders">
+                            </div>
+                            <button class="mx-1 btn btn-outline-light btn-sm" id="suiteFolderDonutGoUp">Go Up</button>
+                            <a class="mx-1 pie-graph" title="Pie Graph" id="suiteFolderDonutGraphDonut"></a>
+                            <a class="mx-1 information-graph" id="suiteFolderDonutInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="suiteFolderDonutFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="suiteFolderDonutClose" hidden></a>
+                        </div>
                     </div>
-                    <div class="btn-group form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="onlyFailedFolders">
-                    </div>
-                    <button class="btn btn-outline-light btn-sm mt-1" id="suiteFolderDonutGoUp">Go Up</button>
-                    <a class="mb-2 pie-graph" id="suiteFolderDonutGraphDonut"></a>
-                    <a class="mb-2 information-graph" id="suiteFolderDonutInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="suiteFolderDonutFullscreen"></a>
-                    <a class="mb-2 close-graph" id="suiteFolderDonutClose" hidden></a>
-                    <div class="row donut-charts w-100 h-100">
+                    <div class="row donut-charts w-100 h-100 pb-1">
                         <div class="col-md-6 w-50 h-100">
                             <canvas id="suiteFolderDonutGraph" class="w-100 h-100"></canvas>
                         </div>
@@ -1376,13 +1476,18 @@
 - Percentages: Displays the passed/failed/skipped rate of test suites per run.
 - Amount: Displays the actual number of passed/failed/skipped suites per run.
 - Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times.`,
-                html: `<div class="col canvas pb-5" id="suiteStatisticsCanvas">
-                    <a class="mb-2 percentage-graph" id="suiteStatisticsGraphPercentages"></a>
-                    <a class="mb-2 bar-graph" id="suiteStatisticsGraphAmount"></a>
-                    <a class="mb-2 line-graph" id="suiteStatisticsGraphLine"></a>
-                    <a class="mb-2 information-graph" id="suiteStatisticsInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="suiteStatisticsFullscreen"></a>
-                    <a class="mb-2 close-graph" id="suiteStatisticsClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="suiteStatisticsCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Statistics</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 percentage-graph" title="Percentage Graph" id="suiteStatisticsGraphPercentages"></a>
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="suiteStatisticsGraphAmount"></a>
+                            <a class="mx-1 line-graph" title="Line Graph" id="suiteStatisticsGraphLine"></a>
+                            <a class="mx-1 information-graph" id="suiteStatisticsInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="suiteStatisticsFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="suiteStatisticsClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="suiteStatisticsGraph"></canvas>
                 </div>`,
             },
@@ -1395,12 +1500,17 @@
                 information: `This graph visualizes the duration of each suite:
 - Bar: Displays total suite durations represented as vertical bars.
 - Line: Displays the same data but over a time axis for clearer trend analysis.`,
-                html: `<div class="col canvas pb-5" id="suiteDurationCanvas">
-                    <a class="mb-2 bar-graph" id="suiteDurationGraphBar"></a>
-                    <a class="mb-2 line-graph" id="suiteDurationGraphLine"></a>
-                    <a class="mb-2 information-graph" id="suiteDurationInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="suiteDurationFullscreen"></a>
-                    <a class="mb-2 close-graph" id="suiteDurationClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="suiteDurationCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Duration</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="suiteDurationGraphBar"></a>
+                            <a class="mx-1 line-graph" title="Line Graph" id="suiteDurationGraphLine"></a>
+                            <a class="mx-1 information-graph" id="suiteDurationInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="suiteDurationFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="suiteDurationClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="suiteDurationGraph"></canvas>
                 </div>`,
             },
@@ -1414,13 +1524,18 @@
 - Bar: Displays suites ranked by number of failures represented as vertical bars.
 - Timeline: Displays when failures occurred to identify clustering over time.
 - The default view shows the Top 10 most failed suites; fullscreen expands this to the Top 50.`,
-                html: `<div class="col canvas pb-5" id="suiteMostFailedCanvas">
+                html: `<div class="col canvas pb-4" id="suiteMostFailedCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Most Failed</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="suiteMostFailedGraphBar"></a>
+                            <a class="mx-1 timeline-graph" title="Timeline Graph" id="suiteMostFailedGraphTimeline"></a>
+                            <a class="mx-1 information-graph" id="suiteMostFailedInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="suiteMostFailedFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="suiteMostFailedClose" hidden></a>
+                        </div>
+                    </div>
                     <div id="suiteMostFailedVertical">
-                        <a class="mb-2 bar-graph" id="suiteMostFailedGraphBar"></a>
-                        <a class="mb-2 timeline-graph" id="suiteMostFailedGraphTimeline"></a>
-                        <a class="mb-2 information-graph" id="suiteMostFailedInformation"></a>
-                        <a class="mb-2 fullscreen-graph" id="suiteMostFailedFullscreen"></a>
-                        <a class="mb-2 close-graph" id="suiteMostFailedClose" hidden></a>
                         <canvas id="suiteMostFailedGraph"></canvas>
                     </div>
                 </div>`,
@@ -1443,18 +1558,23 @@
                 viewOptions: ["Timeline"],
                 hasFullscreenButton: true,
                 information: `This graph displays the statistics of the tests in a timeline format.`,
-                html: `<div class="col canvas canvas-vertical" id="testStatisticsCanvas">
-                    <div id="testStatisticsVertical">
-                        <div class="btn-group">
+                html: `<div class="col canvas pb-4 canvas-vertical" id="testStatisticsCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                    <h6>Statistics</h6>
+                    <div class="d-flex">
+                        <div class="mx-1 btn-group">
                             <label class="form-check-label" for="testOnlyChanges">Only Changes</label>
                         </div>
-                        <div class="btn-group form-switch">
+                        <div class="mx-1 btn-group form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="testOnlyChanges">
                         </div>
-                        <a class="mb-2 timeline-graph" id="testStatisticsGraphTimeline"></a>
-                        <a class="mb-2 information-graph" id="testStatisticsInformation"></a>
-                        <a class="mb-2 fullscreen-graph" id="testStatisticsFullscreen"></a>
-                        <a class="mb-2 close-graph" id="testStatisticsClose" hidden></a>
+                        <a class="mx-1 timeline-graph" title="Timeline Graph" id="testStatisticsGraphTimeline"></a>
+                        <a class="mx-1 information-graph" id="testStatisticsInformation"></a>
+                        <a class="mx-1 fullscreen-graph" title="Fullscreen" id="testStatisticsFullscreen"></a>
+                        <a class="mx-1 close-graph" title="Close" id="testStatisticsClose" hidden></a>
+                    </div>
+                    </div>
+                    <div id="testStatisticsVertical">
                         <canvas id="testStatisticsGraph"></canvas>
                     </div>
                 </div>`,
@@ -1468,12 +1588,17 @@
                 information: `This graph tracks how long individual tests take to run:
 - Bar: Displays test durations represented as vertical bars.
 - Line: Displays the same data but over a time axis for clearer trend analysis.`,
-                html: `<div class="col canvas pb-5" id="testDurationCanvas">
-                    <a class="mb-2 bar-graph" id="testDurationGraphBar"></a>
-                    <a class="mb-2 line-graph" id="testDurationGraphLine"></a>
-                    <a class="mb-2 information-graph" id="testDurationInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="testDurationFullscreen"></a>
-                    <a class="mb-2 close-graph" id="testDurationClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="testDurationCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Duration</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="testDurationGraphBar"></a>
+                            <a class="mx-1 line-graph" title="Line Graph" id="testDurationGraphLine"></a>
+                            <a class="mx-1 information-graph" id="testDurationInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="testDurationFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="testDurationClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="testDurationGraph"></canvas>
                 </div>`,
             },
@@ -1485,11 +1610,16 @@
                 hasFullscreenButton: true,
                 information: `This boxplot chart displays how much test durations deviate from the average, represented as vertical bars.
 It helps identify tests with inconsistent execution times, which might be flaky or worth investigating`,
-                html: `<div class="col canvas pb-5" id="testDurationDeviationCanvas">
-                    <a class="mb-2 boxplot-graph" id="testDurationDeviationGraphBar"></a>
-                    <a class="mb-2 information-graph" id="testDurationDeviationInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="testDurationDeviationFullscreen"></a>
-                    <a class="mb-2 close-graph" id="testDurationDeviationClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="testDurationDeviationCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Duration Deviation</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 boxplot-graph" title="Boxplot Graph" id="testDurationDeviationGraphBar"></a>
+                            <a class="mx-1 information-graph" id="testDurationDeviationInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="testDurationDeviationFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="testDurationDeviationClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="testDurationDeviationGraph"></canvas>
                 </div>`,
             },
@@ -1504,13 +1634,18 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - Timeline: Displays when those messages occurred to reveal noisy periods or problem spikes.
 - The regular view shows the Top 10 most frequent messages; fullscreen mode expands this to the Top 50.
 - To generalize messages (e.g., group similar messages), use the -m/--messageconfig option in the CLI (--help or README).`,
-                html: `<div class="col canvas pb-5" id="testMessagesCanvas">
+                html: `<div class="col canvas pb-4" id="testMessagesCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Messages</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="testMessagesGraphBar"></a>
+                            <a class="mx-1 timeline-graph" title="Timeline Graph" id="testMessagesGraphTimeline"></a>
+                            <a class="mx-1 information-graph" id="testMessagesInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="testMessagesFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="testMessagesClose" hidden></a>
+                        </div>
+                    </div>
                     <div id="testMessagesVertical">
-                        <a class="mb-2 bar-graph" id="testMessagesGraphBar"></a>
-                        <a class="mb-2 timeline-graph" id="testMessagesGraphTimeline"></a>
-                        <a class="mb-2 information-graph" id="testMessagesInformation"></a>
-                        <a class="mb-2 fullscreen-graph" id="testMessagesFullscreen"></a>
-                        <a class="mb-2 close-graph" id="testMessagesClose" hidden></a>
                         <canvas id="testMessagesGraph"></canvas>
                     </div>
                 </div>`,
@@ -1526,19 +1661,24 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - Timeline: Displays when the status changes occurred across runs.
 - The regular view shows the Top 10 flaky tests; fullscreen mode expands the list to the Top 50.
 - "Ignore Skips" filters to only count passed/failed as status flips and not skips.`,
-                html: `<div class="col canvas pb-5" id="testMostFlakyCanvas">
+                html: `<div class="col canvas pb-4" id="testMostFlakyCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Most Flaky</h6>
+                        <div class="d-flex">
+                            <div class="mx-1 btn-group">
+                                <label class="form-check-label" for="ignoreSkips">Ignore Skips</label>
+                            </div>
+                            <div class="mx-1 btn-group form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="ignoreSkips">
+                            </div>
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="testMostFlakyGraphBar"></a>
+                            <a class="mx-1 timeline-graph" title="Timeline Graph" id="testMostFlakyGraphTimeline"></a>
+                            <a class="mx-1 information-graph" id="testMostFlakyInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="testMostFlakyFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="testMostFlakyClose" hidden></a>
+                        </div>
+                    </div>
                     <div id="testMostFlakyVertical">
-                        <div class="btn-group">
-                            <label class="form-check-label" for="ignoreSkips">Ignore Skips</label>
-                        </div>
-                        <div class="btn-group form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" id="ignoreSkips">
-                        </div>
-                        <a class="mb-2 bar-graph" id="testMostFlakyGraphBar"></a>
-                        <a class="mb-2 timeline-graph" id="testMostFlakyGraphTimeline"></a>
-                        <a class="mb-2 information-graph" id="testMostFlakyInformation"></a>
-                        <a class="mb-2 fullscreen-graph" id="testMostFlakyFullscreen"></a>
-                        <a class="mb-2 close-graph" id="testMostFlakyClose" hidden></a>
                         <canvas id="testMostFlakyGraph"></canvas>
                     </div>
                 </div>`,
@@ -1555,19 +1695,24 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - The most recent flaky tests are listed first.
 - The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.
 - "Ignore Skips" filters to only count passed/failed as status flips and not skips.`,
-                html: `<div class="col canvas pb-5" id="testRecentMostFlakyCanvas">
+                html: `<div class="col canvas pb-4" id="testRecentMostFlakyCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Recent Most Flaky</h6>
+                        <div class="d-flex">
+                            <div class="mx-1 btn-group">
+                                <label class="form-check-label" for="ignoreSkipsRecent">Ignore Skips</label>
+                            </div>
+                            <div class="mx-1 btn-group form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="ignoreSkipsRecent">
+                            </div>
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="testRecentMostFlakyGraphBar"></a>
+                            <a class="mx-1 timeline-graph" title="Timeline Graph" id="testRecentMostFlakyGraphTimeline"></a>
+                            <a class="mx-1 information-graph" id="testRecentMostFlakyInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="testRecentMostFlakyFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="testRecentMostFlakyClose" hidden></a>
+                        </div>
+                    </div>
                     <div id="testRecentMostFlakyVertical">
-                        <div class="btn-group">
-                            <label class="form-check-label" for="ignoreSkipsRecent">Ignore Skips</label>
-                        </div>
-                        <div class="btn-group form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" id="ignoreSkipsRecent">
-                        </div>
-                        <a class="mb-2 bar-graph" id="testRecentMostFlakyGraphBar"></a>
-                        <a class="mb-2 timeline-graph" id="testRecentMostFlakyGraphTimeline"></a>
-                        <a class="mb-2 information-graph" id="testRecentMostFlakyInformation"></a>
-                        <a class="mb-2 fullscreen-graph" id="testRecentMostFlakyFullscreen"></a>
-                        <a class="mb-2 close-graph" id="testRecentMostFlakyClose" hidden></a>
                         <canvas id="testRecentMostFlakyGraph"></canvas>
                     </div>
                 </div>`,
@@ -1582,13 +1727,18 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - Bar: Displays tests ranked by total number of failures represented as vertical bars.
 - Timeline: Displays when failures occurred across runs.
 - The regular view shows the Top 10 most failed tests; fullscreen mode expands the list to the Top 50.`,
-                html: `<div class="col canvas pb-5" id="testMostFailedCanvas">
+                html: `<div class="col canvas pb-4" id="testMostFailedCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Most Failed</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="testMostFailedGraphBar"></a>
+                            <a class="mx-1 timeline-graph" title="Timeline Graph" id="testMostFailedGraphTimeline"></a>
+                            <a class="mx-1 information-graph" id="testMostFailedInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="testMostFailedFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="testMostFailedClose" hidden></a>
+                        </div>
+                    </div>
                     <div id="testMostFailedVertical">
-                        <a class="mb-2 bar-graph" id="testMostFailedGraphBar"></a>
-                        <a class="mb-2 timeline-graph" id="testMostFailedGraphTimeline"></a>
-                        <a class="mb-2 information-graph" id="testMostFailedInformation"></a>
-                        <a class="mb-2 fullscreen-graph" id="testMostFailedFullscreen"></a>
-                        <a class="mb-2 close-graph" id="testMostFailedClose" hidden></a>
                         <canvas id="testMostFailedGraph"></canvas>
                     </div>
                 </div>`,
@@ -1604,13 +1754,18 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - Timeline: Displays when failures occurred across runs.
 - The most recently failed tests are listed first.
 - The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.`,
-                html: `<div class="col canvas pb-5" id="testRecentMostFailedCanvas">
+                html: `<div class="col canvas pb-4" id="testRecentMostFailedCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Recent Most Failed</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="testRecentMostFailedGraphBar"></a>
+                            <a class="mx-1 timeline-graph" title="Timeline Graph" id="testRecentMostFailedGraphTimeline"></a>
+                            <a class="mx-1 information-graph" id="testRecentMostFailedInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="testRecentMostFailedFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="testRecentMostFailedClose" hidden></a>
+                        </div>
+                    </div>
                     <div id="testRecentMostFailedVertical">
-                        <a class="mb-2 bar-graph" id="testRecentMostFailedGraphBar"></a>
-                        <a class="mb-2 timeline-graph" id="testRecentMostFailedGraphTimeline"></a>
-                        <a class="mb-2 information-graph" id="testRecentMostFailedInformation"></a>
-                        <a class="mb-2 fullscreen-graph" id="testRecentMostFailedFullscreen"></a>
-                        <a class="mb-2 close-graph" id="testRecentMostFailedClose" hidden></a>
                         <canvas id="testRecentMostFailedGraph"></canvas>
                     </div>
                 </div>`,
@@ -1636,13 +1791,18 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - Percentages: Displays the distribution of passed/failed/skipped statuses for each keyword per run.
 - Amount: Displays raw counts of each status per run.
 - Line: Displays the same data but over a time axis.`,
-                html: `<div class="col canvas pb-5" id="keywordStatisticsCanvas">
-                    <a class="mb-2 percentage-graph" id="keywordStatisticsGraphPercentages"></a>
-                    <a class="mb-2 bar-graph" id="keywordStatisticsGraphAmount"></a>
-                    <a class="mb-2 line-graph" id="keywordStatisticsGraphLine"></a>
-                    <a class="mb-2 information-graph" id="keywordStatisticsInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="keywordStatisticsFullscreen"></a>
-                    <a class="mb-2 close-graph" id="keywordStatisticsClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="keywordStatisticsCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Statistics</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 percentage-graph" title="Percentage Graph" id="keywordStatisticsGraphPercentages"></a>
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="keywordStatisticsGraphAmount"></a>
+                            <a class="mx-1 line-graph" title="Line Graph" id="keywordStatisticsGraphLine"></a>
+                            <a class="mx-1 information-graph" id="keywordStatisticsInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="keywordStatisticsFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="keywordStatisticsClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="keywordStatisticsGraph"></canvas>
                 </div>`,
             },
@@ -1655,12 +1815,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 information: `This graph shows how frequently each keyword was executed:
 - Bar: Displays times run per keyword represented as vertical bars.
 - Line: Displays the same data but over a time axis.`,
-                html: `<div class="col canvas pb-5" id="keywordTimesRunCanvas">
-                    <a class="mb-2 bar-graph" id="keywordTimesRunGraphBar"></a>
-                    <a class="mb-2 line-graph" id="keywordTimesRunGraphLine"></a>
-                    <a class="mb-2 information-graph" id="keywordTimesRunInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="keywordTimesRunFullscreen"></a>
-                    <a class="mb-2 close-graph" id="keywordTimesRunClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="keywordTimesRunCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Times Run</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="keywordTimesRunGraphBar"></a>
+                            <a class="mx-1 line-graph" title="Line Graph" id="keywordTimesRunGraphLine"></a>
+                            <a class="mx-1 information-graph" id="keywordTimesRunInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="keywordTimesRunFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="keywordTimesRunClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="keywordTimesRunGraph"></canvas>
                 </div>`,
             },
@@ -1673,12 +1838,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 information: `This graph visualizes total execution time of keywords:
 - Bar: Displays the cumulative time each keyword ran during each run represented as vertical bars.
 - Line: Displays the same data but over a time axis.`,
-                html: `<div class="col canvas pb-5" id="keywordTotalDurationCanvas">
-                    <a class="mb-2 bar-graph" id="keywordTotalDurationGraphBar"></a>
-                    <a class="mb-2 line-graph" id="keywordTotalDurationGraphLine"></a>
-                    <a class="mb-2 information-graph" id="keywordTotalDurationInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="keywordTotalDurationFullscreen"></a>
-                    <a class="mb-2 close-graph" id="keywordTotalDurationClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="keywordTotalDurationCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Total Duration</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="keywordTotalDurationGraphBar"></a>
+                            <a class="mx-1 line-graph" title="Line Graph" id="keywordTotalDurationGraphLine"></a>
+                            <a class="mx-1 information-graph" id="keywordTotalDurationInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="keywordTotalDurationFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="keywordTotalDurationClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="keywordTotalDurationGraph"></canvas>
                 </div>`,
             },
@@ -1691,12 +1861,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 information: `This graph shows the average execution time per keyword:
 - Bar: Displays the average duration for each keyword represented as vertical bars.
 - Line: Displays the same data but over a time axis.`,
-                html: `<div class="col canvas pb-5" id="keywordAverageDurationGraphBar">
-                    <a class="mb-2 bar-graph" id="keywordTotalDurationGraphBar"></a>
-                    <a class="mb-2 line-graph" id="keywordAverageDurationGraphLine"></a>
-                    <a class="mb-2 information-graph" id="keywordAverageDurationInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="keywordAverageDurationFullscreen"></a>
-                    <a class="mb-2 close-graph" id="keywordAverageDurationClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="keywordAverageDurationGraphBar">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Average Duration</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="keywordTotalDurationGraphBar"></a>
+                            <a class="mx-1 line-graph" title="Line Graph" id="keywordAverageDurationGraphLine"></a>
+                            <a class="mx-1 information-graph" id="keywordAverageDurationInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="keywordAverageDurationFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="keywordAverageDurationClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="keywordAverageDurationGraph"></canvas>
                 </div>`,
             },
@@ -1709,12 +1884,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 information: `This graph shows the fastest observed execution time for each keyword per run:
 - Bar: Displays minimum durations represented as vertical bars.
 - Line: Displays the same data but over a time axis.`,
-                html: `<div class="col canvas pb-5" id="keywordMinDurationCanvas">
-                    <a class="mb-2 bar-graph" id="keywordMinDurationGraphBar"></a>
-                    <a class="mb-2 line-graph" id="keywordMinDurationGraphLine"></a>
-                    <a class="mb-2 information-graph" id="keywordMinDurationInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="keywordMinDurationFullscreen"></a>
-                    <a class="mb-2 close-graph" id="keywordMinDurationClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="keywordMinDurationCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Min Duration</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="keywordMinDurationGraphBar"></a>
+                            <a class="mx-1 line-graph" title="Line Graph" id="keywordMinDurationGraphLine"></a>
+                            <a class="mx-1 information-graph" id="keywordMinDurationInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="keywordMinDurationFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="keywordMinDurationClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="keywordMinDurationGraph"></canvas>
                 </div>`,
             },
@@ -1727,12 +1907,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 information: `This graph shows the slowest observed execution time for each keyword per run:
 - Bar: Displays maximum durations represented as vertical bars.
 - Line: Displays the same data but over a time axis.`,
-                html: `<div class="col canvas pb-5" id="keywordMaxDurationCanvas">
-                    <a class="mb-2 bar-graph" id="keywordMaxDurationGraphBar"></a>
-                    <a class="mb-2 line-graph" id="keywordMaxDurationGraphLine"></a>
-                    <a class="mb-2 information-graph" id="keywordMaxDurationInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="keywordMaxDurationFullscreen"></a>
-                    <a class="mb-2 close-graph" id="keywordMaxDurationClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="keywordMaxDurationCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Max Duration</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="keywordMaxDurationGraphBar"></a>
+                            <a class="mx-1 line-graph" title="Line Graph" id="keywordMaxDurationGraphLine"></a>
+                            <a class="mx-1 information-graph" id="keywordMaxDurationInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="keywordMaxDurationFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="keywordMaxDurationClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="keywordMaxDurationGraph"></canvas>
                 </div>`,
             },
@@ -1746,13 +1931,18 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - Bar: Displays keywords ranked by total number of failures represented as vertical bars.
 - Timeline: Displays when failures occurred across runs.
 - The regular view shows the Top 10 most failed keywords; fullscreen mode expands the list to the Top 50.`,
-                html: `<div class="col canvas pb-5" id="keywordMostFailedCanvas">
+                html: `<div class="col canvas pb-4" id="keywordMostFailedCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Most Failed</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="keywordMostFailedGraphBar"></a>
+                            <a class="mx-1 timeline-graph" title="Timeline Graph" id="keywordMostFailedGraphTimeline"></a>
+                            <a class="mx-1 information-graph" id="keywordMostFailedInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="keywordMostFailedFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="keywordMostFailedClose" hidden></a>
+                        </div>
+                    </div>
                     <div id="keywordMostFailedVertical">
-                        <a class="mb-2 bar-graph" id="keywordMostFailedGraphBar"></a>
-                        <a class="mb-2 timeline-graph" id="keywordMostFailedGraphTimeline"></a>
-                        <a class="mb-2 information-graph" id="keywordMostFailedInformation"></a>
-                        <a class="mb-2 fullscreen-graph" id="keywordMostFailedFullscreen"></a>
-                        <a class="mb-2 close-graph" id="keywordMostFailedClose" hidden></a>
                         <canvas id="keywordMostFailedGraph"></canvas>
                     </div>
                 </div>`,
@@ -1775,11 +1965,16 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 viewOptions: ["Bar"],
                 hasFullscreenButton: true,
                 information: `This graph displays the overall statistics of the selected runs.`,
-                html: `<div class="col canvas pb-5" id="compareStatisticsCanvas">
-                    <a class="mb-2 bar-graph" id="compareStatisticsGraphBar"></a>
-                    <a class="mb-2 information-graph" id="compareStatisticsInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="compareStatisticsFullscreen"></a>
-                    <a class="mb-2 close-graph" id="compareStatisticsClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="compareStatisticsCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Statistics</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 bar-graph" title="Bar Graph" id="compareStatisticsGraphBar"></a>
+                            <a class="mx-1 information-graph" id="compareStatisticsInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="compareStatisticsFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="compareStatisticsClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="compareStatisticsGraph"></canvas>
                 </div>`,
             },
@@ -1790,11 +1985,16 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 viewOptions: ["Radar"],
                 hasFullscreenButton: true,
                 information: `This graph displays the duration per suite in a radar format.`,
-                html: `<div class="col canvas pb-5" id="compareSuiteDurationCanvas">
-                    <a class="mb-2 radar-graph" id="compareSuiteDurationGraphRadar"></a>
-                    <a class="mb-2 information-graph" id="compareSuiteDurationInformation"></a>
-                    <a class="mb-2 fullscreen-graph" id="compareSuiteDurationFullscreen"></a>
-                    <a class="mb-2 close-graph" id="compareSuiteDurationClose" hidden></a>
+                html: `<div class="col canvas pb-4" id="compareSuiteDurationCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Suite Duration</h6>
+                        <div class="d-flex">
+                            <a class="mx-1 radar-graph" title="Radar Graph" id="compareSuiteDurationGraphRadar"></a>
+                            <a class="mx-1 information-graph" id="compareSuiteDurationInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="compareSuiteDurationFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="compareSuiteDurationClose" hidden></a>
+                        </div>
+                    </div>
                     <canvas id="compareSuiteDurationGraph"></canvas>
                 </div>`,
             },
@@ -1805,18 +2005,23 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 viewOptions: ["Timeline"],
                 hasFullscreenButton: true,
                 information: `This graph displays the statistics of the tests in a timeline format.`,
-                html: `<div class="col canvas canvas-vertical" id="compareTestsCanvas">
+                html: `<div class="col canvas pb-4 canvas-vertical" id="compareTestsCanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>Tests</h6>
+                        <div class="d-flex">
+                            <div class="mx-1 btn-group">
+                                <label class="form-check-label" for="compareOnlyChanges">Only Changes</label>
+                            </div>
+                            <div class="mx-1 btn-group form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="compareOnlyChanges">
+                            </div>
+                            <a class="mx-1 timeline-graph" title="Timeline Graph" id="compareTestsGraphTimeline"></a>
+                            <a class="mx-1 information-graph" id="compareTestsInformation"></a>
+                            <a class="mx-1 fullscreen-graph" title="Fullscreen" id="compareTestsFullscreen"></a>
+                            <a class="mx-1 close-graph" title="Close" id="compareTestsClose" hidden></a>
+                        </div>
+                    </div>
                     <div id="compareTestsVertical">
-                        <div class="btn-group">
-                            <label class="form-check-label" for="compareOnlyChanges">Only Changes</label>
-                        </div>
-                        <div class="btn-group form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" id="compareOnlyChanges">
-                        </div>
-                        <a class="mb-2 timeline-graph" id="compareTestsGraphTimeline"></a>
-                        <a class="mb-2 information-graph" id="compareTestsInformation"></a>
-                        <a class="mb-2 fullscreen-graph" id="compareTestsFullscreen"></a>
-                        <a class="mb-2 close-graph" id="compareTestsClose" hidden></a>
                         <canvas id="compareTestsGraph"></canvas>
                     </div>
                 </div>`,
@@ -2685,7 +2890,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             menuOverview = item === 'menuOverview';
             menuDashboard = item === 'menuDashboard';
             menuCompare = item === 'menuCompare';
-            ['menuOverview', 'menuDashboard', 'menuCompare'].forEach(id => {
+            menuTables = item === 'menuTables';
+            ['menuOverview', 'menuDashboard', 'menuCompare', 'menuTables'].forEach(id => {
                 document.getElementById(id).classList.toggle('active', id === item);
             });
             setup_data_and_graphs(true);
@@ -2696,6 +2902,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById('menuOverview').addEventListener('click', () => update_menu('menuOverview'))
             document.getElementById('menuDashboard').addEventListener('click', () => update_menu('menuDashboard'))
             document.getElementById('menuCompare').addEventListener('click', () => update_menu('menuCompare'))
+            document.getElementById('menuTables').addEventListener('click', () => update_menu('menuTables'))
 
             update_menu(localStorage.getItem('menu') || 'menuDashboard');
         }
@@ -3431,11 +3638,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const graphData = data[0]
             var config;
             if (runStatisticsGraphType == "line") {
-                config = get_graph_config("line", graphData, "Amount Of Tests", "Date", "Amount", false);
+                config = get_graph_config("line", graphData, "", "Date", "Amount", false);
             } else if (runStatisticsGraphType == "amount") {
-                config = get_graph_config("bar", graphData, "Run Statistics", "Run", "Amount Of Tests");
+                config = get_graph_config("bar", graphData, "", "Run", "Amount Of Tests");
             } else if (runStatisticsGraphType == "percentages") {
-                config = get_graph_config("bar", graphData, "Run Statistics", "Run", "Percentage");
+                config = get_graph_config("bar", graphData, "", "Run", "Percentage");
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             runStatisticsGraph = new Chart("runStatisticsGraph", config);
@@ -3452,7 +3659,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const data = get_donut_graph_data("run", filteredRuns);
             const graphData = data[0]
             const callbackData = data[1]
-            var config = get_graph_config("donut", graphData, `Last Run Status: ${callbackData}`);
+            var config = get_graph_config("donut", graphData, `Last Run Status`);
             config.options.onClick = (event, chartElement) => {
                 if (chartElement.length) {
                     open_log_file(event, chartElement, callbackData)
@@ -3500,9 +3707,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             if (runDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Run Duration Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (runDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Run Duration", "Date", "Duration");
+                config = get_graph_config("line", graphData, "", "Date", "Duration");
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             runDurationGraph = new Chart("runDurationGraph", config);
@@ -3519,7 +3726,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const data = get_heatmap_graph_data(filteredTests);
             const graphData = data[0]
             const callbackData = data[1]
-            var config = get_graph_config("heatmap", graphData, `Heatmap Graph`, "Hour", "Day");
+            var config = get_graph_config("heatmap", graphData, "", "Hour", "Day");
             delete config.options.onClick;
             config.options.plugins.tooltip = {
                 callbacks: {
@@ -3603,7 +3810,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const graphData = data[0]
             const callbackData = data[1]
             const labels = graphData.labels
-            var config = get_graph_config("donut", graphData, `All Folder Statistics`);
+            var config = get_graph_config("donut", graphData, "All Folders");
             config.options.plugins.tooltip.callbacks = {
                 label: function (context) {
                     const label = labels[context.dataIndex]
@@ -3642,7 +3849,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     backgroundColor: ["grey"],
                 }]
             }
-            var config = get_graph_config("donut", graphData, `Last Run Failed Folders`);
+            var config = get_graph_config("donut", graphData, "Last Run");
             config.options.plugins.tooltip.callbacks = {
                 label: function (context) {
                     if (context.label == "No Failed Folders In Last Run") { return null }
@@ -3687,7 +3894,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const callbackData = data[1]
             var config;
             if (suiteStatisticsGraphType == "line") {
-                config = get_graph_config("line", graphData, "Amount Of Tests", "Date", "amount", false);
+                config = get_graph_config("line", graphData, "", "Date", "amount", false);
                 config.options.plugins.tooltip = {
                     callbacks: {
                         title: function (tooltipItem) {
@@ -3696,7 +3903,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     }
                 }
             } else if (suiteStatisticsGraphType == "amount") {
-                config = get_graph_config("bar", graphData, "Suite Statistics", "Run", "Amount Of Tests");
+                config = get_graph_config("bar", graphData, "", "Run", "Amount Of Tests");
                 const filter = config.options.plugins.tooltip.filter
                 config.options.plugins.tooltip = {
                     filter,
@@ -3707,7 +3914,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     }
                 }
             } else if (suiteStatisticsGraphType == "percentages") {
-                config = get_graph_config("bar", graphData, "Suite Statistics", "Run", "Percentage");
+                config = get_graph_config("bar", graphData, "", "Run", "Percentage");
                 const filter = config.options.plugins.tooltip.filter
                 config.options.plugins.tooltip = {
                     filter,
@@ -3734,9 +3941,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             if (suiteDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Suite Duration Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (suiteDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Suite Duration", "Date", "Duration");
+                config = get_graph_config("line", graphData, "", "Date", "Duration");
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             suiteDurationGraph = new Chart("suiteDurationGraph", config);
@@ -3756,7 +3963,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             const limit = inFullscreen ? 50 : 10;
             if (suiteMostFailedGraphType == "bar") {
-                config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Suites`, "Suite", "Fails");
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Suite", "Fails");
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -3767,7 +3974,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
                 delete config.options.onClick
             } else if (suiteMostFailedGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, `Top ${limit} Most Failed Suites`, "Run", "Suite");
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Suite");
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -3854,7 +4061,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const data = get_test_statistics_data(filteredTests);
             const graphData = data[0]
             const runStarts = data[1]
-            var config = get_graph_config("timeline", graphData, "Test Statistics", "Run", "Test");
+            var config = get_graph_config("timeline", graphData, "", "Run", "Test");
             config.options.plugins.tooltip = {
                 callbacks: {
                     label: function (context) {
@@ -3898,9 +4105,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             if (testDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Test Duration Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (testDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Test Duration", "Date", "Duration");
+                config = get_graph_config("line", graphData, "", "Date", "Duration");
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             testDurationGraph = new Chart("testDurationGraph", config);
@@ -3920,7 +4127,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             const limit = inFullscreen ? 50 : 10;
             if (testMessagesGraphType == "bar") {
-                config = get_graph_config("bar", graphData, `Top ${limit} Fail Messages`, "Message", "Times");
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Message", "Times");
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -3944,7 +4151,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
                 delete config.options.onClick
             } else if (testMessagesGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, `Top ${limit} Fail Messages`, "Run", "Message");
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Message");
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -3991,7 +4198,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 testDurationDeviationGraph.destroy();
             }
             const graphData = get_duration_deviation_data("test", testDurationDeviationGraphType, filteredTests)
-            const config = get_graph_config("boxplot", graphData, "Duration Deviation", "Test", "Duration");
+            const config = get_graph_config("boxplot", graphData, "", "Test", "Duration");
             delete config.options.onClick
             testDurationDeviationGraph = new Chart("testDurationDeviationGraph", config);
             testDurationDeviationGraph.canvas.addEventListener("click", (event) => {
@@ -4010,11 +4217,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             const limit = inFullscreen ? 50 : 10;
             if (testMostFlakyGraphType == "bar") {
-                config = get_graph_config("bar", graphData, `Top ${limit} Most Flaky Tests Most Status Flips`, "Test", "Status Flips");
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Test", "Status Flips");
                 config.options.plugins.legend = false
                 delete config.options.onClick
             } else if (testMostFlakyGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, `Top ${limit} Most Flaky Tests Most Status Flips`, "Run", "Test");
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Test");
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -4061,11 +4268,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             const limit = inFullscreen ? 50 : 10;
             if (testRecentMostFlakyGraphType == "bar") {
-                config = get_graph_config("bar", graphData, `Top ${limit} Recent Most Flaky Tests Most Status Flips`, "Test", "Status Flips");
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Test", "Status Flips");
                 config.options.plugins.legend = false
                 delete config.options.onClick
             } else if (testRecentMostFlakyGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, `Top ${limit} Recent Most Flaky Tests Most Status Flips`, "Run", "Test");
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Test");
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -4112,7 +4319,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             const limit = inFullscreen ? 50 : 10;
             if (testMostFailedGraphType == "bar") {
-                config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Tests`, "Test", "Fails");
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Test", "Fails");
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -4123,7 +4330,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
                 delete config.options.onClick
             } else if (testMostFailedGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, `Top ${limit} Most Failed Tests`, "Run", "Test");
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Test");
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -4170,7 +4377,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             const limit = inFullscreen ? 50 : 10;
             if (testRecentMostFailedGraphType == "bar") {
-                config = get_graph_config("bar", graphData, `Top ${limit} Recent Most Failed Tests`, "Test", "Fails");
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Test", "Fails");
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -4181,7 +4388,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
                 delete config.options.onClick
             } else if (testRecentMostFailedGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, `Top ${limit} Recent Most Failed Tests`, "Run", "Test");
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Test");
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -4271,11 +4478,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const graphData = data[0]
             var config;
             if (keywordStatisticsGraphType == "line") {
-                config = get_graph_config("line", graphData, "Keyword Statistics", "Date", "Amount", false);
+                config = get_graph_config("line", graphData, "", "Date", "Amount", false);
             } else if (keywordStatisticsGraphType == "amount") {
-                config = get_graph_config("bar", graphData, "Keyword Statistics", "Run", "Amount");
+                config = get_graph_config("bar", graphData, "", "Run", "Amount");
             } else if (keywordStatisticsGraphType == "percentages") {
-                config = get_graph_config("bar", graphData, "Keyword Statistics", "Run", "Percentage");
+                config = get_graph_config("bar", graphData, "", "Run", "Percentage");
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordStatisticsGraph = new Chart("keywordStatisticsGraph", config);
@@ -4293,9 +4500,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             if (keywordTimesRunGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Times Run Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordTimesRunGraphType == "line") {
-                config = get_graph_config("line", graphData, "Times Run", "Date", "Duration");
+                config = get_graph_config("line", graphData, "", "Date", "Duration");
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordTimesRunGraph = new Chart("keywordTimesRunGraph", config);
@@ -4313,9 +4520,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             if (keywordTotalDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Total Duration Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordTotalDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Total Duration", "Date", "Duration");
+                config = get_graph_config("line", graphData, "", "Date", "Duration");
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordTotalDurationGraph = new Chart("keywordTotalDurationGraph", config);
@@ -4333,9 +4540,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             if (keywordAverageDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Average Duration Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordAverageDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Average Duration", "Date", "Duration");
+                config = get_graph_config("line", graphData, "", "Date", "Duration");
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordAverageDurationGraph = new Chart("keywordAverageDurationGraph", config);
@@ -4353,9 +4560,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             if (keywordMinDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Min Duration Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordMinDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Min Duration", "Date", "Duration");
+                config = get_graph_config("line", graphData, "", "Date", "Duration");
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordMinDurationGraph = new Chart("keywordMinDurationGraph", config);
@@ -4373,9 +4580,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             if (keywordMaxDurationGraphType == "bar") {
                 const limit = inFullscreen ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Max Duration Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (keywordMaxDurationGraphType == "line") {
-                config = get_graph_config("line", graphData, "Max Duration", "Date", "Duration");
+                config = get_graph_config("line", graphData, "", "Date", "Duration");
             }
             if (!showDateLabels) { config.options.scales.x.ticks.display = false }
             keywordMaxDurationGraph = new Chart("keywordMaxDurationGraph", config);
@@ -4395,7 +4602,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             var config;
             const limit = inFullscreen ? 50 : 10;
             if (keywordMostFailedGraphType == "bar") {
-                config = get_graph_config("bar", graphData, `Top ${limit} Most Failed Keywords`, "Keyword", "Fails");
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Keyword", "Fails");
                 config.options.plugins.legend = { display: false };
                 config.options.plugins.tooltip = {
                     callbacks: {
@@ -4406,7 +4613,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
                 delete config.options.onClick
             } else if (keywordMostFailedGraphType == "timeline") {
-                config = get_graph_config("timeline", graphData, `Top ${limit} Most Failed Keywords`, "Run", "Keyword");
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Keyword");
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
@@ -4491,7 +4698,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 compareStatisticsGraph.destroy();
             }
             const graphData = get_compare_statistics_graph_data(filteredRuns);
-            const config = get_graph_config("bar", graphData, `Run Statistics`, "Run", "Amount");
+            const config = get_graph_config("bar", graphData, "", "Run", "Amount");
             config.options.scales.y.stacked = false;
             compareStatisticsGraph = new Chart("compareStatisticsGraph", config);
         }
@@ -4502,7 +4709,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 compareSuiteDurationGraph.destroy();
             }
             const graphData = get_compare_suite_duration_data(filteredSuites);
-            const config = get_graph_config("radar", graphData, "Suite Duration");
+            const config = get_graph_config("radar", graphData, "");
             compareSuiteDurationGraph = new Chart("compareSuiteDurationGraph", config);
         }
 
@@ -4514,7 +4721,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const data = get_test_statistics_data(filteredTests);
             const graphData = data[0]
             const runStarts = data[1]
-            var config = get_graph_config("timeline", graphData, "Test Statistics", "Run", "Test");
+            var config = get_graph_config("timeline", graphData, "", "Run", "Test");
             config.options.plugins.tooltip = {
                 callbacks: {
                     label: function (context) {
@@ -4691,7 +4898,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     : false,
                 plugins: {
                     title: {
-                        display: true,
+                        display: graphTitle == "" ? false : true,
                         text: graphTitle,
                     },
                     datalabels: {
@@ -6017,25 +6224,24 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to update the height of the test statistics graph and enable scrolling
         function update_height(verticalId, labels, title, graphType) {
-            const vertical = document.getElementById(verticalId)
-            vertical.style.height = `465px`
+            const vertical = document.getElementById(verticalId);
+            const parent = vertical.parentElement;
+            const baseHeight = parseFloat(getComputedStyle(parent).height) - 48;
+            vertical.style.height = `${baseHeight}px`;
             if (labels > 10 && graphType != "bar") {
-                // timeline view with more than 10 items -> update height
-                const newHeight = 465 + (labels - 10) * 35;
-                const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height) - 59;
-                if (inFullscreen && newHeight < parentHeight) {
-                    vertical.style.height = `${parentHeight}px`
+                const newHeight = baseHeight + (labels - 10) * 35;
+                const fullscreenHeight = parseFloat(getComputedStyle(parent).height) - 59;
+                if (inFullscreen && newHeight < fullscreenHeight) {
+                    vertical.style.height = `${fullscreenHeight}px`;
                 } else {
-                    vertical.style.height = `${newHeight}px`
+                    vertical.style.height = `${newHeight}px`;
                 }
             } else if (inFullscreen && graphType != "bar") {
-                // not more than 10 items, set the height to fullscreen without scrollbar
-                const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height) - 51;
-                vertical.style.height = `${parentHeight}px`
+                const fullscreenHeight = parseFloat(getComputedStyle(parent).height) - 51;
+                vertical.style.height = `${fullscreenHeight}px`;
             } else if (inFullscreen && graphType == "bar") {
-                // bar chart should have fullscreen height because you get more labels on the horizontal axis
-                const parentHeight = parseFloat(getComputedStyle(vertical.parentElement).height) - 59;
-                vertical.style.height = `${parentHeight}px`
+                const fullscreenHeight = parseFloat(getComputedStyle(parent).height) - 59;
+                vertical.style.height = `${fullscreenHeight}px`;
             }
         }
 
@@ -6133,6 +6339,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById("testTitle").innerHTML = `Test Statistics (${Object.keys(filteredTests).length}) ${message}`;
             document.getElementById("keywordTitle").innerHTML = `Keyword Statistics (${Object.keys(filteredKeywords).length}) ${message}`;
             document.getElementById("compareTitle").innerHTML = `Compare Statistics ${message}`;
+            document.getElementById("tablesTitle").innerHTML = `Table Statistics <h6>showing ${Object.keys(runs).length} runs</h6`;
             // update filters based on data
             setup_runs_in_compare_selects();
             setup_suites_in_suite_select();
@@ -6146,21 +6353,18 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         function setup_dasbhoard_graphs() {
             if (menuOverview) {
                 create_overview_statistics_graphs();
-            }
-            if (menuDashboard) {
+            } else if (menuDashboard) {
                 create_run_statistics_graph();
                 create_run_donut_graph();
                 create_run_donut_total_graph();
                 create_run_stats_graph();
                 create_run_duration_graph();
                 create_run_heatmap_graph();
-                create_run_table();
                 create_suite_statistics_graph();
                 create_suite_folder_donut_graph();
                 create_suite_folder_fail_donut_graph();
                 create_suite_duration_graph();
                 create_suite_most_failed_graph();
-                create_suite_table();
                 create_test_statistics_graph();
                 create_test_duration_graph();
                 create_test_duration_deviation_graph();
@@ -6169,7 +6373,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 create_test_recent_most_flaky_graph();
                 create_test_most_failed_graph();
                 create_test_recent_most_failed_graph();
-                create_test_table();
                 create_keyword_statistics_graph();
                 create_keyword_times_run_graph();
                 create_keyword_total_duration_graph();
@@ -6177,12 +6380,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 create_keyword_min_duration_graph();
                 create_keyword_max_duration_graph();
                 create_keyword_most_failed_graph();
-                create_keyword_table();
-            }
-            if (menuCompare) {
+            } else if (menuCompare) {
                 create_compare_statistics_graph();
                 create_compare_suite_duration_graph();
                 create_compare_tests_graph();
+            } else if (menuTables) {
+                create_run_table();
+                create_suite_table();
+                create_test_table();
+                create_keyword_table();
             }
         }
 
@@ -6193,6 +6399,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const sectionHideList = JSON.parse(localStorage.getItem("sectionHide")) || [];
             const allSections = [...sectionShowList, ...sectionHideList];
             const compareStatisticsSection = document.getElementById("compareStatisticsSection");
+            const tablesStatisticsSection = document.getElementById("tablesStatisticsSection");
             const sectionButtons = [
                 document.getElementById("runStatisticsSectionNav"),
                 document.getElementById("suiteStatisticsSectionNav"),
@@ -6226,10 +6433,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 sectionButtons.forEach(btn => btn.hidden = true);
                 compareStatisticsSection.hidden = true;
                 overviewStatisticsSection.hidden = false;
+                tablesStatisticsSection.hidden = true;
             } else if (menuDashboard) {
                 overviewStatisticsSection.hidden = true;
                 compareStatisticsSection.hidden = true;
                 sectionButtons.forEach(btn => btn.hidden = false);
+                tablesStatisticsSection.hidden = true;
             } else if (menuCompare) {
                 allSections.forEach(section => {
                     const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
@@ -6238,148 +6447,166 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 sectionButtons.forEach(btn => btn.hidden = true);
                 overviewStatisticsSection.hidden = true;
                 compareStatisticsSection.hidden = false;
+                tablesStatisticsSection.hidden = true;
+            } else if (menuTables) {
+                allSections.forEach(section => {
+                    const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
+                    if (sectionEl) sectionEl.hidden = true;
+                });
+                sectionButtons.forEach(btn => btn.hidden = true);
+                overviewStatisticsSection.hidden = true;
+                compareStatisticsSection.hidden = true;
+                tablesStatisticsSection.hidden = false;
             }
         }
 
         // function to order the grphs according to the localstorage config
         function setup_graph_order() {
-            // setup_graphs("Overview")
-            setup_graphs("Run")
-            setup_graphs("Suite")
-            setup_graphs("Test")
-            setup_graphs("Keyword")
-            setup_graphs("Compare")
+            setup_grid_graphs("Run")
+            setup_grid_graphs("Suite")
+            setup_grid_graphs("Test")
+            setup_grid_graphs("Keyword")
+            setup_grid_graphs("Compare")
+            setup_grid_graphs("Table")
+        }
+
+        function setup_grid_graphs(section) {
+            const grid = GridStack.init({
+                cellHeight: 150,
+                float: true,
+                resizable: { handles: 'all' },
+                disableOneColumnMode: true
+            },  `#grid${section}`);
+            grid.removeAll();  // Clear existing widgets
+
+            // grid.on('resizestart', function (event, el) {
+            //     el.querySelector('canvas')?.classList.add('disable-pointer');
+            // });
+            // grid.on('resizestop', function (event, el) {
+            //     el.querySelector('canvas')?.classList.remove('disable-pointer');
+            // });
+
+            let savedLayout = localStorage.getItem(`${section}Layout`);
+            if (savedLayout) {
+                savedLayout = JSON.parse(savedLayout);
+                savedLayout.forEach(graph => {
+                    add_graph(graph.id, graph.x, graph.y, graph.w, graph.h);
+                });
+            } else {
+                const graphShowList = JSON.parse(localStorage.getItem("graphShow"));
+                for (let graph of graphShowList) {
+                    if (graph.startsWith(section)) {
+                        if (graph.includes('Table')) continue;
+                        add_graph(graph, 0, 0, 4, 3);  // Set default width/height
+                    }
+                }
+
+                // const graphHideList = JSON.parse(localStorage.getItem("graphHide"));
+                // for (let graph of graphHideList) {
+                //     if (graph.startsWith(section) || graph.endsWith(section)) {
+                //         position_graph(graph, sectionDataHiddenElement, true);
+                //     }
+                // }
+            }
+
+            function add_graph(graph, x, y, w, h) {
+                w = (w && w > 0) ? w : 4;
+                h = (h && h > 0) ? h : 3;
+                const item = document.createElement('div');
+                item.classList.add('grid-stack-item');
+                item.setAttribute('gs-x', x);
+                item.setAttribute('gs-y', y);
+                item.setAttribute('gs-w', w);
+                item.setAttribute('gs-h', h);
+                item.setAttribute('data-gs-id', graph);  // Optional, for lookup later
+
+                const canvas = graphMetadata.find(g => g.label === graph).html
+                item.innerHTML = `<div class="grid-stack-item-content">${canvas}</div>`;
+                grid.addWidget(item);
+            }
         }
 
         // function to order the graphs in the sections
-        function setup_graphs(section) {
-            const lowerCaseSection = section.toLowerCase()
-            const sectionDataElement = document.getElementById(lowerCaseSection + "Data")
-            const sectionDataHiddenElement = document.getElementById(lowerCaseSection + "DataHidden")
+        // function setup_graphs(section) {
+        //     const lowerCaseSection = section.toLowerCase();
+        //     const sectionDataElement = document.getElementById(lowerCaseSection + "Data");
+        //     const sectionDataHiddenElement = document.getElementById(lowerCaseSection + "DataHidden");
 
-            // remove the entire section if it exists
-            if (sectionDataElement.children.length > 0) {
-                sectionDataElement.innerHTML = ""
-            }
-            // remove the entire section if it exists
-            if (sectionDataHiddenElement.children.length > 0) {
-                sectionDataHiddenElement.innerHTML = ""
-            }
+        //     // Clear existing content
+        //     if (sectionDataElement.children.length > 0) {
+        //         sectionDataElement.innerHTML = "";
+        //     }
+        //     if (sectionDataHiddenElement.children.length > 0) {
+        //         sectionDataHiddenElement.innerHTML = "";
+        //     }
 
-            const chevronRow = `<div class="row" id="${lowerCaseSection}Chevron{index}">
-                                    <div class="col-auto">
-                                        <div class="btn btn-sm collapse-icon" id="${lowerCaseSection}ChevronButton{index}" data-bs-toggle="collapse"
-                                            data-bs-target="#${lowerCaseSection}Data{index}" aria-expanded="true" aria-controls="${lowerCaseSection}Data{index}">
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <h6 class="sectionTitle">{title}</h6>
-                                    </div>
-                                </div>`
-            const dataRow = `<div class="row collapse show" id="${lowerCaseSection}Data{index}">
-                                {canvas}
-                            </div>`
+        //     var dataRow = `<div class="row" id="${lowerCaseSection}Data{index}">
+        //                 {canvas}
+        //              </div>`;
+        //     var dataRowTable = `<div class="row" id="${lowerCaseSection}Data{index}">
+        //                 <h5>{graph}</h5>
+        //                 {canvas}
+        //              </div>`;
 
-            // helper function to create the chevron rows and data rows in the sections
-            function position_graph(graph, sectionElement, hidden = false) {
-                const camelCaseGraph = space_to_camelcase(graph)
-                const graphDataElement = document.getElementById(camelCaseGraph + "Canvas")
-                if (graphDataElement) {
-                    graphDataElement.remove()
-                }
+        //     function position_graph(graph, sectionElement, hidden = false) {
+        //         const camelCaseGraph = space_to_camelcase(graph);
+        //         const graphDataElement = document.getElementById(camelCaseGraph + "Canvas");
+        //         if (graphDataElement) {
+        //             graphDataElement.remove();
+        //         }
 
-                const canvas = graphMetadata.find(g => g.label === graph).html
-                if (sectionElement.lastChild == null) {
-                    // no row yet
-                    if (graph.includes("Table")) {
-                        sectionElement.innerHTML = chevronRow
-                            .replaceAll("{index}", "1")
-                            .replace("{title}", graph)
-                            .replace("collapse-icon", "collapse-icon collapsed")
-                        sectionElement.insertAdjacentHTML(
-                            "beforeend",
-                            dataRow
-                                .replace("{index}", "1")
-                                .replace("{canvas}", canvas)
-                                .replace("collapse show", "collapse")
-                        )
-                    } else {
-                        sectionElement.innerHTML = chevronRow
-                            .replaceAll("{index}", "1")
-                            .replace("{title}", graph)
-                        sectionElement.insertAdjacentHTML(
-                            "beforeend",
-                            dataRow
-                                .replace("{index}", "1")
-                                .replace("{canvas}", canvas))
-                    }
-                } else {
-                    const lastRow = sectionElement.lastChild
-                    const index = parseInt(lastRow.id.match(/\d+/)[0], 10) + 1
+        //         const canvas = graphMetadata.find(g => g.label === graph).html;
+        //         if (section == "Table") {
+        //             dataRow = dataRowTable
+        //         }
 
-                    if (graph.includes("Table")) {
-                        // tables always start a new row
-                        sectionElement.insertAdjacentHTML(
-                            "beforeend",
-                            chevronRow
-                                .replaceAll("{index}", `${index}`)
-                                .replace("{title}", graph)
-                                .replace("collapse-icon", "collapse-icon collapsed")
-                        )
-                        sectionElement.insertAdjacentHTML(
-                            "beforeend",
-                            dataRow
-                                .replace("{index}", `${index}`)
-                                .replace("{canvas}", canvas)
-                                .replace("collapse show", "collapse")
-                        )
-                    } else if (lastRow.children.length < maxGraphsPerRow) {
-                        const isTableRow = [...lastRow.children].some(child => child.id && child.id.includes("Table"))
-                        if (isTableRow) {
-                            // current row is a table row, start new row
-                            sectionElement.insertAdjacentHTML(
-                                "beforeend",
-                                chevronRow.replaceAll("{index}", `${index}`).replace("{title}", graph)
-                            )
-                            sectionElement.insertAdjacentHTML(
-                                "beforeend",
-                                dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas)
-                            )
-                        } else {
-                            // add to current row
-                            lastRow.insertAdjacentHTML("beforeend", canvas)
-                            const titleElement = sectionElement.children[sectionElement.children.length - 2].querySelector(".sectionTitle")
-                            titleElement.innerText += ` & ${graph}`
-                        }
-                    } else {
-                        // max reached so new row
-                        sectionElement.insertAdjacentHTML(
-                            "beforeend",
-                            chevronRow.replaceAll("{index}", `${index}`).replace("{title}", graph)
-                        )
-                        sectionElement.insertAdjacentHTML(
-                            "beforeend",
-                            dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas)
-                        )
-                    }
-                }
-            }
+        //         if (sectionElement.lastChild == null) {
+        //             // No row yet
+        //             sectionElement.insertAdjacentHTML(
+        //                 "beforeend",
+        //                 dataRow.replace("{index}", "1").replace("{canvas}", canvas).replace("{graph}", graph)
+        //             );
+        //         } else {
+        //             const lastRow = sectionElement.lastChild;
+        //             const index = parseInt(lastRow.id.match(/\d+/)[0], 10) + 1;
 
-            // order the graphs correctly
-            const graphShowList = JSON.parse(localStorage.getItem("graphShow"));
-            for (let graph of graphShowList) {
-                if (graph.startsWith(section)) {
-                    position_graph(graph, sectionDataElement)
-                }
-            }
-            // move the hidden items to temp hidden to keep the HTML available for reconfiguration
-            const graphHideList = JSON.parse(localStorage.getItem("graphHide"));
-            for (let graph of graphHideList) {
-                if (graph.startsWith(section)) {
-                    position_graph(graph, sectionDataHiddenElement, true)
-                }
-            }
-        }
+        //             if (lastRow.children.length < maxGraphsPerRow) {
+        //                 const isTableRow = [...lastRow.children].some(child => child.id && child.id.includes("Table"));
+        //                 if (isTableRow) {
+        //                     // Current row has a table, start new row
+        //                     sectionElement.insertAdjacentHTML(
+        //                         "beforeend",
+        //                         dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas).replace("{graph}", graph)
+        //                     );
+        //                 } else {
+        //                     // Add to current row
+        //                     lastRow.insertAdjacentHTML("beforeend", canvas);
+        //                 }
+        //             } else {
+        //                 // Max per row reached, start new row
+        //                 sectionElement.insertAdjacentHTML(
+        //                     "beforeend",
+        //                     dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas).replace("{graph}", graph)
+        //                 );
+        //             }
+        //         }
+        //     }
+
+        //     const graphShowList = JSON.parse(localStorage.getItem("graphShow"));
+        //     for (let graph of graphShowList) {
+        //         if (graph.startsWith(section) || graph.endsWith(section)) {
+        //             position_graph(graph, sectionDataElement);
+        //         }
+        //     }
+
+        //     const graphHideList = JSON.parse(localStorage.getItem("graphHide"));
+        //     for (let graph of graphHideList) {
+        //         if (graph.startsWith(section) || graph.endsWith(section)) {
+        //             position_graph(graph, sectionDataHiddenElement, true);
+        //         }
+        //     }
+        // }
+
 
         ///////////////////////////
         // MAIN FUNCTION ON LOAD //
