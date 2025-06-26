@@ -365,6 +365,12 @@
             border-radius: 1rem
         }
 
+        #suiteFolderFailDonutGraph,
+        #suiteFolderDonutGraph,
+        #runDonutGraph {
+            cursor: pointer;
+        }
+
         @media print {
             table {
                 width: 100%;
@@ -2305,7 +2311,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // function to get a higher folder path based on the full_path or partial full_path provided
-        function get_next_folder_level(fullPath, currentPath) {
+        function get_next_folder_level(currentPath, fullPath) {
             const fullParts = fullPath.split(".");
             const currentParts = currentPath.split(".");
             if (
@@ -3658,14 +3664,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     const skipped = callbackData[label].skipped
                     return [`Total: ${context.raw}`, `Passed: ${passed}`, `Failed: ${failed}`, `Skipped: ${skipped}`];
                 },
-                title: function (tooltipItem) {
-                    return tooltipItem.label;
+                title: function (tooltipItems) {
+                    const fullTitle = tooltipItems[0].label;
+                    const maxLineLength = 30;
+                    const lines = fullTitle.match(new RegExp('.{1,' + maxLineLength + '}', 'g')) || [fullTitle];
+                    return lines;
                 }
             }
             config.options.onClick = (event) => {
                 if (event.chart.tooltip.title) {
                     setTimeout(() => {
-                        create_suite_folder_donut_graph(event.chart.tooltip.title[0]);
+                        create_suite_folder_donut_graph(event.chart.tooltip.title.join(''));
                     }, 0);
                 }
             };
@@ -3716,7 +3725,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             config.options.onClick = (event) => {
                 if (event.chart.tooltip.title) {
                     setTimeout(() => {
-                        create_suite_folder_donut_graph(event.chart.tooltip.title[0]);
+                        create_suite_folder_donut_graph(event.chart.tooltip.title.join(''));
                     }, 0);
                 }
             };
@@ -5356,6 +5365,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to prepare the data in the correct format for folder donuts
         function get_donut_folder_graph_data(dataType, filteredData, folder) {
+            console.log(folder)
             var labels = new Set()
             const callbackData = {}
             const data = []
