@@ -423,6 +423,12 @@
             border-radius: 1rem
         }
 
+        #suiteFolderFailDonutGraph,
+        #suiteFolderDonutGraph,
+        #runDonutGraph {
+            cursor: pointer;
+        }
+
         @media print {
             table {
                 width: 100%;
@@ -512,40 +518,43 @@
                     <div class="col-4">
                         <h4 id="overviewTitle"></h4>
                     </div>
-                    <div class="col-auto align-self-center">
-                        <div class="btn-group ms-1">
-                            <label class="form-check-label" for="useRunTags">Use Run Tags</label>
+                    <div class="d-flex flex-wrap align-items-start col align-items-center">
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-check-label" for="useRunTags">Use Run Tags</label>
+                            </div>
+                            <div class="btn-group form-switch ms-1">
+                                <input class="form-check-input" type="checkbox" role="switch" id="useRunTags" />
+                            </div>
                         </div>
-                        <div class="btn-group form-switch ms-1 mb-1">
-                            <input class="form-check-input" type="checkbox" role="switch" id="useRunTags" />
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-check-label" for="overviewDurationPercentage">Percentage</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm mt-1" id="overviewDurationPercentage">
+                                    <option value="10">10</option>
+                                    <option value="20" selected>20</option>
+                                    <option value="30">30</option>
+                                    <option value="40">40</option>
+                                    <option value="50">50</option>
+                                    <option value="60">60</option>
+                                    <option value="70">70</option>
+                                    <option value="80">80</option>
+                                    <option value="90">90</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-auto align-self-center">
-                        <div class="btn-group">
-                            <label class="form-check-label" for="overviewDurationPercentage">Percentage</label>
-                        </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="overviewDurationPercentage">
-                                <option value="10">10</option>
-                                <option value="20" selected>20</option>
-                                <option value="30">30</option>
-                                <option value="40">40</option>
-                                <option value="50">50</option>
-                                <option value="60">60</option>
-                                <option value="70">70</option>
-                                <option value="80">80</option>
-                                <option value="90">90</option>
-                                <option value="100">100</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-auto align-self-center">
-                        <a class="information-graph" id="overviewStatisticsInformation"
-                            data-title="This section shows the projects and their associated runs:
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-outline-light btn-sm information ms-2 mt-1"
+                                id="overviewStatisticsInformation"
+                                data-title="This section shows the projects and their associated runs:
 - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
 - Passed runs represent the percentage of runs with zero failures.
 - You can define your own projects or groupings by appending '-o path/to/output.xml:project_yourprojectname' when generating results.
-- If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle."></a>
+- If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle."></button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -581,36 +590,25 @@
                     <div class="col-3">
                         <h4 id="suiteTitle"></h4>
                     </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="suiteFolder">Folder: </label>
+                    <div class="d-flex flex-wrap align-items-start col align-items-center">
+                        <div class="col-auto d-flex me-2">
+                            <label class="form-label mb-0" for="suiteFolder">Folder:</label>
+                            <p class="form-label mb-0 ms-1" id="suiteFolder">All</p>
                         </div>
-                        <div class="btn-group">
-                            <p class="form-label mt-2" id="suiteFolder">All</p>
+                        <div class="col-auto d-flex me-2">
+                            <button class="btn btn-outline-light btn-sm" id="resetSuiteFolder">Reset Folder</button>
                         </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <button class="btn btn-outline-light btn-sm mt-1" id="resetSuiteFolder">Reset
-                                Folder</button>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="suiteSelectSuites">Suite</label>
-                        </div>
-                        <div class="btn-group">
+                        <div class="col-auto d-flex me-2">
+                            <label class="form-label me-2 mt-1" for="suiteSelectSuites">Suite:</label>
                             <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
                         </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group ms-1">
-                            <label class="form-check-label mt-2" for="useSuitePathsSuiteSection">Use Suite
+                        <div class="col-auto d-flex me-2">
+                            <label class="form-check-label mb-0 me-2" for="useSuitePathsSuiteSection">Use Suite
                                 Paths</label>
-                        </div>
-                        <div class="btn-group form-switch ms-1">
-                            <input class="form-check-input mt-2" type="checkbox" role="switch"
-                                id="useSuitePathsSuiteSection" />
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                    id="useSuitePathsSuiteSection" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -630,38 +628,26 @@
                     <div class="col-3">
                         <h4 id="testTitle"></h4>
                     </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="suiteSelectTests">Suite</label>
-                        </div>
-                        <div class="btn-group">
+                    <div class="d-flex flex-wrap align-items-start col align-items-center">
+                        <div class="col-auto d-flex me-2">
+                            <label class="form-label mb-0 me-2 mt-1" for="suiteSelectTests">Suite:</label>
                             <select class="form-select form-select-sm" id="suiteSelectTests"></select>
                         </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group ms-1">
-                            <label class="form-check-label mt-2" for="useSuitePathsTestSection">Use Suite
+                        <div class="col-auto d-flex me-2">
+                            <label class="form-check-label mb-0 me-2" for="useSuitePathsTestSection">Use Suite
                                 Paths</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                    id="useSuitePathsTestSection" />
+                            </div>
                         </div>
-                        <div class="btn-group form-switch ms-1">
-                            <input class="form-check-input mt-2" type="checkbox" role="switch"
-                                id="useSuitePathsTestSection" />
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="testSelect">Test</label>
-                        </div>
-                        <div class="btn-group">
+                        <div class="col-auto d-flex me-2">
+                            <label class="form-label mb-0 me-2 mt-1" for="testSelect">Test:</label>
                             <select class="form-select form-select-sm" id="testSelect"></select>
                         </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="testTagsSelect">Test Tags</label>
-                        </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="testTagsSelect"></select>
+                        <div class="col-auto d-flex flex-nowrap align-items-center me-2">
+                            <label class="form-label mb-0 me-2 text-nowrap" for="testTagsSelect">Test Tags:</label>
+                            <select class="form-select form-select-sm w-auto" id="testTagsSelect"></select>
                         </div>
                     </div>
                 </div>
@@ -681,12 +667,14 @@
                     <div class="col-3">
                         <h4 id="keywordTitle"></h4>
                     </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="keywordSelect">Keyword</label>
-                        </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="keywordSelect"></select>
+                    <div class="d-flex flex-wrap align-items-start col align-items-center">
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-label mt-2" for="keywordSelect">Keyword</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="keywordSelect"></select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -706,36 +694,38 @@
                     <div class="col-3">
                         <h4 id="compareTitle"></h4>
                     </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="compareRun1">Run 1</label>
+                    <div class="d-flex flex-wrap align-items-start col align-items-center">
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-label ms-1 mt-2" for="compareRun1">Run 1</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="compareRun1"></select>
+                            </div>
                         </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="compareRun1"></select>
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-label ms-1 mt-2" for="compareRun2">Run 2</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="compareRun2"></select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="compareRun2">Run 2</label>
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-label ms-1 mt-2" for="compareRun3">Run 3</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="compareRun3"></select>
+                            </div>
                         </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="compareRun2"></select>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="compareRun3">Run 3</label>
-                        </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="compareRun3"></select>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <label class="form-label mt-2" for="compareRun4">Run 4</label>
-                        </div>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm" id="compareRun4"></select>
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <label class="form-label ms-1 mt-2" for="compareRun4">Run 4</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm" id="compareRun4"></select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -769,9 +759,9 @@
                     <div class="modal-header">
                         <h1 class="modal-title" id="filtersModalLabel">Filters</h1>
                         <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto" id="resetFilters"
-                                data-bs-dismiss="modal">Reset Filters</button>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
+                                id="resetFilters">Reset Filters</button>
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
                                 data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -813,10 +803,17 @@
                         </div>
                         <div class="col-auto mt-1 ps-2 pe-2">
                             <label class="form-label form-label-sm mb-0" for="amount" id="amountLabel"
-                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">Amount</label>
-                            <input class="form-control form-control-sm" type="number" min=0 id="amount"
-                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
-                                value="10">
+                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">
+                                Amount
+                            </label>
+                            <div class="d-flex align-items-center mt-1">
+                                <input class="form-control form-control-sm flex-grow-1" type="number" min="0"
+                                    id="amount"
+                                    title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
+                                    value="10">
+                                <button type="button" class="btn btn-outline-light btn-sm ms-2 text-nowrap"
+                                    id="allRuns">All Runs</button>
+                            </div>
                         </div>
                         <div class="col-auto mt-1 ps-2 pe-2" id="metadataFilter" hidden>
                             <label class="form-label form-label-sm mb-0" for="metadata"
@@ -898,6 +895,16 @@
                         </div>
                         <div class="row">
                             <div class="col-8 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleAxisTitles">Graphs: Show Axis
+                                    Titles</label>
+                            </div>
+                            <div class="col btn-group form-switch ms-2">
+                                <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                    id="toggleAxisTitles" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-8 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleAnimations">Graphs: Show Drawing
                                     Animations</label>
                             </div>
@@ -943,7 +950,7 @@
                     <div class="modal-header">
                         <h1 class="modal-title" id="customizeModalLabel">Customize View</h1>
                         <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto" data-bs-dismiss="modal"
+                            <button type="button" class="btn btn-outline-light btn-sm mt-auto"
                                 id="resetGraphConfig">Reset View</button>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
                                 data-bs-dismiss="modal">Close</button>
@@ -1149,6 +1156,7 @@
         var showLegends = true; // used to keep track of global legend setting
         var showAliases = false; // used to keep track of global alias setting
         var showMilliseconds = false; // used to keep track of global millisecond setting
+        var showAxisTitles = true; // used to keep track of global axis title setting
         var heatMapHourAll = true; // used to keep track of the heatmap setting, is it set to an hour or all
         var previousFolder = ""; // used to update the suite folder donut to the previous folder with the button
         var lastScrollY = 0; // used to scroll back to where you were previously
@@ -1169,7 +1177,6 @@
             "Suite Statistics",
             "Test Statistics",
             "Keyword Statistics",
-            "Compare Statistics",
         ]
         const graphMetadata = [
             {
@@ -2464,7 +2471,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // function to get a higher folder path based on the full_path or partial full_path provided
-        function get_next_folder_level(fullPath, currentPath) {
+        function get_next_folder_level(currentPath, fullPath) {
             const fullParts = fullPath.split(".");
             const currentParts = currentPath.split(".");
             if (
@@ -2834,6 +2841,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 globalVarName: "showMilliseconds"
             });
 
+            const toggle_axis_titles = create_toggle_handler({
+                key: "showAxisTitles",
+                elementId: "toggleAxisTitles",
+                globalVarName: "showAxisTitles"
+            });
+
             const toggle_graph_limit = create_toggle_handler({
                 key: "maxGraphsPerRow",
                 elementId: "toggleMaxGraphsPerRow",
@@ -2861,6 +2874,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             toggle_legends(true);
             toggle_aliases(true);
             toggle_milliseconds(true);
+            toggle_axis_titles(true);
             toggle_graph_limit(true);
             toggle_animations(true);
             toggle_animation_duration(true);
@@ -2870,6 +2884,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById("toggleLegends").addEventListener("click", () => toggle_legends());
             document.getElementById("toggleAliases").addEventListener("click", () => toggle_aliases());
             document.getElementById("toggleMilliseconds").addEventListener("click", () => toggle_milliseconds());
+            document.getElementById("toggleAxisTitles").addEventListener("click", () => toggle_axis_titles());
             document.getElementById("toggleMaxGraphsPerRow").addEventListener("change", () => toggle_graph_limit());
             document.getElementById("toggleAnimations").addEventListener("click", () => toggle_animations());
             document.getElementById("toggleAnimationDuration").addEventListener("change", () => toggle_animation_duration());
@@ -3046,6 +3061,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 document.getElementById("amount").value = filteredAmountDefault;
                 document.getElementById("metadata").value = "All";
                 setup_lowest_highest_dates(runs);
+            });
+            document.getElementById("allRuns").addEventListener("click", function () {
+                document.getElementById("amount").value = Object.keys(runs).length;
             });
             document.getElementById("suiteSelectSuites").addEventListener("change", () => {
                 create_suite_duration_graph();
@@ -3819,14 +3837,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     const skipped = callbackData[label].skipped
                     return [`Total: ${context.raw}`, `Passed: ${passed}`, `Failed: ${failed}`, `Skipped: ${skipped}`];
                 },
-                title: function (tooltipItem) {
-                    return tooltipItem.label;
+                title: function (tooltipItems) {
+                    const fullTitle = tooltipItems[0].label;
+                    const maxLineLength = 30;
+                    const lines = fullTitle.match(new RegExp('.{1,' + maxLineLength + '}', 'g')) || [fullTitle];
+                    return lines;
                 }
             }
             config.options.onClick = (event) => {
                 if (event.chart.tooltip.title) {
                     setTimeout(() => {
-                        create_suite_folder_donut_graph(event.chart.tooltip.title[0]);
+                        create_suite_folder_donut_graph(event.chart.tooltip.title.join(''));
                     }, 0);
                 }
             };
@@ -3877,7 +3898,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             config.options.onClick = (event) => {
                 if (event.chart.tooltip.title) {
                     setTimeout(() => {
-                        create_suite_folder_donut_graph(event.chart.tooltip.title[0]);
+                        create_suite_folder_donut_graph(event.chart.tooltip.title.join(''));
                     }, 0);
                 }
             };
@@ -3992,7 +4013,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -4079,7 +4100,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     },
                 },
                 title: {
-                    display: true,
+                    display: showAxisTitles,
                     text: "Run",
                 },
             };
@@ -4145,7 +4166,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Message",
                     },
                 };
@@ -4169,7 +4190,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -4239,7 +4260,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -4290,7 +4311,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -4348,7 +4369,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -4406,7 +4427,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -4631,7 +4652,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         },
                     },
                     title: {
-                        display: true,
+                        display: showAxisTitles,
                         text: "Run",
                     },
                 };
@@ -4739,7 +4760,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     },
                 },
                 title: {
-                    display: true,
+                    display: showAxisTitles,
                     text: "Run",
                 },
             };
@@ -5155,10 +5176,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             };
 
             const config = configMap[graphType]?.();
-            // Global legend toggle
             if (!showLegends) {
                 config.options.plugins.legend = config.options.plugins.legend || {};
                 config.options.plugins.legend.display = false;
+            }
+            if (!showAxisTitles) {
+                if (config.options.scales && config.options.scales.x && config.options.scales.x.title) {
+                    config.options.scales.x.title.display = false;
+                }
+                if (config.options.scales && config.options.scales.y && config.options.scales.y.title) {
+                    config.options.scales.y.title.display = false;
+                }
             }
             return config;
         }
