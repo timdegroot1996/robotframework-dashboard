@@ -511,7 +511,7 @@
                 <div class="row">
                     <div class="col-auto align-self-center">
                         <div class="btn btn-sm collapse-icon" id="overviewDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#overviewData" aria-expanded="true" aria-controls="overviewData"></div>
+                            data-bs-target="#gridOverview" aria-expanded="true" aria-controls="gridOverview"></div>
                     </div>
                     <div class="col-4">
                         <h4 id="overviewTitle"></h4>
@@ -557,7 +557,7 @@
             </div>
             <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card overviewData -->
             <div id="overviewDataHidden" hidden></div>
-            <div class="card-body collapse show" id="overviewData"></div>
+            <div class="card-body collapse show" id="gridOverview"></div>
         </div>
 
         <div class="card" id="runStatisticsSection" hidden>
@@ -565,7 +565,7 @@
                 <div class="row">
                     <div class="col-auto align-self-center">
                         <div class="btn btn-sm collapse-icon" id="runDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#runData" aria-expanded="true" aria-controls="runData"></div>
+                            data-bs-target="#gridRun" aria-expanded="true" aria-controls="gridRun"></div>
                     </div>
                     <div class="col">
                         <h4 id="runTitle"></h4>
@@ -586,7 +586,7 @@
                 <div class="row">
                     <div class="col-auto align-self-center">
                         <div class="btn btn-sm collapse-icon" id="suiteDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#suiteData" aria-expanded="true" aria-controls="suiteData"></div>
+                            data-bs-target="#gridSuite" aria-expanded="true" aria-controls="gridSuite"></div>
                     </div>
                     <div class="col-3">
                         <h4 id="suiteTitle"></h4>
@@ -626,7 +626,7 @@
                 <div class="row">
                     <div class="col-auto align-self-center">
                         <div class="btn btn-sm collapse-icon" id="testDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#testData" aria-expanded="true" aria-controls="testData"></div>
+                            data-bs-target="#gridTest" aria-expanded="true" aria-controls="gridTest"></div>
                     </div>
                     <div class="col-3">
                         <h4 id="testTitle"></h4>
@@ -667,7 +667,7 @@
                 <div class="row">
                     <div class="col-auto align-self-center">
                         <div class="btn btn-sm collapse-icon" id="keywordDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#keywordData" aria-expanded="true" aria-controls="keywordData"></div>
+                            data-bs-target="#gridKeyword" aria-expanded="true" aria-controls="gridKeyword"></div>
                     </div>
                     <div class="col-3">
                         <h4 id="keywordTitle"></h4>
@@ -696,7 +696,7 @@
                 <div class="row">
                     <div class="col-auto align-self-center">
                         <div class="btn btn-sm collapse-icon" id="compareDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#compareData" aria-expanded="true" aria-controls="compareData"></div>
+                            data-bs-target="#gridCompare" aria-expanded="true" aria-controls="gridCompare"></div>
                     </div>
                     <div class="col-3">
                         <h4 id="compareTitle"></h4>
@@ -749,7 +749,7 @@
                 <div class="row">
                     <div class="col-auto align-self-center">
                         <div class="btn btn-sm collapse-icon" id="tablesDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#tableData" aria-expanded="true" aria-controls="tableData"></div>
+                            data-bs-target="#gridTable" aria-expanded="true" aria-controls="gridTable"></div>
                     </div>
                     <div class="col-3">
                         <h4 id="tablesTitle"></h4>
@@ -1162,13 +1162,6 @@
         // add datalabels plugin
         Chart.register(ChartDataLabels);
 
-        // add items in hide modal
-        const hideSections = [
-            "Run Statistics",
-            "Suite Statistics",
-            "Test Statistics",
-            "Keyword Statistics",
-        ]
         const graphMetadata = [
             {
                 key: "runStatistics",
@@ -2023,6 +2016,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             },
         ];
 
+        const tables = graphMetadata.filter(graph => graph.label.includes('Table'))
         // hideGraphs (contains all graphs that can be hidden or shown)
         const hideGraphs = graphMetadata
             .map(graph => graph.label)
@@ -2064,6 +2058,24 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // Run compare filter Id's
         const compareRunIds = ['compareRun1', 'compareRun2', 'compareRun3', 'compareRun4']
 
+        // customize view lists
+        const overviewSections = ["Overview"]
+        const dasbhoardSections = ["Run Statistics", "Suite Statistics", "Test Statistics", "Keyword Statistics",]
+        const compareSections = ["Compare Statistics"]
+        const tableSections = ["Table Statistics"]
+        const dashboardGraphs = graphMetadata
+            .filter(graph => !graph.label.startsWith("Compare")
+                && !graph.label.endsWith("Table")
+                && graph.label !== "Run Donut Total"
+                && graph.label !== "Suite Folder Fail Donut")
+            .map(graph => graph.label);
+        const compareGraphs = graphMetadata
+            .filter(graph => graph.label.startsWith("Compare"))
+            .map(graph => graph.label)
+        const tableGraphs = graphMetadata
+            .filter(graph => graph.label.endsWith("Table"))
+            .map(graph => graph.label)
+
         // settings var
         var settings = {
             switch: {
@@ -2088,6 +2100,48 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             },
             theme: "dark",
             graphTypes: defaultGraphTypes,
+            view: {
+                overview: {
+                    sections: {
+                        show: overviewSections,
+                        hide: [],
+                    },
+                    graphs: {
+                        show: [],
+                        hide: [],
+                    }
+                },
+                dashboard: {
+                    sections: {
+                        show: dasbhoardSections,
+                        hide: [],
+                    },
+                    graphs: {
+                        show: dashboardGraphs,
+                        hide: [],
+                    },
+                },
+                compare: {
+                    sections: {
+                        show: compareSections,
+                        hide: [],
+                    },
+                    graphs: {
+                        show: compareGraphs,
+                        hide: [],
+                    },
+                },
+                table: {
+                    sections: {
+                        show: tableSections,
+                        hide: [],
+                    },
+                    graphs: {
+                        show: tableGraphs,
+                        hide: [],
+                    },
+                },
+            }
         };
 
         /////////////////////////////
@@ -2254,6 +2308,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // function to setup all collapse buttons and icons
+        // TODO: fix this functionality for gridstack divs
         function setup_collapsables() {
             // initialize all collapsables by adding the eventlisteners to the buttons
             const collapsables = document.querySelectorAll(".collapse-icon")
@@ -2300,8 +2355,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
             sectionButtons.forEach(btn => btn.hidden = false); // unhide all
             sectionButtons.forEach(btn => btn.classList.remove('active')); // unhide all
-            const sectionHide = JSON.parse(localStorage.getItem("sectionHide")); // get hidden sections
-            sectionHide.forEach(hiddenSection => sectionMap[`${space_to_camelcase(hiddenSection)}Section`].hidden = true) // hide section menu buttons that should be hidden
+            settings.view.dashboard.sections.hide.forEach(hiddenSection => sectionMap[`${space_to_camelcase(hiddenSection)}Section`].hidden = true) // hide section menu buttons that should be hidden
 
             // fix button rounding after hiding the correct ones
             const buttons = Array.from(document.querySelectorAll(`#sectionIndicator .btn`))
@@ -2364,7 +2418,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // function to fill the information icons with the correct data
-        function setup_information_icons() {
+        function setup_information_popups() {
             const informationButtons = document.querySelectorAll(".information-graph")
             for (let button of informationButtons) {
                 const id = button.id;
@@ -2803,17 +2857,71 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // EVENTLISTENER FUNCTIONS //
         /////////////////////////////
 
-        // function to create customized view eventlisteners
-        function setup_settings_eventlisteners() {
-            // function to catch the closing of the modal by not clicking a button
-            $("#customizeModal").on("hidden.bs.modal", function () {
-                update_customize_view_local_storage();
-                setup_data_and_graphs();
-            });
+        function setup_eventlisteners_filter_buttons() {
             // function to catch the closing of the filter modal
             $("#filtersModal").on("hidden.bs.modal", function () {
                 setup_data_and_graphs();
             });
+
+            function show_checkboxes() {
+                const checkboxes = document.getElementById("checkboxes");
+                showingRunTags = !showingRunTags;
+                checkboxes.style.display = showingRunTags ? "block" : "none";
+            }
+            document.getElementById("selectRunTags").addEventListener("click", show_checkboxes);
+            document.getElementById("resetFilters").addEventListener("click", function () {
+                document.getElementById("runs").value = "All";
+                const tagElements = document.getElementById("runTag").getElementsByTagName("input");
+                for (const input of tagElements) {
+                    input.checked = false;
+                    if (input.id == "All") input.checked = true;
+                }
+                document.getElementById("amount").value = filteredAmountDefault;
+                document.getElementById("metadata").value = "All";
+                setup_lowest_highest_dates(runs);
+            });
+            document.getElementById("allRuns").addEventListener("click", function () {
+                document.getElementById("amount").value = Object.keys(runs).length;
+            });
+
+            const checkboxesElement = document.getElementById("checkboxes");
+            const runTagsSelectElement = document.getElementById("selectRunTags");
+            // listen for click events on body to hide the run checkboxes when clicking outside of the select/checkboxes elements
+            document.body.addEventListener("click", function (event) {
+                if (showingRunTags == true && !checkboxesElement.contains(event.target) && !runTagsSelectElement.contains(event.target)) {
+                    show_checkboxes()
+                }
+            });
+        }
+
+        function setup_eventlisteners_customize_view_buttons() {
+            // function to catch the opening of the modal
+            $("#customizeModal").on('shown.bs.modal', function () {
+                if (settings.menu.overview) {
+                    console.log('overview')
+                    
+                } else if (settings.menu.dashboard) {
+                    console.log('dashboard')
+                } else if (settings.menu.compare) {
+                    console.log('compare')
+                } else if (settings.menu.tables) {
+                    console.log('tables')
+                }
+            });
+            // function to catch the closing of the modal
+            $("#customizeModal").on("hidden.bs.modal", function () {
+                // check what changed and update the localstorage + settings accordingly
+                setup_data_and_graphs();
+            });
+            // remove the entire customized view configuration
+            document.getElementById("resetGraphConfig").addEventListener("click", function () {
+                console.log('resetting')                
+            });
+
+        }
+
+        // function to create customized view eventlisteners
+        function setup_eventlisteners_settings_buttons() {
             // function to catch the closing of the settings modal
             $("#settingsModal").on("hidden.bs.modal", function () {
                 setup_data_and_graphs();
@@ -2901,15 +3009,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById("toggleAnimations").addEventListener("click", () => toggle_animations());
             document.getElementById("toggleAnimationDuration").addEventListener("change", () => toggle_animation_duration());
             document.getElementById("toggleTheme").addEventListener("click", () => toggle_theme());
-
-            // remove the entire customized view configuration
-            document.getElementById("resetGraphConfig").addEventListener("click", function () {
-                localStorage.setItem("sectionHide", JSON.stringify([]));
-                localStorage.setItem("graphHide", JSON.stringify([]));
-                localStorage.setItem("sectionShow", JSON.stringify(hideSections));
-                localStorage.setItem("graphShow", JSON.stringify(hideGraphs));
-                setup_customize_view_content();
-            });
         }
 
         function update_menu(item) {
@@ -2930,7 +3029,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById('menuTables').addEventListener('click', () => update_menu('menuTables'));
 
             // Determine which menu was previously active from settings
-            const menuSettings = get_local_storage_item('menu');
+            const menuSettings = settings.menu;
             let selectedMenu
 
             if (menuSettings) {
@@ -2944,7 +3043,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // function to setup eventlisteners for filter buttons
-        function setup_eventlisteners_filter_buttons() {
+        function setup_eventlisteners_section_filter_buttons() {
             // has to be added after the creation of the sections and graphs
             document.getElementById("suiteFolderDonutGoUp").addEventListener("click", function () {
                 function remove_last_folder(path) {
@@ -3019,7 +3118,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                             id
                         };
                     }).filter(w => w.id);
-                    localStorage.setItem(grid, JSON.stringify(layout));
+                    set_local_storage_item(`layouts.${grid}`, JSON.stringify(layout));
                 })
             })
         }
@@ -3094,26 +3193,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById("overviewDurationPercentage").addEventListener("change", function () {
                 create_overview_statistics_graphs();
             });
-            function show_checkboxes() {
-                const checkboxes = document.getElementById("checkboxes");
-                showingRunTags = !showingRunTags;
-                checkboxes.style.display = showingRunTags ? "block" : "none";
-            }
-            document.getElementById("selectRunTags").addEventListener("click", show_checkboxes);
-            document.getElementById("resetFilters").addEventListener("click", function () {
-                document.getElementById("runs").value = "All";
-                const tagElements = document.getElementById("runTag").getElementsByTagName("input");
-                for (const input of tagElements) {
-                    input.checked = false;
-                    if (input.id == "All") input.checked = true;
-                }
-                document.getElementById("amount").value = filteredAmountDefault;
-                document.getElementById("metadata").value = "All";
-                setup_lowest_highest_dates(runs);
-            });
-            document.getElementById("allRuns").addEventListener("click", function () {
-                document.getElementById("amount").value = Object.keys(runs).length;
-            });
             document.getElementById("suiteSelectSuites").addEventListener("change", () => {
                 create_suite_duration_graph();
                 create_suite_statistics_graph();
@@ -3171,14 +3250,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 create_keyword_average_duration_graph();
                 create_keyword_min_duration_graph();
                 create_keyword_max_duration_graph();
-            });
-            const checkboxesElement = document.getElementById("checkboxes");
-            const runTagsSelectElement = document.getElementById("selectRunTags");
-            // listen for click events on body to hide the run checkboxes when clicking outside of the select/checkboxes elements
-            document.body.addEventListener("click", function (event) {
-                if (showingRunTags == true && !checkboxesElement.contains(event.target) && !runTagsSelectElement.contains(event.target)) {
-                    show_checkboxes()
-                }
             });
             // compare filters
             compareRunIds.forEach(id => {
@@ -3645,7 +3716,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 if (i % 3 === 2 || i === keys.length - 1) overviewHTML += '</div>';
             });
 
-            document.getElementById('overviewData').innerHTML = overviewHTML;
+            document.getElementById("gridOverview").innerHTML = overviewHTML;
 
             for (const key of keys) {
                 document.getElementById(`${key}Card`).addEventListener('click', () => {
@@ -6392,22 +6463,19 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             // Let the spinner render before starting heavy setup
             requestAnimationFrame(() => {
                 setup_filtered_data_and_filters();
+                setup_section_buttons();
                 setup_section_order();
-                setup_graph_order(); // here I initialize the grid items
+                setup_graph_order();
                 setup_collapsables();
-                setup_information_icons();
-                setup_eventlisteners_filter_buttons();
+                setup_information_popups();
+                setup_eventlisteners_section_filter_buttons();
                 setup_eventlisteners_graph_view_buttons();
                 // setup_button_highlighting();
-                setup_theme(); // here the SVG's are added to the <a> items
+                setup_theme();
 
                 requestAnimationFrame(() => {
                     // setup_spinner(true); // here the items are set to show
                     setup_dasbhoard_graphs(); // here the chartjs graphs are rendered
-
-                    if (menuDashboard) {
-                        setup_section_buttons();
-                    }
 
                     if (!menuUpdate) {
                         requestAnimationFrame(() => {
@@ -6447,7 +6515,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById("testTitle").innerHTML = `Test Statistics (${Object.keys(filteredTests).length}) ${message}`;
             document.getElementById("keywordTitle").innerHTML = `Keyword Statistics (${Object.keys(filteredKeywords).length}) ${message}`;
             document.getElementById("compareTitle").innerHTML = `Compare Statistics ${message}`;
-            document.getElementById("tablesTitle").innerHTML = `Table Statistics <h6>showing ${Object.keys(runs).length} runs</h6`;
+            document.getElementById("tablesTitle").innerHTML = `Table Statistics (${runAmount}) ${message}`;
             // update filters based on data
             setup_runs_in_compare_selects();
             setup_suites_in_suite_select();
@@ -6503,9 +6571,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // function to order the sections according to the localstorage config
         function setup_section_order() {
             const overviewStatisticsSection = document.getElementById("overviewStatisticsSection");
-            const sectionShowList = JSON.parse(localStorage.getItem("sectionShow")) || [];
-            const sectionHideList = JSON.parse(localStorage.getItem("sectionHide")) || [];
-            const allSections = [...sectionShowList, ...sectionHideList];
+            const dashboardSectionShow = settings.view.dashboard.sections.show
+            const dashboardSectionHide = settings.view.dashboard.sections.hide
+            const dashboardSections = [...dashboardSectionShow, ...dashboardSectionHide];
             const compareStatisticsSection = document.getElementById("compareStatisticsSection");
             const tablesStatisticsSection = document.getElementById("tablesStatisticsSection");
             const sectionButtons = [
@@ -6516,8 +6584,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             ];
             let prevId = "#loading";
             // Show and reorder visible dashboard sections
-            for (const section of sectionShowList) {
-                const sectionId = space_to_camelcase(section + " Section");
+            for (const section of dashboardSectionShow) {
+                const sectionId = space_to_camelcase(section + "Section");
                 const sectionEl = document.getElementById(sectionId);
                 if (sectionEl) {
                     sectionEl.hidden = false;
@@ -6526,15 +6594,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 }
             }
             // Hide all hidden dashboard sections
-            for (const section of sectionHideList) {
-                const sectionId = space_to_camelcase(section + " Section");
+            for (const section of dashboardSectionHide) {
+                const sectionId = space_to_camelcase(section);
                 const sectionEl = document.getElementById(sectionId);
                 if (sectionEl) sectionEl.hidden = true;
             }
 
             // View-specific overrides
             if (settings.menu.overview) {
-                allSections.forEach(section => {
+                dashboardSections.forEach(section => {
                     const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
                     if (sectionEl) sectionEl.hidden = true;
                 });
@@ -6548,7 +6616,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 sectionButtons.forEach(btn => btn.hidden = false);
                 tablesStatisticsSection.hidden = true;
             } else if (settings.menu.compare) {
-                allSections.forEach(section => {
+                dashboardSections.forEach(section => {
                     const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
                     if (sectionEl) sectionEl.hidden = true;
                 });
@@ -6557,7 +6625,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 compareStatisticsSection.hidden = false;
                 tablesStatisticsSection.hidden = true;
             } else if (settings.menu.tables) {
-                allSections.forEach(section => {
+                dashboardSections.forEach(section => {
                     const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
                     if (sectionEl) sectionEl.hidden = true;
                 });
@@ -6601,22 +6669,37 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     resizable: { handles: 'all' }
                 }, gridElement);
             }
-            window[grid].disable()
+            window[grid].disable();
 
-            let savedLayout = localStorage.getItem(grid);
+
+            const lowerCaseSection = section.toLowerCase();
+            const sectionDataHidden = document.getElementById(lowerCaseSection + "DataHidden");
+            if (sectionDataHidden.children.length > 0) {
+                sectionDataHidden.innerHTML = "";
+            }
+
+            const graphShow = [...settings.view.dashboard.graphs.show, ...settings.view.compare.graphs.show, ...settings.view.table.graphs.show]
+            const graphHide = [...settings.view.dashboard.graphs.hide, ...settings.view.compare.graphs.hide, ...settings.view.table.graphs.hide]
+            const savedLayout = get_local_storage_item(`layouts.${grid}`);
+
             if (savedLayout) {
-                savedLayout = JSON.parse(savedLayout);
-                savedLayout.forEach(graph => {
-                    add_graph(graph.id, graph.x, graph.y, graph.w, graph.h);
-                });
+                for (const graph of graphShow) {
+                    savedLayout.forEach(graph => {
+                        add_graph(graph.id, graph.x, graph.y, graph.w, graph.h);
+                    });
+                }
+                for (const graph of graphHide) {
+                    savedLayout.forEach(graph => {
+                        add_hidden_graph(graph.id);
+                    });
+                }
             } else {
-                const graphShowList = JSON.parse(localStorage.getItem("graphShow"));
                 const defaultWidth = 4;
                 const defaultHeight = 4;
                 const maxColumns = 12;
                 let currentX = 0;
                 let currentY = 0;
-                for (let graph of graphShowList) {
+                for (let graph of graphShow) {
                     if (graph.startsWith(section)) {
                         if (graph.includes('Table')) continue;
                         add_graph(graph, currentX, currentY, defaultWidth, defaultHeight);
@@ -6627,13 +6710,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         }
                     }
                 }
-                // const graphHideList = JSON.parse(localStorage.getItem("graphHide"));
-                // for (let graph of graphHideList) {
-                //     if (graph.startsWith(section) || graph.endsWith(section)) {
-                //         position_graph(graph, sectionDataHiddenElement, true);
-                //     }
-                // }
-                // }
+                for (let graph of graphHide) {
+                    if (graph.startsWith(section) || graph.endsWith(section)) {
+                        add_hidden_graph(graph);
+                    }
+                }
             }
 
             function add_graph(id, x, y, w, h) {
@@ -6653,10 +6734,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 item.innerHTML = `<div class="grid-stack-item-content">${graphConfig.html}</div>`;
                 window[grid].addWidget(item);
             }
+
+            function add_hidden_graph(id) {
+                sectionDataHidden.insertAdjacentHTML("beforeend", graphMetadata.find(g => g.label == id).html);
+            }
         }
 
         function setup_tables() {
-
+            const tableGrid = document.getElementById("gridTable")
+            tables.forEach(table => { tableGrid.insertAdjacentHTML('beforeend', table.html); })
         }
 
         // function to order the graphs in the sections
@@ -6775,7 +6861,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         function get_local_storage_item(path) {
-            return get_nested_setting(settings, path);
+            const value = get_nested_setting(settings, path);
+            if (typeof value === 'string') {
+                try {
+                    return JSON.parse(value);
+                } catch (e) {
+                    return value;
+                }
+            }
+            return value;
         }
 
         function get_nested_setting(obj, path) {
@@ -6805,18 +6899,32 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         function main() {
             load_local_storage();
             setup_stats();
-            setup_settings_eventlisteners();
-            setup_customize_view_arrow_eventlisteners();
-            setup_customize_view_local_storage();
-            setup_customize_view_content();
-            update_customize_view_local_storage();
+
+            setup_eventlisteners_filter_buttons();
+            setup_eventlisteners_settings_buttons();
+            setup_eventlisteners_customize_view_buttons();
             setup_eventlisteners_section_filter_buttons();
+
             setup_run_amount_filter();
             setup_lowest_highest_dates();
             setup_metadata_filter();
             setup_runs_in_select_filter_buttons();
             setup_runtags_in_select_filter_buttons();
+
             setup_menu_eventlisteners();
+            // setup_customize_view_arrow_eventlisteners(); //
+            // setup_customize_view_local_storage(); //
+            // setup_customize_view_content(); //
+            // update_customize_view_local_storage(); //
+
+            // on load
+            // set the default show/hide settings if none exist
+            // on opening of the modal >
+            // 1. check which page you're on
+            // 2. set the sections to show/hide
+            // 3. set the graphs to show/hide
+            // 4.
+    
         }
 
         main() // trigger on first load
