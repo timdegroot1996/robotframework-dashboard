@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="robotframework-dashboard",
-    version="1.0.2",
+    version="1.1.0",
     description="Output processor and dashboard generator for Robot Framework output files",
     long_description="""# Robot Framework Dashboard
 

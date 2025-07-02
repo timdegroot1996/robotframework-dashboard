@@ -306,9 +306,8 @@
             display: block;
         }
 
-        .border,
-        .controls {
-            min-height: 165px;
+        .border {
+            min-height: 42px;
         }
 
         .hideItemText {
@@ -854,7 +853,7 @@
 
         <!-- Settings Modal -->
         <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title" id="settingsModalLabel">Settings</h1>
@@ -922,7 +921,7 @@
                                     id="toggleAnimations" />
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row mb-3">
                             <div class="col-8 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleAnimationDuration">Graphs: Animation
                                     Duration (Milliseconds)</label>
@@ -930,6 +929,24 @@
                             <div class="col-2 ps-0 mt-1">
                                 <input class="form-control form-control-sm" type="number"
                                     id="toggleAnimationDuration" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-auto">
+                                <button class="btn btn-outline-light btn-sm mt-auto" id="copySettings">Copy Current Settings</button>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-outline-light btn-sm mt-auto" id="resetSettings">Reset to Default (includes layout and hidden settings!)</button>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-outline-light btn-sm mt-auto" id="applySettings">Apply Pasted
+                                    Settings</button>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label for="settingsTextArea" class="form-label">Current Settings JSON</label>
+                                <textarea id="settingsTextArea" class="form-control" rows="20"></textarea>
                             </div>
                         </div>
                     </div>
@@ -945,51 +962,12 @@
                         <h1 class="modal-title" id="customizeModalLabel">Customize View</h1>
                         <div>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto"
-                                id="resetGraphConfig">Reset View</button>
+                                id="resetCustomizeView">Reset View</button>
                             <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
                                 data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col">
-                                <h4 class="ms-1 mb-2">Show Sections</h4>
-                                <div class="border border-3 rounded-3">
-                                    <ol id="sectionShow" class="list-group list-group-numbered"></ol>
-                                </div>
-                            </div>
-                            <div class="col-auto mt-5">
-                                <div class="controls mt-5">
-                                    <button class="btn btn-sm" id="sectionRight"></button>
-                                    <button class="btn btn-sm" id="sectionLeft"></button>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <h4 class="ms-1 mb-2">Hide Sections</h4>
-                                <div class="border border-3 rounded-3">
-                                    <ol id="sectionHide" class="list-group"></ol>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <h4 class="ms-1 mb-2">Show Graphs</h4>
-                                <div class="border border-3 rounded-3">
-                                    <ol id="graphShow" class="list-group list-group-numbered"></ol>
-                                </div>
-                            </div>
-                            <div class="col-auto mt-5">
-                                <div class="controls mt-5">
-                                    <button class="btn btn-sm" id="graphRight"></button>
-                                    <button class="btn btn-sm" id="graphLeft"></button>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <h4 class="ms-1 mb-2">Hide Graphs</h4>
-                                <div class="border border-3 rounded-3">
-                                    <ol id="graphHide" class="list-group"></ol>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="modal-body" id="customizeViewModal"></div>
                 </div>
             </div>
         </div>
@@ -2060,7 +2038,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // customize view lists
         const overviewSections = ["Overview"]
-        const dasbhoardSections = ["Run Statistics", "Suite Statistics", "Test Statistics", "Keyword Statistics",]
+        const dashboardSections = ["Run Statistics", "Suite Statistics", "Test Statistics", "Keyword Statistics",]
         const compareSections = ["Compare Statistics"]
         const tableSections = ["Table Statistics"]
         const dashboardGraphs = graphMetadata
@@ -2113,7 +2091,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 },
                 dashboard: {
                     sections: {
-                        show: dasbhoardSections,
+                        show: dashboardSections,
                         hide: [],
                     },
                     graphs: {
@@ -2131,7 +2109,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         hide: [],
                     },
                 },
-                table: {
+                tables: {
                     sections: {
                         show: tableSections,
                         hide: [],
@@ -2287,7 +2265,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // set default values
-        function setup_stats() {
+        function setup_database_stats() {
             document.getElementById("stats").innerHTML = `<table class='table table-striped'>
                 <tr><td>Runs</td><td>${runs.length}</td></tr>
                 <tr><td>Suites</td><td>${suites.length}</td></tr>
@@ -2332,7 +2310,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // function to update the section (menu) buttons with the correct eventlisteners
         // also sets up the automatic highlighting of the section that is most visible in the top
         // 20-50% percent of the screen
-        function setup_section_buttons() {
+        function setup_section_menu_buttons() {
             const sectionButtons = [
                 document.getElementById("runStatisticsSectionNav"),
                 document.getElementById("suiteStatisticsSectionNav"),
@@ -2561,288 +2539,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // CUSTOMIZE VIEW FUNCTIONS //
         //////////////////////////////
 
-        // function to update the arrows in the customize modal
-        function setup_customize_view_arrow_eventlisteners() {
-            // function to move the items from showing to hidden
-            function move_items(fromId, toId) {
-                const fromBox = document.getElementById(fromId);
-                const toBox = document.getElementById(toId);
-                const selectedItems = fromBox.querySelectorAll(".active");
-                const fromStorage = JSON.parse(localStorage.getItem(fromId));
-                const toStorage = JSON.parse(localStorage.getItem(toId));
-
-                for (let item of selectedItems) {
-                    const val = item.children[0].innerText;
-                    if (toId.includes("Hide")) {
-                        if (!toStorage.includes(val)) toStorage.push(val);
-                        const identifier = val.split(" ")[0];
-                        if (toId.includes("section")) disable_graphs_in_customize_view(true, identifier);
-                    } else {
-                        const index = fromStorage.indexOf(val);
-                        if (index !== -1) fromStorage.splice(index, 1);
-                        const identifier = val.split(" ")[0];
-                        if (toId.includes("section")) disable_graphs_in_customize_view(false, identifier);
-                    }
-                }
-                localStorage.setItem(fromId, JSON.stringify(fromStorage));
-                localStorage.setItem(toId, JSON.stringify(toStorage));
-                selectedItems.forEach(item => {
-                    item.classList.remove("active");
-                    if (toId === "graphShow") {
-                        const section = item.children[0].innerText.split(" ")[0];
-                        const listItems = document.getElementById("graphShow").querySelectorAll(".hideItem");
-                        let lastMatchingItem = Array.from(listItems).reverse().find(li => {
-                            return li.children[0].innerText.startsWith(section);
-                        }) || listItems[listItems.length - 1];
-                        lastMatchingItem?.after(item);
-                    } else {
-                        toBox.appendChild(item);
-                    }
-                });
-            }
-
-            // Map the arrow actions and associated operations
-            const arrowMappings = {
-                "sectionRight": { from: "sectionShow", to: "sectionHide", content: arrowRight },
-                "sectionLeft": { from: "sectionHide", to: "sectionShow", content: arrowLeft },
-                "graphRight": { from: "graphShow", to: "graphHide", content: arrowRight },
-                "graphLeft": { from: "graphHide", to: "graphShow", content: arrowLeft }
-            };
-
-            // Initialize arrows with their respective functionality and content
-            for (let arrow in arrowMappings) {
-                const { from, to, content } = arrowMappings[arrow];
-                // Update button content based on direction
-                update_arrow_button(arrow, content);
-                // Add event listener to each arrow button
-                document.getElementById(arrow).addEventListener("click", () => {
-                    move_items(from, to);
-                });
-            }
-
-            // Function to update arrow button content
-            function update_arrow_button(id, content) {
-                document.getElementById(id).innerHTML = content;
-            }
-        }
-
-        // function to handle the setting of the localstorge for customized view
-        function setup_customize_view_local_storage() {
-            const adminDefaults = {
-                sectionHide: "placeholder_admin_section_hide",
-                sectionShow: "placeholder_admin_section_show",
-                graphHide: "placeholder_admin_graph_hide",
-                graphShow: "placeholder_admin_graph_show"
-            };
-
-            const keys = Object.keys(adminDefaults);
-
-            // Helper: Convert legacy "'item1','item2'" string into array
-            function migrate_legacy_string(value) {
-                if (typeof value === "string") {
-                    return value.split(",")
-                        .map(v => v.trim().replace(/^'+|'+$/g, "")) // strip surrounding single quotes
-                        .filter(v => v !== "");
-                }
-                return [];
-            }
-
-            // Handle migration or init of all keys
-            keys.forEach(key => {
-                let raw = localStorage.getItem(key);
-
-                if (raw === null) {
-                    // Not present at all → store empty array
-                    localStorage.setItem(key, JSON.stringify([]));
-                } else {
-                    try {
-                        // Try parsing as JSON array (new format)
-                        const parsed = JSON.parse(raw);
-                        if (!Array.isArray(parsed)) throw new Error("Not an array");
-                    } catch (error) {
-                        // Legacy format → migrate to array
-                        const migrated = migrate_legacy_string(raw);
-                        localStorage.setItem(key, JSON.stringify(migrated));
-                    }
-                }
-            });
-
-            // Apply admin defaults only if all are still empty arrays
-            const allEmpty = keys.every(key => {
-                const val = JSON.parse(localStorage.getItem(key));
-                return Array.isArray(val) && val.length === 0;
-            });
-
-            // Actually set the defaults, either admin or normal
-            if (allEmpty) {
-                if (
-                    !adminDefaults.sectionHide.includes("placeholder_admin") &&
-                    (
-                        adminDefaults.sectionShow.length > 0 ||
-                        adminDefaults.graphShow.length > 0 ||
-                        adminDefaults.sectionHide.length > 0 ||
-                        adminDefaults.graphHide.length > 0
-                    )
-                ) {
-                    // the admin defaults are set
-                    keys.forEach(key => {
-                        localStorage.setItem(key, JSON.stringify(adminDefaults[key]));
-                    });
-                } else {
-                    // there is no admin defaults so use the regular defaults
-                    localStorage.setItem("sectionShow", JSON.stringify(hideSections))
-                    localStorage.setItem("graphShow", JSON.stringify(hideGraphs))
-                }
-            }
-
-            // let storedTypes = get_local_storage_item('graphTypes');
-            // if (!storedTypes) {
-            //     set_local_storage_item('graphTypes', defaultGraphTypes);
-            //     storedTypes = defaultGraphTypes;
-            // } else {
-            //     // Check for mismatch between stored types and defaults
-            //     const storedKeys = Object.keys(storedTypes);
-            //     const defaultKeys = Object.keys(defaultGraphTypes);
-            //     const mismatch = storedKeys.length !== defaultKeys.length ||
-            //         defaultKeys.some(key => !(key in storedTypes));
-            //     if (mismatch) {
-            //         for (const key in defaultGraphTypes) {
-            //             if (!(key in storedTypes)) {
-            //                 storedTypes[key] = defaultGraphTypes[key];
-            //             }
-            //         }
-
-            //         // Clear section and graph visibility settings
-            //         set_local_storage_item('sectionHide', []);
-            //         set_local_storage_item('graphHide', []);
-            //         set_local_storage_item('sectionShow', hideSections);
-            //         set_local_storage_item('graphShow', hideGraphs);
-
-            //         // Save updated graph types
-            //         set_local_storage_item('graphTypes', storedTypes);
-            //     }
-            // }
-        }
-
-        // function to setup the highlighting when rendering the dashboard
-        // function setup_button_highlighting() {
-        //     const storedTypes = get_local_storage_item('graphTypes') || {};
-        //     for (const key in storedTypes) {
-        //         update_button_selection(key.replace('GraphType', ''), storedTypes[key]);
-        //     }
-        // }
-
         // function to update the localstorage of the graphtypes
         function update_graph_type(graph, type) {
             settings.graphTypes[graph] = type;
             set_local_storage_item('graphTypes', settings.graphTypes);
-        }
-
-        // // function to change which button is highlighted styling wise
-        // function update_button_selection(camelButtonName, graphType) {
-        //     buttonTypes.forEach(button => {
-        //         const buttonId = `${camelButtonName}Graph${button}`;
-        //         const element = document.getElementById(buttonId);
-        //         if (element) {
-        //             const isDark = document.documentElement.classList.contains("dark-mode");
-        //             const outlineClass = isDark ? "btn-outline-light" : "btn-outline-dark";
-        //             const isActive = button.toLowerCase() === graphType;
-        //             element.classList.toggle("active", isActive);
-        //             element.classList.remove("btn-outline-light", "btn-outline-dark");
-        //             element.classList.add(outlineClass);
-        //         }
-        //     });
-        // }
-
-        // create the modal with the correct layout based on localstorage
-        function setup_customize_view_content() {
-            const graphShow = JSON.parse(localStorage.getItem("graphShow"));
-            const graphHide = JSON.parse(localStorage.getItem("graphHide"));
-            const sectionShow = JSON.parse(localStorage.getItem("sectionShow"));
-            const sectionHide = JSON.parse(localStorage.getItem("sectionHide"));
-
-            let graphShowItems = "", graphHideItems = "";
-            let sectionShowItems = "", sectionHideItems = "";
-
-            const hideItem = `<li class="hideItem list-group-item list-group-item-action d-flex {type}">
-                <div class="hideItemText">{value}</div>
-                <button class="btn btn-sm moveUp"></button>
-                <button class="btn btn-sm moveDown"></button>
-                </li>`
-
-            for (let graph of [...graphShow, ...graphHide]) {
-                const element = hideItem.replaceAll("{value}", graph).replaceAll("{type}", "graph");
-                if (graphHide.includes(graph)) {
-                    graphHideItems += element;
-                } else {
-                    graphShowItems += element;
-                }
-            }
-            document.getElementById("graphShow").innerHTML = graphShowItems;
-            document.getElementById("graphHide").innerHTML = graphHideItems;
-
-            for (let section of [...sectionShow, ...sectionHide]) {
-                const element = hideItem.replaceAll("{value}", section).replaceAll("{type}", "section");
-                if (sectionHide.includes(section)) {
-                    const identifier = section.split(" ")[0];
-                    disable_graphs_in_customize_view(true, identifier);
-                    sectionHideItems += element;
-                } else {
-                    sectionShowItems += element;
-                }
-            }
-            document.getElementById("sectionShow").innerHTML = sectionShowItems;
-            document.getElementById("sectionHide").innerHTML = sectionHideItems;
-
-            document.querySelectorAll(".graph .moveUp, .section .moveUp").forEach(item => {
-                item.innerHTML = arrowUpVerySmall;
-                item.addEventListener("click", function (event) {
-                    const before = $(this).parent().prev();
-                    if (before.length) $(this).parent().insertBefore(before);
-                    event.stopPropagation();
-                });
-            });
-
-            document.querySelectorAll(".graph .moveDown, .section .moveDown").forEach(item => {
-                item.innerHTML = arrowDownVerySmall;
-                item.addEventListener("click", function (event) {
-                    const after = $(this).parent().next();
-                    if (after.length) $(this).parent().insertAfter(after);
-                    event.stopPropagation();
-                });
-            });
-
-            document.querySelectorAll(".hideItem").forEach(item => {
-                item.addEventListener("click", function () {
-                    this.classList.toggle("active");
-                });
-            });
-        }
-
-        // function to add/remove disabled to the graphs in the customize view popup
-        function disable_graphs_in_customize_view(disable, identifier) {
-            const relatedGraphs1 = document.getElementById("graphShow").querySelectorAll(".hideItemText")
-            const relatedGraphs2 = document.getElementById("graphHide").querySelectorAll(".hideItemText")
-            const relatedGraphs = [...relatedGraphs1, ...relatedGraphs2]
-            for (const graph of relatedGraphs) {
-                if (graph.innerText.startsWith(identifier)) {
-                    if (disable) {
-                        graph.parentElement.classList.add("disabled");
-                    } else {
-                        graph.parentElement.classList.remove("disabled");
-                    }
-                }
-            }
-        }
-
-        // function to sync current order to localStorage
-        function update_customize_view_local_storage() {
-            const sectionOrder = Array.from(document.getElementById("sectionShow").querySelectorAll(".hideItem"))
-                .map(item => item.children[0].innerText);
-            const graphOrder = Array.from(document.getElementById("graphShow").querySelectorAll(".hideItem"))
-                .map(item => item.children[0].innerText);
-            localStorage.setItem("sectionShow", JSON.stringify(sectionOrder));
-            localStorage.setItem("graphShow", JSON.stringify(graphOrder));
         }
 
         /////////////////////////////
@@ -2901,44 +2601,246 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to setup the sections correctly in the customize view modal when opened
         function setup_customize_view_sections(show, hide, reset = false) {
+            const create_section_item = (value) => `
+                <li class="hideItem list-group-item list-group-item-action d-flex section">
+                    <div class="hideItemText">${value}</div>
+                    <button class="btn btn-sm move-up"></button>
+                    <button class="btn btn-sm move-down"></button>
+                </li>`;
 
+            const sectionShowItems = show.map(val => create_section_item(val)).join("");
+            const sectionHideItems = hide.map(val => {
+                const identifier = val.split(" ")[0];
+                return create_section_item(val);
+            }).join("");
+
+            document.getElementById("sectionShow").innerHTML = sectionShowItems;
+            document.getElementById("sectionHide").innerHTML = sectionHideItems;
         }
 
         // function to setup the graphs correctly in the cutomize view modal when opened
-        function setup_customize_view_graphs(show, hide, reset = false) {
-            
+        function setup_customize_view_graphs(show, hide) {
+            const createItem = (value) => `
+                <li class="hideItem list-group-item list-group-item-action d-flex graph">
+                    <div class="hideItemText">${value}</div>
+                </li>`;
+
+            const graphGroups = {};
+
+            [...show, ...hide].forEach(graph => {
+                const group = graph.split(" ")[0];
+                if (!graphGroups[group]) {
+                    graphGroups[group] = { show: [], hide: [] };
+                }
+                if (hide.includes(graph)) {
+                    graphGroups[group].hide.push(graph);
+                } else {
+                    graphGroups[group].show.push(graph);
+                }
+            });
+
+            Object.entries(graphGroups).forEach(([group, { show, hide }]) => {
+                const showItems = show.map(val => createItem(val)).join("");
+                const hideItems = hide.map(val => createItem(val)).join("");
+                const sectionHTML = `
+                    <div class="row mb-4">
+                        <div class="col">
+                            <h4 class="ms-1 mb-2">Show ${group} Graphs</h4>
+                            <div class="border border-3 rounded-3">
+                                <ol id="graph-show-${group}" class="list-group list-group-numbered graph-show">${showItems}</ol>
+                            </div>
+                        </div>
+                        <div class="col-auto mt-5">
+                            <div class="controls mt-5">
+                                <button class="btn btn-sm graph-move-right" id="graph-right-${group}"></button>
+                                <button class="btn btn-sm graph-move-left" id="graph-left-${group}"></button>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h4 class="ms-1 mb-2">Hide ${group} Graphs</h4>
+                            <div class="border border-3 rounded-3">
+                                <ol id="graph-hide-${group}" class="list-group graph-hide">${hideItems}</ol>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById("graphContainer").insertAdjacentHTML("beforeend", sectionHTML);
+            });
+
+        }
+
+        // function to setup the customize view svgs and eventlisteners
+        function setup_customize_view_interactions() {
+            // eventlistener to make items active
+            document.querySelectorAll(".hideItem").forEach(item => {
+                item.addEventListener("click", function () {
+                    this.classList.toggle("active");
+                });
+            });
+
+            // function to move items between boxes in the customize view window
+            function move_items(fromId, toId) {
+                const fromBox = document.getElementById(fromId);
+                const toBox = document.getElementById(toId);
+                const selectedItems = fromBox.querySelectorAll(".active");
+
+                selectedItems.forEach(item => {
+                    item.classList.remove("active");
+                    const value = item.children[0].innerText;
+                    const identifier = value.split(" ")[0];
+                    toBox.appendChild(item);
+                });
+            }
+
+            // section left and right SVG"s and move left and right eventlistener
+            document.querySelectorAll(".section-move-right").forEach(btn => {
+                btn.innerHTML = arrowRight
+                btn.addEventListener("click", () => {
+                    move_items("sectionShow", "sectionHide");
+                });
+            })
+            document.querySelectorAll(".section-move-left").forEach(btn => {
+                btn.innerHTML = arrowLeft
+                btn.addEventListener("click", () => {
+                    move_items("sectionHide", "sectionShow");
+                });
+            })
+
+            // graph left and right SVG"s and move left and right eventlistener
+            document.querySelectorAll(".graph-move-right").forEach(btn => {
+                btn.innerHTML = arrowRight
+                btn.addEventListener("click", () => {
+                    const group = btn.id.replace("graph-right-", "")
+                    move_items(`graph-show-${group}`, `graph-hide-${group}`);
+                });
+            })
+            document.querySelectorAll(".graph-move-left").forEach(btn => {
+                btn.innerHTML = arrowLeft
+                btn.addEventListener("click", () => {
+                    const group = btn.id.replace("graph-left-", "")
+                    move_items(`graph-hide-${group}`, `graph-show-${group}`);
+                });
+            })
+
+            // up and down arrow SVG"s and the moving up and down events
+            document.querySelectorAll(".move-up").forEach(item => {
+                item.innerHTML = arrowUpVerySmall;
+                item.addEventListener("click", function (event) {
+                    const before = $(this).parent().prev();
+                    if (before.length) $(this).parent().insertBefore(before);
+                    event.stopPropagation();
+                });
+            });
+            document.querySelectorAll(".move-down").forEach(item => {
+                item.innerHTML = arrowDownVerySmall;
+                item.addEventListener("click", function (event) {
+                    const after = $(this).parent().next();
+                    if (after.length) $(this).parent().insertAfter(after);
+                    event.stopPropagation();
+                });
+            });
         }
 
         // general function to add eventlisteners to the customize view buttons
         function setup_customize_view_modal() {
+            const customizeViewModalHTML = `
+                <div class="row mb-4" id="sectionRow">
+                    <div class="col">
+                        <h4 class="ms-1 mb-2">Show Sections</h4>
+                        <div class="border border-3 rounded-3">
+                            <ol id="sectionShow" class="list-group list-group-numbered"></ol>
+                        </div>
+                    </div>
+                    <div class="col-auto mt-5">
+                        <div class="controls mt-5">
+                            <button class="btn btn-sm section-move-right"></button>
+                            <button class="btn btn-sm section-move-left"></button>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h4 class="ms-1 mb-2">Hide Sections</h4>
+                        <div class="border border-3 rounded-3">
+                            <ol id="sectionHide" class="list-group"></ol>
+                        </div>
+                    </div>
+                </div>
+                <div id="graphContainer"></div>`
+
             // function to catch the opening of the modal
-            $("#customizeModal").on('shown.bs.modal', function () {
+            $("#customizeModal").on("shown.bs.modal", function () {
+                document.getElementById("customizeViewModal").innerHTML = customizeViewModalHTML
                 if (settings.menu.overview) {
-                    console.log('overview')
+                    setup_customize_view_sections(settings.view.overview.sections.show, settings.view.overview.sections.hide)
+                    setup_customize_view_graphs(settings.view.overview.graphs.show, settings.view.overview.graphs.hide)
+                    setup_customize_view_interactions();
                 } else if (settings.menu.dashboard) {
-                    console.log(settings.view.dashboard.sections.show)
-                    console.log(settings.view.dashboard.sections.hide)
-                    console.log(settings.view.dashboard.graphs.show)
-                    console.log(settings.view.dashboard.graphs.hide)
                     setup_customize_view_sections(settings.view.dashboard.sections.show, settings.view.dashboard.sections.hide)
                     setup_customize_view_graphs(settings.view.dashboard.graphs.show, settings.view.dashboard.graphs.hide)
-                    // 1. fill the correct sections/graphs
-                    // 2. fix the highlighting of what is hidden (section wise)
-                    // 3. 
+                    setup_customize_view_interactions();
                 } else if (settings.menu.compare) {
-                    console.log('compare')
+                    setup_customize_view_sections(settings.view.compare.sections.show, settings.view.compare.sections.hide)
+                    setup_customize_view_graphs(settings.view.compare.graphs.show, settings.view.compare.graphs.hide)
+                    setup_customize_view_interactions();
                 } else if (settings.menu.tables) {
-                    console.log('tables')
+                    setup_customize_view_sections(settings.view.tables.sections.show, settings.view.tables.sections.hide)
+                    setup_customize_view_graphs(settings.view.tables.graphs.show, settings.view.tables.graphs.hide)
+                    setup_customize_view_interactions();
                 }
             });
+
             // function to catch the closing of the modal
             $("#customizeModal").on("hidden.bs.modal", function () {
-                // check what changed and update the localstorage + settings accordingly
+                const sectionShow = Array.from(document.getElementById("sectionShow").querySelectorAll(".hideItem"))
+                    .map(item => item.children[0].innerText);
+                const sectionHide = Array.from(document.getElementById("sectionHide").querySelectorAll(".hideItem"))
+                    .map(item => item.children[0].innerText);
+                const graphShow = Array.from(document.querySelectorAll(".graph-show .hideItem"))
+                    .map(item => item.children[0].innerText);
+                const graphHide = Array.from(document.querySelectorAll(".graph-hide .hideItem"))
+                    .map(item => item.children[0].innerText);
+                if (settings.menu.overview) {
+                    set_local_storage_item('view.overview.sections.show', sectionShow);
+                    set_local_storage_item('view.overview.sections.hide', sectionHide);
+                    set_local_storage_item('view.overview.graphs.show', graphShow);
+                    set_local_storage_item('view.overview.graphs.hide', graphHide);
+                } else if (settings.menu.dashboard) {
+                    set_local_storage_item('view.dashboard.sections.show', sectionShow);
+                    set_local_storage_item('view.dashboard.sections.hide', sectionHide);
+                    set_local_storage_item('view.dashboard.graphs.show', graphShow);
+                    set_local_storage_item('view.dashboard.graphs.hide', graphHide);
+                } else if (settings.menu.compare) {
+                    set_local_storage_item('view.compare.sections.show', sectionShow);
+                    set_local_storage_item('view.compare.sections.hide', sectionHide);
+                    set_local_storage_item('view.compare.graphs.show', graphShow);
+                    set_local_storage_item('view.compare.graphs.hide', graphHide);
+                } else if (settings.menu.tables) {
+                    set_local_storage_item('view.tables.sections.show', sectionShow);
+                    set_local_storage_item('view.tables.sections.hide', sectionHide);
+                    set_local_storage_item('view.tables.graphs.show', graphShow);
+                    set_local_storage_item('view.tables.graphs.hide', graphHide);
+                }
                 setup_data_and_graphs();
             });
-            // remove the entire customized view configuration
-            document.getElementById("resetGraphConfig").addEventListener("click", function () {
-                console.log('resetting')
+            // update the modal with the default views
+            document.getElementById("resetCustomizeView").addEventListener("click", function () {
+                document.getElementById("customizeViewModal").innerHTML = customizeViewModalHTML
+                if (settings.menu.overview) {
+                    setup_customize_view_sections(overviewSections, [])
+                    setup_customize_view_graphs([], [])
+                    setup_customize_view_interactions();
+                } else if (settings.menu.dashboard) {
+                    setup_customize_view_sections(dashboardSections, [])
+                    setup_customize_view_graphs(dashboardGraphs, [])
+                    setup_customize_view_interactions();
+                } else if (settings.menu.compare) {
+                    setup_customize_view_sections(compareSections, [])
+                    setup_customize_view_graphs(compareGraphs, [])
+                    setup_customize_view_interactions();
+                } else if (settings.menu.tables) {
+                    setup_customize_view_sections(tableSections, [])
+                    setup_customize_view_graphs(tableGraphs, [])
+                    setup_customize_view_interactions();
+                }
             });
         }
 
@@ -2953,13 +2855,13 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 return function (load = false) {
                     const element = document.getElementById(elementId);
                     if (load) {
-                        const storedValue = get_local_storage_item(key);
+                        const storedValue = key.split(".").reduce((acc, k) => acc?.[k], settings);
                         if (isNumber) {
-                            if (typeof storedValue === 'number') {
+                            if (typeof storedValue === "number") {
                                 element.value = storedValue;
                             }
                         } else {
-                            if (typeof storedValue === 'boolean') {
+                            if (typeof storedValue === "boolean") {
                                 element.checked = storedValue;
                             }
                         }
@@ -2968,7 +2870,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         if (isNumber) {
                             newValue = parseInt(element.value);
                         } else {
-                            const currentValue = get_local_storage_item(key);
+                            const currentValue = key.split(".").reduce((acc, k) => acc?.[k], settings);
                             newValue = !currentValue;
                             element.checked = newValue;
                         }
@@ -3031,37 +2933,42 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById("toggleAnimations").addEventListener("click", () => toggle_animations());
             document.getElementById("toggleAnimationDuration").addEventListener("change", () => toggle_animation_duration());
             document.getElementById("toggleTheme").addEventListener("click", () => toggle_theme());
-        }
 
-        function update_menu(item) {
-            ['overview', 'dashboard', 'compare', 'tables'].forEach(menuItem => {
-                set_local_storage_item(`menu.${menuItem}`, (item === `menu${menuItem.charAt(0).toUpperCase() + menuItem.slice(1)}`));
-            });
-            ['menuOverview', 'menuDashboard', 'menuCompare', 'menuTables'].forEach(id => {
-                document.getElementById(id).classList.toggle('active', id === item);
-            });
-            setup_data_and_graphs(true);
-        }
-
-        // function to setup the menu eventlisteners
-        function setup_menu() {
-            document.getElementById('menuOverview').addEventListener('click', () => update_menu('menuOverview'));
-            document.getElementById('menuDashboard').addEventListener('click', () => update_menu('menuDashboard'));
-            document.getElementById('menuCompare').addEventListener('click', () => update_menu('menuCompare'));
-            document.getElementById('menuTables').addEventListener('click', () => update_menu('menuTables'));
-
-            // Determine which menu was previously active from settings
-            const menuSettings = settings.menu;
-            let selectedMenu
-
-            if (menuSettings) {
-                if (menuSettings.overview) selectedMenu = 'menuOverview';
-                else if (menuSettings.dashboard) selectedMenu = 'menuDashboard';
-                else if (menuSettings.compare) selectedMenu = 'menuCompare';
-                else if (menuSettings.tables) selectedMenu = 'menuTables';
+            function show_settings_in_textarea() {
+                const textArea = document.getElementById("settingsTextArea");
+                textArea.value = JSON.stringify(settings, null, 2);
             }
 
-            update_menu(selectedMenu);
+            function copy_settings_to_clipboard() {
+                const textArea = document.getElementById("settingsTextArea");
+                textArea.select();
+                textArea.setSelectionRange(0, 99999);
+                navigator.clipboard.writeText(textArea.value);
+            }
+
+            function reset_settings_to_default() {
+                if (confirm("Are you sure you want to reset settings to default? This will also remove the custom layout and hidden graphs!")) {
+                    localStorage.removeItem("settings");
+                    location.reload();
+                }
+            }
+
+            function apply_settings_from_textarea() {
+                try {
+                    const input = document.getElementById("settingsTextArea").value;
+                    const newSettings = JSON.parse(input);
+                    settings = newSettings
+                    localStorage.setItem("settings", JSON.stringify(newSettings));
+                } catch (e) {
+                    alert("Invalid JSON: " + e.message);
+                }
+            }
+
+            document.getElementById("copySettings").addEventListener("click", copy_settings_to_clipboard);
+            document.getElementById("resetSettings").addEventListener("click", reset_settings_to_default);
+            document.getElementById("applySettings").addEventListener("click", apply_settings_from_textarea);
+            document.getElementById("settingsModal").addEventListener("shown.bs.modal", show_settings_in_textarea);
+
         }
 
         // function to setup eventlisteners for filter buttons
@@ -3079,7 +2986,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             });
             // eventlisteners for fullscreen buttons
             for (let fullscreenButton of fullscreenButtons) {
-                console.log(`${fullscreenButton}Fullscreen`)
                 document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", () => {
                     lastScrollY = window.scrollY
                     inFullscreen = !inFullscreen;
@@ -6465,6 +6371,36 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // RENDER DATA & GRAPH FUNCTIONS //
         ///////////////////////////////////
 
+        function update_menu(item) {
+            ["overview", "dashboard", "compare", "tables"].forEach(menuItem => {
+                set_local_storage_item(`menu.${menuItem}`, (item === `menu${menuItem.charAt(0).toUpperCase() + menuItem.slice(1)}`));
+            });
+            ["menuOverview", "menuDashboard", "menuCompare", "menuTables"].forEach(id => {
+                document.getElementById(id).classList.toggle("active", id === item);
+            });
+            setup_data_and_graphs(true);
+        }
+
+        // function to setup the menu eventlisteners
+        function setup_menu() {
+            document.getElementById("menuOverview").addEventListener("click", () => update_menu("menuOverview"));
+            document.getElementById("menuDashboard").addEventListener("click", () => update_menu("menuDashboard"));
+            document.getElementById("menuCompare").addEventListener("click", () => update_menu("menuCompare"));
+            document.getElementById("menuTables").addEventListener("click", () => update_menu("menuTables"));
+
+            // Determine which menu was previously active from settings
+            const menuSettings = settings.menu;
+            let selectedMenu
+
+            if (menuSettings) {
+                if (menuSettings.overview) selectedMenu = "menuOverview";
+                else if (menuSettings.dashboard) selectedMenu = "menuDashboard";
+                else if (menuSettings.compare) selectedMenu = "menuCompare";
+                else if (menuSettings.tables) selectedMenu = "menuTables";
+            }
+            update_menu(selectedMenu);
+        }
+
         // function to update all graph data, function is called when updating filters and when the page loads
         function setup_data_and_graphs(menuUpdate = false) {
             lastScrollY = window.scrollY;
@@ -6480,7 +6416,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             // Let the spinner render before starting heavy setup
             requestAnimationFrame(() => {
                 setup_filtered_data_and_filters();
-                setup_section_buttons();
+                setup_section_menu_buttons();
                 setup_section_order();
                 setup_graph_order();
                 setup_collapsables();
@@ -6584,12 +6520,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             }
         }
 
-        // function to order the sections according to the localstorage config
+        // function to order the sections according to the config
         function setup_section_order() {
             const overviewStatisticsSection = document.getElementById("overviewStatisticsSection");
             const dashboardSectionShow = settings.view.dashboard.sections.show
             const dashboardSectionHide = settings.view.dashboard.sections.hide
-            const dashboardSections = [...dashboardSectionShow, ...dashboardSectionHide];
             const compareStatisticsSection = document.getElementById("compareStatisticsSection");
             const tablesStatisticsSection = document.getElementById("tablesStatisticsSection");
             const sectionButtons = [
@@ -6693,21 +6628,27 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 sectionDataHidden.innerHTML = "";
             }
 
-            const graphShow = [...settings.view.dashboard.graphs.show, ...settings.view.compare.graphs.show, ...settings.view.table.graphs.show]
-            const graphHide = [...settings.view.dashboard.graphs.hide, ...settings.view.compare.graphs.hide, ...settings.view.table.graphs.hide]
-            // const savedLayout = settings.layout[`${grid}`]
+            const graphShow = [...settings.view.dashboard.graphs.show, ...settings.view.compare.graphs.show]
+            const graphHide = [...settings.view.dashboard.graphs.hide, ...settings.view.compare.graphs.hide]
 
             if (settings.layouts && settings.layouts[`${grid}`]) {
-                const savedLayout = JSON.parse(settings.layouts[`${grid}`])
+                const savedLayout = JSON.parse(settings.layouts[`${grid}`]);
+
                 for (const graph of graphShow) {
-                    savedLayout.forEach(g => {
-                        if (graph == g.id) {
-                            add_graph(g.id, g.x, g.y, g.w, g.h);
+                    if (graph.startsWith(section)) {
+                        const layout = savedLayout.find(g => g.id === graph);
+                        if (layout) {
+                            add_graph(layout.id, layout.x, layout.y, layout.w, layout.h);
+                        } else {
+                            add_graph(graph, undefined, undefined, 4, 4);
                         }
-                    });
+                    }
                 }
+
                 for (const graph of graphHide) {
-                    add_hidden_graph(g.id);
+                    if (graph.startsWith(section)) {
+                        add_hidden_graph(graph);
+                    }
                 }
             } else {
                 const defaultWidth = 4;
@@ -6717,7 +6658,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 let currentY = 0;
                 for (let graph of graphShow) {
                     if (graph.startsWith(section)) {
-                        if (graph.includes('Table')) continue;
                         add_graph(graph, currentX, currentY, defaultWidth, defaultHeight);
                         currentX += defaultWidth;
                         if (currentX >= maxColumns) {
@@ -6758,95 +6698,16 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         function setup_tables() {
             const tableGrid = document.getElementById("gridTable")
-            tables.forEach(table => { tableGrid.insertAdjacentHTML('beforeend', table.html); })
+            settings.view.tables.graphs.show.forEach(table => { tableGrid.insertAdjacentHTML('beforeend', graphMetadata.find(g => g.label == table).html); })
+            const tableHidden = document.getElementById("tableDataHidden")
+            settings.view.tables.graphs.hide.forEach(table => { tableHidden.insertAdjacentHTML('beforeend', graphMetadata.find(g => g.label == table).html); })
         }
-
-        // function to order the graphs in the sections
-        // function setup_graphs(section) {
-        //     const lowerCaseSection = section.toLowerCase();
-        //     const sectionDataElement = document.getElementById(lowerCaseSection + "Data");
-        //     const sectionDataHiddenElement = document.getElementById(lowerCaseSection + "DataHidden");
-
-        //     // Clear existing content
-        //     if (sectionDataElement.children.length > 0) {
-        //         sectionDataElement.innerHTML = "";
-        //     }
-        //     if (sectionDataHiddenElement.children.length > 0) {
-        //         sectionDataHiddenElement.innerHTML = "";
-        //     }
-
-        //     var dataRow = `<div class="row" id="${lowerCaseSection}Data{index}">
-        //                 {canvas}
-        //              </div>`;
-        //     var dataRowTable = `<div class="row" id="${lowerCaseSection}Data{index}">
-        //                 <h5>{graph}</h5>
-        //                 {canvas}
-        //              </div>`;
-
-        //     function position_graph(graph, sectionElement, hidden = false) {
-        //         const camelCaseGraph = space_to_camelcase(graph);
-        //         const graphDataElement = document.getElementById(camelCaseGraph + "Canvas");
-        //         if (graphDataElement) {
-        //             graphDataElement.remove();
-        //         }
-
-        //         const canvas = graphMetadata.find(g => g.label === graph).html;
-        //         if (section == "Table") {
-        //             dataRow = dataRowTable
-        //         }
-
-        //         if (sectionElement.lastChild == null) {
-        //             // No row yet
-        //             sectionElement.insertAdjacentHTML(
-        //                 "beforeend",
-        //                 dataRow.replace("{index}", "1").replace("{canvas}", canvas).replace("{graph}", graph)
-        //             );
-        //         } else {
-        //             const lastRow = sectionElement.lastChild;
-        //             const index = parseInt(lastRow.id.match(/\d+/)[0], 10) + 1;
-
-        //             if (lastRow.children.length < maxGraphsPerRow) {
-        //                 const isTableRow = [...lastRow.children].some(child => child.id && child.id.includes("Table"));
-        //                 if (isTableRow) {
-        //                     // Current row has a table, start new row
-        //                     sectionElement.insertAdjacentHTML(
-        //                         "beforeend",
-        //                         dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas).replace("{graph}", graph)
-        //                     );
-        //                 } else {
-        //                     // Add to current row
-        //                     lastRow.insertAdjacentHTML("beforeend", canvas);
-        //                 }
-        //             } else {
-        //                 // Max per row reached, start new row
-        //                 sectionElement.insertAdjacentHTML(
-        //                     "beforeend",
-        //                     dataRow.replace("{index}", `${index}`).replace("{canvas}", canvas).replace("{graph}", graph)
-        //                 );
-        //             }
-        //         }
-        //     }
-
-        //     const graphShowList = JSON.parse(localStorage.getItem("graphShow"));
-        //     for (let graph of graphShowList) {
-        //         if (graph.startsWith(section) || graph.endsWith(section)) {
-        //             position_graph(graph, sectionDataElement);
-        //         }
-        //     }
-
-        //     const graphHideList = JSON.parse(localStorage.getItem("graphHide"));
-        //     for (let graph of graphHideList) {
-        //         if (graph.startsWith(section) || graph.endsWith(section)) {
-        //             position_graph(graph, sectionDataHiddenElement, true);
-        //         }
-        //     }
-        // }
 
         ////////////////////////////
         // LOCALSTORAGE FUNCTIONS //
         ////////////////////////////
 
-        function load_local_storage() {
+        function setup_local_storage() {
             const storedSettings = localStorage.getItem('settings');
             if (storedSettings) {
                 try {
@@ -6855,6 +6716,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 } catch (e) {
                     alert('Failed to parse settings from localStorage:', e);
                 }
+            } else {
+                localStorage.setItem('settings', JSON.stringify(settings));
             }
         }
 
@@ -6874,22 +6737,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 deep = deep[k];
             });
             deep[lastKey] = value;
-        }
-
-        function get_local_storage_item(path) {
-            const value = get_nested_setting(settings, path);
-            if (typeof value === 'string') {
-                try {
-                    return JSON.parse(value);
-                } catch (e) {
-                    return value;
-                }
-            }
-            return value;
-        }
-
-        function get_nested_setting(obj, path) {
-            return path.split('.').reduce((o, k) => (o && o.hasOwnProperty(k)) ? o[k] : undefined, obj);
         }
 
         function merge_deep(target, source) {
@@ -6913,27 +6760,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // function that triggers all functions that should be executed when the dashboard is loaded first
         // in the correct order!
         function main() {
-            load_local_storage();
-            setup_stats();
-
+            setup_local_storage();
+            setup_database_stats();
             setup_filter_modal();
             setup_settings_modal();
             setup_customize_view_modal();
-
             setup_menu();
-            // setup_customize_view_arrow_eventlisteners(); //
-            // setup_customize_view_local_storage(); //
-            // setup_customize_view_content(); //
-            // update_customize_view_local_storage(); //
-
-            // on load
-            // set the default show/hide settings if none exist
-            // on opening of the modal >
-            // 1. check which page you're on
-            // 2. set the sections to show/hide
-            // 3. set the graphs to show/hide
-            // 4.
-
         }
 
         main() // trigger on first load
