@@ -2266,13 +2266,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             }
 
             // detect theme preference
-            const theme = get_local_storage_item("theme")
             const isDark = html.classList.contains("dark-mode");
 
-            if (theme === "light") {
+            if (settings.theme === "light") {
                 if (isDark) html.classList.remove("dark-mode");
                 set_light_mode();
-            } else if (theme === "dark") {
+            } else if (settings.theme === "dark") {
                 if (!isDark) html.classList.add("dark-mode");
                 set_dark_mode();
             } else {
@@ -2295,12 +2294,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 <tr><td>Tests</td><td>${tests.length}</td></tr>
                 <tr><td>Keywords</td><td>${keywords.length}</td></tr>
             </table>`
-
-            filteredAmountDefault = filteredAmount
-            document.getElementById("amount").value = filteredAmount
-            if (server) {
-                document.getElementById("openDashboard").hidden = false
-            }
 
             window.onbeforeprint = () => {
                 return new Promise(res => setTimeout(res, settings.show.duration + 500)); // allow rendering time
@@ -2537,7 +2530,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 if (index === 0) return part;
                 return part.charAt(0).toUpperCase() + part.slice(1);
             }).join('');
-            const currentState = get_local_storage_item(key);
+            const currentState = key.split('.').reduce((o, i) => o[i], settings)
             if (firstLoad) {
                 if (currentState !== undefined) {
                     set_local_storage_item(key, currentState); // Ensure internal settings var is updated
@@ -2702,33 +2695,33 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 }
             }
 
-            let storedTypes = get_local_storage_item('graphTypes');
-            if (!storedTypes) {
-                set_local_storage_item('graphTypes', defaultGraphTypes);
-                storedTypes = defaultGraphTypes;
-            } else {
-                // Check for mismatch between stored types and defaults
-                const storedKeys = Object.keys(storedTypes);
-                const defaultKeys = Object.keys(defaultGraphTypes);
-                const mismatch = storedKeys.length !== defaultKeys.length ||
-                    defaultKeys.some(key => !(key in storedTypes));
-                if (mismatch) {
-                    for (const key in defaultGraphTypes) {
-                        if (!(key in storedTypes)) {
-                            storedTypes[key] = defaultGraphTypes[key];
-                        }
-                    }
+            // let storedTypes = get_local_storage_item('graphTypes');
+            // if (!storedTypes) {
+            //     set_local_storage_item('graphTypes', defaultGraphTypes);
+            //     storedTypes = defaultGraphTypes;
+            // } else {
+            //     // Check for mismatch between stored types and defaults
+            //     const storedKeys = Object.keys(storedTypes);
+            //     const defaultKeys = Object.keys(defaultGraphTypes);
+            //     const mismatch = storedKeys.length !== defaultKeys.length ||
+            //         defaultKeys.some(key => !(key in storedTypes));
+            //     if (mismatch) {
+            //         for (const key in defaultGraphTypes) {
+            //             if (!(key in storedTypes)) {
+            //                 storedTypes[key] = defaultGraphTypes[key];
+            //             }
+            //         }
 
-                    // Clear section and graph visibility settings
-                    set_local_storage_item('sectionHide', []);
-                    set_local_storage_item('graphHide', []);
-                    set_local_storage_item('sectionShow', hideSections);
-                    set_local_storage_item('graphShow', hideGraphs);
+            //         // Clear section and graph visibility settings
+            //         set_local_storage_item('sectionHide', []);
+            //         set_local_storage_item('graphHide', []);
+            //         set_local_storage_item('sectionShow', hideSections);
+            //         set_local_storage_item('graphShow', hideGraphs);
 
-                    // Save updated graph types
-                    set_local_storage_item('graphTypes', storedTypes);
-                }
-            }
+            //         // Save updated graph types
+            //         set_local_storage_item('graphTypes', storedTypes);
+            //     }
+            // }
         }
 
         // function to setup the highlighting when rendering the dashboard
@@ -2741,9 +2734,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to update the localstorage of the graphtypes
         function update_graph_type(graph, type) {
-            const storedTypes = get_local_storage_item('graphTypes');
-            storedTypes[graph] = type;
-            set_local_storage_item('graphTypes', storedTypes);
+            settings.graphTypes[graph] = type;
+            set_local_storage_item('graphTypes', settings.graphTypes);
         }
 
         // // function to change which button is highlighted styling wise
@@ -2857,18 +2849,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // EVENTLISTENER FUNCTIONS //
         /////////////////////////////
 
-        function setup_eventlisteners_filter_buttons() {
-            // function to catch the closing of the filter modal
+        function setup_filter_modal() {
+            // eventlistener to catch the closing of the filter modal
             $("#filtersModal").on("hidden.bs.modal", function () {
                 setup_data_and_graphs();
             });
-
-            function show_checkboxes() {
-                const checkboxes = document.getElementById("checkboxes");
-                showingRunTags = !showingRunTags;
-                checkboxes.style.display = showingRunTags ? "block" : "none";
-            }
-            document.getElementById("selectRunTags").addEventListener("click", show_checkboxes);
+            // eventlistener to reset the filters
             document.getElementById("resetFilters").addEventListener("click", function () {
                 document.getElementById("runs").value = "All";
                 const tagElements = document.getElementById("runTag").getElementsByTagName("input");
@@ -2880,28 +2866,65 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 document.getElementById("metadata").value = "All";
                 setup_lowest_highest_dates(runs);
             });
+            // eventlistener for all runs button
             document.getElementById("allRuns").addEventListener("click", function () {
                 document.getElementById("amount").value = Object.keys(runs).length;
             });
-
+            // eventlistener for the runTags
+            function show_checkboxes() {
+                const checkboxes = document.getElementById("checkboxes");
+                showingRunTags = !showingRunTags;
+                checkboxes.style.display = showingRunTags ? "block" : "none";
+            }
             const checkboxesElement = document.getElementById("checkboxes");
             const runTagsSelectElement = document.getElementById("selectRunTags");
-            // listen for click events on body to hide the run checkboxes when clicking outside of the select/checkboxes elements
+            // eventlistener for click events on body to hide the run checkboxes when clicking outside of the select/checkboxes elements
+            document.getElementById("selectRunTags").addEventListener("click", show_checkboxes);
             document.body.addEventListener("click", function (event) {
                 if (showingRunTags == true && !checkboxesElement.contains(event.target) && !runTagsSelectElement.contains(event.target)) {
                     show_checkboxes()
                 }
             });
+            // amount filter setup
+            filteredAmountDefault = filteredAmount
+            document.getElementById("amount").value = filteredAmount
+            if (server) {
+                document.getElementById("openDashboard").hidden = false
+            }
+            // fill the filters with default values
+            setup_run_amount_filter();
+            setup_lowest_highest_dates();
+            setup_metadata_filter();
+            setup_runs_in_select_filter_buttons();
+            setup_runtags_in_select_filter_buttons();
         }
 
-        function setup_eventlisteners_customize_view_buttons() {
+        // function to setup the sections correctly in the customize view modal when opened
+        function setup_customize_view_sections(show, hide, reset = false) {
+
+        }
+
+        // function to setup the graphs correctly in the cutomize view modal when opened
+        function setup_customize_view_graphs(show, hide, reset = false) {
+            
+        }
+
+        // general function to add eventlisteners to the customize view buttons
+        function setup_customize_view_modal() {
             // function to catch the opening of the modal
             $("#customizeModal").on('shown.bs.modal', function () {
                 if (settings.menu.overview) {
                     console.log('overview')
-                    
                 } else if (settings.menu.dashboard) {
-                    console.log('dashboard')
+                    console.log(settings.view.dashboard.sections.show)
+                    console.log(settings.view.dashboard.sections.hide)
+                    console.log(settings.view.dashboard.graphs.show)
+                    console.log(settings.view.dashboard.graphs.hide)
+                    setup_customize_view_sections(settings.view.dashboard.sections.show, settings.view.dashboard.sections.hide)
+                    setup_customize_view_graphs(settings.view.dashboard.graphs.show, settings.view.dashboard.graphs.hide)
+                    // 1. fill the correct sections/graphs
+                    // 2. fix the highlighting of what is hidden (section wise)
+                    // 3. 
                 } else if (settings.menu.compare) {
                     console.log('compare')
                 } else if (settings.menu.tables) {
@@ -2915,13 +2938,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             });
             // remove the entire customized view configuration
             document.getElementById("resetGraphConfig").addEventListener("click", function () {
-                console.log('resetting')                
+                console.log('resetting')
             });
-
         }
 
         // function to create customized view eventlisteners
-        function setup_eventlisteners_settings_buttons() {
+        function setup_settings_modal() {
             // function to catch the closing of the settings modal
             $("#settingsModal").on("hidden.bs.modal", function () {
                 setup_data_and_graphs();
@@ -3022,7 +3044,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // function to setup the menu eventlisteners
-        function setup_menu_eventlisteners() {
+        function setup_menu() {
             document.getElementById('menuOverview').addEventListener('click', () => update_menu('menuOverview'));
             document.getElementById('menuDashboard').addEventListener('click', () => update_menu('menuDashboard'));
             document.getElementById('menuCompare').addEventListener('click', () => update_menu('menuCompare'));
@@ -3043,7 +3065,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // function to setup eventlisteners for filter buttons
-        function setup_eventlisteners_section_filter_buttons() {
+        function setup_sections_filters() {
             // has to be added after the creation of the sections and graphs
             document.getElementById("suiteFolderDonutGoUp").addEventListener("click", function () {
                 function remove_last_folder(path) {
@@ -3057,6 +3079,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             });
             // eventlisteners for fullscreen buttons
             for (let fullscreenButton of fullscreenButtons) {
+                console.log(`${fullscreenButton}Fullscreen`)
                 document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", () => {
                     lastScrollY = window.scrollY
                     inFullscreen = !inFullscreen;
@@ -3120,11 +3143,87 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     }).filter(w => w.id);
                     set_local_storage_item(`layouts.${grid}`, JSON.stringify(layout));
                 })
-            })
+            });
+            update_switch_local_storage("switch.runTags", settings.switch.runTags, true);
+            document.getElementById("switchRunTags").addEventListener("click", function () {
+                settings.switch.runTags = !settings.switch.runTags
+                update_switch_local_storage("switch.runTags", settings.switch.runTags);
+                create_overview_statistics_graphs();
+            });
+            document.getElementById("overviewDurationPercentage").addEventListener("change", function () {
+                create_overview_statistics_graphs();
+            });
+            document.getElementById("suiteSelectSuites").addEventListener("change", () => {
+                create_suite_duration_graph();
+                create_suite_statistics_graph();
+            });
+            update_switch_local_storage("switch.suitePathsSuiteSection", settings.switch.suitePathsSuiteSection, true);
+            document.getElementById("switchSuitePathsSuiteSection").addEventListener("change", (e) => {
+                settings.switch.suitePathsSuiteSection = !settings.switch.suitePathsSuiteSection;
+                update_switch_local_storage("switch.suitePathsSuiteSection", settings.switch.suitePathsSuiteSection);
+                setup_suites_in_suite_select();
+                create_suite_statistics_graph();
+                create_suite_duration_graph();
+                create_suite_most_failed_graph();
+            });
+            document.getElementById("resetSuiteFolder").addEventListener("click", () => {
+                create_suite_folder_donut_graph("");
+            });
+            document.getElementById("suiteSelectTests").addEventListener("change", () => {
+                setup_testtags_in_select();
+                setup_tests_in_select();
+                create_test_statistics_graph();
+                create_test_duration_graph();
+                create_test_duration_deviation_graph();
+            });
+            update_switch_local_storage("switch.suitePathsTestSection", settings.switch.suitePathsTestSection, true);
+            document.getElementById("switchSuitePathsTestSection").addEventListener("change", () => {
+                settings.switch.suitePathsTestSection = !settings.switch.suitePathsTestSection;
+                update_switch_local_storage("switch.suitePathsTestSection", settings.switch.suitePathsTestSection);
+                setup_suites_in_test_select();
+                create_test_statistics_graph();
+                create_test_duration_graph();
+                create_test_duration_deviation_graph();
+                create_test_messages_graph();
+                create_test_most_flaky_graph();
+                create_test_recent_most_flaky_graph();
+                create_test_most_failed_graph();
+                create_test_recent_most_failed_graph();
+            });
+            document.getElementById("testTagsSelect").addEventListener("change", () => {
+                setup_tests_in_select();
+                create_test_statistics_graph();
+                create_test_duration_graph();
+                create_test_duration_deviation_graph();
+            });
+            document.getElementById("testSelect").addEventListener("change", () => {
+                create_test_statistics_graph();
+                create_test_duration_graph();
+                create_test_duration_deviation_graph();
+            });
+            document.getElementById("keywordSelect").addEventListener("change", () => {
+                create_keyword_statistics_graph();
+                create_keyword_times_run_graph();
+                create_keyword_total_duration_graph();
+                create_keyword_average_duration_graph();
+                create_keyword_min_duration_graph();
+                create_keyword_max_duration_graph();
+            });
+            // compare filters
+            compareRunIds.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', () => {
+                        create_compare_statistics_graph();
+                        create_compare_suite_duration_graph();
+                        create_compare_tests_graph();
+                    });
+                }
+            });
         }
 
         // function to setup eventlisteners for changing the graph view buttons
-        function setup_eventlisteners_graph_view_buttons() {
+        function setup_graph_view_buttons() {
             // ignore skip button eventlisteners
             document.getElementById("ignoreSkips").addEventListener("change", () => {
                 ignoreSkips = !ignoreSkips;
@@ -3179,88 +3278,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             // Iterate over the graphChangeButtons object to attach event listeners
             Object.entries(graphChangeButtons).forEach(([graphChangeButton, buttonTypes]) => {
                 add_graph_eventlisteners(graphChangeButton, buttonTypes);
-            });
-        }
-
-        // function to handle the eventlisteners for all filter options in the sections
-        function setup_eventlisteners_section_filter_buttons() {
-            update_switch_local_storage("switch.runTags", settings.switch.runTags, true);
-            document.getElementById("switchRunTags").addEventListener("click", function () {
-                settings.switch.runTags = !settings.switch.runTags
-                update_switch_local_storage("switch.runTags", settings.switch.runTags);
-                create_overview_statistics_graphs();
-            });
-            document.getElementById("overviewDurationPercentage").addEventListener("change", function () {
-                create_overview_statistics_graphs();
-            });
-            document.getElementById("suiteSelectSuites").addEventListener("change", () => {
-                create_suite_duration_graph();
-                create_suite_statistics_graph();
-            });
-            document.getElementById("switchSuitePathsSuiteSection").addEventListener("change", () => {
-                settings.switch.suitePathsSuiteSection = !settings.switch.suitePathsSuiteSection;
-                update_switch_local_storage("switch.suitePathsSuiteSection", settings.switch.suitePathsSuiteSection);
-                setup_suites_in_suite_select();
-                create_suite_statistics_graph();
-                create_suite_duration_graph();
-                create_suite_most_failed_graph();
-            });
-            // update the local storage for the suite path buttons on first load
-            update_switch_local_storage("switch.suitePathsSuiteSection", settings.switch.suitePathsSuiteSection, true);
-            document.getElementById("resetSuiteFolder").addEventListener("click", () => {
-                create_suite_folder_donut_graph("");
-            });
-            document.getElementById("suiteSelectTests").addEventListener("change", () => {
-                setup_testtags_in_select();
-                setup_tests_in_select();
-                create_test_statistics_graph();
-                create_test_duration_graph();
-                create_test_duration_deviation_graph();
-            });
-            document.getElementById("switchSuitePathsTestSection").addEventListener("change", () => {
-                settings.switch.suitePathsTestSection = !settings.switch.suitePathsTestSection;
-                update_switch_local_storage("switch.suitePathsTestSection", settings.switch.suitePathsTestSection);
-                setup_suites_in_test_select();
-                create_test_statistics_graph();
-                create_test_duration_graph();
-                create_test_duration_deviation_graph();
-                create_test_messages_graph();
-                create_test_most_flaky_graph();
-                create_test_recent_most_flaky_graph();
-                create_test_most_failed_graph();
-                create_test_recent_most_failed_graph();
-            });
-            // update the local storage for the suite path buttons on first load
-            update_switch_local_storage("switch.suitePathsTestSection", settings.switch.suitePathsTestSection, true);
-            document.getElementById("testTagsSelect").addEventListener("change", () => {
-                setup_tests_in_select();
-                create_test_statistics_graph();
-                create_test_duration_graph();
-                create_test_duration_deviation_graph();
-            });
-            document.getElementById("testSelect").addEventListener("change", () => {
-                create_test_statistics_graph();
-                create_test_duration_graph();
-                create_test_duration_deviation_graph();
-            });
-            document.getElementById("keywordSelect").addEventListener("change", () => {
-                create_keyword_statistics_graph();
-                create_keyword_times_run_graph();
-                create_keyword_total_duration_graph();
-                create_keyword_average_duration_graph();
-                create_keyword_min_duration_graph();
-                create_keyword_max_duration_graph();
-            });
-            // compare filters
-            compareRunIds.forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.addEventListener('change', () => {
-                        create_compare_statistics_graph();
-                        create_compare_suite_duration_graph();
-                        create_compare_tests_graph();
-                    });
-                }
             });
         }
 
@@ -6468,9 +6485,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 setup_graph_order();
                 setup_collapsables();
                 setup_information_popups();
-                setup_eventlisteners_section_filter_buttons();
-                setup_eventlisteners_graph_view_buttons();
-                // setup_button_highlighting();
+                setup_sections_filters();
+                setup_graph_view_buttons();
                 setup_theme();
 
                 requestAnimationFrame(() => {
@@ -6671,7 +6687,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             }
             window[grid].disable();
 
-
             const lowerCaseSection = section.toLowerCase();
             const sectionDataHidden = document.getElementById(lowerCaseSection + "DataHidden");
             if (sectionDataHidden.children.length > 0) {
@@ -6680,18 +6695,19 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
             const graphShow = [...settings.view.dashboard.graphs.show, ...settings.view.compare.graphs.show, ...settings.view.table.graphs.show]
             const graphHide = [...settings.view.dashboard.graphs.hide, ...settings.view.compare.graphs.hide, ...settings.view.table.graphs.hide]
-            const savedLayout = get_local_storage_item(`layouts.${grid}`);
+            // const savedLayout = settings.layout[`${grid}`]
 
-            if (savedLayout) {
+            if (settings.layouts && settings.layouts[`${grid}`]) {
+                const savedLayout = JSON.parse(settings.layouts[`${grid}`])
                 for (const graph of graphShow) {
-                    savedLayout.forEach(graph => {
-                        add_graph(graph.id, graph.x, graph.y, graph.w, graph.h);
+                    savedLayout.forEach(g => {
+                        if (graph == g.id) {
+                            add_graph(g.id, g.x, g.y, g.w, g.h);
+                        }
                     });
                 }
                 for (const graph of graphHide) {
-                    savedLayout.forEach(graph => {
-                        add_hidden_graph(graph.id);
-                    });
+                    add_hidden_graph(g.id);
                 }
             } else {
                 const defaultWidth = 4;
@@ -6900,18 +6916,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             load_local_storage();
             setup_stats();
 
-            setup_eventlisteners_filter_buttons();
-            setup_eventlisteners_settings_buttons();
-            setup_eventlisteners_customize_view_buttons();
-            setup_eventlisteners_section_filter_buttons();
+            setup_filter_modal();
+            setup_settings_modal();
+            setup_customize_view_modal();
 
-            setup_run_amount_filter();
-            setup_lowest_highest_dates();
-            setup_metadata_filter();
-            setup_runs_in_select_filter_buttons();
-            setup_runtags_in_select_filter_buttons();
-
-            setup_menu_eventlisteners();
+            setup_menu();
             // setup_customize_view_arrow_eventlisteners(); //
             // setup_customize_view_local_storage(); //
             // setup_customize_view_content(); //
@@ -6924,7 +6933,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             // 2. set the sections to show/hide
             // 3. set the graphs to show/hide
             // 4.
-    
+
         }
 
         main() // trigger on first load
