@@ -382,12 +382,6 @@
             border-radius: 1rem
         }
 
-        /* #suiteFolderFailDonutGraph,
-        #suiteFolderDonutGraph,
-        #runDonutGraph {
-            cursor: pointer;
-        } */
-
         @media print {
             table {
                 width: 100%;
@@ -440,15 +434,28 @@
         }
 
         canvas {
-            /* flex: 1 1 auto; */
             width: 100% !important;
             height: 100% !important;
             display: block;
         }
+
+        #alertContainer {
+            z-index: 1100;
+            top: 7rem;
+            max-width: 80%
+        }
+
+        .alert-dismissible {
+            padding-right: 16px !important;
+        }
+
     </style>
 </head>
 
 <body>
+    <div class="position-relative alert-container">
+        <div class="position-absolute top-20 start-50 translate-middle" id="alertContainer"></div>
+    </div>
     <nav class="navbar navbar-expand-sm sticky-top navbar-dark ps-4 pe-4 border-bottom pb-1" id="navigation">
         <div class="navbar-nav ms-4">
             <a class="nav-link p-2" id="rflogo" href="https://robotframework.org/" target="_blank"
@@ -933,10 +940,12 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-auto">
-                                <button class="btn btn-outline-light btn-sm mt-auto" id="copySettings">Copy Current Settings</button>
+                                <button class="btn btn-outline-light btn-sm mt-auto" id="copySettings">Copy Current
+                                    Settings</button>
                             </div>
                             <div class="col-auto">
-                                <button class="btn btn-outline-light btn-sm mt-auto" id="resetSettings">Reset to Default (includes layout and hidden settings!)</button>
+                                <button class="btn btn-outline-light btn-sm mt-auto" id="resetSettings">Reset to Default
+                                    (includes layout and hidden settings!)</button>
                             </div>
                             <div class="col-auto">
                                 <button class="btn btn-outline-light btn-sm mt-auto" id="applySettings">Apply Pasted
@@ -2278,6 +2287,29 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             };
         }
 
+        // function to add an alert to the admin page
+        function add_alert(message, category, timeout = 5000) {
+            console.log(message, category)
+            const alertHTML = `<div class="row alert alert-${category} alert-dismissible" role="alert">
+                <div class="col">${message}</div>
+                <div class="col-auto">
+                    <span onclick="close_alert()" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </span>
+                </div>
+            </div>`
+            document.getElementById("alertContainer").innerHTML = alertHTML
+
+            setTimeout(() => {
+                close_alert()
+            }, timeout);
+        }
+
+        // function to close the alerts
+        function close_alert() {
+            document.getElementById("alertContainer").innerHTML = ""
+        }
+
         // function to setup all collapse buttons and icons
         // TODO: fix this functionality for gridstack divs
         function setup_collapsables() {
@@ -2944,6 +2976,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 textArea.select();
                 textArea.setSelectionRange(0, 99999);
                 navigator.clipboard.writeText(textArea.value);
+                add_alert("Copied settings to clipboard!", "success")   
             }
 
             function reset_settings_to_default() {
@@ -2960,7 +2993,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     settings = newSettings
                     localStorage.setItem("settings", JSON.stringify(newSettings));
                 } catch (e) {
-                    alert("Invalid JSON: " + e.message);
+                    add_alert("Invalid JSON: " + e.message, "danger")
                 }
             }
 
