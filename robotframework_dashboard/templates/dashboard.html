@@ -179,7 +179,13 @@
         .stats-graph,
         .boxplot-graph,
         .shown-graph,
-        .hidden-graph {
+        .hidden-graph,
+        .shown-section,
+        .hidden-section,
+        .move-up-table,
+        .move-down-table,
+        .move-up-section,
+        .move-down-section {
             cursor: pointer;
         }
 
@@ -451,7 +457,9 @@
             padding-right: 16px !important;
         }
 
-        .grid-stack-item-content:has(.hidden-graph:not([hidden])) {
+        .grid-stack-item-content:has(.hidden-graph:not([hidden])),
+        .table-section:has(.hidden-graph:not([hidden])),
+        .card:has(.hidden-section:not([hidden])) {
             opacity: 0.5;
         }
     </style>
@@ -580,6 +588,12 @@
                     <div class="col">
                         <h4 id="runTitle"></h4>
                     </div>
+                    <div class="col-auto ms-auto">
+                        <a class="move-up-section" title="Move Up" id="runSectionMoveUp" hidden></a>
+                        <a class="move-down-section" title="Move Down" id="runSectionMoveDown" hidden></a>
+                        <a class="shown-section" title="Hide Section" id="runSectionShown" hidden></a>
+                        <a class="hidden-section" title="Show Section" id="runSectionHidden" hidden></a>
+                    </div>
                 </div>
             </div>
             <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card runData -->
@@ -616,6 +630,12 @@
                                 <input class="form-check-input" type="checkbox" role="switch"
                                     id="switchSuitePathsSuiteSection" />
                             </div>
+                        </div>
+                        <div class="col-auto ms-auto">
+                            <a class="move-up-section" title="Move Up" id="suiteSectionMoveUp" hidden></a>
+                            <a class="move-down-section" title="Move Down" id="suiteSectionMoveDown" hidden></a>
+                            <a class="shown-section" title="Hide Section" id="suiteSectionShown" hidden></a>
+                            <a class="hidden-section" title="Show Section" id="suiteSectionHidden" hidden></a>
                         </div>
                     </div>
                 </div>
@@ -656,6 +676,12 @@
                             <label class="form-label mb-0 me-2 text-nowrap" for="testTagsSelect">Test Tags:</label>
                             <select class="form-select form-select-sm w-auto" id="testTagsSelect"></select>
                         </div>
+                        <div class="col-auto ms-auto">
+                            <a class="move-up-section" title="Move Up" id="testSectionMoveUp" hidden></a>
+                            <a class="move-down-section" title="Move Down" id="testSectionMoveDown" hidden></a>
+                            <a class="shown-section" title="Hide Section" id="testSectionShown" hidden></a>
+                            <a class="hidden-section" title="Show Section" id="testSectionHidden" hidden></a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -683,6 +709,12 @@
                                 <select class="form-select form-select-sm" id="keywordSelect"></select>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-auto ms-auto">
+                        <a class="move-up-section" title="Move Up" id="keywordSectionMoveUp" hidden></a>
+                        <a class="move-down-section" title="Move Down" id="keywordSectionMoveDown" hidden></a>
+                        <a class="shown-section" title="Hide Section" id="keywordSectionShown" hidden></a>
+                        <a class="hidden-section" title="Show Section" id="keywordSectionHidden" hidden></a>
                     </div>
                 </div>
             </div>
@@ -986,7 +1018,7 @@
         const customizeViewDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect style="stroke: white;" width="7" height="9" x="3" y="3" rx="1"/><rect style="stroke: white;" width="7" height="5" x="14" y="3" rx="1"/><rect style="stroke: white;" width="7" height="9" x="14" y="12" rx="    1"/><rect style="stroke: white;" width="7" height="5" x="3" y="16" rx="1"/></svg>`
         const customizeViewLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect style="stroke: black;" width="7" height="9" x="3" y="3" rx="1"/><rect style="stroke: black;" width="7" height="5" x="14" y="3" rx="1"/><rect style="stroke: black;" width="7" height="9" x="14" y="12" rx="1"/><rect style="stroke: black;" width="7" height="5" x="3" y="16" rx="1"/></svg>`
         const saveDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save-icon lucide-save"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>`
-        const saveLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save-icon lucide-save"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>7`
+        const saveLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save-icon lucide-save"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>`
         const bugDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M7.72.22a.75.75 0 0 1 1.06 0l1.204 1.203A4.98 4.98 0 0 1 12 1c.717 0 1.4.151 2.016.423L15.22.22a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-.971.972A4.991 4.991 0 0 1 17 6v1.104a2.755 2.755 0 0 1 1.917 1.974l1.998-.999a.75.75 0 0 1 .67 1.342L19 10.714V13.5l3.25.003a.75.75 0 0 1 0 1.5L19 15.001V16c0 .568-.068 1.134-.204 1.686l.04.018 2.75 1.375a.75.75 0 1 1-.671 1.342l-2.638-1.319A6.998 6.998 0 0 1 12 23a6.998 6.998 0 0 1-6.197-3.742l-2.758 1.181a.752.752 0 0 1-1.064-.776.752.752 0 0 1 .474-.602l2.795-1.199A6.976 6.976 0 0 1 5 16v-.996H1.75a.75.75 0 0 1 0-1.5H5v-2.79L2.415 9.42a.75.75 0 0 1 .67-1.342l1.998.999A2.756 2.756 0 0 1 7 7.104V6a4.99 4.99 0 0 1 1.69-3.748l-.97-.972a.75.75 0 0 1 0-1.06ZM6.5 9.75V16a5.5 5.5 0 1 0 11 0V9.75c0-.69-.56-1.25-1.25-1.25h-8.5c-.69 0-1.25.56-1.25 1.25ZM8.5 7h7V6a3.5 3.5 0 1 0-7 0Z"></path></svg>`
         const bugLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="black" d="M7.72.22a.75.75 0 0 1 1.06 0l1.204 1.203A4.98 4.98 0 0 1 12 1c.717 0 1.4.151 2.016.423L15.22.22a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-.971.972A4.991 4.991 0 0 1 17 6v1.104a2.755 2.755 0 0 1 1.917 1.974l1.998-.999a.75.75 0 0 1 .67 1.342L19 10.714V13.5l3.25.003a.75.75 0 0 1 0 1.5L19 15.001V16c0 .568-.068 1.134-.204 1.686l.04.018 2.75 1.375a.75.75 0 1 1-.671 1.342l-2.638-1.319A6.998 6.998 0 0 1 12 23a6.998 6.998 0 0 1-6.197-3.742l-2.758 1.181a.752.752 0 0 1-1.064-.776.752.752 0 0 1 .474-.602l2.795-1.199A6.976 6.976 0 0 1 5 16v-.996H1.75a.75.75 0 0 1 0-1.5H5v-2.79L2.415 9.42a.75.75 0 0 1 .67-1.342l1.998.999A2.756 2.756 0 0 1 7 7.104V6a4.99 4.99 0 0 1 1.69-3.748l-.97-.972a.75.75 0 0 1 0-1.06ZM6.5 9.75V16a5.5 5.5 0 1 0 11 0V9.75c0-.69-.56-1.25-1.25-1.25h-8.5c-.69 0-1.25.56-1.25 1.25ZM8.5 7h7V6a3.5 3.5 0 1 0-7 0Z"></path></svg>`
         const informationDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="white" d="M13 7.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm-3 3.75a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v4.25h.75a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1 0-1.5h.75V12h-.75a.75.75 0 0 1-.75-.75Z"></path><path fill="white" d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1ZM2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12Z"></path></svg>`
@@ -1017,6 +1049,10 @@
         const eyeLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>`
         const eyeOffDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off-icon lucide-eye-off"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>`
         const eyeOffLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off-icon lucide-eye-off"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>`
+        const moveDownDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>`
+        const moveDownLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>`
+        const moveUpDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up-icon lucide-chevron-up"><path d="m18 15-6-6-6 6"/></svg>`
+        const moveUpLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up-icon lucide-chevron-up"><path d="m18 15-6-6-6 6"/></svg>`
 
         // colors
         const passedBackgroundBorderColor = "#97bd61";
@@ -1373,18 +1409,6 @@
                 </div>`,
             },
             {
-                key: "runTable",
-                label: "Table Run",
-                defaultType: "table",
-                viewOptions: ["Table"],
-                hasFullscreenButton: false,
-                information: null,
-                html: `<div class="col" id="runTableCanvas">
-                    <h6>Run Table</h6>
-                    <table class="table table-striped" id="runTable"></table>
-                </div>`,
-            },
-            {
                 key: "suiteFolderDonut",
                 label: "Suite Folder Donut",
                 defaultType: "donut",
@@ -1512,18 +1536,6 @@
                     <div id="suiteMostFailedVertical" class="w-100 h-100">
                         <canvas id="suiteMostFailedGraph"></canvas>
                     </div>
-                </div>`,
-            },
-            {
-                key: "suiteTable",
-                label: "Table Suite",
-                defaultType: "table",
-                viewOptions: ["Table"],
-                hasFullscreenButton: false,
-                information: null,
-                html: `<div class="col" id="suiteTableCanvas">
-                    <h6>Suite Table</h6>
-                    <table class="table table-striped" id="suiteTable"></table>
                 </div>`,
             },
             {
@@ -1762,18 +1774,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 </div>`,
             },
             {
-                key: "testTable",
-                label: "Table Test",
-                defaultType: "table",
-                viewOptions: ["Table"],
-                hasFullscreenButton: false,
-                information: null,
-                html: `<div class="col" id="testTableCanvas">
-                    <h6>Test Table</h6>
-                    <table class="table table-striped" id="testTable"></table>
-                </div>`,
-            },
-            {
                 key: "keywordStatistics",
                 label: "Keyword Statistics",
                 defaultType: "percentages",
@@ -1952,18 +1952,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 </div>`,
             },
             {
-                key: "keywordTable",
-                label: "Table Keyword",
-                defaultType: "table",
-                viewOptions: ["Table"],
-                hasFullscreenButton: false,
-                information: null,
-                html: `<div class="col" id="keywordTableCanvas">
-                    <h6>Keyword Table</h6>
-                    <table class="table table-striped" id="keywordTable"></table>
-                </div>`,
-            },
-            {
                 key: "compareStatistics",
                 label: "Compare Statistics",
                 defaultType: "bar",
@@ -2033,6 +2021,86 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 </div>
                 <div class="graph-body">
                     <canvas id="compareTestsGraph"></canvas>
+                </div>`,
+            },
+            {
+                key: "runTable",
+                label: "Table Run",
+                defaultType: "table",
+                viewOptions: ["Table"],
+                hasFullscreenButton: false,
+                information: null,
+                html: `<div class="col table-section" id="runTableCanvas">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">Run Table</h6>
+                        <div>
+                            <a class="move-up-table" title="Move Up" id="runTableMoveUp" moveUpHidden></a>
+                            <a class="move-down-table" title="Move Down" id="runTableMoveDown" moveDownHidden></a>
+                            <a class="shown-graph" title="Hide Table" id="runTableShown" showGraphHidden></a>
+                            <a class="hidden-graph" title="Show Table" id="runTableHidden" hideGraphHidden></a>
+                        </div>
+                    </div>
+                    <table class="table table-striped" id="runTable"></table>
+                </div>`,
+            },
+            {
+                key: "suiteTable",
+                label: "Table Suite",
+                defaultType: "table",
+                viewOptions: ["Table"],
+                hasFullscreenButton: false,
+                information: null,
+                html: `<div class="col table-section" id="suiteTableCanvas">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">Suite Table</h6>
+                        <div>
+                            <a class="move-up-table" title="Move Up" id="suiteTableMoveUp" moveUpHidden></a>
+                            <a class="move-down-table" title="Move Down" id="suiteTableMoveDown" moveDownHidden></a>
+                            <a class="shown-graph" title="Hide Table" id="suiteTableShown" showGraphHidden></a>
+                            <a class="hidden-graph" title="Show Table" id="suiteTableHidden" hideGraphHidden></a>
+                        </div>
+                    </div>
+                    <table class="table table-striped" id="suiteTable"></table>
+                </div>`,
+            },
+            {
+                key: "testTable",
+                label: "Table Test",
+                defaultType: "table",
+                viewOptions: ["Table"],
+                hasFullscreenButton: false,
+                information: null,
+                html: `<div class="col table-section" id="testTableCanvas">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">Test Table</h6>
+                        <div>
+                            <a class="move-up-table" title="Move Up" id="testTableMoveUp" moveUpHidden></a>
+                            <a class="move-down-table" title="Move Down" id="testTableMoveDown" moveDownHidden></a>
+                            <a class="shown-graph" title="Hide Table" id="testTableShown" showGraphHidden></a>
+                            <a class="hidden-graph" title="Show Table" id="testTableHidden" hideGraphHidden></a>
+                        </div>
+                    </div>
+                    <table class="table table-striped" id="testTable"></table>
+                </div>`,
+            },
+            {
+                key: "keywordTable",
+                label: "Table Keyword",
+                defaultType: "table",
+                viewOptions: ["Table"],
+                hasFullscreenButton: false,
+                information: null,
+                html: `<div class="col table-section" id="keywordTableCanvas">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">Keyword Table</h6>
+                        <div>
+                            <a class="move-up-table" title="Move Up" id="keywordTableMoveUp" moveUpHidden></a>
+                            <a class="move-down-table" title="Move Down" id="keywordTableMoveDown" moveDownHidden></a>
+                            <a class="shown-graph" title="Hide Table" id="keywordTableShown" showGraphHidden></a>
+                            <a class="hidden-graph" title="Show Table" id="keywordTableHidden" hideGraphHidden></a>
+                        </div>
+                    </div>
+                    <table class="table table-striped" id="keywordTable"></table>
                 </div>`,
             },
         ];
@@ -2242,6 +2310,13 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 // eye icons
                 document.querySelectorAll(".shown-graph").forEach(btn => btn.innerHTML = eyeLightSVG)
                 document.querySelectorAll(".hidden-graph").forEach(btn => btn.innerHTML = eyeOffLightSVG)
+                document.querySelectorAll(".shown-section").forEach(btn => btn.innerHTML = eyeLightSVG)
+                document.querySelectorAll(".hidden-section").forEach(btn => btn.innerHTML = eyeOffLightSVG)
+                // move tables/sections up and down
+                document.querySelectorAll(".move-up-table").forEach(btn => btn.innerHTML = moveUpLightSVG)
+                document.querySelectorAll(".move-down-table").forEach(btn => btn.innerHTML = moveDownLightSVG)
+                document.querySelectorAll(".move-up-section").forEach(btn => btn.innerHTML = moveUpLightSVG)
+                document.querySelectorAll(".move-down-section").forEach(btn => btn.innerHTML = moveDownLightSVG)
             }
 
             function set_dark_mode() {
@@ -2288,6 +2363,13 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 // eye icons
                 document.querySelectorAll(".shown-graph").forEach(btn => btn.innerHTML = eyeDarkSVG)
                 document.querySelectorAll(".hidden-graph").forEach(btn => btn.innerHTML = eyeOffDarkSVG)
+                document.querySelectorAll(".shown-section").forEach(btn => btn.innerHTML = eyeDarkSVG)
+                document.querySelectorAll(".hidden-section").forEach(btn => btn.innerHTML = eyeOffDarkSVG)
+                // move tables/sections up and down
+                document.querySelectorAll(".move-up-table").forEach(btn => btn.innerHTML = moveUpDarkSVG)
+                document.querySelectorAll(".move-down-table").forEach(btn => btn.innerHTML = moveDownDarkSVG)
+                document.querySelectorAll(".move-up-section").forEach(btn => btn.innerHTML = moveUpDarkSVG)
+                document.querySelectorAll(".move-down-section").forEach(btn => btn.innerHTML = moveDownDarkSVG)
             }
 
             // detect theme preference
@@ -2325,57 +2407,82 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             };
         }
 
+        function unlock_layout(lock) {
+            lock.classList.remove("lock")
+            lock.classList.add("unlock")
+            add_alert("You can now change your layout. Don't forget to save!", "info")
+        }
+
+        function lock_layout(lock) {
+            lock.classList.remove("unlock")
+            lock.classList.add("lock")
+            const shownDashboardItems = [];
+            const hiddenDashboardItems = [];
+            const shownCompareItems = [];
+            const hiddenCompareItems = [];
+            // save dashboard/compare graph layout
+            const grids = document.querySelectorAll(".grid-stack");
+            grids.forEach(grid => {
+                const layout = window[`${grid.id}`].engine.nodes.map(w => {
+                    const id = w.el?.getAttribute('data-gs-id');
+                    return {
+                        x: w.x,
+                        y: w.y,
+                        w: w.w,
+                        h: w.h,
+                        id
+                    };
+                }).filter(w => w.id);
+                set_local_storage_item(`layouts.${grid.id}`, JSON.stringify(layout));
+                const shown = document.querySelectorAll(`#${grid.id} .shown-graph:not([hidden])`);
+                const hidden = document.querySelectorAll(`#${grid.id} .hidden-graph:not([hidden])`);
+                shown.forEach(btn => {
+                    if (grid.id.includes("Compare")) {
+                        shownCompareItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Shown", "")).label)
+                    } else {
+                        shownDashboardItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Shown", "")).label)
+                    }
+                })
+                hidden.forEach(btn => {
+                    if (grid.id.includes("Compare")) {
+                        hiddenCompareItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Hidden", "")).label)
+                    } else {
+                        hiddenDashboardItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Hidden", "")).label)
+                    }
+                })
+                set_local_storage_item("view.dashboard.graphs.show", shownDashboardItems)
+                set_local_storage_item("view.dashboard.graphs.hide", hiddenDashboardItems)
+                set_local_storage_item("view.compare.graphs.show", shownCompareItems)
+                set_local_storage_item("view.compare.graphs.hide", hiddenCompareItems)
+            });
+            // save table section layout
+            const shownTables = [...document.querySelectorAll("#gridTable .shown-graph:not([hidden])")]
+                .map(el => {
+                    const key = el.id.replace("Shown", "");
+                    return graphMetadata.find(graph => graph.key === key)?.label;
+                });
+
+            const hiddenTables = [...document.querySelectorAll("#gridTable .hidden-graph:not([hidden])")]
+                .map(el => {
+                    const key = el.id.replace("Hidden", "");
+                    return graphMetadata.find(graph => graph.key === key)?.label;
+                });
+            set_local_storage_item("view.tables.graphs.show", shownTables)
+            set_local_storage_item("view.tables.graphs.hide", hiddenTables)
+
+
+            add_alert("Layout has been updated and saved to settings!", "success")
+        }
+
         // function to add the layout eventlisteners
         function setup_layout() {
             document.getElementById("customizeLayout").addEventListener("click", (e) => {
                 gridEditMode = !gridEditMode;
                 const lock = document.getElementById("customizeLayout");
-                const grids = document.querySelectorAll(".grid-stack");
                 if (lock.classList.contains("lock")) {
-                    lock.classList.remove("lock")
-                    lock.classList.add("unlock")
-                    add_alert("You can now change your layout. Don't forget to save!", "info")
+                    unlock_layout(lock)
                 } else {
-                    lock.classList.remove("unlock")
-                    lock.classList.add("lock")
-                    const shownDashboardItems = [];
-                    const hiddenDashboardItems = [];
-                    const shownCompareItems = [];
-                    const hiddenCompareItems = [];
-                    grids.forEach(grid => {
-                        const layout = window[`${grid.id}`].engine.nodes.map(w => {
-                            const id = w.el?.getAttribute('data-gs-id');
-                            return {
-                                x: w.x,
-                                y: w.y,
-                                w: w.w,
-                                h: w.h,
-                                id
-                            };
-                        }).filter(w => w.id);
-                        set_local_storage_item(`layouts.${grid.id}`, JSON.stringify(layout));
-                        const shown = document.querySelectorAll(`#${grid.id} .shown-graph:not([hidden])`);
-                        const hidden = document.querySelectorAll(`#${grid.id} .hidden-graph:not([hidden])`);
-                        shown.forEach(btn => {
-                            if (grid.id.includes("Compare")) {
-                                shownCompareItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Shown", "")).label)
-                            } else {
-                                shownDashboardItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Shown", "")).label)
-                            }
-                        })
-                        hidden.forEach(btn => {
-                            if (grid.id.includes("Compare")) {
-                                hiddenCompareItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Hidden", "")).label)
-                            } else {
-                                hiddenDashboardItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Hidden", "")).label)
-                            }
-                        })
-                        set_local_storage_item("view.dashboard.graphs.show", shownDashboardItems)
-                        set_local_storage_item("view.dashboard.graphs.hide", hiddenDashboardItems)
-                        set_local_storage_item("view.compare.graphs.show", shownCompareItems)
-                        set_local_storage_item("view.compare.graphs.hide", hiddenCompareItems)
-                    });
-                    add_alert("Layout has been updated and saved to settings!", "success")
+                    lock_layout(lock)
                 }
                 setup_data_and_graphs();
             })
@@ -3007,6 +3114,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById("compareOnlyChanges").addEventListener("change", () => {
                 create_compare_tests_graph();
             });
+            // graph layout changes
             document.querySelectorAll(".shown-graph").forEach(btn => {
                 btn.addEventListener("click", () => {
                     btn.hidden = true;
@@ -3018,6 +3126,93 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     btn.hidden = true;
                     document.getElementById(`${btn.id.replace("Hidden", "Shown")}`).hidden = false;
                 })
+            });
+            // table layout changes
+            document.querySelectorAll(".move-up-table").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const section = btn.closest(".table-section");
+                    const previous = section.previousElementSibling;
+                    if (previous && previous.classList.contains("table-section")) {
+                        section.parentElement.insertBefore(section, previous);
+                    }
+                });
+            });
+            document.querySelectorAll(".move-down-table").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const section = btn.closest(".table-section");
+                    const next = section.nextElementSibling;
+                    if (next && next.classList.contains("table-section")) {
+                        section.parentElement.insertBefore(next, section);
+                    }
+                });
+            });
+            // section layout changes
+            document.querySelectorAll(".shown-section").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    btn.hidden = true;
+                    document.getElementById(`${btn.id.replace("Shown", "Hidden")}`).hidden = false;
+                })
+            });
+            document.querySelectorAll(".hidden-section").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    btn.hidden = true;
+                    document.getElementById(`${btn.id.replace("Hidden", "Shown")}`).hidden = false;
+                })
+            });
+
+            document.querySelectorAll(".move-up-section").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const card = btn.closest(".card");
+                    const previousCard = card.previousElementSibling;
+                    if (previousCard && !previousCard.hidden && previousCard.classList.contains("card")) {
+                        card.parentNode.insertBefore(card, previousCard);
+
+                        // const currGrid = card.querySelector(".grid-stack");
+                        // const prevGrid = previousCard.querySelector(".grid-stack");
+                        // console.log(currGrid, prevGrid)
+
+                        // if (currGrid && window[currGrid.id]) {
+                        //     const grid = window[currGrid.id];
+                        //     grid.engine?._notify();
+                        //     grid._layout?.();
+                        //     grid._updateContainerHeight?.();
+                        // }
+
+                        // if (prevGrid && window[prevGrid.id]) {
+                        //     const grid = window[prevGrid.id];
+                        //     grid.engine?._notify();
+                        //     grid._layout?.();
+                        //     grid._updateContainerHeight?.();
+                        // }
+                    }
+                });
+            });
+
+            document.querySelectorAll(".move-down-section").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const card = btn.closest(".card");
+                    const nextCard = card.nextElementSibling;
+                    if (nextCard && !nextCard.hidden && nextCard.classList.contains("card")) {
+                        card.parentNode.insertBefore(nextCard, card);
+
+                        // const currGrid = card.querySelector(".grid-stack");
+                        // const nextGrid = nextCard.querySelector(".grid-stack");
+
+                        // if (currGrid && window[currGrid.id]) {
+                        //     const grid = window[currGrid.id];
+                        //     grid.engine?._notify();
+                        //     grid._layout?.();
+                        //     grid._updateContainerHeight?.();
+                        // }
+
+                        // if (nextGrid && window[nextGrid.id]) {
+                        //     const grid = window[nextGrid.id];
+                        //     grid.engine?._notify();
+                        //     grid._layout?.();
+                        //     grid._updateContainerHeight?.();
+                        // }
+                    }
+                });
             });
 
             function handle_graph_change_type_button_click(graphChangeButton, graphType, camelButtonName) {
@@ -6391,7 +6586,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 document.getElementById("keywordStatisticsSectionNav"),
             ];
             let prevId = "#loading";
-            // Show and reorder visible dashboard sections
+
             for (const section of dashboardSectionShow) {
                 const sectionId = space_to_camelcase(section + "Section");
                 const sectionEl = document.getElementById(sectionId);
@@ -6401,14 +6596,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     prevId = `#${sectionId}`;
                 }
             }
-            // Hide all hidden dashboard sections
             for (const section of dashboardSectionHide) {
                 const sectionId = space_to_camelcase(section);
                 const sectionEl = document.getElementById(sectionId);
                 if (sectionEl) sectionEl.hidden = true;
             }
 
-            // View-specific overrides
             if (settings.menu.overview) {
                 dashboardSections.forEach(section => {
                     const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
@@ -6441,6 +6634,32 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 overviewStatisticsSection.hidden = true;
                 compareStatisticsSection.hidden = true;
                 tablesStatisticsSection.hidden = false;
+            }
+
+            if (gridEditMode) {
+                document.querySelectorAll(".move-up-section").forEach(btn => { btn.hidden = false })
+                document.querySelectorAll(".move-down-section").forEach(btn => { btn.hidden = false })
+                document.querySelectorAll(".shown-section, .hidden-section").forEach(btn => {
+                    const prefix = btn.id.slice(0, 3);
+                    const label = prefix.charAt(0).toUpperCase()
+                    var shouldShow = false;
+                    for (const section of settings.view.dashboard.sections.show) {
+                        if (section.startsWith(label)) {
+                            shouldShow = true;
+                            break
+                        }
+                    }
+                    if (btn.classList.contains("shown-section")) {
+                        btn.hidden = !shouldShow;
+                    } else if (btn.classList.contains("hidden-section")) {
+                        btn.hidden = shouldShow;
+                    }
+                });
+            } else {
+                document.querySelectorAll(".move-up-section").forEach(btn => { btn.hidden = true })
+                document.querySelectorAll(".move-down-section").forEach(btn => { btn.hidden = true })
+                document.querySelectorAll(".shown-section").forEach(btn => { btn.hidden = true })
+                document.querySelectorAll(".hidden-section").forEach(btn => { btn.hidden = true })
             }
         }
 
@@ -6618,8 +6837,39 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             const tableHidden = document.getElementById("tableDataHidden")
             tableGrid.innerHTML = ''
             tableHidden.innerHTML = ''
-            settings.view.tables.graphs.show.forEach(table => { tableGrid.insertAdjacentHTML('beforeend', graphMetadata.find(g => g.label == table).html); })
-            settings.view.tables.graphs.hide.forEach(table => { tableHidden.insertAdjacentHTML('beforeend', graphMetadata.find(g => g.label == table).html); })
+            settings.view.tables.graphs.show.forEach(table => {
+                var html = graphMetadata.find(g => g.label == table).html
+                if (gridEditMode) {
+                    html = html
+                        .replace("showGraphHidden", "")
+                        .replace("hideGraphHidden", "hidden")
+                        .replace("moveUpHidden", "")
+                        .replace("moveDownHidden", "")
+                } else {
+                    html = html
+                        .replace("showGraphHidden", "hidden")
+                        .replace("hideGraphHidden", "hidden")
+                        .replace("moveUpHidden", "hidden")
+                        .replace("moveDownHidden", "hidden")
+                }
+                tableGrid.insertAdjacentHTML('beforeend', html);
+            });
+            settings.view.tables.graphs.hide.forEach(table => {
+                var html = graphMetadata.find(g => g.label == table).html
+                if (gridEditMode) {
+                    html = html.replace("showGraphHidden", "hidden")
+                    html = html.replace("hideGraphHidden", "")
+                    html = html.replace("moveUpHidden", "")
+                    html = html.replace("moveDownHidden", "")
+                    tableGrid.insertAdjacentHTML('beforeend', html);
+                } else {
+                    html = html.replace("showGraphHidden", "hidden")
+                    html = html.replace("hideGraphHidden", "hidden")
+                    html = html.replace("moveUpHidden", "hidden")
+                    html = html.replace("moveDownHidden", "hidden")
+                    tableHidden.insertAdjacentHTML('beforeend', html);
+                }
+            })
         }
 
         ////////////////////////////
