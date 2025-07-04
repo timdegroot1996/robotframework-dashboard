@@ -17,8 +17,8 @@
         src="https://unpkg.com/@sgratzl/chartjs-chart-boxplot@3.6.0/build/index.umd.min.js"></script>
 
     <!-- Gridstack CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@9.2.1/dist/gridstack.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/gridstack@9.2.1/dist/gridstack-all.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@12.2.1/dist/gridstack.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/gridstack@12.2.1/dist/gridstack-all.min.js"></script>
 
     <!-- ChartJs heatmap/matrix plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js"></script>
@@ -278,14 +278,14 @@
         }
 
         .fullscreen {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            left: 0;
-            top: 0;
-            z-index: 10;
-            padding: 11px 20px 70px 20px;
-            border-radius: 0px;
+            position: fixed !important;
+            width: 100% !important;
+            height: 100% !important;
+            left: 0 !important;
+            top: 0 !important;
+            z-index: 10 !important;
+            padding: 11px 20px 70px 20px !important;
+            border-radius: 0px !important;
         }
 
         .selectBox {
@@ -441,9 +441,11 @@
             display: flex;
         }
 
+        .graph-body.vertical {
+            overflow-y: auto;
+        }
+
         canvas {
-            width: 100% !important;
-            height: 100% !important;
             display: block;
         }
 
@@ -524,462 +526,479 @@
             </div>
         </div>
 
-        <div class="card" id="overviewStatisticsSection" hidden>
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-auto align-self-center">
-                        <div class="btn btn-sm collapse-icon" id="overviewDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#gridOverview" aria-expanded="true" aria-controls="gridOverview"></div>
-                    </div>
-                    <div class="col-4">
-                        <h4 id="overviewTitle"></h4>
-                    </div>
-                    <div class="d-flex flex-wrap align-items-start col align-items-center">
-                        <div class="col-auto">
-                            <div class="btn-group">
-                                <label class="form-check-label" for="switchRunTags">Use Run Tags</label>
-                            </div>
-                            <div class="btn-group form-switch ms-1">
-                                <input class="form-check-input" type="checkbox" role="switch" id="switchRunTags" />
-                            </div>
+        <div id="overview" hidden>
+            <div class="card" id="overviewStatisticsSection">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-auto align-self-center">
+                            <div class="btn btn-sm collapse-icon" id="overviewDetailsButton" data-bs-toggle="collapse"
+                                data-bs-target="#gridOverview" aria-expanded="true" aria-controls="gridOverview"></div>
                         </div>
-                        <div class="col-auto">
-                            <div class="btn-group">
-                                <label class="form-check-label" for="overviewDurationPercentage">Percentage</label>
-                            </div>
-                            <div class="btn-group">
-                                <select class="form-select form-select-sm mt-1" id="overviewDurationPercentage">
-                                    <option value="10">10</option>
-                                    <option value="20" selected>20</option>
-                                    <option value="30">30</option>
-                                    <option value="40">40</option>
-                                    <option value="50">50</option>
-                                    <option value="60">60</option>
-                                    <option value="70">70</option>
-                                    <option value="80">80</option>
-                                    <option value="90">90</option>
-                                    <option value="100">100</option>
-                                </select>
-                            </div>
+                        <div class="col-4">
+                            <h4 id="overviewTitle"></h4>
                         </div>
-                        <div class="col-auto">
-                            <a type="button" class="information-graph ms-2" id="overviewStatisticsInformation"
-                                data-title="This section shows the projects and their associated runs:
+                        <div class="d-flex flex-wrap align-items-start col align-items-center">
+                            <div class="col-auto">
+                                <div class="btn-group">
+                                    <label class="form-check-label" for="switchRunTags">Use Run Tags</label>
+                                </div>
+                                <div class="btn-group form-switch ms-1">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="switchRunTags" />
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="btn-group">
+                                    <label class="form-check-label" for="overviewDurationPercentage">Percentage</label>
+                                </div>
+                                <div class="btn-group">
+                                    <select class="form-select form-select-sm mt-1" id="overviewDurationPercentage">
+                                        <option value="10">10</option>
+                                        <option value="20" selected>20</option>
+                                        <option value="30">30</option>
+                                        <option value="40">40</option>
+                                        <option value="50">50</option>
+                                        <option value="60">60</option>
+                                        <option value="70">70</option>
+                                        <option value="80">80</option>
+                                        <option value="90">90</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <a type="button" class="information-graph ms-2" id="overviewStatisticsInformation"
+                                    data-title="This section shows the projects and their associated runs:
 - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
 - Passed runs represent the percentage of runs with zero failures.
 - You can define your own projects or groupings by appending '-o path/to/output.xml:project_yourprojectname' when generating results.
 - If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle."></a>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card overviewData -->
+                <div id="overviewDataHidden" hidden></div>
+                <div class="card-body collapse show" id="gridOverview"></div>
             </div>
-            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card overviewData -->
-            <div id="overviewDataHidden" hidden></div>
-            <div class="card-body collapse show" id="gridOverview"></div>
         </div>
 
-        <div class="card" id="runStatisticsSection" hidden>
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-auto align-self-center">
-                        <div class="btn btn-sm collapse-icon" id="runDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#gridRun" aria-expanded="true" aria-controls="gridRun"></div>
-                    </div>
-                    <div class="col">
-                        <h4 id="runTitle"></h4>
-                    </div>
-                    <div class="col-auto ms-auto">
-                        <a class="move-up-section" title="Move Up" id="runSectionMoveUp" hidden></a>
-                        <a class="move-down-section" title="Move Down" id="runSectionMoveDown" hidden></a>
-                        <a class="shown-section" title="Hide Section" id="runSectionShown" hidden></a>
-                        <a class="hidden-section" title="Show Section" id="runSectionHidden" hidden></a>
+        <div id="dashboard" hidden>
+            <div id="topSection" hidden></div>
+            <div class="card" id="runStatisticsSection">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-auto align-self-center">
+                            <div class="btn btn-sm collapse-icon" id="runDetailsButton" data-bs-toggle="collapse"
+                                data-bs-target="#gridRun" aria-expanded="true" aria-controls="gridRun"></div>
+                        </div>
+                        <div class="col">
+                            <h4 id="runTitle"></h4>
+                        </div>
+                        <div class="col-auto ms-auto">
+                            <a class="move-up-section" title="Move Up" id="runSectionMoveUp" hidden></a>
+                            <a class="move-down-section" title="Move Down" id="runSectionMoveDown" hidden></a>
+                            <a class="shown-section" title="Hide Section" id="runSectionShown" hidden></a>
+                            <a class="hidden-section" title="Show Section" id="runSectionHidden" hidden></a>
+                        </div>
                     </div>
                 </div>
+                <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card runData -->
+                <div id="runDataHidden" hidden></div>
+                <div class="card-body collapse show grid-stack" id="gridRun"></div>
             </div>
-            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card runData -->
-            <div id="runDataHidden" hidden></div>
-            <div class="card-body collapse show grid-stack" id="gridRun"></div>
-        </div>
 
-        <div class="card" id="suiteStatisticsSection" hidden>
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-auto align-self-center">
-                        <div class="btn btn-sm collapse-icon" id="suiteDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#gridSuite" aria-expanded="true" aria-controls="gridSuite"></div>
+            <div class="card" id="suiteStatisticsSection">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-auto align-self-center">
+                            <div class="btn btn-sm collapse-icon" id="suiteDetailsButton" data-bs-toggle="collapse"
+                                data-bs-target="#gridSuite" aria-expanded="true" aria-controls="gridSuite"></div>
+                        </div>
+                        <div class="col-3">
+                            <h4 id="suiteTitle"></h4>
+                        </div>
+                        <div class="d-flex flex-wrap align-items-start col align-items-center">
+                            <div class="col-auto d-flex me-2">
+                                <label class="form-label mb-0" for="suiteFolder">Folder:</label>
+                                <p class="form-label mb-0 ms-1" id="suiteFolder">All</p>
+                            </div>
+                            <div class="col-auto d-flex me-2">
+                                <button class="btn btn-outline-light btn-sm" id="resetSuiteFolder">Reset Folder</button>
+                            </div>
+                            <div class="col-auto d-flex me-2">
+                                <label class="form-label me-2 mt-1" for="suiteSelectSuites">Suite:</label>
+                                <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
+                            </div>
+                            <div class="col-auto d-flex me-2">
+                                <label class="form-check-label mb-0 me-2" for="switchSuitePathsSuiteSection">Use Suite
+                                    Paths</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                        id="switchSuitePathsSuiteSection" />
+                                </div>
+                            </div>
+                            <div class="col-auto ms-auto">
+                                <a class="move-up-section" title="Move Up" id="suiteSectionMoveUp" hidden></a>
+                                <a class="move-down-section" title="Move Down" id="suiteSectionMoveDown" hidden></a>
+                                <a class="shown-section" title="Hide Section" id="suiteSectionShown" hidden></a>
+                                <a class="hidden-section" title="Show Section" id="suiteSectionHidden" hidden></a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-3">
-                        <h4 id="suiteTitle"></h4>
+                </div>
+                <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card suiteData -->
+                <div id="suiteDataHidden" hidden></div>
+                <div class="card-body collapse show grid-stack" id="gridSuite"></div>
+            </div>
+
+            <div class="card" id="testStatisticsSection">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-auto align-self-center">
+                            <div class="btn btn-sm collapse-icon" id="testDetailsButton" data-bs-toggle="collapse"
+                                data-bs-target="#gridTest" aria-expanded="true" aria-controls="gridTest"></div>
+                        </div>
+                        <div class="col-3">
+                            <h4 id="testTitle"></h4>
+                        </div>
+                        <div class="d-flex flex-wrap align-items-start col align-items-center">
+                            <div class="col-auto d-flex me-2">
+                                <label class="form-label mb-0 me-2 mt-1" for="suiteSelectTests">Suite:</label>
+                                <select class="form-select form-select-sm" id="suiteSelectTests"></select>
+                            </div>
+                            <div class="col-auto d-flex me-2">
+                                <label class="form-check-label mb-0 me-2" for="switchSuitePathsTestSection">Use Suite
+                                    Paths</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                        id="switchSuitePathsTestSection" />
+                                </div>
+                            </div>
+                            <div class="col-auto d-flex me-2">
+                                <label class="form-label mb-0 me-2 mt-1" for="testSelect">Test:</label>
+                                <select class="form-select form-select-sm" id="testSelect"></select>
+                            </div>
+                            <div class="col-auto d-flex flex-nowrap align-items-center me-2">
+                                <label class="form-label mb-0 me-2 text-nowrap" for="testTagsSelect">Test Tags:</label>
+                                <select class="form-select form-select-sm w-auto" id="testTagsSelect"></select>
+                            </div>
+                            <div class="col-auto ms-auto">
+                                <a class="move-up-section" title="Move Up" id="testSectionMoveUp" hidden></a>
+                                <a class="move-down-section" title="Move Down" id="testSectionMoveDown" hidden></a>
+                                <a class="shown-section" title="Hide Section" id="testSectionShown" hidden></a>
+                                <a class="hidden-section" title="Show Section" id="testSectionHidden" hidden></a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="d-flex flex-wrap align-items-start col align-items-center">
-                        <div class="col-auto d-flex me-2">
-                            <label class="form-label mb-0" for="suiteFolder">Folder:</label>
-                            <p class="form-label mb-0 ms-1" id="suiteFolder">All</p>
+                </div>
+                <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card keywordData -->
+                <div id="testDataHidden" hidden></div>
+                <div class="card-body collapse show grid-stack" id="gridTest"></div>
+            </div>
+
+            <div class="card" id="keywordStatisticsSection">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-auto align-self-center">
+                            <div class="btn btn-sm collapse-icon" id="keywordDetailsButton" data-bs-toggle="collapse"
+                                data-bs-target="#gridKeyword" aria-expanded="true" aria-controls="gridKeyword"></div>
                         </div>
-                        <div class="col-auto d-flex me-2">
-                            <button class="btn btn-outline-light btn-sm" id="resetSuiteFolder">Reset Folder</button>
+                        <div class="col-3">
+                            <h4 id="keywordTitle"></h4>
                         </div>
-                        <div class="col-auto d-flex me-2">
-                            <label class="form-label me-2 mt-1" for="suiteSelectSuites">Suite:</label>
-                            <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
-                        </div>
-                        <div class="col-auto d-flex me-2">
-                            <label class="form-check-label mb-0 me-2" for="switchSuitePathsSuiteSection">Use Suite
-                                Paths</label>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch"
-                                    id="switchSuitePathsSuiteSection" />
+                        <div class="d-flex flex-wrap align-items-start col align-items-center">
+                            <div class="col-auto me-2">
+                                <div class="btn-group">
+                                    <label class="form-label mt-2" for="keywordSelect">Keyword</label>
+                                </div>
+                                <div class="btn-group">
+                                    <select class="form-select form-select-sm" id="keywordSelect"></select>
+                                </div>
                             </div>
                         </div>
                         <div class="col-auto ms-auto">
-                            <a class="move-up-section" title="Move Up" id="suiteSectionMoveUp" hidden></a>
-                            <a class="move-down-section" title="Move Down" id="suiteSectionMoveDown" hidden></a>
-                            <a class="shown-section" title="Hide Section" id="suiteSectionShown" hidden></a>
-                            <a class="hidden-section" title="Show Section" id="suiteSectionHidden" hidden></a>
+                            <a class="move-up-section" title="Move Up" id="keywordSectionMoveUp" hidden></a>
+                            <a class="move-down-section" title="Move Down" id="keywordSectionMoveDown" hidden></a>
+                            <a class="shown-section" title="Hide Section" id="keywordSectionShown" hidden></a>
+                            <a class="hidden-section" title="Show Section" id="keywordSectionHidden" hidden></a>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card suiteData -->
-            <div id="suiteDataHidden" hidden></div>
-            <div class="card-body collapse show grid-stack" id="gridSuite"></div>
-        </div>
-
-        <div class="card" id="testStatisticsSection" hidden>
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-auto align-self-center">
-                        <div class="btn btn-sm collapse-icon" id="testDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#gridTest" aria-expanded="true" aria-controls="gridTest"></div>
-                    </div>
-                    <div class="col-3">
-                        <h4 id="testTitle"></h4>
-                    </div>
-                    <div class="d-flex flex-wrap align-items-start col align-items-center">
-                        <div class="col-auto d-flex me-2">
-                            <label class="form-label mb-0 me-2 mt-1" for="suiteSelectTests">Suite:</label>
-                            <select class="form-select form-select-sm" id="suiteSelectTests"></select>
-                        </div>
-                        <div class="col-auto d-flex me-2">
-                            <label class="form-check-label mb-0 me-2" for="switchSuitePathsTestSection">Use Suite
-                                Paths</label>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch"
-                                    id="switchSuitePathsTestSection" />
-                            </div>
-                        </div>
-                        <div class="col-auto d-flex me-2">
-                            <label class="form-label mb-0 me-2 mt-1" for="testSelect">Test:</label>
-                            <select class="form-select form-select-sm" id="testSelect"></select>
-                        </div>
-                        <div class="col-auto d-flex flex-nowrap align-items-center me-2">
-                            <label class="form-label mb-0 me-2 text-nowrap" for="testTagsSelect">Test Tags:</label>
-                            <select class="form-select form-select-sm w-auto" id="testTagsSelect"></select>
-                        </div>
-                        <div class="col-auto ms-auto">
-                            <a class="move-up-section" title="Move Up" id="testSectionMoveUp" hidden></a>
-                            <a class="move-down-section" title="Move Down" id="testSectionMoveDown" hidden></a>
-                            <a class="shown-section" title="Hide Section" id="testSectionShown" hidden></a>
-                            <a class="hidden-section" title="Show Section" id="testSectionHidden" hidden></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card keywordData -->
-            <div id="testDataHidden" hidden></div>
-            <div class="card-body collapse show grid-stack" id="gridTest"></div>
-        </div>
-
-        <div class="card" id="keywordStatisticsSection" hidden>
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-auto align-self-center">
-                        <div class="btn btn-sm collapse-icon" id="keywordDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#gridKeyword" aria-expanded="true" aria-controls="gridKeyword"></div>
-                    </div>
-                    <div class="col-3">
-                        <h4 id="keywordTitle"></h4>
-                    </div>
-                    <div class="d-flex flex-wrap align-items-start col align-items-center">
-                        <div class="col-auto me-2">
-                            <div class="btn-group">
-                                <label class="form-label mt-2" for="keywordSelect">Keyword</label>
-                            </div>
-                            <div class="btn-group">
-                                <select class="form-select form-select-sm" id="keywordSelect"></select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-auto ms-auto">
-                        <a class="move-up-section" title="Move Up" id="keywordSectionMoveUp" hidden></a>
-                        <a class="move-down-section" title="Move Down" id="keywordSectionMoveDown" hidden></a>
-                        <a class="shown-section" title="Hide Section" id="keywordSectionShown" hidden></a>
-                        <a class="hidden-section" title="Show Section" id="keywordSectionHidden" hidden></a>
-                    </div>
-                </div>
-            </div>
-            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card keywordData -->
-            <div id="keywordDataHidden" hidden></div>
-            <div class="card-body collapse show grid-stack" id="gridKeyword"></div>
-        </div>
-
-        <div class="card" id="compareStatisticsSection" hidden>
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-auto align-self-center">
-                        <div class="btn btn-sm collapse-icon" id="compareDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#gridCompare" aria-expanded="true" aria-controls="gridCompare"></div>
-                    </div>
-                    <div class="col-3">
-                        <h4 id="compareTitle"></h4>
-                    </div>
-                    <div class="d-flex flex-wrap align-items-start col align-items-center">
-                        <div class="col-auto">
-                            <div class="btn-group">
-                                <label class="form-label ms-1 mt-2" for="compareRun1">Run 1</label>
-                            </div>
-                            <div class="btn-group">
-                                <select class="form-select form-select-sm" id="compareRun1"></select>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <div class="btn-group">
-                                <label class="form-label ms-1 mt-2" for="compareRun2">Run 2</label>
-                            </div>
-                            <div class="btn-group">
-                                <select class="form-select form-select-sm" id="compareRun2"></select>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <div class="btn-group">
-                                <label class="form-label ms-1 mt-2" for="compareRun3">Run 3</label>
-                            </div>
-                            <div class="btn-group">
-                                <select class="form-select form-select-sm" id="compareRun3"></select>
-                            </div>
-                        </div>
-                        <div class="col-auto me-2">
-                            <div class="btn-group">
-                                <label class="form-label ms-1 mt-2" for="compareRun4">Run 4</label>
-                            </div>
-                            <div class="btn-group">
-                                <select class="form-select form-select-sm" id="compareRun4"></select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card compareData -->
-            <div id="compareDataHidden" hidden></div>
-            <div class="card-body collapse show grid-stack" id="gridCompare"></div>
-        </div>
-
-        <div class="card" id="tablesStatisticsSection" hidden>
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-auto align-self-center">
-                        <div class="btn btn-sm collapse-icon" id="tablesDetailsButton" data-bs-toggle="collapse"
-                            data-bs-target="#gridTable" aria-expanded="true" aria-controls="gridTable"></div>
-                    </div>
-                    <div class="col-3">
-                        <h4 id="tablesTitle"></h4>
-                    </div>
-                </div>
-            </div>
-            <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card tablesData -->
-            <div id="tableDataHidden" hidden></div>
-            <div class="card-body collapse show" id="gridTable"></div>
-        </div>
-
-        <!-- Modal for the filter -->
-        <div class="modal fade" id="filtersModal" tabindex="-1" aria-labelledby="filtersModalLabel">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title" id="filtersModalLabel">Filters</h1>
-                        <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
-                                id="resetFilters">Reset Filters</button>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
-                                data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                    <div class="modal-body">
-                        <div class="col-auto mt-1 ps-2 pe-2">
-                            <label class="form-label form-label-sm mb-0" for="runs" id="runsLabel">Runs</label>
-                            <select class="form-select form-select-sm" id="runs"></select>
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2" id="runTagFilter">
-                            <div class="selectBox" id="selectRunTags">
-                                <label class="form-label form-label-sm mb-0" for="runTag" id="runTagLabel">Run
-                                    Tags</label>
-                                <select class="form-select form-select-sm">
-                                    <option>Select Tags</option>
-                                </select>
-                                <div class="overSelect"></div>
-                            </div>
-                            <div id="checkboxes">
-                                <ul class="list-group" id="runTag"></ul>
-                            </div>
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2">
-                            <label class="form-label form-label-sm mb-0" for="fromDate" id="fromDateLabel">From
-                                Date</label>
-                            <input class="form-control form-control-sm" id="fromDate" type="date" />
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2">
-                            <label class="form-label form-label-sm mb-0" for="fromTime" id="fromTimeLabel">From
-                                Time</label>
-                            <input class="form-control form-control-sm" id="fromTime" type="time" />
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2">
-                            <label class="form-label form-label-sm mb-0" for="toDate" id="toDateLabel">To Date</label>
-                            <input class="form-control form-control-sm" id="toDate" type="date" />
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2">
-                            <label class="form-label form-label-sm mb-0" for="toTime" id="toTimeLabel">To Time</label>
-                            <input class="form-control form-control-sm" id="toTime" type="time" />
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2">
-                            <label class="form-label form-label-sm mb-0" for="amount" id="amountLabel"
-                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">
-                                Amount
-                            </label>
-                            <div class="d-flex align-items-center mt-1">
-                                <input class="form-control form-control-sm flex-grow-1" type="number" min="0"
-                                    id="amount"
-                                    title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
-                                    value="10">
-                                <button type="button" class="btn btn-outline-light btn-sm ms-2 text-nowrap"
-                                    id="allRuns">All Runs</button>
-                            </div>
-                        </div>
-                        <div class="col-auto mt-1 ps-2 pe-2" id="metadataFilter" hidden>
-                            <label class="form-label form-label-sm mb-0" for="metadata"
-                                id="metadataLabel">Metadata</label>
-                            <select class="form-select form-select-sm" id="metadata"></select>
-                        </div>
-                    </div>
-                </div>
+                <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card keywordData -->
+                <div id="keywordDataHidden" hidden></div>
+                <div class="card-body collapse show grid-stack" id="gridKeyword"></div>
             </div>
         </div>
 
-        <!-- Database Details Modal -->
-        <div class="modal fade" id="databaseModal" tabindex="-1" aria-labelledby="databaseModalLabel">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title" id="databaseModalLabel">Database Summary</h1>
-                        <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
-                                data-bs-dismiss="modal">Close</button>
+        <div id="compare" hidden>
+            <div class="card" id="compareStatisticsSection">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-auto align-self-center">
+                            <div class="btn btn-sm collapse-icon" id="compareDetailsButton" data-bs-toggle="collapse"
+                                data-bs-target="#gridCompare" aria-expanded="true" aria-controls="gridCompare"></div>
                         </div>
-                    </div>
-                    <div class="modal-body">
-                        <span id="stats"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Settings Modal -->
-        <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title" id="settingsModalLabel">Settings</h1>
-                        <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
-                                data-bs-dismiss="modal">Close</button>
+                        <div class="col-3">
+                            <h4 id="compareTitle"></h4>
                         </div>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-8 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleLegends">Graphs: Show
-                                    Legends</label>
-                            </div>
-                            <div class="col btn-group form-switch ms-2">
-                                <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleLegends" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-8 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleLabels">Graphs: Show Run Start/Alias
-                                    Labels On Axes</label>
-                            </div>
-                            <div class="col btn-group form-switch ms-2">
-                                <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleLabels" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-8 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleAliases">Graphs: Show Alias Labels
-                                    (Defaults
-                                    to Run Start Labels)</label>
-                            </div>
-                            <div class="col btn-group form-switch ms-2">
-                                <input class="form-check-input mt-2" type="checkbox" role="switch" id="toggleAliases" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-8 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleMilliseconds">Graphs: Show
-                                    Milliseconds Run Start Labels</label>
-                            </div>
-                            <div class="col btn-group form-switch ms-2">
-                                <input class="form-check-input mt-2" type="checkbox" role="switch"
-                                    id="toggleMilliseconds" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-8 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleAxisTitles">Graphs: Show Axis
-                                    Titles</label>
-                            </div>
-                            <div class="col btn-group form-switch ms-2">
-                                <input class="form-check-input mt-2" type="checkbox" role="switch"
-                                    id="toggleAxisTitles" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-8 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleAnimations">Graphs: Show Drawing
-                                    Animations</label>
-                            </div>
-                            <div class="col btn-group form-switch ms-2">
-                                <input class="form-check-input mt-2" type="checkbox" role="switch"
-                                    id="toggleAnimations" />
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-8 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleAnimationDuration">Graphs: Animation
-                                    Duration (Milliseconds)</label>
-                            </div>
-                            <div class="col-2 ps-0 mt-1">
-                                <input class="form-control form-control-sm" type="number"
-                                    id="toggleAnimationDuration" />
-                            </div>
-                        </div>
-                        <div class="row mb-3">
+                        <div class="d-flex flex-wrap align-items-start col align-items-center">
                             <div class="col-auto">
-                                <button class="btn btn-outline-light btn-sm mt-auto" id="copySettings">Copy Current
-                                    Settings</button>
+                                <div class="btn-group">
+                                    <label class="form-label ms-1 mt-2" for="compareRun1">Run 1</label>
+                                </div>
+                                <div class="btn-group">
+                                    <select class="form-select form-select-sm" id="compareRun1"></select>
+                                </div>
                             </div>
                             <div class="col-auto">
-                                <button class="btn btn-outline-light btn-sm mt-auto" id="resetSettings">Reset to Default
-                                    (includes layout and hidden settings!)</button>
+                                <div class="btn-group">
+                                    <label class="form-label ms-1 mt-2" for="compareRun2">Run 2</label>
+                                </div>
+                                <div class="btn-group">
+                                    <select class="form-select form-select-sm" id="compareRun2"></select>
+                                </div>
                             </div>
                             <div class="col-auto">
-                                <button class="btn btn-outline-light btn-sm mt-auto" id="applySettings">Apply Pasted
-                                    Settings</button>
+                                <div class="btn-group">
+                                    <label class="form-label ms-1 mt-2" for="compareRun3">Run 3</label>
+                                </div>
+                                <div class="btn-group">
+                                    <select class="form-select form-select-sm" id="compareRun3"></select>
+                                </div>
+                            </div>
+                            <div class="col-auto me-2">
+                                <div class="btn-group">
+                                    <label class="form-label ms-1 mt-2" for="compareRun4">Run 4</label>
+                                </div>
+                                <div class="btn-group">
+                                    <select class="form-select form-select-sm" id="compareRun4"></select>
+                                </div>
                             </div>
                         </div>
-                        <div class="row mb-2">
-                            <div class="col">
-                                <label for="settingsTextArea" class="form-label">Current Settings JSON</label>
-                                <textarea id="settingsTextArea" class="form-control" rows="20"></textarea>
+                    </div>
+                </div>
+                <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card compareData -->
+                <div id="compareDataHidden" hidden></div>
+                <div class="card-body collapse show grid-stack" id="gridCompare"></div>
+            </div>
+        </div>
+
+        <div id="tables" hidden>
+            <div class="card" id="tablesStatisticsSection">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-auto align-self-center">
+                            <div class="btn btn-sm collapse-icon" id="tablesDetailsButton" data-bs-toggle="collapse"
+                                data-bs-target="#gridTable" aria-expanded="true" aria-controls="gridTable"></div>
+                        </div>
+                        <div class="col-3">
+                            <h4 id="tablesTitle"></h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card tablesData -->
+                <div id="tableDataHidden" hidden></div>
+                <div class="card-body collapse show" id="gridTable"></div>
+            </div>
+        </div>
+
+        <div id="modals">
+            <!-- Modal for the filter -->
+            <div class="modal fade" id="filtersModal" tabindex="-1" aria-labelledby="filtersModalLabel">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title" id="filtersModalLabel">Filters</h1>
+                            <div>
+                                <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
+                                    id="resetFilters">Reset Filters</button>
+                                <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-3"
+                                    data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-auto mt-1 ps-2 pe-2">
+                                <label class="form-label form-label-sm mb-0" for="runs" id="runsLabel">Runs</label>
+                                <select class="form-select form-select-sm" id="runs"></select>
+                            </div>
+                            <div class="col-auto mt-1 ps-2 pe-2" id="runTagFilter">
+                                <div class="selectBox" id="selectRunTags">
+                                    <label class="form-label form-label-sm mb-0" for="runTag" id="runTagLabel">Run
+                                        Tags</label>
+                                    <select class="form-select form-select-sm">
+                                        <option>Select Tags</option>
+                                    </select>
+                                    <div class="overSelect"></div>
+                                </div>
+                                <div id="checkboxes">
+                                    <ul class="list-group" id="runTag"></ul>
+                                </div>
+                            </div>
+                            <div class="col-auto mt-1 ps-2 pe-2">
+                                <label class="form-label form-label-sm mb-0" for="fromDate" id="fromDateLabel">From
+                                    Date</label>
+                                <input class="form-control form-control-sm" id="fromDate" type="date" />
+                            </div>
+                            <div class="col-auto mt-1 ps-2 pe-2">
+                                <label class="form-label form-label-sm mb-0" for="fromTime" id="fromTimeLabel">From
+                                    Time</label>
+                                <input class="form-control form-control-sm" id="fromTime" type="time" />
+                            </div>
+                            <div class="col-auto mt-1 ps-2 pe-2">
+                                <label class="form-label form-label-sm mb-0" for="toDate" id="toDateLabel">To
+                                    Date</label>
+                                <input class="form-control form-control-sm" id="toDate" type="date" />
+                            </div>
+                            <div class="col-auto mt-1 ps-2 pe-2">
+                                <label class="form-label form-label-sm mb-0" for="toTime" id="toTimeLabel">To
+                                    Time</label>
+                                <input class="form-control form-control-sm" id="toTime" type="time" />
+                            </div>
+                            <div class="col-auto mt-1 ps-2 pe-2">
+                                <label class="form-label form-label-sm mb-0" for="amount" id="amountLabel"
+                                    title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">
+                                    Amount
+                                </label>
+                                <div class="d-flex align-items-center mt-1">
+                                    <input class="form-control form-control-sm flex-grow-1" type="number" min="0"
+                                        id="amount"
+                                        title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
+                                        value="10">
+                                    <button type="button" class="btn btn-outline-light btn-sm ms-2 text-nowrap"
+                                        id="allRuns">All Runs</button>
+                                </div>
+                            </div>
+                            <div class="col-auto mt-1 ps-2 pe-2" id="metadataFilter" hidden>
+                                <label class="form-label form-label-sm mb-0" for="metadata"
+                                    id="metadataLabel">Metadata</label>
+                                <select class="form-select form-select-sm" id="metadata"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Details Modal -->
+            <div class="modal fade" id="databaseModal" tabindex="-1" aria-labelledby="databaseModalLabel">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title" id="databaseModalLabel">Database Summary</h1>
+                            <div>
+                                <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
+                                    data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <span id="stats"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Modal -->
+            <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title" id="settingsModalLabel">Settings</h1>
+                            <div>
+                                <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
+                                    data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-8 btn-group ms-1">
+                                    <label class="form-check-label mt-1" for="toggleLegends">Graphs: Show
+                                        Legends</label>
+                                </div>
+                                <div class="col btn-group form-switch ms-2">
+                                    <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                        id="toggleLegends" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8 btn-group ms-1">
+                                    <label class="form-check-label mt-1" for="toggleLabels">Graphs: Show Run Start/Alias
+                                        Labels On Axes</label>
+                                </div>
+                                <div class="col btn-group form-switch ms-2">
+                                    <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                        id="toggleLabels" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8 btn-group ms-1">
+                                    <label class="form-check-label mt-1" for="toggleAliases">Graphs: Show Alias Labels
+                                        (Defaults
+                                        to Run Start Labels)</label>
+                                </div>
+                                <div class="col btn-group form-switch ms-2">
+                                    <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                        id="toggleAliases" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8 btn-group ms-1">
+                                    <label class="form-check-label mt-1" for="toggleMilliseconds">Graphs: Show
+                                        Milliseconds Run Start Labels</label>
+                                </div>
+                                <div class="col btn-group form-switch ms-2">
+                                    <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                        id="toggleMilliseconds" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8 btn-group ms-1">
+                                    <label class="form-check-label mt-1" for="toggleAxisTitles">Graphs: Show Axis
+                                        Titles</label>
+                                </div>
+                                <div class="col btn-group form-switch ms-2">
+                                    <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                        id="toggleAxisTitles" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8 btn-group ms-1">
+                                    <label class="form-check-label mt-1" for="toggleAnimations">Graphs: Show Drawing
+                                        Animations</label>
+                                </div>
+                                <div class="col btn-group form-switch ms-2">
+                                    <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                        id="toggleAnimations" />
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-8 btn-group ms-1">
+                                    <label class="form-check-label mt-1" for="toggleAnimationDuration">Graphs: Animation
+                                        Duration (Milliseconds)</label>
+                                </div>
+                                <div class="col-2 ps-0 mt-1">
+                                    <input class="form-control form-control-sm" type="number"
+                                        id="toggleAnimationDuration" />
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-auto">
+                                    <button class="btn btn-outline-light btn-sm mt-auto" id="copySettings">Copy Current
+                                        Settings</button>
+                                </div>
+                                <div class="col-auto">
+                                    <button class="btn btn-outline-light btn-sm mt-auto" id="resetSettings">Reset to
+                                        Default
+                                        (includes layout and hidden settings!)</button>
+                                </div>
+                                <div class="col-auto">
+                                    <button class="btn btn-outline-light btn-sm mt-auto" id="applySettings">Apply Pasted
+                                        Settings</button>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <label for="settingsTextArea" class="form-label">Current Settings JSON</label>
+                                    <textarea id="settingsTextArea" class="form-control" rows="20"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1532,7 +1551,7 @@
                         <a class="hidden-graph" title="Show Graph" id="suiteMostFailedHidden" hideGraphHidden></a>
                     </div>
                 </div>
-                <div class="graph-body">
+                <div class="graph-body vertical">
                     <div id="suiteMostFailedVertical" class="w-100 h-100">
                         <canvas id="suiteMostFailedGraph"></canvas>
                     </div>
@@ -1562,7 +1581,7 @@
                         <a class="hidden-graph" title="Show Graph" id="testStatisticsHidden" hideGraphHidden></a>
                     </div>
                 </div>
-                <div class="graph-body">
+                <div class="graph-body vertical">
                     <div id="testStatisticsVertical" class="w-100 h-100">
                         <canvas id="testStatisticsGraph"></canvas>
                     </div>
@@ -1639,7 +1658,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         <a class="hidden-graph" title="Show Graph" id="testMessagesHidden" hideGraphHidden></a>
                     </div>
                 </div>
-                <div class="graph-body">
+                <div class="graph-body vertical">
                     <div id="testMessagesVertical" class="w-100 h-100">
                         <canvas id="testMessagesGraph"></canvas>
                     </div>
@@ -1674,7 +1693,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         <a class="hidden-graph" title="Show Graph" id="testMostFlakyHidden" hideGraphHidden></a>
                     </div>
                 </div>
-                <div class="graph-body">
+                <div class="graph-body vertical">
                     <div id="testMostFlakyVertical" class="w-100 h-100">
                         <canvas id="testMostFlakyGraph"></canvas>
                     </div>
@@ -1710,7 +1729,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         <a class="hidden-graph" title="Show Graph" id="testRecentMostFlakyHidden" hideGraphHidden></a>
                     </div>
                 </div>
-                <div class="graph-body">
+                <div class="graph-body vertical">
                     <div id="testRecentMostFlakyVertical" class="w-100 h-100">
                         <canvas id="testRecentMostFlakyGraph"></canvas>
                     </div>
@@ -1738,7 +1757,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         <a class="hidden-graph" title="Show Graph" id="testMostFailedHidden" hideGraphHidden></a>
                     </div>
                 </div>
-                <div class="graph-body">
+                <div class="graph-body vertical">
                     <div id="testMostFailedVertical" class="w-100 h-100">
                         <canvas id="testMostFailedGraph"></canvas>
                     </div>
@@ -1767,7 +1786,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         <a class="hidden-graph" title="Show Graph" id="testRecentMostFailedHidden" hideGraphHidden></a>
                     </div>
                 </div>
-                <div class="graph-body">
+                <div class="graph-body vertical">
                     <div id="testRecentMostFailedVertical" class="w-100 h-100">
                         <canvas id="testRecentMostFailedGraph"></canvas>
                     </div>
@@ -1947,8 +1966,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         <a class="hidden-graph" title="Show Graph" id="keywordMostFailedHidden" hideGraphHidden></a>
                     </div>
                 </div>
-                <div class="graph-body">
-                    <canvas id="keywordMostFailedGraph"></canvas>
+                <div class="graph-body vertical">
+                    <div id="keywordMostFailedVertical" class="w-100 h-100">
+                        <canvas id="keywordMostFailedGraph"></canvas>
+                    </div
                 </div>`,
             },
             {
@@ -2019,8 +2040,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         <a class="hidden-graph" title="Show Graph" id="compareTestsHidden" hideGraphHidden></a>
                     </div>
                 </div>
-                <div class="graph-body">
-                    <canvas id="compareTestsGraph"></canvas>
+                <div class="graph-body vertical">
+                    <div id="compareTestsVertical" class="w-100 h-100">
+                        <canvas id="compareTestsGraph"></canvas>
+                    </div>
                 </div>`,
             },
             {
@@ -2469,7 +2492,21 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 });
             set_local_storage_item("view.tables.graphs.show", shownTables)
             set_local_storage_item("view.tables.graphs.hide", hiddenTables)
-
+            // save dashboard section layout
+            const shownDashboardSections = [...document.querySelectorAll(".shown-section:not([hidden])")]
+                .map(el => {
+                    var key = el.id.replace("SectionShown", "");
+                    key = String(key).charAt(0).toUpperCase() + String(key).slice(1);
+                    return `${key} Statistics`
+                });
+            const hiddenDashboardSections = [...document.querySelectorAll(".hidden-section:not([hidden])")]
+                .map(el => {
+                    var key = el.id.replace("SectionHidden", "");
+                    key = String(key).charAt(0).toUpperCase() + String(key).slice(1);
+                    return `${key} Statistics`
+                });
+            set_local_storage_item("view.dashboard.sections.show", shownDashboardSections)
+            set_local_storage_item("view.dashboard.sections.hide", hiddenDashboardSections)
 
             add_alert("Layout has been updated and saved to settings!", "success")
         }
@@ -2485,7 +2522,39 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     lock_layout(lock)
                 }
                 setup_data_and_graphs();
-            })
+            });
+            // disable or enable sections
+            document.querySelectorAll(".shown-section").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    btn.hidden = true;
+                    document.getElementById(`${btn.id.replace("Shown", "Hidden")}`).hidden = false;
+                })
+            });
+            document.querySelectorAll(".hidden-section").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    btn.hidden = true;
+                    document.getElementById(`${btn.id.replace("Hidden", "Shown")}`).hidden = false;
+                })
+            });
+            // move sections up or down
+            document.querySelectorAll(".move-up-section").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const card = btn.closest(".card");
+                    const previousCard = card.previousElementSibling;
+                    if (previousCard && !previousCard.hidden && previousCard.classList.contains("card")) {
+                        card.parentNode.insertBefore(card, previousCard);
+                    }
+                });
+            });
+            document.querySelectorAll(".move-down-section").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const card = btn.closest(".card");
+                    const nextCard = card.nextElementSibling;
+                    if (nextCard && !nextCard.hidden && nextCard.classList.contains("card")) {
+                        card.parentNode.insertBefore(nextCard, card);
+                    }
+                });
+            });
         }
 
         // function to add an alert to the admin page
@@ -2556,9 +2625,13 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 keywordStatisticsSection: sectionButtons[3],
             };
 
-            sectionButtons.forEach(btn => btn.hidden = false); // unhide all
-            sectionButtons.forEach(btn => btn.classList.remove('active')); // unhide all
-            settings.view.dashboard.sections.hide.forEach(hiddenSection => sectionMap[`${space_to_camelcase(hiddenSection)}Section`].hidden = true) // hide section menu buttons that should be hidden
+            if (settings.menu.dashboard) {
+                sectionButtons.forEach(btn => btn.hidden = false);
+                sectionButtons.forEach(btn => btn.classList.remove('active'));
+                settings.view.dashboard.sections.hide.forEach(hiddenSection => sectionMap[`${space_to_camelcase(hiddenSection)}Section`].hidden = true) // hide section menu buttons that should be hidden
+            } else {
+                sectionButtons.forEach(btn => btn.hidden = true);
+            }
 
             // fix button rounding after hiding the correct ones
             const buttons = Array.from(document.querySelectorAll(`#sectionIndicator .btn`))
@@ -2976,9 +3049,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     lastScrollY = window.scrollY
                     inFullscreen = !inFullscreen;
                     $("#navigation").hide();
-                    document.getElementById(`${fullscreenButton}Canvas`).classList.add("fullscreen");
-                    document.getElementById(`${fullscreenButton}Close`).hidden = false;
-                    document.getElementById(`${fullscreenButton}Fullscreen`).hidden = true;
+                    const fullscreen = document.getElementById(`${fullscreenButton}Fullscreen`);
+                    const close = document.getElementById(`${fullscreenButton}Close`);
+                    const content = fullscreen.closest(".grid-stack-item-content");
+                    fullscreen.hidden = true;
+                    close.hidden = false;
+                    content.classList.add("fullscreen")
                     document.body.classList.add("lock-scroll");
                     window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
                     if (fullscreenButton == "runDonut") {
@@ -2991,9 +3067,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 document.getElementById(`${fullscreenButton}Close`).addEventListener("click", () => {
                     inFullscreen = !inFullscreen;
                     $("#navigation").show();
-                    document.getElementById(`${fullscreenButton}Canvas`).classList.remove("fullscreen");
-                    document.getElementById(`${fullscreenButton}Close`).hidden = true;
-                    document.getElementById(`${fullscreenButton}Fullscreen`).hidden = false;
+                    const fullscreen = document.getElementById(`${fullscreenButton}Fullscreen`);
+                    const close = document.getElementById(`${fullscreenButton}Close`);
+                    const content = fullscreen.closest(".grid-stack-item-content");
+                    fullscreen.hidden = false;
+                    close.hidden = true;
+                    content.classList.remove("fullscreen")
                     document.body.classList.remove("lock-scroll");
                     window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
                     if (fullscreenButton == "runDonut") {
@@ -3143,74 +3222,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     const next = section.nextElementSibling;
                     if (next && next.classList.contains("table-section")) {
                         section.parentElement.insertBefore(next, section);
-                    }
-                });
-            });
-            // section layout changes
-            document.querySelectorAll(".shown-section").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    btn.hidden = true;
-                    document.getElementById(`${btn.id.replace("Shown", "Hidden")}`).hidden = false;
-                })
-            });
-            document.querySelectorAll(".hidden-section").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    btn.hidden = true;
-                    document.getElementById(`${btn.id.replace("Hidden", "Shown")}`).hidden = false;
-                })
-            });
-
-            document.querySelectorAll(".move-up-section").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    const card = btn.closest(".card");
-                    const previousCard = card.previousElementSibling;
-                    if (previousCard && !previousCard.hidden && previousCard.classList.contains("card")) {
-                        card.parentNode.insertBefore(card, previousCard);
-
-                        // const currGrid = card.querySelector(".grid-stack");
-                        // const prevGrid = previousCard.querySelector(".grid-stack");
-                        // console.log(currGrid, prevGrid)
-
-                        // if (currGrid && window[currGrid.id]) {
-                        //     const grid = window[currGrid.id];
-                        //     grid.engine?._notify();
-                        //     grid._layout?.();
-                        //     grid._updateContainerHeight?.();
-                        // }
-
-                        // if (prevGrid && window[prevGrid.id]) {
-                        //     const grid = window[prevGrid.id];
-                        //     grid.engine?._notify();
-                        //     grid._layout?.();
-                        //     grid._updateContainerHeight?.();
-                        // }
-                    }
-                });
-            });
-
-            document.querySelectorAll(".move-down-section").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    const card = btn.closest(".card");
-                    const nextCard = card.nextElementSibling;
-                    if (nextCard && !nextCard.hidden && nextCard.classList.contains("card")) {
-                        card.parentNode.insertBefore(nextCard, card);
-
-                        // const currGrid = card.querySelector(".grid-stack");
-                        // const nextGrid = nextCard.querySelector(".grid-stack");
-
-                        // if (currGrid && window[currGrid.id]) {
-                        //     const grid = window[currGrid.id];
-                        //     grid.engine?._notify();
-                        //     grid._layout?.();
-                        //     grid._updateContainerHeight?.();
-                        // }
-
-                        // if (nextGrid && window[nextGrid.id]) {
-                        //     const grid = window[nextGrid.id];
-                        //     grid.engine?._notify();
-                        //     grid._layout?.();
-                        //     grid._updateContainerHeight?.();
-                        // }
                     }
                 });
             });
@@ -4141,7 +4152,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height("suiteMostFailedVertical", config.data.labels.length, config.options.plugins.title.text, settings.graphTypes.suiteMostFailedGraphType);
+            update_height("suiteMostFailedVertical", config.data.labels.length, settings.graphTypes.suiteMostFailedGraphType);
             suiteMostFailedGraph = new Chart("suiteMostFailedGraph", config);
             suiteMostFailedGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(suiteMostFailedGraph, event)
@@ -4227,7 +4238,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 }
             };
             if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
-            update_height("testStatisticsVertical", config.data.labels.length, config.options.plugins.title.text, "timeline");
+            update_height("testStatisticsVertical", config.data.labels.length, "timeline");
             testStatisticsGraph = new Chart("testStatisticsGraph", config);
             testStatisticsGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testStatisticsGraph, event)
@@ -4323,7 +4334,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height("testMessagesVertical", config.data.labels.length, config.options.plugins.title.text, settings.graphTypes.testMessagesGraphType);
+            update_height("testMessagesVertical", config.data.labels.length, settings.graphTypes.testMessagesGraphType);
             testMessagesGraph = new Chart("testMessagesGraph", config);
             testMessagesGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testMessagesGraph, event)
@@ -4388,7 +4399,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height("testMostFlakyVertical", config.data.labels.length, config.options.plugins.title.text, settings.graphTypes.testMostFlakyGraphType);
+            update_height("testMostFlakyVertical", config.data.labels.length, settings.graphTypes.testMostFlakyGraphType);
             testMostFlakyGraph = new Chart("testMostFlakyGraph", config);
             testMostFlakyGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testMostFlakyGraph, event)
@@ -4439,7 +4450,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height("testRecentMostFlakyVertical", config.data.labels.length, config.options.plugins.title.text, settings.graphTypes.testRecentMostFlakyGraphType);
+            update_height("testRecentMostFlakyVertical", config.data.labels.length, settings.graphTypes.testRecentMostFlakyGraphType);
             testRecentMostFlakyGraph = new Chart("testRecentMostFlakyGraph", config);
             testRecentMostFlakyGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testRecentMostFlakyGraph, event)
@@ -4497,7 +4508,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height("testMostFailedVertical", config.data.labels.length, config.options.plugins.title.text, settings.graphTypes.testMostFailedGraphType);
+            update_height("testMostFailedVertical", config.data.labels.length, settings.graphTypes.testMostFailedGraphType);
             testMostFailedGraph = new Chart("testMostFailedGraph", config);
             testMostFailedGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testMostFailedGraph, event)
@@ -4555,7 +4566,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height("testRecentMostFailedVertical", config.data.labels.length, config.options.plugins.title.text, settings.graphTypes.testRecentMostFailedGraphType);
+            update_height("testRecentMostFailedVertical", config.data.labels.length, settings.graphTypes.testRecentMostFailedGraphType);
             testRecentMostFailedGraph = new Chart("testRecentMostFailedGraph", config);
             testRecentMostFailedGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(testRecentMostFailedGraph, event)
@@ -4780,7 +4791,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
             }
-            update_height("keywordMostFailedVertical", config.data.labels.length, config.options.plugins.title.text, settings.graphTypes.keywordMostFailedGraphType);
+            update_height("keywordMostFailedVertical", config.data.labels.length, settings.graphTypes.keywordMostFailedGraphType);
             keywordMostFailedGraph = new Chart("keywordMostFailedGraph", config);
             keywordMostFailedGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(keywordMostFailedGraph, event)
@@ -4887,7 +4898,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 }
             };
             if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
-            update_height("compareTestsVertical", config.data.labels.length, config.options.plugins.title.text, "timeline");
+            update_height("compareTestsVertical", config.data.labels.length, "timeline");
             compareTestsGraph = new Chart("compareTestsGraph", config);
             compareTestsGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(compareTestsGraph, event)
@@ -6368,10 +6379,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         }
 
         // function to update the height of the test statistics graph and enable scrolling
-        function update_height(verticalId, labels, title, graphType) {
-            return
+        function update_height(verticalId, labels, graphType) {
             const vertical = document.getElementById(verticalId);
-            const parent = vertical.parentElement;
+            const parent = vertical.closest(".vertical");
             const baseHeight = parseFloat(getComputedStyle(parent).height) - 48;
             vertical.style.height = `${baseHeight}px`;
             if (labels > 10 && graphType != "bar") {
@@ -6574,66 +6584,29 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to order the sections according to the config
         function setup_section_order() {
-            const overviewStatisticsSection = document.getElementById("overviewStatisticsSection");
-            const dashboardSectionShow = settings.view.dashboard.sections.show
-            const dashboardSectionHide = settings.view.dashboard.sections.hide
-            const compareStatisticsSection = document.getElementById("compareStatisticsSection");
-            const tablesStatisticsSection = document.getElementById("tablesStatisticsSection");
-            const sectionButtons = [
-                document.getElementById("runStatisticsSectionNav"),
-                document.getElementById("suiteStatisticsSectionNav"),
-                document.getElementById("testStatisticsSectionNav"),
-                document.getElementById("keywordStatisticsSectionNav"),
-            ];
-            let prevId = "#loading";
+            document.getElementById("overview").hidden = !settings.menu.overview;
+            document.getElementById("dashboard").hidden = !settings.menu.dashboard;
+            document.getElementById("compare").hidden = !settings.menu.compare;
+            document.getElementById("tables").hidden = !settings.menu.tables;
+            let prevId = "#topSection";
 
-            for (const section of dashboardSectionShow) {
+            for (const section of settings.view.dashboard.sections.show) {
                 const sectionId = space_to_camelcase(section + "Section");
                 const sectionEl = document.getElementById(sectionId);
-                if (sectionEl) {
+                sectionEl.hidden = false;
+                $(`#${sectionId}`).insertAfter(prevId);
+                prevId = `#${sectionId}`;
+            }
+            for (const section of settings.view.dashboard.sections.hide) {
+                const sectionId = space_to_camelcase(section + "Section");
+                const sectionEl = document.getElementById(sectionId);
+                if (gridEditMode) {
                     sectionEl.hidden = false;
                     $(`#${sectionId}`).insertAfter(prevId);
                     prevId = `#${sectionId}`;
+                } else {
+                    sectionEl.hidden = true;
                 }
-            }
-            for (const section of dashboardSectionHide) {
-                const sectionId = space_to_camelcase(section);
-                const sectionEl = document.getElementById(sectionId);
-                if (sectionEl) sectionEl.hidden = true;
-            }
-
-            if (settings.menu.overview) {
-                dashboardSections.forEach(section => {
-                    const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
-                    if (sectionEl) sectionEl.hidden = true;
-                });
-                sectionButtons.forEach(btn => btn.hidden = true);
-                compareStatisticsSection.hidden = true;
-                overviewStatisticsSection.hidden = false;
-                tablesStatisticsSection.hidden = true;
-            } else if (settings.menu.dashboard) {
-                overviewStatisticsSection.hidden = true;
-                compareStatisticsSection.hidden = true;
-                sectionButtons.forEach(btn => btn.hidden = false);
-                tablesStatisticsSection.hidden = true;
-            } else if (settings.menu.compare) {
-                dashboardSections.forEach(section => {
-                    const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
-                    if (sectionEl) sectionEl.hidden = true;
-                });
-                sectionButtons.forEach(btn => btn.hidden = true);
-                overviewStatisticsSection.hidden = true;
-                compareStatisticsSection.hidden = false;
-                tablesStatisticsSection.hidden = true;
-            } else if (settings.menu.tables) {
-                dashboardSections.forEach(section => {
-                    const sectionEl = document.getElementById(space_to_camelcase(section + " Section"));
-                    if (sectionEl) sectionEl.hidden = true;
-                });
-                sectionButtons.forEach(btn => btn.hidden = true);
-                overviewStatisticsSection.hidden = true;
-                compareStatisticsSection.hidden = true;
-                tablesStatisticsSection.hidden = false;
             }
 
             if (gridEditMode) {
@@ -6824,7 +6797,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     html = html.replace("hideGraphHidden", "hidden")
                 }
                 item.innerHTML = html
-                window[grid].addWidget(item);
+                window[grid].makeWidget(item);
             }
 
             function add_hidden_graph(id) {
@@ -6934,7 +6907,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             setup_layout();
             setup_filter_modal();
             setup_settings_modal();
-            // setup_customize_view_modal();
             setup_menu();
         }
 
