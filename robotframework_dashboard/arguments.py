@@ -92,6 +92,12 @@ class ArgumentParser:
             default="",
         )
         parser.add_argument(
+            "-j",
+            "--jsonconfig",
+            help="`path` Specifies a path to a a dashboard json config that will be used as default on first load if there is none already.",
+            default=None,
+        )
+        parser.add_argument(
             "-t",
             "--dashboardtitle",
             help="`string` Specifies a custom dashboard html report title.",
@@ -224,6 +230,12 @@ class ArgumentParser:
                 for line in file:
                     message_config.append(line.strip())
 
+        # handles the json config
+        json_config = []
+        if arguments.jsonconfig:
+            with open(arguments.jsonconfig) as file:
+                json_config = file.read()
+
         # handles the custom dashboard name
         if arguments.namedashboard == "":
             dashboard_name = (
@@ -278,6 +290,7 @@ class ArgumentParser:
             "start_server": start_server,
             "server_host": server_host,
             "server_port": server_port,
+            "json_config": json_config,
             "message_config": message_config,
             "quantity": quantity,
             "use_logs": use_logs,

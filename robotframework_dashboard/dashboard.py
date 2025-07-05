@@ -17,6 +17,7 @@ class DashboardGenerator:
         generation_datetime: datetime,
         dashboard_title: str,
         server: bool,
+        json_config: str,
         message_config: list,
         quantity: int,
         use_logs: bool,
@@ -62,6 +63,11 @@ class DashboardGenerator:
                 dashboard_data = dashboard_data.replace(
                     '"placeholder_message_config"',
                     str(message_config).replace("'", '"'),
+                )
+            if json_config:
+                dashboard_data = dashboard_data.replace(
+                    '"placeholder_json_config"',
+                    json_config,
                 )
             if use_logs:
                 dashboard_data = dashboard_data.replace(

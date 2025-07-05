@@ -22,6 +22,7 @@ class RobotDashboard:
         list_runs: bool,
         dashboard_title: str,
         database_class: Path,
+        json_config: str,
         message_config: list,
         quantity: int,
         use_logs: bool,
@@ -34,6 +35,7 @@ class RobotDashboard:
         self.list_runs = list_runs
         self.dashboard_title = dashboard_title
         self.database_class = database_class
+        self.json_config = json_config
         self.message_config = message_config
         self.quantity = quantity
         self.use_logs = use_logs
@@ -209,6 +211,7 @@ class RobotDashboard:
                 self.generation_datetime,
                 self.dashboard_title,
                 self.server,
+                self.json_config,
                 self.message_config,
                 self.quantity,
                 self.use_logs,

@@ -179,48 +179,12 @@
             cursor: pointer;
         }
 
-        /* .information[data-title] {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .information[data-title]::after {
-            content: attr(data-title);
-            white-space: pre-line;
-            font-size: 0.95rem;
-            position: absolute;
-            padding: 8px 12px;
-            border-radius: 8px;
-            top: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            opacity: 0;
-            border: 1px solid #1e293b;
-            z-index: 9999;
-            visibility: hidden;
-            max-width: min(90vw, 360px);
-            width: max-content;
-            overflow-wrap: break-word;
-            text-align: left;
-            box-sizing: border-box;
-            background-color: white;
-            color: black;
-            transition: opacity 0.2s ease-in-out;
-        }
-
-        .information[data-title]:hover::after {
-            opacity: 1;
-            visibility: visible;
-        } */
-
         .tooltip-popup {
             position: fixed;
             max-width: 360px;
             padding: 8px 12px;
             border-radius: 8px;
             background-color: white;
-            /* you can keep your color mode classes */
             color: black;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             font-size: 0.95rem;
@@ -886,6 +850,16 @@
                         </div>
                         <div class="row">
                             <div class="col-8 btn-group ms-1">
+                                <label class="form-check-label mt-1" for="toggleAxisTitles">Graphs: Show Axis
+                                    Titles</label>
+                            </div>
+                            <div class="col btn-group form-switch ms-2">
+                                <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                    id="toggleAxisTitles" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-8 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleLabels">Graphs: Show Run Start/Alias
                                     Labels On Axes</label>
                             </div>
@@ -915,16 +889,6 @@
                         </div>
                         <div class="row">
                             <div class="col-8 btn-group ms-1">
-                                <label class="form-check-label mt-1" for="toggleAxisTitles">Graphs: Show Axis
-                                    Titles</label>
-                            </div>
-                            <div class="col btn-group form-switch ms-2">
-                                <input class="form-check-input mt-2" type="checkbox" role="switch"
-                                    id="toggleAxisTitles" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-8 btn-group ms-1">
                                 <label class="form-check-label mt-1" for="toggleAnimations">Graphs: Show Drawing
                                     Animations</label>
                             </div>
@@ -945,22 +909,22 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-auto">
-                                <button class="btn btn-outline-light btn-sm mt-auto" id="copySettings">Copy Current
+                                <button class="btn btn-outline-light btn-sm mt-auto" id="copySettings">Copy
                                     Settings</button>
                             </div>
                             <div class="col-auto">
-                                <button class="btn btn-outline-light btn-sm mt-auto" id="resetSettings">Reset All
+                                <button class="btn btn-outline-light btn-sm mt-auto" id="resetSettings">Reset
                                     Settings</button>
                             </div>
                             <div class="col-auto">
-                                <button class="btn btn-outline-light btn-sm mt-auto" id="applySettings">Apply Edited
+                                <button class="btn btn-outline-light btn-sm mt-auto" id="applySettings">Apply
                                     Settings</button>
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col">
                                 <label for="settingsTextArea" class="form-label">Current Settings JSON</label>
-                                <textarea id="settingsTextArea" class="form-control" rows="20"></textarea>
+                                <textarea id="settingsTextArea" class="form-control" rows="16"></textarea>
                             </div>
                         </div>
                     </div>
@@ -1122,6 +1086,7 @@
         }
 
         var message_config = '"placeholder_message_config"'
+        var json_config = "placeholder_json_config"
         var filteredAmount = "placeholder_amount"
         var filteredAmountDefault = 0
         const use_logs = "placeholder_use_logs"
@@ -2771,7 +2736,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function to fill the information icons with the correct data
         function setup_information_popups() {
-            // Set data-title attributes from your informationMap
             for (const id in informationMap) {
                 const title = informationMap[id];
                 const element = document.getElementById(id);
@@ -2779,7 +2743,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 element.setAttribute("data-title", title);
             }
 
-            // Now attach tooltip listeners to all .information[data-title] elements
             let tooltipEl = null;
             let currentTarget = null;
 
@@ -2838,11 +2801,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
 
             function removeTooltip() {
-                if (tooltipEl) {
-                    tooltipEl.remove();
-                    tooltipEl = null;
-                    currentTarget = null;
-                }
+                document.querySelectorAll('.tooltip-popup').forEach(el => el.remove());
+                tooltipEl = null;
+                currentTarget = null;
             }
 
             function isElementVisible(el) {
@@ -2850,9 +2811,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 return !(style.display === 'none' || style.visibility === 'hidden' || el.offsetParent === null);
             }
 
-            // Attach tooltip listeners to all elements with class 'information' and data-title attribute
             document.querySelectorAll('.information[data-title]').forEach(el => {
-                // Remove any old listeners to avoid duplicates
                 el.onmouseenter = null;
                 el.onmouseleave = null;
                 el.onclick = null;
@@ -2877,7 +2836,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 });
             });
 
-            // Global listener to handle mouse moving onto replaced elements
             document.addEventListener('mouseover', e => {
                 const target = e.target.closest('.information[data-title]');
                 if (target !== currentTarget) {
@@ -7098,8 +7056,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     const parsedSettings = JSON.parse(storedSettings);
                     settings = merge_deep(settings, parsedSettings);
                 } catch (e) {
-                    alert('Failed to parse settings from localStorage:', e);
+                    add_alert(`Failed to parse settings from localStorage: ${e}`, "danger");
                 }
+            } else if (typeof json_config != "string") {
+                settings = json_config
+                localStorage.setItem('settings', JSON.stringify(json_config));
             } else {
                 localStorage.setItem('settings', JSON.stringify(settings));
             }

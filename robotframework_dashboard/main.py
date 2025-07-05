@@ -28,6 +28,7 @@ def main():
         arguments.list_runs,
         arguments.dashboard_title,
         arguments.database_class,
+        arguments.json_config,
         arguments.message_config,
         arguments.quantity,
         arguments.use_logs,
