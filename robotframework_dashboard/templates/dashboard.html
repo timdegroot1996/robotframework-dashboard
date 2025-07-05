@@ -66,11 +66,6 @@
             border-color: black;
         }
 
-        .information-graph[data-title]::after {
-            background-color: white;
-            color: black;
-        }
-
         .stat-label {
             font-size: 1rem;
             color: darkgrey;
@@ -134,11 +129,6 @@
             color: #eee;
         }
 
-        .dark-mode .information-graph[data-title]::after {
-            background-color: #0f172a;
-            color: #eee;
-        }
-
         .dark-mode .stat-label {
             font-size: 0.85rem;
             color: #9ca3af;
@@ -166,7 +156,7 @@
         #settings,
         #database,
         .nav-item,
-        .information-graph,
+        .information-icon,
         .bar-graph,
         .line-graph,
         .fullscreen-graph,
@@ -189,13 +179,12 @@
             cursor: pointer;
         }
 
-        .information-graph[data-title]:hover::after {
-            opacity: 1;
-            visibility: visible;
-            transition: opacity 0.2s ease-in-out;
+        /* .information[data-title] {
+            position: relative;
+            cursor: pointer;
         }
 
-        .information-graph[data-title]::after {
+        .information[data-title]::after {
             content: attr(data-title);
             white-space: pre-line;
             font-size: 0.95rem;
@@ -203,7 +192,8 @@
             padding: 8px 12px;
             border-radius: 8px;
             top: calc(100% + 8px);
-            right: -70px;
+            left: 50%;
+            transform: translateX(-50%);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             opacity: 0;
             border: 1px solid #1e293b;
@@ -214,10 +204,35 @@
             overflow-wrap: break-word;
             text-align: left;
             box-sizing: border-box;
+            background-color: white;
+            color: black;
+            transition: opacity 0.2s ease-in-out;
         }
 
-        .information-graph[data-title] {
-            position: relative;
+        .information[data-title]:hover::after {
+            opacity: 1;
+            visibility: visible;
+        } */
+
+        .tooltip-popup {
+            position: fixed;
+            max-width: 360px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background-color: white;
+            /* you can keep your color mode classes */
+            color: black;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            font-size: 0.95rem;
+            white-space: pre-line;
+            pointer-events: none;
+            z-index: 9999;
+            box-sizing: border-box;
+        }
+
+        .dark-mode .tooltip-popup {
+            background-color: #0f172a;
+            color: #eee;
         }
 
         .card {
@@ -358,9 +373,10 @@
         .grid-stack-item-content .graph-body {
             flex: 1 1 auto;
             display: flex;
+            overflow: auto;
         }
 
-        .graph-body .vertical {
+        .grid-stack-item-content .graph-body .vertical {
             overflow-y: auto;
         }
 
@@ -417,8 +433,7 @@
     </div>
     <nav class="navbar navbar-expand-sm sticky-top navbar-dark ps-4 pe-4 border-bottom pb-1" id="navigation">
         <div class="navbar-nav ms-4">
-            <a class="nav-link p-2" id="rflogo" href="https://robotframework.org/" target="_blank"
-                title="Robot Framework"></a>
+            <a class="nav-link p-2 information" id="rflogo" href="https://robotframework.org/" target="_blank"></a>
             <a class="nav-item nav-link" id="menuOverview">Overview</span></a>
             <a class="nav-item nav-link active" id="menuDashboard">Dashboard</a>
             <a class="nav-item nav-link" id="runStatisticsSectionNav"><i>Runs</i></a>
@@ -431,33 +446,38 @@
         </div>
         <ul class="navbar-nav flex-row flex-wrap ms-md-auto me-4">
             <li class="nav-item">
-                <a class="nav-link p-2" id="filters" data-bs-toggle="modal" data-bs-target="#filtersModal"
-                    title="Filters"></a>
+                <a class="nav-link p-2 information" id="filters" data-bs-toggle="modal"
+                    data-bs-target="#filtersModal"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2 lock" id="customizeLayout" title="Customize Layout"></a>
+                <a class="nav-link p-2 information" id="customizeLayout"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2" id="settings" data-bs-toggle="modal" data-bs-target="#settingsModal"
-                    title="Settings"></a>
+                <a class="nav-link p-2 information" id="saveLayout" hidden></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2" id="theme" title="Theme"></a>
+                <a class="nav-link p-2 information" id="settings" data-bs-toggle="modal"
+                    data-bs-target="#settingsModal"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2" id="database" data-bs-toggle="modal" data-bs-target="#databaseModal"
-                    title="Database Summary"></a>
+                <a class="nav-link p-2 information" id="themeDark"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2 information-graph" id="versionInformation"
-                    data-title='"placeholder_version"'></a>
+                <a class="nav-link p-2 information" id="themeLight"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2" target="_blank" id="bug" title="Report a bug or feature request"
+                <a class="nav-link p-2 information" id="database" data-bs-toggle="modal"
+                    data-bs-target="#databaseModal"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link p-2 information information-icon" id="versionInformation"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link p-2 information" target="_blank" id="bug"
                     href="https://github.com/timdegroot1996/robotframework-dashboard/issues"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2" target="_blank" id="github" title="GitHub"
+                <a class="nav-link p-2 information" target="_blank" id="github"
                     href="https://github.com/timdegroot1996/robotframework-dashboard"></a>
             </li>
         </ul>
@@ -509,12 +529,8 @@
                                 </div>
                             </div>
                             <div class="col-auto">
-                                <a type="button" class="information-graph ms-2" id="overviewStatisticsInformation"
-                                    data-title="This section shows the projects and their associated runs:
-- Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
-- Passed runs represent the percentage of runs with zero failures.
-- You can define your own projects or groupings by appending '-o path/to/output.xml:project_yourprojectname' when generating results.
-- If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle."></a>
+                                <a type="button" class="information information-icon ms-2"
+                                    id="overviewStatisticsInformation"></a>
                             </div>
                         </div>
                     </div>
@@ -537,10 +553,10 @@
                             <h4 id="runTitle"></h4>
                         </div>
                         <div class="col-auto ms-auto">
-                            <a class="move-up-section" title="Move Up" id="runSectionMoveUp" hidden></a>
-                            <a class="move-down-section" title="Move Down" id="runSectionMoveDown" hidden></a>
-                            <a class="shown-section" title="Hide Section" id="runSectionShown" hidden></a>
-                            <a class="hidden-section" title="Show Section" id="runSectionHidden" hidden></a>
+                            <a class="move-up-section information" id="runSectionMoveUp" hidden></a>
+                            <a class="move-down-section information" id="runSectionMoveDown" hidden></a>
+                            <a class="shown-section information" id="runSectionShown" hidden></a>
+                            <a class="hidden-section information" id="runSectionHidden" hidden></a>
                         </div>
                     </div>
                 </div>
@@ -558,31 +574,36 @@
                         <div class="col-3">
                             <h4 id="suiteTitle"></h4>
                         </div>
-                        <div class="d-flex flex-wrap align-items-start col align-items-center">
-                            <div class="col-auto d-flex me-2">
-                                <label class="form-label mb-0" for="suiteFolder">Folder:</label>
-                                <p class="form-label mb-0 ms-1" id="suiteFolder">All</p>
-                            </div>
-                            <div class="col-auto d-flex me-2">
-                                <button class="btn btn-outline-light btn-sm" id="resetSuiteFolder">Reset Folder</button>
-                            </div>
-                            <div class="col-auto d-flex me-2">
-                                <label class="form-label me-2 mt-1" for="suiteSelectSuites">Suite:</label>
-                                <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
-                            </div>
-                            <div class="col-auto d-flex me-2">
-                                <label class="form-check-label mb-0 me-2" for="switchSuitePathsSuiteSection">Use Suite
-                                    Paths</label>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch"
-                                        id="switchSuitePathsSuiteSection" />
+                        <div class="col d-flex align-items-center" id="suiteSectionFiltersContainer">
+                            <div class="d-flex flex-wrap align-items-start col align-items-center"
+                                id="suiteSectionFilters">
+                                <div class="col-auto d-flex me-2">
+                                    <label class="form-label mb-0" for="suiteFolder">Folder:</label>
+                                    <p class="form-label mb-0 ms-1" id="suiteFolder">All</p>
+                                </div>
+                                <div class="col-auto d-flex me-2">
+                                    <button class="btn btn-outline-light btn-sm" id="resetSuiteFolder">Reset
+                                        Folder</button>
+                                </div>
+                                <div class="col-auto d-flex me-2">
+                                    <label class="form-label me-2 mt-1" for="suiteSelectSuites">Suite:</label>
+                                    <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
+                                </div>
+                                <div class="col-auto d-flex me-2">
+                                    <label class="form-check-label mb-0 me-2" for="switchSuitePathsSuiteSection">Use
+                                        Suite
+                                        Paths</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                            id="switchSuitePathsSuiteSection" />
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-auto ms-auto">
-                                <a class="move-up-section" title="Move Up" id="suiteSectionMoveUp" hidden></a>
-                                <a class="move-down-section" title="Move Down" id="suiteSectionMoveDown" hidden></a>
-                                <a class="shown-section" title="Hide Section" id="suiteSectionShown" hidden></a>
-                                <a class="hidden-section" title="Show Section" id="suiteSectionHidden" hidden></a>
+                                <a class="move-up-section information" id="suiteSectionMoveUp" hidden></a>
+                                <a class="move-down-section information" id="suiteSectionMoveDown" hidden></a>
+                                <a class="shown-section information" id="suiteSectionShown" hidden></a>
+                                <a class="hidden-section information" id="suiteSectionHidden" hidden></a>
                             </div>
                         </div>
                     </div>
@@ -601,32 +622,37 @@
                         <div class="col-3">
                             <h4 id="testTitle"></h4>
                         </div>
-                        <div class="d-flex flex-wrap align-items-start col align-items-center">
-                            <div class="col-auto d-flex me-2">
-                                <label class="form-label mb-0 me-2 mt-1" for="suiteSelectTests">Suite:</label>
-                                <select class="form-select form-select-sm" id="suiteSelectTests"></select>
-                            </div>
-                            <div class="col-auto d-flex me-2">
-                                <label class="form-check-label mb-0 me-2" for="switchSuitePathsTestSection">Use Suite
-                                    Paths</label>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch"
-                                        id="switchSuitePathsTestSection" />
+                        <div class="col d-flex align-items-center" id="testSectionFiltersContainer">
+                            <div class="d-flex flex-wrap align-items-start col align-items-center"
+                                id="testSectionFilters">
+                                <div class="col-auto d-flex me-2">
+                                    <label class="form-label mb-0 me-2 mt-1" for="suiteSelectTests">Suite:</label>
+                                    <select class="form-select form-select-sm" id="suiteSelectTests"></select>
+                                </div>
+                                <div class="col-auto d-flex me-2">
+                                    <label class="form-check-label mb-0 me-2" for="switchSuitePathsTestSection">Use
+                                        Suite
+                                        Paths</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                            id="switchSuitePathsTestSection" />
+                                    </div>
+                                </div>
+                                <div class="col-auto d-flex me-2">
+                                    <label class="form-label mb-0 me-2 mt-1" for="testSelect">Test:</label>
+                                    <select class="form-select form-select-sm" id="testSelect"></select>
+                                </div>
+                                <div class="col-auto d-flex flex-nowrap align-items-center me-2">
+                                    <label class="form-label mb-0 me-2 text-nowrap" for="testTagsSelect">Test
+                                        Tags:</label>
+                                    <select class="form-select form-select-sm w-auto" id="testTagsSelect"></select>
                                 </div>
                             </div>
-                            <div class="col-auto d-flex me-2">
-                                <label class="form-label mb-0 me-2 mt-1" for="testSelect">Test:</label>
-                                <select class="form-select form-select-sm" id="testSelect"></select>
-                            </div>
-                            <div class="col-auto d-flex flex-nowrap align-items-center me-2">
-                                <label class="form-label mb-0 me-2 text-nowrap" for="testTagsSelect">Test Tags:</label>
-                                <select class="form-select form-select-sm w-auto" id="testTagsSelect"></select>
-                            </div>
                             <div class="col-auto ms-auto">
-                                <a class="move-up-section" title="Move Up" id="testSectionMoveUp" hidden></a>
-                                <a class="move-down-section" title="Move Down" id="testSectionMoveDown" hidden></a>
-                                <a class="shown-section" title="Hide Section" id="testSectionShown" hidden></a>
-                                <a class="hidden-section" title="Show Section" id="testSectionHidden" hidden></a>
+                                <a class="move-up-section information" id="testSectionMoveUp" hidden></a>
+                                <a class="move-down-section information" id="testSectionMoveDown" hidden></a>
+                                <a class="shown-section information" id="testSectionShown" hidden></a>
+                                <a class="hidden-section information" id="testSectionHidden" hidden></a>
                             </div>
                         </div>
                     </div>
@@ -645,21 +671,24 @@
                         <div class="col-3">
                             <h4 id="keywordTitle"></h4>
                         </div>
-                        <div class="d-flex flex-wrap align-items-start col align-items-center">
-                            <div class="col-auto me-2">
-                                <div class="btn-group">
-                                    <label class="form-label mt-2" for="keywordSelect">Keyword</label>
-                                </div>
-                                <div class="btn-group">
-                                    <select class="form-select form-select-sm" id="keywordSelect"></select>
+                        <div class="col d-flex align-items-center" id="keywordSectionFiltersContainer">
+                            <div class="d-flex flex-wrap align-items-start col align-items-center"
+                                id="keywordSectionFilters">
+                                <div class="col-auto me-2">
+                                    <div class="btn-group">
+                                        <label class="form-label mt-2" for="keywordSelect">Keyword</label>
+                                    </div>
+                                    <div class="btn-group">
+                                        <select class="form-select form-select-sm" id="keywordSelect"></select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-auto ms-auto">
-                            <a class="move-up-section" title="Move Up" id="keywordSectionMoveUp" hidden></a>
-                            <a class="move-down-section" title="Move Down" id="keywordSectionMoveDown" hidden></a>
-                            <a class="shown-section" title="Hide Section" id="keywordSectionShown" hidden></a>
-                            <a class="hidden-section" title="Show Section" id="keywordSectionHidden" hidden></a>
+                            <a class="move-up-section information" id="keywordSectionMoveUp" hidden></a>
+                            <a class="move-down-section information" id="keywordSectionMoveDown" hidden></a>
+                            <a class="shown-section information" id="keywordSectionShown" hidden></a>
+                            <a class="hidden-section information" id="keywordSectionHidden" hidden></a>
                         </div>
                     </div>
                 </div>
@@ -679,37 +708,40 @@
                         <div class="col-3">
                             <h4 id="compareTitle"></h4>
                         </div>
-                        <div class="d-flex flex-wrap align-items-start col align-items-center">
-                            <div class="col-auto">
-                                <div class="btn-group">
-                                    <label class="form-label ms-1 mt-2" for="compareRun1">Run 1</label>
+                        <div class="col d-flex align-items-center" id="compareSectionFiltersContainer">
+                            <div class="d-flex flex-wrap align-items-start col align-items-center"
+                                id="compareSectionFilters">
+                                <div class="col-auto">
+                                    <div class="btn-group">
+                                        <label class="form-label ms-1 mt-2" for="compareRun1">Run 1</label>
+                                    </div>
+                                    <div class="btn-group">
+                                        <select class="form-select form-select-sm" id="compareRun1"></select>
+                                    </div>
                                 </div>
-                                <div class="btn-group">
-                                    <select class="form-select form-select-sm" id="compareRun1"></select>
+                                <div class="col-auto">
+                                    <div class="btn-group">
+                                        <label class="form-label ms-1 mt-2" for="compareRun2">Run 2</label>
+                                    </div>
+                                    <div class="btn-group">
+                                        <select class="form-select form-select-sm" id="compareRun2"></select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-auto">
-                                <div class="btn-group">
-                                    <label class="form-label ms-1 mt-2" for="compareRun2">Run 2</label>
+                                <div class="col-auto">
+                                    <div class="btn-group">
+                                        <label class="form-label ms-1 mt-2" for="compareRun3">Run 3</label>
+                                    </div>
+                                    <div class="btn-group">
+                                        <select class="form-select form-select-sm" id="compareRun3"></select>
+                                    </div>
                                 </div>
-                                <div class="btn-group">
-                                    <select class="form-select form-select-sm" id="compareRun2"></select>
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <div class="btn-group">
-                                    <label class="form-label ms-1 mt-2" for="compareRun3">Run 3</label>
-                                </div>
-                                <div class="btn-group">
-                                    <select class="form-select form-select-sm" id="compareRun3"></select>
-                                </div>
-                            </div>
-                            <div class="col-auto me-2">
-                                <div class="btn-group">
-                                    <label class="form-label ms-1 mt-2" for="compareRun4">Run 4</label>
-                                </div>
-                                <div class="btn-group">
-                                    <select class="form-select form-select-sm" id="compareRun4"></select>
+                                <div class="col-auto me-2">
+                                    <div class="btn-group">
+                                        <label class="form-label ms-1 mt-2" for="compareRun4">Run 4</label>
+                                    </div>
+                                    <div class="btn-group">
+                                        <select class="form-select form-select-sm" id="compareRun4"></select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -793,15 +825,12 @@
                             <input class="form-control form-control-sm" id="toTime" type="time" />
                         </div>
                         <div class="col-auto mt-1 ps-2 pe-2">
-                            <label class="form-label form-label-sm mb-0" for="amount" id="amountLabel"
-                                title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.">
+                            <label class="form-label form-label-sm mb-0 information" for="amount" id="amountLabel">
                                 Amount
                             </label>
                             <div class="d-flex align-items-center mt-1">
-                                <input class="form-control form-control-sm flex-grow-1" type="number" min="0"
-                                    id="amount"
-                                    title="Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters."
-                                    value="10">
+                                <input class="form-control form-control-sm flex-grow-1 information" type="number"
+                                    min="0" id="amount" value="10">
                                 <button type="button" class="btn btn-outline-light btn-sm ms-2 text-nowrap"
                                     id="allRuns">All Runs</button>
                             </div>
@@ -1138,21 +1167,16 @@
                 defaultType: "percentages",
                 viewOptions: ["Percentages", "Line", "Amount"],
                 hasFullscreenButton: true,
-                information: `This graph shows the statistics of the runs represented in multiple formats:
-- Percentages: Displays the distribution of passed/failed/skipped tests per run, where 100% equals all tests combined.
-- Amount: Displays the actual number of passed/failed/skipped tests per run.
-- Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times.`,
                 html: `<div class="graph-header">
                     <h6>Statistics</h6>
                     <div class="graph-controls">
-                        <a class="percentage-graph" title="Percentage Graph" id="runStatisticsGraphPercentages"></a>
-                        <a class="bar-graph" title="Bar Graph" id="runStatisticsGraphAmount"></a>
-                        <a class="line-graph" title="Line Graph" id="runStatisticsGraphLine"></a>
-                        <a class="information-graph" id="runStatisticsInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="runStatisticsFullscreen"></a>
-                        <a class="close-graph" title="Close" id="runStatisticsClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="runStatisticsShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="runStatisticsHidden" hideGraphHidden></a>
+                        <a class="percentage-graph information" id="runStatisticsGraphPercentages"></a>
+                        <a class="bar-graph information" id="runStatisticsGraphAmount"></a>
+                        <a class="line-graph information" id="runStatisticsGraphLine"></a>
+                        <a class="fullscreen-graph information" id="runStatisticsFullscreen"></a>
+                        <a class="close-graph information" id="runStatisticsClose" hidden></a>
+                        <a class="shown-graph information" id="runStatisticsShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="runStatisticsHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1165,18 +1189,14 @@
                 defaultType: "donut",
                 viewOptions: ["Donut"],
                 hasFullscreenButton: true,
-                information: `This graph contains two donut charts:
-- The first donut displays the percentage of passed, failed, and skipped tests for the most recent run..
-- The second donut displays the total percentage of passed, failed, and skipped tests across all runs`,
                 html: `<div class="graph-header">
                     <h6>Donut</h6>
                     <div class="graph-controls">
-                        <a class="pie-graph" title="Pie Graph" id="runDonutGraphDonut"></a>
-                        <a class="information-graph" id="runDonutInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="runDonutFullscreen"></a>
-                        <a class="close-graph" title="Close" id="runDonutClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" data-id="Run Donut" id="runDonutShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" data-id="Run Donut" id="runDonutHidden" hideGraphHidden></a>
+                        <a class="pie-graph information" id="runDonutGraphDonut"></a>
+                        <a class="fullscreen-graph information" id="runDonutFullscreen"></a>
+                        <a class="close-graph information" id="runDonutClose" hidden></a>
+                        <a class="shown-graph information" id="runDonutShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="runDonutHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body" style="height:90%;">
@@ -1204,21 +1224,14 @@
                 defaultType: "stats",
                 viewOptions: ["Stats"],
                 hasFullscreenButton: true,
-                information: `This section provides key statistics:
-- Executed: Total counts of Runs, Suites, Tests, and Keywords that have been executed.
-- Unique Tests: Displays the number of distinct test cases across all runs.
-- Outcomes: Total Passed, Failed, and Skipped tests, including their percentages relative to the full test set.
-- Duration: Displays the cumulative runtime of all runs, the average runtime per run, and the average duration of individual tests.
-- Pass Rate: Displays the average run-level pass rate, helping evaluate overall reliability over time.`,
                 html: `<div class="graph-header">
                     <h6>Stats</h6>
                     <div class="graph-controls">
-                        <a class="stats-graph" title="Stats" id="runStatsGraphStats"></a>
-                        <a class="information-graph" id="runStatsInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="runStatsFullscreen"></a>
-                        <a class="close-graph" title="Close" id="runStatsClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="runStatsShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="runStatsHidden" hideGraphHidden></a>
+                        <a class="stats-graph information" id="runStatsGraphStats"></a>
+                        <a class="fullscreen-graph information" id="runStatsFullscreen"></a>
+                        <a class="close-graph information" id="runStatsClose" hidden></a>
+                        <a class="shown-graph information" id="runStatsShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="runStatsHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1288,19 +1301,15 @@
                 defaultType: "line",
                 viewOptions: ["Bar", "Line"],
                 hasFullscreenButton: true,
-                information: `This graph visualizes the duration of each run:
-- Bar: Displays total run durations represented as vertical bars.
-- Line: Displays the same data but over a time axis for clearer trend analysis.`,
                 html: ` <div class="graph-header">
                     <h6>Duration</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="runDurationGraphBar"></a>
-                        <a class="line-graph" title="Line Graph" id="runDurationGraphLine"></a>
-                        <a class="information-graph" id="runDurationInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="runDurationFullscreen"></a>
-                        <a class="close-graph" title="Close" id="runDurationClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="runDurationShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="runDurationHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="runDurationGraphBar"></a>
+                        <a class="line-graph information" id="runDurationGraphLine"></a>
+                        <a class="fullscreen-graph information" id="runDurationFullscreen"></a>
+                        <a class="close-graph information" id="runDurationClose" hidden></a>
+                        <a class="shown-graph information" id="runDurationShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="runDurationHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1313,12 +1322,6 @@
                 defaultType: "heatmap",
                 viewOptions: ["Heatmap"],
                 hasFullscreenButton: true,
-                information: `This graph visualizes a heatmap of when tests are executed the most:
-- All: Displays how many tests ran during the hours or minutes of the week days.
-- Passed: Displays the same data but only passed tests.
-- Failed: Displays the same data but only failed tests.
-- Skipped: Displays the same data but only skipped tests.
-- Hour: Displays only that hour so you get insights per minute.`,
                 html: `<div class="graph-header">
                     <h6>Heatmap</h6>
                     <div class="graph-controls">
@@ -1365,12 +1368,11 @@
                                 <option value="23">23:00</option>
                             </select>
                         </div>
-                        <a class="heatmap-graph" title="Heatmap Graph" id="runHeatmapGraphHeatmap"></a>
-                        <a class="information-graph" id="runHeatmapInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="runHeatmapFullscreen"></a>
-                        <a class="close-graph" title="Close" id="runHeatmapClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="runHeatmapShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="runHeatmapHidden" hideGraphHidden></a>
+                        <a class="heatmap-graph information" id="runHeatmapGraphHeatmap"></a>
+                        <a class="fullscreen-graph information" id="runHeatmapFullscreen"></a>
+                        <a class="close-graph information" id="runHeatmapClose" hidden></a>
+                        <a class="shown-graph information" id="runHeatmapShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="runHeatmapHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1383,13 +1385,6 @@
                 defaultType: "donut",
                 viewOptions: ["Donut"],
                 hasFullscreenButton: true,
-                information: `This graph contains two donut charts:
-- The first donut displays the top-level folders of the suites and the amount of tests each folder contains.
-- The second donut displays the same folder structure but only for the most recent run and only includes failed tests.
-- Clicking on a folder updates the chart with the subfolders/suites it contains.
-- Navigating folders also updates Suite Statistics and Suite Duration.
-- "Go Up" navigates to the parent folder level.
-- "Only Failed" filters to show only folders with failing tests.`,
                 html: `<div class="graph-header">
                     <h6>Folders</h6>
                     <div class="graph-controls">
@@ -1400,15 +1395,14 @@
                             <input class="form-check-input" type="checkbox" role="switch" id="onlyFailedFolders">
                         </div>
                         <button class="btn btn-outline-light btn-sm" id="suiteFolderDonutGoUp">Go Up</button>
-                        <a class="pie-graph" title="Pie Graph" id="suiteFolderDonutGraphDonut"></a>
-                        <a class="information-graph" id="suiteFolderDonutInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="suiteFolderDonutFullscreen"></a>
-                        <a class="close-graph" title="Close" id="suiteFolderDonutClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="suiteFolderDonutShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="suiteFolderDonutHidden" hideGraphHidden></a>
+                        <a class="pie-graph information" id="suiteFolderDonutGraphDonut"></a>
+                        <a class="fullscreen-graph information" id="suiteFolderDonutFullscreen"></a>
+                        <a class="close-graph information" id="suiteFolderDonutClose" hidden></a>
+                        <a class="shown-graph information" id="suiteFolderDonutShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="suiteFolderDonutHidden" hideGraphHidden></a>
                     </div>
                 </div>
-                <div class="graph-body" style="height:70%;">
+                <div class="graph-body">
                     <div class="row w-100 h-100">
                         <div class="col-md-6 w-50 h-100">
                             <canvas id="suiteFolderDonutGraph" class="w-100 h-100"></canvas>
@@ -1433,21 +1427,16 @@
                 defaultType: "percentages",
                 viewOptions: ["Percentages", "Line", "Amount"],
                 hasFullscreenButton: true,
-                information: `This graph provides suite-level statistics in three formats:
-- Percentages: Displays the passed/failed/skipped rate of test suites per run.
-- Amount: Displays the actual number of passed/failed/skipped suites per run.
-- Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times.`,
                 html: `<div class="graph-header">
                     <h6>Statistics</h6>
                     <div class="graph-controls">
-                        <a class="percentage-graph" title="Percentage Graph" id="suiteStatisticsGraphPercentages"></a>
-                        <a class="bar-graph" title="Bar Graph" id="suiteStatisticsGraphAmount"></a>
-                        <a class="line-graph" title="Line Graph" id="suiteStatisticsGraphLine"></a>
-                        <a class="information-graph" id="suiteStatisticsInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="suiteStatisticsFullscreen"></a>
-                        <a class="close-graph" title="Close" id="suiteStatisticsClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="suiteStatisticsShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="suiteStatisticsHidden" hideGraphHidden></a>
+                        <a class="percentage-graph information" id="suiteStatisticsGraphPercentages"></a>
+                        <a class="bar-graph information" id="suiteStatisticsGraphAmount"></a>
+                        <a class="line-graph information" id="suiteStatisticsGraphLine"></a>
+                        <a class="fullscreen-graph information" id="suiteStatisticsFullscreen"></a>
+                        <a class="close-graph information" id="suiteStatisticsClose" hidden></a>
+                        <a class="shown-graph information" id="suiteStatisticsShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="suiteStatisticsHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1460,19 +1449,15 @@
                 defaultType: "line",
                 viewOptions: ["Bar", "Line"],
                 hasFullscreenButton: true,
-                information: `This graph visualizes the duration of each suite:
-- Bar: Displays total suite durations represented as vertical bars.
-- Line: Displays the same data but over a time axis for clearer trend analysis.`,
                 html: `<div class="graph-header">
                     <h6>Duration</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="suiteDurationGraphBar"></a>
-                        <a class="line-graph" title="Line Graph" id="suiteDurationGraphLine"></a>
-                        <a class="information-graph" id="suiteDurationInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="suiteDurationFullscreen"></a>
-                        <a class="close-graph" title="Close" id="suiteDurationClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="suiteDurationShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="suiteDurationHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="suiteDurationGraphBar"></a>
+                        <a class="line-graph information" id="suiteDurationGraphLine"></a>
+                        <a class="fullscreen-graph information" id="suiteDurationFullscreen"></a>
+                        <a class="close-graph information" id="suiteDurationClose" hidden></a>
+                        <a class="shown-graph information" id="suiteDurationShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="suiteDurationHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1485,20 +1470,15 @@
                 defaultType: "bar",
                 viewOptions: ["Bar", "Timeline"],
                 hasFullscreenButton: true,
-                information: `This graph highlights the test suites with the most failures:
-- Bar: Displays suites ranked by number of failures represented as vertical bars.
-- Timeline: Displays when failures occurred to identify clustering over time.
-- The default view shows the Top 10 most failed suites; fullscreen expands this to the Top 50.`,
                 html: `<div class="graph-header">
                     <h6>Most Failed</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="suiteMostFailedGraphBar"></a>
-                        <a class="timeline-graph" title="Timeline Graph" id="suiteMostFailedGraphTimeline"></a>
-                        <a class="information-graph" id="suiteMostFailedInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="suiteMostFailedFullscreen"></a>
-                        <a class="close-graph" title="Close" id="suiteMostFailedClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="suiteMostFailedShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="suiteMostFailedHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="suiteMostFailedGraphBar"></a>
+                        <a class="timeline-graph information" id="suiteMostFailedGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="suiteMostFailedFullscreen"></a>
+                        <a class="close-graph information" id="suiteMostFailedClose" hidden></a>
+                        <a class="shown-graph information" id="suiteMostFailedShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="suiteMostFailedHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1513,7 +1493,6 @@
                 defaultType: "timeline",
                 viewOptions: ["Timeline"],
                 hasFullscreenButton: true,
-                information: `This graph displays the statistics of the tests in a timeline format.`,
                 html: `<div class="graph-header">
                     <h6>Statistics</h6>
                     <div class="graph-controls">
@@ -1523,12 +1502,11 @@
                         <div class="btn-group form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="testOnlyChanges">
                         </div>
-                        <a class="timeline-graph" title="Timeline Graph" id="testStatisticsGraphTimeline"></a>
-                        <a class="information-graph" id="testStatisticsInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="testStatisticsFullscreen"></a>
-                        <a class="close-graph" title="Close" id="testStatisticsClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="testStatisticsShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="testStatisticsHidden" hideGraphHidden></a>
+                        <a class="timeline-graph information" id="testStatisticsGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="testStatisticsFullscreen"></a>
+                        <a class="close-graph information" id="testStatisticsClose" hidden></a>
+                        <a class="shown-graph information" id="testStatisticsShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="testStatisticsHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1543,19 +1521,15 @@
                 defaultType: "line",
                 viewOptions: ["Bar", "Line"],
                 hasFullscreenButton: true,
-                information: `This graph tracks how long individual tests take to run:
-- Bar: Displays test durations represented as vertical bars.
-- Line: Displays the same data but over a time axis for clearer trend analysis.`,
                 html: `<div class="graph-header">
                     <h6>Duration</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="testDurationGraphBar"></a>
-                        <a class="line-graph" title="Line Graph" id="testDurationGraphLine"></a>
-                        <a class="information-graph" id="testDurationInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="testDurationFullscreen"></a>
-                        <a class="close-graph" title="Close" id="testDurationClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="testDurationShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="testDurationHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="testDurationGraphBar"></a>
+                        <a class="line-graph information" id="testDurationGraphLine"></a>
+                        <a class="fullscreen-graph information" id="testDurationFullscreen"></a>
+                        <a class="close-graph information" id="testDurationClose" hidden></a>
+                        <a class="shown-graph information" id="testDurationShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="testDurationHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1568,17 +1542,14 @@
                 defaultType: "bar",
                 viewOptions: ["Bar"],
                 hasFullscreenButton: true,
-                information: `This boxplot chart displays how much test durations deviate from the average, represented as vertical bars.
-It helps identify tests with inconsistent execution times, which might be flaky or worth investigating`,
                 html: `<div class="graph-header">
                     <h6>Duration Deviation</h6>
                     <div class="graph-controls">
-                        <a class="boxplot-graph" title="Boxplot Graph" id="testDurationDeviationGraphBar"></a>
-                        <a class="information-graph" id="testDurationDeviationInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="testDurationDeviationFullscreen"></a>
-                        <a class="close-graph" title="Close" id="testDurationDeviationClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="testDurationDeviationShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="testDurationDeviationHidden" hideGraphHidden></a>
+                        <a class="boxplot-graph information" id="testDurationDeviationGraphBar"></a>
+                        <a class="fullscreen-graph information" id="testDurationDeviationFullscreen"></a>
+                        <a class="close-graph information" id="testDurationDeviationClose" hidden></a>
+                        <a class="shown-graph information" id="testDurationDeviationShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="testDurationDeviationHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1591,21 +1562,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "timeline",
                 viewOptions: ["Bar", "Timeline"],
                 hasFullscreenButton: true,
-                information: `This graph presents the most frequently occurring fail/skip test messages:
-- Bar: Displays messages ranked by number of occurrences represented as vertical bars.
-- Timeline: Displays when those messages occurred to reveal noisy periods or problem spikes.
-- The regular view shows the Top 10 most frequent messages; fullscreen mode expands this to the Top 50.
-- To generalize messages (e.g., group similar messages), use the -m/--messageconfig option in the CLI (--help or README).`,
                 html: `<div class="graph-header">
                     <h6>Messages</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="testMessagesGraphBar"></a>
-                        <a class="timeline-graph" title="Timeline Graph" id="testMessagesGraphTimeline"></a>
-                        <a class="information-graph" id="testMessagesInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="testMessagesFullscreen"></a>
-                        <a class="close-graph" title="Close" id="testMessagesClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="testMessagesShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="testMessagesHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="testMessagesGraphBar"></a>
+                        <a class="timeline-graph information" id="testMessagesGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="testMessagesFullscreen"></a>
+                        <a class="close-graph information" id="testMessagesClose" hidden></a>
+                        <a class="shown-graph information" id="testMessagesShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="testMessagesHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1620,11 +1585,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "timeline",
                 viewOptions: ["Bar", "Timeline"],
                 hasFullscreenButton: true,
-                information: `This graph identifies the flakiest tests based on status flips (passed/failed/skipped):
-- Bar: Displays tests ranked by frequency of status changes represented as vertical bars.
-- Timeline: Displays when the status changes occurred across runs.
-- The regular view shows the Top 10 flaky tests; fullscreen mode expands the list to the Top 50.
-- "Ignore Skips" filters to only count passed/failed as status flips and not skips.`,
                 html: `<div class="graph-header">
                     <h6>Most Flaky</h6>
                     <div class="graph-controls">
@@ -1634,13 +1594,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         <div class="btn-group form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="ignoreSkips">
                         </div>
-                        <a class="bar-graph" title="Bar Graph" id="testMostFlakyGraphBar"></a>
-                        <a class="timeline-graph" title="Timeline Graph" id="testMostFlakyGraphTimeline"></a>
-                        <a class="information-graph" id="testMostFlakyInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="testMostFlakyFullscreen"></a>
-                        <a class="close-graph" title="Close" id="testMostFlakyClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="testMostFlakyShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="testMostFlakyHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="testMostFlakyGraphBar"></a>
+                        <a class="timeline-graph information" id="testMostFlakyGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="testMostFlakyFullscreen"></a>
+                        <a class="close-graph information" id="testMostFlakyClose" hidden></a>
+                        <a class="shown-graph information" id="testMostFlakyShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="testMostFlakyHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1655,12 +1614,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "timeline",
                 viewOptions: ["Bar", "Timeline"],
                 hasFullscreenButton: true,
-                information: `This graph identifies the most recently flaky tests based on status flips:
-- Bar: Displays tests ranked by frequency of recent status changes represented as vertical bars.
-- Timeline: Displays when the status changes occurred across runs.
-- The most recent flaky tests are listed first.
-- The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.
-- "Ignore Skips" filters to only count passed/failed as status flips and not skips.`,
                 html: `<div class="graph-header">
                     <h6>Recent Most Flaky</h6>
                     <div class="graph-controls">
@@ -1670,13 +1623,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         <div class="btn-group form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="ignoreSkipsRecent">
                         </div>
-                        <a class="bar-graph" title="Bar Graph" id="testRecentMostFlakyGraphBar"></a>
-                        <a class="timeline-graph" title="Timeline Graph" id="testRecentMostFlakyGraphTimeline"></a>
-                        <a class="information-graph" id="testRecentMostFlakyInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="testRecentMostFlakyFullscreen"></a>
-                        <a class="close-graph" title="Close" id="testRecentMostFlakyClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="testRecentMostFlakyShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="testRecentMostFlakyHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="testRecentMostFlakyGraphBar"></a>
+                        <a class="timeline-graph information" id="testRecentMostFlakyGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="testRecentMostFlakyFullscreen"></a>
+                        <a class="close-graph information" id="testRecentMostFlakyClose" hidden></a>
+                        <a class="shown-graph information" id="testRecentMostFlakyShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="testRecentMostFlakyHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1691,20 +1643,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "timeline",
                 viewOptions: ["Bar", "Timeline"],
                 hasFullscreenButton: true,
-                information: `This graph lists the most failed tests overall:
-- Bar: Displays tests ranked by total number of failures represented as vertical bars.
-- Timeline: Displays when failures occurred across runs.
-- The regular view shows the Top 10 most failed tests; fullscreen mode expands the list to the Top 50.`,
                 html: `<div class="graph-header">
                     <h6>Most Failed</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="testMostFailedGraphBar"></a>
-                        <a class="timeline-graph" title="Timeline Graph" id="testMostFailedGraphTimeline"></a>
-                        <a class="information-graph" id="testMostFailedInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="testMostFailedFullscreen"></a>
-                        <a class="close-graph" title="Close" id="testMostFailedClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="testMostFailedShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="testMostFailedHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="testMostFailedGraphBar"></a>
+                        <a class="timeline-graph information" id="testMostFailedGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="testMostFailedFullscreen"></a>
+                        <a class="close-graph information" id="testMostFailedClose" hidden></a>
+                        <a class="shown-graph information" id="testMostFailedShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="testMostFailedHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1719,21 +1666,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "timeline",
                 viewOptions: ["Bar", "Timeline"],
                 hasFullscreenButton: true,
-                information: `This graph lists the most recently failed tests:
-- Bar: Displays tests ranked by number of recent failures represented as vertical bars.
-- Timeline: Displays when failures occurred across runs.
-- The most recently failed tests are listed first.
-- The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.`,
                 html: `<div class="graph-header">
                     <h6>Recent Most Failed</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="testRecentMostFailedGraphBar"></a>
-                        <a class="timeline-graph" title="Timeline Graph" id="testRecentMostFailedGraphTimeline"></a>
-                        <a class="information-graph" id="testRecentMostFailedInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="testRecentMostFailedFullscreen"></a>
-                        <a class="close-graph" title="Close" id="testRecentMostFailedClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="testRecentMostFailedShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="testRecentMostFailedHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="testRecentMostFailedGraphBar"></a>
+                        <a class="timeline-graph information" id="testRecentMostFailedGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="testRecentMostFailedFullscreen"></a>
+                        <a class="close-graph information" id="testRecentMostFailedClose" hidden></a>
+                        <a class="shown-graph information" id="testRecentMostFailedShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="testRecentMostFailedHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1748,21 +1689,16 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "percentages",
                 viewOptions: ["Percentages", "Line", "Amount"],
                 hasFullscreenButton: true,
-                information: `This graph presents keyword execution results in multiple formats:
-- Percentages: Displays the distribution of passed/failed/skipped statuses for each keyword per run.
-- Amount: Displays raw counts of each status per run.
-- Line: Displays the same data but over a time axis.`,
                 html: `<div class="graph-header">
                     <h6>Statistics</h6>
                     <div class="graph-controls">
-                        <a class="percentage-graph" title="Percentage Graph" id="keywordStatisticsGraphPercentages"></a>
-                        <a class="bar-graph" title="Bar Graph" id="keywordStatisticsGraphAmount"></a>
-                        <a class="line-graph" title="Line Graph" id="keywordStatisticsGraphLine"></a>
-                        <a class="information-graph" id="keywordStatisticsInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="keywordStatisticsFullscreen"></a>
-                        <a class="close-graph" title="Close" id="keywordStatisticsClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="keywordStatisticsShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="keywordStatisticsHidden" hideGraphHidden></a>
+                        <a class="percentage-graph information" id="keywordStatisticsGraphPercentages"></a>
+                        <a class="bar-graph information" id="keywordStatisticsGraphAmount"></a>
+                        <a class="line-graph information" id="keywordStatisticsGraphLine"></a>
+                        <a class="fullscreen-graph information" id="keywordStatisticsFullscreen"></a>
+                        <a class="close-graph information" id="keywordStatisticsClose" hidden></a>
+                        <a class="shown-graph information" id="keywordStatisticsShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="keywordStatisticsHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1775,19 +1711,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "line",
                 viewOptions: ["Bar", "Line"],
                 hasFullscreenButton: true,
-                information: `This graph shows how frequently each keyword was executed:
-- Bar: Displays times run per keyword represented as vertical bars.
-- Line: Displays the same data but over a time axis.`,
                 html: `<div class="graph-header">
                     <h6>Times Run</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="keywordTimesRunGraphBar"></a>
-                        <a class="line-graph" title="Line Graph" id="keywordTimesRunGraphLine"></a>
-                        <a class="information-graph" id="keywordTimesRunInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="keywordTimesRunFullscreen"></a>
-                        <a class="close-graph" title="Close" id="keywordTimesRunClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="keywordTimesRunShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="keywordTimesRunHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="keywordTimesRunGraphBar"></a>
+                        <a class="line-graph information" id="keywordTimesRunGraphLine"></a>
+                        <a class="fullscreen-graph information" id="keywordTimesRunFullscreen"></a>
+                        <a class="close-graph information" id="keywordTimesRunClose" hidden></a>
+                        <a class="shown-graph information" id="keywordTimesRunShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="keywordTimesRunHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1800,19 +1732,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "line",
                 viewOptions: ["Bar", "Line"],
                 hasFullscreenButton: true,
-                information: `This graph visualizes total execution time of keywords:
-- Bar: Displays the cumulative time each keyword ran during each run represented as vertical bars.
-- Line: Displays the same data but over a time axis.`,
                 html: `<div class="graph-header">
                     <h6>Total Duration</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="keywordTotalDurationGraphBar"></a>
-                        <a class="line-graph" title="Line Graph" id="keywordTotalDurationGraphLine"></a>
-                        <a class="information-graph" id="keywordTotalDurationInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="keywordTotalDurationFullscreen"></a>
-                        <a class="close-graph" title="Close" id="keywordTotalDurationClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="keywordTotalDurationShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="keywordTotalDurationHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="keywordTotalDurationGraphBar"></a>
+                        <a class="line-graph information" id="keywordTotalDurationGraphLine"></a>
+                        <a class="fullscreen-graph information" id="keywordTotalDurationFullscreen"></a>
+                        <a class="close-graph information" id="keywordTotalDurationClose" hidden></a>
+                        <a class="shown-graph information" id="keywordTotalDurationShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="keywordTotalDurationHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1825,19 +1753,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "line",
                 viewOptions: ["Bar", "Line"],
                 hasFullscreenButton: true,
-                information: `This graph shows the average execution time per keyword:
-- Bar: Displays the average duration for each keyword represented as vertical bars.
-- Line: Displays the same data but over a time axis.`,
                 html: `<div class="graph-header">
                     <h6>Average Duration</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="keywordAverageDurationGraphBar"></a>
-                        <a class="line-graph" title="Line Graph" id="keywordAverageDurationGraphLine"></a>
-                        <a class="information-graph" id="keywordAverageDurationInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="keywordAverageDurationFullscreen"></a>
-                        <a class="close-graph" title="Close" id="keywordAverageDurationClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="keywordAverageDurationShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="keywordAverageDurationHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="keywordAverageDurationGraphBar"></a>
+                        <a class="line-graph information" id="keywordAverageDurationGraphLine"></a>
+                        <a class="fullscreen-graph information" id="keywordAverageDurationFullscreen"></a>
+                        <a class="close-graph information" id="keywordAverageDurationClose" hidden></a>
+                        <a class="shown-graph information" id="keywordAverageDurationShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="keywordAverageDurationHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1850,19 +1774,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "line",
                 viewOptions: ["Bar", "Line"],
                 hasFullscreenButton: true,
-                information: `This graph shows the fastest observed execution time for each keyword per run:
-- Bar: Displays minimum durations represented as vertical bars.
-- Line: Displays the same data but over a time axis.`,
                 html: `<div class="graph-header">
                     <h6>Min Duration</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="keywordMinDurationGraphBar"></a>
-                        <a class="line-graph" title="Line Graph" id="keywordMinDurationGraphLine"></a>
-                        <a class="information-graph" id="keywordMinDurationInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="keywordMinDurationFullscreen"></a>
-                        <a class="close-graph" title="Close" id="keywordMinDurationClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="keywordMinDurationShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="keywordMinDurationHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="keywordMinDurationGraphBar"></a>
+                        <a class="line-graph information" id="keywordMinDurationGraphLine"></a>
+                        <a class="fullscreen-graph information" id="keywordMinDurationFullscreen"></a>
+                        <a class="close-graph information" id="keywordMinDurationClose" hidden></a>
+                        <a class="shown-graph information" id="keywordMinDurationShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="keywordMinDurationHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1875,19 +1795,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "line",
                 viewOptions: ["Bar", "Line"],
                 hasFullscreenButton: true,
-                information: `This graph shows the slowest observed execution time for each keyword per run:
-- Bar: Displays maximum durations represented as vertical bars.
-- Line: Displays the same data but over a time axis.`,
                 html: `<div class="graph-header">
                     <h6>Max Duration</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="keywordMaxDurationGraphBar"></a>
-                        <a class="line-graph" title="Line Graph" id="keywordMaxDurationGraphLine"></a>
-                        <a class="information-graph" id="keywordMaxDurationInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="keywordMaxDurationFullscreen"></a>
-                        <a class="close-graph" title="Close" id="keywordMaxDurationClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="keywordMaxDurationShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="keywordMaxDurationHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="keywordMaxDurationGraphBar"></a>
+                        <a class="line-graph information" id="keywordMaxDurationGraphLine"></a>
+                        <a class="fullscreen-graph information" id="keywordMaxDurationFullscreen"></a>
+                        <a class="close-graph information" id="keywordMaxDurationClose" hidden></a>
+                        <a class="shown-graph information" id="keywordMaxDurationShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="keywordMaxDurationHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1900,20 +1816,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "timeline",
                 viewOptions: ["Bar", "Timeline"],
                 hasFullscreenButton: true,
-                information: `This graph lists the most failed keywords overall:
-- Bar: Displays keywords ranked by total number of failures represented as vertical bars.
-- Timeline: Displays when failures occurred across runs.
-- The regular view shows the Top 10 most failed keywords; fullscreen mode expands the list to the Top 50.`,
                 html: `<div class="graph-header">
                     <h6>Most Failed</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="keywordMostFailedGraphBar"></a>
-                        <a class="timeline-graph" title="Timeline Graph" id="keywordMostFailedGraphTimeline"></a>
-                        <a class="information-graph" id="keywordMostFailedInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="keywordMostFailedFullscreen"></a>
-                        <a class="close-graph" title="Close" id="keywordMostFailedClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="keywordMostFailedShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="keywordMostFailedHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="keywordMostFailedGraphBar"></a>
+                        <a class="timeline-graph information" id="keywordMostFailedGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="keywordMostFailedFullscreen"></a>
+                        <a class="close-graph information" id="keywordMostFailedClose" hidden></a>
+                        <a class="shown-graph information" id="keywordMostFailedShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="keywordMostFailedHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1928,16 +1839,14 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "bar",
                 viewOptions: ["Bar"],
                 hasFullscreenButton: true,
-                information: `This graph displays the overall statistics of the selected runs.`,
                 html: `<div class="graph-header">
                     <h6>Statistics</h6>
                     <div class="graph-controls">
-                        <a class="bar-graph" title="Bar Graph" id="compareStatisticsGraphBar"></a>
-                        <a class="information-graph" id="compareStatisticsInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="compareStatisticsFullscreen"></a>
-                        <a class="close-graph" title="Close" id="compareStatisticsClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="compareStatisticsShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="compareStatisticsHidden" hideGraphHidden></a>
+                        <a class="bar-graph information" id="compareStatisticsGraphBar"></a>
+                        <a class="fullscreen-graph information" id="compareStatisticsFullscreen"></a>
+                        <a class="close-graph information" id="compareStatisticsClose" hidden></a>
+                        <a class="shown-graph information" id="compareStatisticsShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="compareStatisticsHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -1950,19 +1859,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "radar",
                 viewOptions: ["Radar"],
                 hasFullscreenButton: true,
-                information: `This graph displays the duration per suite in a radar format.`,
                 html: `<div class="graph-header">
                     <h6>Suite Duration</h6>
                     <div class="graph-controls">
-                        <a class="radar-graph" title="Radar Graph" id="compareSuiteDurationGraphRadar"></a>
-                        <a class="information-graph" id="compareSuiteDurationInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="compareSuiteDurationFullscreen"></a>
-                        <a class="close-graph" title="Close" id="compareSuiteDurationClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="compareSuiteDurationShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="compareSuiteDurationHidden" hideGraphHidden></a>
+                        <a class="radar-graph information" id="compareSuiteDurationGraphRadar"></a>
+                        <a class="fullscreen-graph information" id="compareSuiteDurationFullscreen"></a>
+                        <a class="close-graph information" id="compareSuiteDurationClose" hidden></a>
+                        <a class="shown-graph information" id="compareSuiteDurationShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="compareSuiteDurationHidden" hideGraphHidden></a>
                     </div>
                 </div>
-                <div class="graph-body" style="height:90%;">
+                <div class="graph-body">
                     <canvas id="compareSuiteDurationGraph"></canvas>
                 </div>`,
             },
@@ -1972,7 +1879,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 defaultType: "timeline",
                 viewOptions: ["Timeline"],
                 hasFullscreenButton: true,
-                information: `This graph displays the statistics of the tests in a timeline format.`,
                 html: `<div class="graph-header">
                     <h6>Tests</h6>
                     <div class="graph-controls">
@@ -1982,12 +1888,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         <div class="btn-group form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="compareOnlyChanges">
                         </div>
-                        <a class="timeline-graph" title="Timeline Graph" id="compareTestsGraphTimeline"></a>
-                        <a class="information-graph" id="compareTestsInformation"></a>
-                        <a class="fullscreen-graph" title="Fullscreen" id="compareTestsFullscreen"></a>
-                        <a class="close-graph" title="Close" id="compareTestsClose" hidden></a>
-                        <a class="shown-graph" title="Hide Graph" id="compareTestsShown" showGraphHidden></a>
-                        <a class="hidden-graph" title="Show Graph" id="compareTestsHidden" hideGraphHidden></a>
+                        <a class="timeline-graph information" id="compareTestsGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="compareTestsFullscreen"></a>
+                        <a class="close-graph information" id="compareTestsClose" hidden></a>
+                        <a class="shown-graph information" id="compareTestsShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="compareTestsHidden" hideGraphHidden></a>
                     </div>
                 </div>
                 <div class="graph-body">
@@ -2007,10 +1912,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h6 class="mb-0">Run Table</h6>
                         <div>
-                            <a class="move-up-table" title="Move Up" id="runTableMoveUp" moveUpHidden></a>
-                            <a class="move-down-table" title="Move Down" id="runTableMoveDown" moveDownHidden></a>
-                            <a class="shown-graph" title="Hide Table" id="runTableShown" showGraphHidden></a>
-                            <a class="hidden-graph" title="Show Table" id="runTableHidden" hideGraphHidden></a>
+                            <a class="move-up-table information" id="runTableMoveUp" moveUpHidden></a>
+                            <a class="move-down-table information" id="runTableMoveDown" moveDownHidden></a>
+                            <a class="shown-graph information" id="runTableShown" showGraphHidden></a>
+                            <a class="hidden-graph information" id="runTableHidden" hideGraphHidden></a>
                         </div>
                     </div>
                     <table class="table table-striped" id="runTable"></table>
@@ -2027,10 +1932,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h6 class="mb-0">Suite Table</h6>
                         <div>
-                            <a class="move-up-table" title="Move Up" id="suiteTableMoveUp" moveUpHidden></a>
-                            <a class="move-down-table" title="Move Down" id="suiteTableMoveDown" moveDownHidden></a>
-                            <a class="shown-graph" title="Hide Table" id="suiteTableShown" showGraphHidden></a>
-                            <a class="hidden-graph" title="Show Table" id="suiteTableHidden" hideGraphHidden></a>
+                            <a class="move-up-table information" id="suiteTableMoveUp" moveUpHidden></a>
+                            <a class="move-down-table information" id="suiteTableMoveDown" moveDownHidden></a>
+                            <a class="shown-graph information" id="suiteTableShown" showGraphHidden></a>
+                            <a class="hidden-graph information" id="suiteTableHidden" hideGraphHidden></a>
                         </div>
                     </div>
                     <table class="table table-striped" id="suiteTable"></table>
@@ -2047,10 +1952,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h6 class="mb-0">Test Table</h6>
                         <div>
-                            <a class="move-up-table" title="Move Up" id="testTableMoveUp" moveUpHidden></a>
-                            <a class="move-down-table" title="Move Down" id="testTableMoveDown" moveDownHidden></a>
-                            <a class="shown-graph" title="Hide Table" id="testTableShown" showGraphHidden></a>
-                            <a class="hidden-graph" title="Show Table" id="testTableHidden" hideGraphHidden></a>
+                            <a class="move-up-table information" id="testTableMoveUp" moveUpHidden></a>
+                            <a class="move-down-table information" id="testTableMoveDown" moveDownHidden></a>
+                            <a class="shown-graph information" id="testTableShown" showGraphHidden></a>
+                            <a class="hidden-graph information" id="testTableHidden" hideGraphHidden></a>
                         </div>
                     </div>
                     <table class="table table-striped" id="testTable"></table>
@@ -2067,16 +1972,256 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h6 class="mb-0">Keyword Table</h6>
                         <div>
-                            <a class="move-up-table" title="Move Up" id="keywordTableMoveUp" moveUpHidden></a>
-                            <a class="move-down-table" title="Move Down" id="keywordTableMoveDown" moveDownHidden></a>
-                            <a class="shown-graph" title="Hide Table" id="keywordTableShown" showGraphHidden></a>
-                            <a class="hidden-graph" title="Show Table" id="keywordTableHidden" hideGraphHidden></a>
+                            <a class="move-up-table information" id="keywordTableMoveUp" moveUpHidden></a>
+                            <a class="move-down-table information" id="keywordTableMoveDown" moveDownHidden></a>
+                            <a class="shown-graph information" id="keywordTableShown" showGraphHidden></a>
+                            <a class="hidden-graph information" id="keywordTableHidden" hideGraphHidden></a>
                         </div>
                     </div>
                     <table class="table table-striped" id="keywordTable"></table>
                 </div>`,
             },
         ];
+
+        const informationMap = {
+            "rflogo": "Robot Framework",
+            "filters": "Filters",
+            "customizeLayout": "Customize Layout",
+            "saveLayout": "Save Layout",
+            "settings": "Settings",
+            "themeLight": "Theme",
+            "themeDark": "Theme",
+            "database": "Database Summary",
+            "versionInformation": '"placeholder_version"',
+            "bug": "Report a bug or feature request",
+            "github": "Github",
+            "amount": "Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.",
+            "amountLabel": "Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.",
+            "overviewStatisticsInformation": `This section shows the projects and their associated runs:
+- Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
+- Passed runs represent the percentage of runs with zero failures.
+- You can define your own projects or groupings by appending '-o path/to/output.xml:project_yourprojectname' when generating results.
+- If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle.`,
+            "runStatisticsGraphPercentages": "Percentages: Displays the distribution of passed, failed, skipped tests per run, where 100% equals all tests combined",
+            "runStatisticsGraphAmount": "Amount: Displays the actual number of passed, failed, skipped tests per run",
+            "runStatisticsGraphLine": "Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times",
+            "runStatisticsFullscreen": "Fullscreen",
+            "runStatisticsClose": "Close",
+            "runStatisticsShown": "Hide Graph",
+            "runStatisticsHidden": "Show Graph",
+            "runDonutGraphDonut": `This graph contains two donut charts:
+- The first donut displays the percentage of passed, failed, and skipped tests for the most recent run..
+- The second donut displays the total percentage of passed, failed, and skipped tests across all runs`,
+            "runDonutFullscreen": "Fullscreen",
+            "runDonutClose": "Close",
+            "runDonutShown": "Hide Graph",
+            "runDonutHidden": "Show Graph",
+            "runStatsGraphStats": `This section provides key statistics:
+- Executed: Total counts of Runs, Suites, Tests, and Keywords that have been executed.
+- Unique Tests: Displays the number of distinct test cases across all runs.
+- Outcomes: Total Passed, Failed, and Skipped tests, including their percentages relative to the full test set.
+- Duration: Displays the cumulative runtime of all runs, the average runtime per run, and the average duration of individual tests.
+- Pass Rate: Displays the average run-level pass rate, helping evaluate overall reliability over time.`,
+            "runStatsFullscreen": "Fullscreen",
+            "runStatsClose": "Close",
+            "runStatsShown": "Hide Graph",
+            "runStatsHidden": "Show Graph",
+            "runDurationGraphBar": "Bar: Displays total run durations represented as vertical bars",
+            "runDurationGraphLine": "Displays the same data but over a time axis for clearer trend analysis",
+            "runDurationFullscreen": "Fullscreen",
+            "runDurationClose": "Close",
+            "runDurationShown": "Hide Graph",
+            "runDurationHidden": "Show Graph",
+            "runHeatmapGraphHeatmap": `This graph visualizes a heatmap of when tests are executed the most:
+- All: Displays how many tests ran during the hours or minutes of the week days.
+- Status: Displays only tests of the selected status.
+- Hour: Displays only that hour so you get insights per minute.`,
+            "runHeatmapFullscreen": "Fullscreen",
+            "runHeatmapClose": "Close",
+            "runHeatmapShown": "Hide Graph",
+            "runHeatmapHidden": "Show Graph",
+            "suiteFolderDonutGraphDonut": `This graph contains two donut charts:
+- The first donut displays the top-level folders of the suites and the amount of tests each folder contains.
+- The second donut displays the same folder structure but only for the most recent run and only includes failed tests.
+- Clicking on a folder updates the chart with the subfolders/suites it contains.
+- Navigating folders also updates Suite Statistics and Suite Duration.
+- Go Up: navigates to the parent folder level.
+- Only Failed: filters to show only folders with failing tests.`,
+            "suiteFolderDonutFullscreen": "Fullscreen",
+            "suiteFolderDonutClose": "Close",
+            "suiteFolderDonutShown": "Hide Graph",
+            "suiteFolderDonutHidden": "Show Graph",
+            "suiteStatisticsGraphPercentages": "Percentages: Displays the passed, failed, skipped rate of test suites per run",
+            "suiteStatisticsGraphAmount": "Amount: Displays the actual number of passed, failed, skipped suites per run",
+            "suiteStatisticsGraphLine": "Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times",
+            "suiteStatisticsFullscreen": "Fullscreen",
+            "suiteStatisticsClose": "Close",
+            "suiteStatisticsShown": "Hide Graph",
+            "suiteStatisticsHidden": "Show Graph",
+            "suiteDurationGraphBar": "Bar: Displays total suite durations represented as vertical bars",
+            "suiteDurationGraphLine": "Line: Displays the same data but over a time axis for clearer trend analysis",
+            "suiteDurationFullscreen": "Fullscreen",
+            "suiteDurationClose": "Close",
+            "suiteDurationShown": "Hide Graph",
+            "suiteDurationHidden": "Show Graph",
+            "suiteMostFailedGraphBar": "Bar: Displays suites ranked by number of failures represented as vertical bars. The default view shows the Top 10 most failed suites; fullscreen expands this to the Top 50.",
+            "suiteMostFailedGraphTimeline": "Timeline: Displays when failures occurred to identify clustering over time. The default view shows the Top 10 most failed suites; fullscreen expands this to the Top 50",
+            "suiteMostFailedFullscreen": "Fullscreen",
+            "suiteMostFailedClose": "Close",
+            "suiteMostFailedShown": "Hide Graph",
+            "suiteMostFailedHidden": "Show Graph",
+            "testStatisticsGraphTimeline": `This graph displays the statistics of the tests in a timeline format
+Only Changes: Displays only tests that have changed statuses at some point in time`,
+            "testStatisticsFullscreen": "Fullscreen",
+            "testStatisticsClose": "Close",
+            "testStatisticsShown": "Hide Graph",
+            "testStatisticsHidden": "Show Graph",
+            "testDurationGraphBar": "Bar: Displays test durations represented as vertical bars",
+            "testDurationGraphLine": "Line: Displays the same data but over a time axis for clearer trend analysis",
+            "testDurationFullscreen": "Fullscreen",
+            "testDurationClose": "Close",
+            "testDurationShown": "Hide Graph",
+            "testDurationHidden": "Show Graph",
+            "testDurationDeviationGraphBar": `This boxplot chart displays how much test durations deviate from the average, represented as vertical bars.
+It helps identify tests with inconsistent execution times, which might be flaky or worth investigating`,
+            "testDurationDeviationFullscreen": "Fullscreen",
+            "testDurationDeviationClose": "Close",
+            "testDurationDeviationShown": "Hide Graph",
+            "testDurationDeviationHidden": "Show Graph",
+            "testMessagesGraphBar": `Bar: Displays messages ranked by number of occurrences represented as vertical bars
+- The regular view shows the Top 10 most frequent messages; fullscreen mode expands this to the Top 50.
+- To generalize messages (e.g., group similar messages), use the -m/--messageconfig option in the CLI (--help or README).`,
+            "testMessagesGraphTimeline": `Timeline: Displays when those messages occurred to reveal problem spikes
+- The regular view shows the Top 10 most frequent messages; fullscreen mode expands this to the Top 50.
+- To generalize messages (e.g., group similar messages), use the -m/--messageconfig option in the CLI (--help or README).`,
+            "testMessagesFullscreen": "Fullscreen",
+            "testMessagesClose": "Close",
+            "testMessagesShown": "Hide Graph",
+            "testMessagesHidden": "Show Graph",
+            "testMostFlakyGraphBar": `Bar: Displays tests ranked by frequency of status changes represented as vertical bars
+- The regular view shows the Top 10 flaky tests; fullscreen mode expands the list to the Top 50.
+- Ignore Skips: filters to only count passed/failed as status flips and not skips.`,
+            "testMostFlakyGraphTimeline": `Timeline: Displays when the status changes occurred across runs
+- The regular view shows the Top 10 flaky tests; fullscreen mode expands the list to the Top 50.
+- Ignore Skips: filters to only count passed/failed as status flips and not skips.`,
+            "testMostFlakyFullscreen": "Fullscreen",
+            "testMostFlakyClose": "Close",
+            "testMostFlakyShown": "Hide Graph",
+            "testMostFlakyHidden": "Show Graph",
+            "testRecentMostFlakyGraphBar": `Bar: Displays tests ranked by frequency of recent status changes represented as vertical bars
+- The regular view shows the Top 10 flaky tests; fullscreen mode expands the list to the Top 50.
+- Ignore Skips: filters to only count passed/failed as status flips and not skips.`,
+            "testRecentMostFlakyGraphTimeline": `Timeline: Displays when the status changes occurred across runs
+- The regular view shows the Top 10 flaky tests; fullscreen mode expands the list to the Top 50.
+- Ignore Skips: filters to only count passed/failed as status flips and not skips.`,
+            "testRecentMostFlakyFullscreen": "Fullscreen",
+            "testRecentMostFlakyClose": "Close",
+            "testRecentMostFlakyShown": "Hide Graph",
+            "testRecentMostFlakyHidden": "Show Graph",
+            "testMostFailedGraphBar": `Bar: Displays tests ranked by total number of failures represented as vertical bars. The regular view shows the Top 10 most failed tests; fullscreen mode expands the list to the Top 50.`,
+            "testMostFailedGraphTimeline": `Displays when failures occurred across runs. The regular view shows the Top 10 most failed tests; fullscreen mode expands the list to the Top 50.`,
+            "testMostFailedFullscreen": "Fullscreen",
+            "testMostFailedClose": "Close",
+            "testMostFailedShown": "Hide Graph",
+            "testMostFailedHidden": "Show Graph",
+            "testRecentMostFailedGraphBar": `Bar: Displays recent tests ranked by total number of failures represented as vertical bars. The regular view shows the Top 10 most failed tests; fullscreen mode expands the list to the Top 50.`,
+            "testRecentMostFailedGraphTimeline": `Displays when most recent failures occurred across runs. The regular view shows the Top 10 most failed tests; fullscreen mode expands the list to the Top 50.`,
+            "testRecentMostFailedFullscreen": "Fullscreen",
+            "testRecentMostFailedClose": "Close",
+            "testRecentMostFailedShown": "Hide Graph",
+            "testRecentMostFailedHidden": "Show Graph",
+            "keywordStatisticsGraphPercentages": "Percentages: Displays the distribution of passed, failed, skipped statuses for each keyword per run",
+            "keywordStatisticsGraphAmount": "Amount: Displays raw counts of each status per run",
+            "keywordStatisticsGraphLine": "Line: Displays the same data but over a time axis",
+            "keywordStatisticsFullscreen": "Fullscreen",
+            "keywordStatisticsClose": "Close",
+            "keywordStatisticsShown": "Hide Graph",
+            "keywordStatisticsHidden": "Show Graph",
+            "keywordTimesRunGraphBar": "Bar: Displays times run per keyword represented as vertical bars",
+            "keywordTimesRunGraphLine": "Line: Displays the same data but over a time axis",
+            "keywordTimesRunFullscreen": "Fullscreen",
+            "keywordTimesRunClose": "Close",
+            "keywordTimesRunShown": "Hide Graph",
+            "keywordTimesRunHidden": "Show Graph",
+            "keywordTotalDurationGraphBar": "Bar: Displays the cumulative time each keyword ran during each run represented as vertical bars",
+            "keywordTotalDurationGraphLine": "Line: Displays the same data but over a time axis",
+            "keywordTotalDurationFullscreen": "Fullscreen",
+            "keywordTotalDurationClose": "Close",
+            "keywordTotalDurationShown": "Hide Graph",
+            "keywordTotalDurationHidden": "Show Graph",
+            "keywordAverageDurationGraphBar": "Bar: Displays the average duration for each keyword represented as vertical bars",
+            "keywordAverageDurationGraphLine": "Line: Displays the same data but over a time axis",
+            "keywordAverageDurationFullscreen": "Fullscreen",
+            "keywordAverageDurationClose": "Close",
+            "keywordAverageDurationShown": "Hide Graph",
+            "keywordAverageDurationHidden": "Show Graph",
+            "keywordMinDurationGraphBar": "Bar: Displays minimum durations represented as vertical bars",
+            "keywordMinDurationGraphLine": "Line: Displays the same data but over a time axis",
+            "keywordMinDurationFullscreen": "Fullscreen",
+            "keywordMinDurationClose": "Close",
+            "keywordMinDurationShown": "Hide Graph",
+            "keywordMinDurationHidden": "Show Graph",
+            "keywordMaxDurationGraphBar": "Bar: Displays maximum durations represented as vertical bars",
+            "keywordMaxDurationGraphLine": "Line: Displays the same data but over a time axis",
+            "keywordMaxDurationFullscreen": "Fullscreen",
+            "keywordMaxDurationClose": "Close",
+            "keywordMaxDurationShown": "Hide Graph",
+            "keywordMaxDurationHidden": "Show Graph",
+            "keywordMostFailedGraphBar": "Bar: Displays keywords ranked by total number of failures represented as vertical bars. The regular view shows the Top 10 most failed keywords; fullscreen mode expands the list to the Top 50.",
+            "keywordMostFailedGraphTimeline": "Timeline: Displays when failures occurred across runs. The regular view shows the Top 10 most failed keywords; fullscreen mode expands the list to the Top 50.",
+            "keywordMostFailedFullscreen": "Fullscreen",
+            "keywordMostFailedClose": "Close",
+            "keywordMostFailedShown": "Hide Graph",
+            "keywordMostFailedHidden": "Show Graph",
+            "compareStatisticsGraphBar": "This graph displays the overall statistics of the selected runs",
+            "compareStatisticsFullscreen": "Fullscreen",
+            "compareStatisticsClose": "Close",
+            "compareStatisticsShown": "Hide Graph",
+            "compareStatisticsHidden": "Show Graph",
+            "compareSuiteDurationGraphRadar": "This graph displays the duration per suite in a radar format",
+            "compareSuiteDurationFullscreen": "Fullscreen",
+            "compareSuiteDurationClose": "Close",
+            "compareSuiteDurationShown": "Hide Graph",
+            "compareSuiteDurationHidden": "Show Graph",
+            "compareTestsGraphTimeline": `This graph displays the statistics of the tests in a timeline format
+Only Changes: Displays only tests that have changed statuses at some point in time`,
+            "compareTestsFullscreen": "Fullscreen",
+            "compareTestsClose": "Close",
+            "compareTestsShown": "Hide Graph",
+            "compareTestsHidden": "Show Graph",
+            "runTableMoveUp": "Move Up",
+            "runTableMoveDown": "Move Down",
+            "runTableShown": "Hide Table",
+            "runTableHidden": "Show Table",
+            "suiteTableMoveUp": "Move Up",
+            "suiteTableMoveDown": "Move Down",
+            "suiteTableShown": "Hide Table",
+            "suiteTableHidden": "Show Table",
+            "testTableMoveUp": "Move Up",
+            "testTableMoveDown": "Move Down",
+            "testTableShown": "Hide Table",
+            "testTableHidden": "Show Table",
+            "keywordTableMoveUp": "Move Up",
+            "keywordTableMoveDown": "Move Down",
+            "keywordTableShown": "Hide Table",
+            "keywordTableHidden": "Show Table",
+            "runSectionMoveUp": "Move Up",
+            "runSectionMoveDown": "Move Down",
+            "runSectionShown": "Hide Section",
+            "runSectionHidden": "Show Section",
+            "suiteSectionMoveUp": "Move Up",
+            "suiteSectionMoveDown": "Move Down",
+            "suiteSectionShown": "Hide Section",
+            "suiteSectionHidden": "Show Section",
+            "testSectionMoveUp": "Move Up",
+            "testSectionMoveDown": "Move Down",
+            "testSectionShown": "Hide Section",
+            "testSectionHidden": "Show Section",
+            "keywordSectionMoveUp": "Move Up",
+            "keywordSectionMoveDown": "Move Down",
+            "keywordSectionShown": "Hide Section",
+            "keywordSectionHidden": "Show Section",
+        }
 
         const tables = graphMetadata.filter(graph => graph.label.includes('Table'))
         // hideGraphs (contains all graphs that can be hidden or shown)
@@ -2101,21 +2246,11 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 graphChangeButtons[snakeKey] = graph.viewOptions.join(',');
             }
         });
-        // informationTitles (contains the text for the information popups for the graphs)
-        const informationTitles = {};
-        graphMetadata.forEach(graph => {
-            if (graph.information) {
-                informationTitles[`${graph.key}Information`] = graph.information;
-            }
-        });
         // graphVars
         const graphVars = graphMetadata.map(g => g.defaultType === "table" ? g.key : `${g.key}Graph`);
         graphVars.forEach(name => {
             window[name] = undefined;
         });
-
-        // All possible button types
-        // const buttonTypes = ["Bar", "Line", "Timeline", "Percentages", "Amount", "Donut", "Stats", "Heatmap", "Radar"];
 
         // Run compare filter Id's
         const compareRunIds = ['compareRun1', 'compareRun2', 'compareRun3', 'compareRun4']
@@ -2160,7 +2295,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 compare: false,
                 tables: false,
             },
-            theme: "dark",
             graphTypes: defaultGraphTypes,
             view: {
                 overview: {
@@ -2213,9 +2347,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         // function to update the theme when the button is clicked
         function toggle_theme() {
             if (document.documentElement.classList.contains("dark-mode")) {
-                set_local_storage_item("theme", "light")
+                set_local_storage_item("theme", "light");
             } else {
-                set_local_storage_item("theme", "dark")
+                set_local_storage_item("theme", "dark");
             }
             setup_theme()
             setup_dasbhoard_graphs()
@@ -2225,7 +2359,6 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         function setup_theme() {
             Chart.defaults.font.size = graphFontSize;
             const html = document.documentElement;
-            const toggle = document.getElementById("theme");
 
             function swap_button_classes(from1, to1, from2, to2) {
                 // bootstrap buttons theme swap (outline and regular)
@@ -2240,21 +2373,20 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             }
 
             function set_light_mode() {
-                // bootstrap dark-mode attribute
+                // menu theme
+                document.getElementById("navigation").classList.remove("navbar-dark")
+                document.getElementById("navigation").classList.add("navbar-light")
+                document.getElementById("themeLight").hidden = false;
+                document.getElementById("themeDark").hidden = true;
+                // bootstrap related settings
                 document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "light");
-                // bootstrap default color
                 html.style.setProperty("--bs-body-bg", "#fff");
-                // bootstrap buttons light -> dark
                 swap_button_classes(".btn-outline-light", "btn-outline-dark", ".btn-light", "btn-dark");
                 // chartjs default graph settings
                 Chart.defaults.color = "#666";
                 Chart.defaults.borderColor = "rgba(0,0,0,0.1)";
                 Chart.defaults.backgroundColor = "rgba(0,0,0,0.1)";
                 Chart.defaults.elements.line.borderColor = "rgba(0,0,0,0.1)";
-                // menu theme
-                document.getElementById("navigation").classList.remove("navbar-dark")
-                document.getElementById("navigation").classList.add("navbar-light")
-                if (toggle.checked) toggle.checked = false;
                 // svgs
                 const svgMap = {
                     ids: {
@@ -2263,8 +2395,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         "database": databaseLightSVG,
                         "filters": filterLightSVG,
                         "rflogo": rflogoLightSVG,
-                        "theme": moonSVG,
+                        "themeLight": moonSVG,
                         "bug": bugLightSVG,
+                        "customizeLayout": customizeViewLightSVG,
+                        "saveLayout": saveLightSVG,
                     },
                     classes: {
                         ".percentage-graph": percentageLightSVG,
@@ -2278,9 +2412,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         ".radar-graph": radarLightSVG,
                         ".fullscreen-graph": fullscreenLightSVG,
                         ".close-graph": closeLightSVG,
-                        ".information-graph": informationLightSVG,
-                        ".unlock": saveLightSVG,
-                        ".lock": customizeViewLightSVG,
+                        ".information-icon": informationLightSVG,
                         ".shown-graph": eyeLightSVG,
                         ".hidden-graph": eyeOffLightSVG,
                         ".shown-section": eyeLightSVG,
@@ -2303,21 +2435,20 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             }
 
             function set_dark_mode() {
-                // bootstrap dark-mode attribute
+                // menu theme
+                document.getElementById("themeLight").hidden = true;
+                document.getElementById("themeDark").hidden = false;
+                document.getElementById("navigation").classList.remove("navbar-light")
+                document.getElementById("navigation").classList.add("navbar-dark")
+                // bootstrap related settings
                 document.getElementsByTagName("html")[0].setAttribute("data-bs-theme", "dark");
-                // bootstrap background color
                 html.style.setProperty("--bs-body-bg", "rgba(30, 41, 59, 0.9)");
-                // bootstrap buttons dark -> light
                 swap_button_classes(".btn-outline-dark", "btn-outline-light", ".btn-dark", "btn-light");
                 // chartjs default graph settings
                 Chart.defaults.color = "#eee";
                 Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
                 Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
                 Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
-                // menu theme
-                document.getElementById("navigation").classList.remove("navbar-light")
-                document.getElementById("navigation").classList.add("navbar-dark")
-                if (!toggle.checked) toggle.checked = true;
                 // svgs
                 const svgMap = {
                     ids: {
@@ -2326,8 +2457,10 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         "database": databaseDarkSVG,
                         "filters": filterDarkSVG,
                         "rflogo": rflogoDarkSVG,
-                        "theme": sunSVG,
+                        "themeDark": sunSVG,
                         "bug": bugDarkSVG,
+                        "customizeLayout": customizeViewDarkSVG,
+                        "saveLayout": saveDarkSVG,
                     },
                     classes: {
                         ".percentage-graph": percentageDarkSVG,
@@ -2341,9 +2474,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                         ".radar-graph": radarDarkSVG,
                         ".fullscreen-graph": fullscreenDarkSVG,
                         ".close-graph": closeDarkSVG,
-                        ".information-graph": informationDarkSVG,
-                        ".unlock": saveDarkSVG,
-                        ".lock": customizeViewDarkSVG,
+                        ".information-icon": informationDarkSVG,
                         ".shown-graph": eyeDarkSVG,
                         ".hidden-graph": eyeOffDarkSVG,
                         ".shown-section": eyeDarkSVG,
@@ -2400,15 +2531,15 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             };
         }
 
-        function unlock_layout(lock) {
-            lock.classList.remove("lock")
-            lock.classList.add("unlock")
+        function customize_layout() {
+            document.getElementById("customizeLayout").hidden = true;
+            document.getElementById("saveLayout").hidden = false;
             add_alert("You can now change your layout. Don't forget to save!", "info")
         }
 
-        function lock_layout(lock) {
-            lock.classList.remove("unlock")
-            lock.classList.add("lock")
+        function save_layout() {
+            document.getElementById("customizeLayout").hidden = false;
+            document.getElementById("saveLayout").hidden = true;
             const shownDashboardItems = [];
             const hiddenDashboardItems = [];
             const shownCompareItems = [];
@@ -2485,12 +2616,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         function setup_layout() {
             document.getElementById("customizeLayout").addEventListener("click", (e) => {
                 gridEditMode = !gridEditMode;
-                const lock = document.getElementById("customizeLayout");
-                if (lock.classList.contains("lock")) {
-                    unlock_layout(lock)
-                } else {
-                    lock_layout(lock)
-                }
+                customize_layout()
+                setup_data_and_graphs();
+            });
+            document.getElementById("saveLayout").addEventListener("click", (e) => {
+                gridEditMode = !gridEditMode;
+                save_layout()
                 setup_data_and_graphs();
             });
             // disable or enable sections
@@ -2640,15 +2771,125 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 
         // function to fill the information icons with the correct data
         function setup_information_popups() {
-            const informationButtons = document.querySelectorAll(".information-graph")
-            for (let button of informationButtons) {
-                const id = button.id;
-                var title = informationTitles[id];
-                if (id == 'overviewStatisticsInformation') continue;
-                if (id == 'versionInformation') continue;
-                button.setAttribute('data-title', title)
+            // Set data-title attributes from your informationMap
+            for (const id in informationMap) {
+                const title = informationMap[id];
+                const element = document.getElementById(id);
+                if (!element) continue;  // safety check if element not found
+                element.setAttribute("data-title", title);
             }
+
+            // Now attach tooltip listeners to all .information[data-title] elements
+            let tooltipEl = null;
+            let currentTarget = null;
+
+            function createTooltip(el) {
+                if (tooltipEl) removeTooltip();
+
+                const text = el.getAttribute('data-title');
+                if (!text) return;
+
+                tooltipEl = document.createElement('div');
+                tooltipEl.className = 'tooltip-popup';
+                tooltipEl.textContent = text;
+                document.body.appendChild(tooltipEl);
+
+                const rect = el.getBoundingClientRect();
+                const padding = 8;
+                const maxWidth = 440;
+
+                const baseCharWidth = 8;
+                let dynamicMinWidth = Math.min(Math.max(text.length * baseCharWidth + 24, 80), 200);
+
+                tooltipEl.style.width = 'auto';
+                tooltipEl.style.maxWidth = maxWidth + 'px';
+                tooltipEl.style.minWidth = dynamicMinWidth + 'px';
+
+                let left = rect.left + rect.width / 2;
+                let top = rect.bottom + 8;
+
+                tooltipEl.style.left = `${left}px`;
+                tooltipEl.style.top = `${top}px`;
+                tooltipEl.style.transform = 'translateX(-50%)';
+
+                let tooltipRect = tooltipEl.getBoundingClientRect();
+
+                if (tooltipRect.left < padding) {
+                    let availableWidthRight = window.innerWidth - padding - left;
+                    let newWidth = Math.min(availableWidthRight * 2, maxWidth);
+                    newWidth = dynamicMinWidth < 150 ? dynamicMinWidth : newWidth;
+                    tooltipEl.style.width = newWidth + 'px';
+
+                    tooltipRect = tooltipEl.getBoundingClientRect();
+                    let adjustedLeft = padding + tooltipRect.width / 2;
+                    tooltipEl.style.left = `${adjustedLeft}px`;
+                    tooltipEl.style.transform = 'translateX(-50%)';
+                } else if (tooltipRect.right > window.innerWidth - padding) {
+                    let availableWidthLeft = left - padding;
+                    let newWidth = Math.min(availableWidthLeft * 2, maxWidth);
+                    newWidth = dynamicMinWidth < 150 ? dynamicMinWidth : newWidth;
+                    tooltipEl.style.width = newWidth + 'px';
+
+                    tooltipRect = tooltipEl.getBoundingClientRect();
+                    let adjustedLeft = window.innerWidth - padding - tooltipRect.width / 2;
+                    tooltipEl.style.left = `${adjustedLeft}px`;
+                    tooltipEl.style.transform = 'translateX(-50%)';
+                }
+            }
+
+            function removeTooltip() {
+                if (tooltipEl) {
+                    tooltipEl.remove();
+                    tooltipEl = null;
+                    currentTarget = null;
+                }
+            }
+
+            function isElementVisible(el) {
+                const style = window.getComputedStyle(el);
+                return !(style.display === 'none' || style.visibility === 'hidden' || el.offsetParent === null);
+            }
+
+            // Attach tooltip listeners to all elements with class 'information' and data-title attribute
+            document.querySelectorAll('.information[data-title]').forEach(el => {
+                // Remove any old listeners to avoid duplicates
+                el.onmouseenter = null;
+                el.onmouseleave = null;
+                el.onclick = null;
+
+                el.addEventListener('mouseenter', () => {
+                    if (currentTarget !== el) {
+                        currentTarget = el;
+                        createTooltip(el);
+                    }
+                });
+
+                el.addEventListener('mouseleave', () => {
+                    if (currentTarget === el) {
+                        removeTooltip();
+                    }
+                });
+
+                el.addEventListener('click', () => {
+                    if (!isElementVisible(el) && currentTarget === el) {
+                        removeTooltip();
+                    }
+                });
+            });
+
+            // Global listener to handle mouse moving onto replaced elements
+            document.addEventListener('mouseover', e => {
+                const target = e.target.closest('.information[data-title]');
+                if (target !== currentTarget) {
+                    removeTooltip();
+                    if (target) {
+                        currentTarget = target;
+                        createTooltip(target);
+                    }
+                }
+            });
         }
+
 
         // function to add a spinner for slow loads
         function setup_spinner(hide) {
@@ -2934,7 +3175,8 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById("toggleAxisTitles").addEventListener("click", () => toggle_axis_titles());
             document.getElementById("toggleAnimations").addEventListener("click", () => toggle_animations());
             document.getElementById("toggleAnimationDuration").addEventListener("change", () => toggle_animation_duration());
-            document.getElementById("theme").addEventListener("click", () => toggle_theme());
+            document.getElementById("themeLight").addEventListener("click", () => toggle_theme());
+            document.getElementById("themeDark").addEventListener("click", () => toggle_theme());
 
             function show_settings_in_textarea() {
                 const textArea = document.getElementById("settingsTextArea");
@@ -3041,46 +3283,63 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             });
             // eventlisteners for fullscreen buttons
             for (let fullscreenButton of fullscreenButtons) {
-                document.getElementById(`${fullscreenButton}Fullscreen`).addEventListener("click", () => {
-                    lastScrollY = window.scrollY
-                    inFullscreen = !inFullscreen;
+                const fullscreenId = `${fullscreenButton}Fullscreen`;
+                const closeId = `${fullscreenButton}Close`;
+                const graphFunctionName = `create_${camelcase_to_underscore(fullscreenButton)}_graph`;
+
+                const toggleFullscreen = (entering) => {
+                    const fullscreen = document.getElementById(fullscreenId);
+                    const close = document.getElementById(closeId);
+                    const content = fullscreen.closest(".grid-stack-item-content");
+
+                    inFullscreen = entering;
+                    fullscreen.hidden = entering;
+                    close.hidden = !entering;
+                    content.classList.toggle("fullscreen", entering);
+                    document.body.classList.toggle("lock-scroll", entering);
+
+                    if (typeof window[graphFunctionName] === "function") {
+                        window[graphFunctionName]();
+                    }
+
+                    if (fullscreenButton === "runDonut") {
+                        create_run_donut_total_graph();
+                    } else if (fullscreenButton === "suiteFolderDonut") {
+                        create_suite_folder_fail_donut_graph();
+                    }
+
+                    let section = null;
+                    if (fullscreenButton.includes("suite")) {
+                        section = "suite";
+                    } else if (fullscreenButton.includes("test")) {
+                        section = "test";
+                    } else if (fullscreenButton.includes("keyword")) {
+                        section = "keyword";
+                    } else if (fullscreenButton.includes("compare")) {
+                        section = "compare";
+                    }
+                    if (section) {
+                        const filters = document.getElementById(`${section}SectionFilters`);
+                        const originalContainer = document.getElementById(`${section}SectionFiltersContainer`);
+                        if (entering) {
+                            const fullscreenHeader = document.querySelector('.grid-stack-item-content.fullscreen');
+                            fullscreenHeader.insertBefore(filters, fullscreenHeader.firstChild);
+                        } else {
+                            originalContainer.appendChild(filters);
+                        }
+                    }
+                };
+
+                document.getElementById(fullscreenId).addEventListener("click", () => {
+                    lastScrollY = window.scrollY;
                     $("#navigation").hide();
-                    const fullscreen = document.getElementById(`${fullscreenButton}Fullscreen`);
-                    const close = document.getElementById(`${fullscreenButton}Close`);
-                    const content = fullscreen.closest(".grid-stack-item-content");
-                    fullscreen.hidden = true;
-                    close.hidden = false;
-                    content.classList.add("fullscreen")
-                    document.body.classList.add("lock-scroll");
-                    window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
-                    if (fullscreenButton == "runDonut") {
-                        create_run_donut_total_graph();
-                    }
-                    if (fullscreenButton == "suiteFolderDonut") {
-                        create_suite_folder_fail_donut_graph();
-                    }
+                    toggleFullscreen(true);
                 });
-                document.getElementById(`${fullscreenButton}Close`).addEventListener("click", () => {
-                    inFullscreen = !inFullscreen;
+
+                document.getElementById(closeId).addEventListener("click", () => {
                     $("#navigation").show();
-                    const fullscreen = document.getElementById(`${fullscreenButton}Fullscreen`);
-                    const close = document.getElementById(`${fullscreenButton}Close`);
-                    const content = fullscreen.closest(".grid-stack-item-content");
-                    fullscreen.hidden = false;
-                    close.hidden = true;
-                    content.classList.remove("fullscreen")
-                    document.body.classList.remove("lock-scroll");
-                    window[`create_${camelcase_to_underscore(fullscreenButton)}_graph`]();
-                    if (fullscreenButton == "runDonut") {
-                        create_run_donut_total_graph();
-                    }
-                    if (fullscreenButton == "suiteFolderDonut") {
-                        create_suite_folder_fail_donut_graph();
-                    }
-                    window.scrollTo({
-                        top: lastScrollY,
-                        behavior: "auto"
-                    });
+                    toggleFullscreen(false);
+                    window.scrollTo({ top: lastScrollY, behavior: "auto" });
                 });
             }
             update_switch_local_storage("switch.runTags", settings.switch.runTags, true);
@@ -6752,17 +7011,17 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             }
 
             function add_graph(id, x, y, w, h, shown = true) {
-                const item = document.createElement('div');
-                item.classList.add('grid-stack-item');
-                item.setAttribute('gs-x', x);
-                item.setAttribute('gs-y', y);
-                item.setAttribute('gs-w', w);
-                item.setAttribute('gs-min-w', 3);
-                item.setAttribute('gs-max-w', 12);
-                item.setAttribute('gs-h', h);
-                item.setAttribute('gs-min-h', 3);
-                item.setAttribute('gs-max-h', 12);
-                item.setAttribute('data-gs-id', id);
+                const item = document.createElement("div");
+                item.classList.add("grid-stack-item");
+                item.setAttribute("gs-x", x);
+                item.setAttribute("gs-y", y);
+                item.setAttribute("gs-w", w);
+                item.setAttribute("gs-min-w", 3);
+                item.setAttribute("gs-max-w", 12);
+                item.setAttribute("gs-h", h);
+                item.setAttribute("gs-min-h", 3);
+                item.setAttribute("gs-max-h", 12);
+                item.setAttribute("data-gs-id", id);
 
                 // showGraphHidden, hideGraphHidden
                 const graphConfig = graphMetadata.find(g => g.label == id);
