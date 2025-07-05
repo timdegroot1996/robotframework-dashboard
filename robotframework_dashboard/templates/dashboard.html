@@ -442,7 +442,7 @@
                     title="Settings"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2" id="toggleTheme" title="Theme"></a>
+                <a class="nav-link p-2" id="theme" title="Theme"></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link p-2" id="database" data-bs-toggle="modal" data-bs-target="#databaseModal"
@@ -2225,7 +2225,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
         function setup_theme() {
             Chart.defaults.font.size = graphFontSize;
             const html = document.documentElement;
-            const toggle = document.getElementById("toggleTheme");
+            const toggle = document.getElementById("theme");
 
             function swap_button_classes(from1, to1, from2, to2) {
                 // bootstrap buttons theme swap (outline and regular)
@@ -2251,45 +2251,56 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 Chart.defaults.borderColor = "rgba(0,0,0,0.1)";
                 Chart.defaults.backgroundColor = "rgba(0,0,0,0.1)";
                 Chart.defaults.elements.line.borderColor = "rgba(0,0,0,0.1)";
-                // menu icons
-                document.getElementById("github").innerHTML = githubLightSVG;
-                document.getElementById("settings").innerHTML = settingsLightSVG;
-                document.getElementById("database").innerHTML = databaseLightSVG;
-                document.getElementById("filters").innerHTML = filterLightSVG;
-                document.getElementById("rflogo").innerHTML = rflogoLightSVG;
-                document.getElementById("toggleTheme").innerHTML = moonSVG;
-                document.getElementById("bug").innerHTML = bugLightSVG;
                 // menu theme
                 document.getElementById("navigation").classList.remove("navbar-dark")
                 document.getElementById("navigation").classList.add("navbar-light")
-                // set toggle in correct state if not already, needed on first load
                 if (toggle.checked) toggle.checked = false;
-                // graph icons
-                document.querySelectorAll(".percentage-graph").forEach(btn => btn.innerHTML = percentageLightSVG)
-                document.querySelectorAll(".bar-graph").forEach(btn => btn.innerHTML = barLightSVG)
-                document.querySelectorAll(".line-graph").forEach(btn => btn.innerHTML = lineLightSVG)
-                document.querySelectorAll(".pie-graph").forEach(btn => btn.innerHTML = pieLightSVG)
-                document.querySelectorAll(".boxplot-graph").forEach(btn => btn.innerHTML = boxplotLightSVG)
-                document.querySelectorAll(".heatmap-graph").forEach(btn => btn.innerHTML = heatmapLightSVG)
-                document.querySelectorAll(".stats-graph").forEach(btn => btn.innerHTML = statsLightSVG)
-                document.querySelectorAll(".timeline-graph").forEach(btn => btn.innerHTML = timelineLightSVG)
-                document.querySelectorAll(".radar-graph").forEach(btn => btn.innerHTML = radarLightSVG)
-                document.querySelectorAll(".fullscreen-graph").forEach(btn => btn.innerHTML = fullscreenLightSVG)
-                document.querySelectorAll(".close-graph").forEach(btn => btn.innerHTML = closeLightSVG)
-                document.querySelectorAll(".information-graph").forEach(btn => btn.innerHTML = informationLightSVG)
-                // lock and unlock
-                document.querySelectorAll(".unlock").forEach(btn => btn.innerHTML = saveLightSVG)
-                document.querySelectorAll(".lock").forEach(btn => btn.innerHTML = customizeViewLightSVG)
-                // eye icons
-                document.querySelectorAll(".shown-graph").forEach(btn => btn.innerHTML = eyeLightSVG)
-                document.querySelectorAll(".hidden-graph").forEach(btn => btn.innerHTML = eyeOffLightSVG)
-                document.querySelectorAll(".shown-section").forEach(btn => btn.innerHTML = eyeLightSVG)
-                document.querySelectorAll(".hidden-section").forEach(btn => btn.innerHTML = eyeOffLightSVG)
-                // move tables/sections up and down
-                document.querySelectorAll(".move-up-table").forEach(btn => btn.innerHTML = moveUpLightSVG)
-                document.querySelectorAll(".move-down-table").forEach(btn => btn.innerHTML = moveDownLightSVG)
-                document.querySelectorAll(".move-up-section").forEach(btn => btn.innerHTML = moveUpLightSVG)
-                document.querySelectorAll(".move-down-section").forEach(btn => btn.innerHTML = moveDownLightSVG)
+
+                // svgs
+                const svgMap = {
+                    ids: {
+                        "github": githubLightSVG,
+                        "settings": settingsLightSVG,
+                        "database": databaseLightSVG,
+                        "filters": filterLightSVG,
+                        "rflogo": rflogoLightSVG,
+                        "theme": moonSVG,
+                        "bug": bugLightSVG,
+                    },
+                    classes: {
+                        ".percentage-graph": percentageLightSVG,
+                        ".bar-graph": barLightSVG,
+                        ".line-graph": lineLightSVG,
+                        ".pie-graph": pieLightSVG,
+                        ".boxplot-graph": boxplotLightSVG,
+                        ".heatmap-graph": heatmapLightSVG,
+                        ".stats-graph": statsLightSVG,
+                        ".timeline-graph": timelineLightSVG,
+                        ".radar-graph": radarLightSVG,
+                        ".fullscreen-graph": fullscreenLightSVG,
+                        ".close-graph": closeLightSVG,
+                        ".information-graph": informationLightSVG,
+                        ".unlock": saveLightSVG,
+                        ".lock": customizeViewLightSVG,
+                        ".shown-graph": eyeLightSVG,
+                        ".hidden-graph": eyeOffLightSVG,
+                        ".shown-section": eyeLightSVG,
+                        ".hidden-section": eyeOffLightSVG,
+                        ".move-up-table": moveUpLightSVG,
+                        ".move-down-table": moveDownLightSVG,
+                        ".move-up-section": moveUpLightSVG,
+                        ".move-down-section": moveDownLightSVG,
+                    }
+                };
+                for (const [id, svg] of Object.entries(svgMap.ids)) {
+                    const el = document.getElementById(id);
+                    if (el) el.innerHTML = svg;
+                }
+                for (const [selector, svg] of Object.entries(svgMap.classes)) {
+                    document.querySelectorAll(selector).forEach(el => {
+                        el.innerHTML = svg;
+                    });
+                }
             }
 
             function set_dark_mode() {
@@ -2304,45 +2315,55 @@ It helps identify tests with inconsistent execution times, which might be flaky 
                 Chart.defaults.borderColor = "rgba(255,255,255,0.1)";
                 Chart.defaults.backgroundColor = "rgba(255,255,0,0.1)";
                 Chart.defaults.elements.line.borderColor = "rgba(255,255,0,0.4)";
-                // menu icons
-                document.getElementById("github").innerHTML = githubDarkSVG;
-                document.getElementById("settings").innerHTML = settingsDarkSVG;
-                document.getElementById("database").innerHTML = databaseDarkSVG;
-                document.getElementById("filters").innerHTML = filterDarkSVG;
-                document.getElementById("rflogo").innerHTML = rflogoDarkSVG;
-                document.getElementById("toggleTheme").innerHTML = sunSVG;
-                document.getElementById("bug").innerHTML = bugDarkSVG;
                 // menu theme
                 document.getElementById("navigation").classList.remove("navbar-light")
                 document.getElementById("navigation").classList.add("navbar-dark")
-                // set toggle in correct state if not already, needed on first load
                 if (!toggle.checked) toggle.checked = true;
-                // graph icons
-                document.querySelectorAll(".percentage-graph").forEach(btn => btn.innerHTML = percentageDarkSVG)
-                document.querySelectorAll(".bar-graph").forEach(btn => btn.innerHTML = barDarkSVG)
-                document.querySelectorAll(".line-graph").forEach(btn => btn.innerHTML = lineDarkSVG)
-                document.querySelectorAll(".pie-graph").forEach(btn => btn.innerHTML = pieDarkSVG)
-                document.querySelectorAll(".boxplot-graph").forEach(btn => btn.innerHTML = boxplotDarkSVG)
-                document.querySelectorAll(".heatmap-graph").forEach(btn => btn.innerHTML = heatmapDarkSVG)
-                document.querySelectorAll(".stats-graph").forEach(btn => btn.innerHTML = statsDarkSVG)
-                document.querySelectorAll(".timeline-graph").forEach(btn => btn.innerHTML = timelineDarkSVG)
-                document.querySelectorAll(".radar-graph").forEach(btn => btn.innerHTML = radarDarkSVG)
-                document.querySelectorAll(".fullscreen-graph").forEach(btn => btn.innerHTML = fullscreenDarkSVG)
-                document.querySelectorAll(".close-graph").forEach(btn => btn.innerHTML = closeDarkSVG)
-                document.querySelectorAll(".information-graph").forEach(btn => btn.innerHTML = informationDarkSVG)
-                // lock and unlock
-                document.querySelectorAll(".unlock").forEach(btn => btn.innerHTML = saveDarkSVG)
-                document.querySelectorAll(".lock").forEach(btn => btn.innerHTML = customizeViewDarkSVG)
-                // eye icons
-                document.querySelectorAll(".shown-graph").forEach(btn => btn.innerHTML = eyeDarkSVG)
-                document.querySelectorAll(".hidden-graph").forEach(btn => btn.innerHTML = eyeOffDarkSVG)
-                document.querySelectorAll(".shown-section").forEach(btn => btn.innerHTML = eyeDarkSVG)
-                document.querySelectorAll(".hidden-section").forEach(btn => btn.innerHTML = eyeOffDarkSVG)
-                // move tables/sections up and down
-                document.querySelectorAll(".move-up-table").forEach(btn => btn.innerHTML = moveUpDarkSVG)
-                document.querySelectorAll(".move-down-table").forEach(btn => btn.innerHTML = moveDownDarkSVG)
-                document.querySelectorAll(".move-up-section").forEach(btn => btn.innerHTML = moveUpDarkSVG)
-                document.querySelectorAll(".move-down-section").forEach(btn => btn.innerHTML = moveDownDarkSVG)
+                // svgs
+                const svgMap = {
+                    ids: {
+                        "github": githubDarkSVG,
+                        "settings": settingsDarkSVG,
+                        "database": databaseDarkSVG,
+                        "filters": filterDarkSVG,
+                        "rflogo": rflogoDarkSVG,
+                        "theme": sunSVG,
+                        "bug": bugDarkSVG,
+                    },
+                    classes: {
+                        ".percentage-graph": percentageDarkSVG,
+                        ".bar-graph": barDarkSVG,
+                        ".line-graph": lineDarkSVG,
+                        ".pie-graph": pieDarkSVG,
+                        ".boxplot-graph": boxplotDarkSVG,
+                        ".heatmap-graph": heatmapDarkSVG,
+                        ".stats-graph": statsDarkSVG,
+                        ".timeline-graph": timelineDarkSVG,
+                        ".radar-graph": radarDarkSVG,
+                        ".fullscreen-graph": fullscreenDarkSVG,
+                        ".close-graph": closeDarkSVG,
+                        ".information-graph": informationDarkSVG,
+                        ".unlock": saveDarkSVG,
+                        ".lock": customizeViewDarkSVG,
+                        ".shown-graph": eyeDarkSVG,
+                        ".hidden-graph": eyeOffDarkSVG,
+                        ".shown-section": eyeDarkSVG,
+                        ".hidden-section": eyeOffDarkSVG,
+                        ".move-up-table": moveUpDarkSVG,
+                        ".move-down-table": moveDownDarkSVG,
+                        ".move-up-section": moveUpDarkSVG,
+                        ".move-down-section": moveDownDarkSVG,
+                    }
+                };
+                for (const [id, svg] of Object.entries(svgMap.ids)) {
+                    const el = document.getElementById(id);
+                    if (el) el.innerHTML = svg;
+                }
+                for (const [selector, svg] of Object.entries(svgMap.classes)) {
+                    document.querySelectorAll(selector).forEach(el => {
+                        el.innerHTML = svg;
+                    });
+                }
             }
 
             // detect theme preference
@@ -2914,7 +2935,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             document.getElementById("toggleAxisTitles").addEventListener("click", () => toggle_axis_titles());
             document.getElementById("toggleAnimations").addEventListener("click", () => toggle_animations());
             document.getElementById("toggleAnimationDuration").addEventListener("change", () => toggle_animation_duration());
-            document.getElementById("toggleTheme").addEventListener("click", () => toggle_theme());
+            document.getElementById("theme").addEventListener("click", () => toggle_theme());
 
             function show_settings_in_textarea() {
                 const textArea = document.getElementById("settingsTextArea");
