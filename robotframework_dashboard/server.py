@@ -152,7 +152,7 @@ remove_log_model_config = {
             },
             {
                 "log_name": "all",
-            }
+            },
         ]
     }
 }
@@ -167,11 +167,8 @@ class ResponseMessage(BaseModel):
     model_config = response_message_model_config
 
 
-class CustomizedViewConfig(BaseModel):
-    admin_section_hide: str
-    admin_graph_hide: str
-    admin_section_show: str
-    admin_graph_show: str
+class AdminJsonConfig(BaseModel):
+    admin_json_config: str
 
 
 class GetOutput(BaseModel):
@@ -229,10 +226,7 @@ class ApiServer:
         self.robotdashboard: RobotDashboard
         self.server_host = server_host
         self.server_port = server_port
-        self.admin_section_hide = "[]"
-        self.admin_graph_hide = "[]"
-        self.admin_section_show = "[]"
-        self.admin_graph_show = "[]"
+        self.admin_json_config = ""
         self.log_dir = "robot_logs"
 
         @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
@@ -250,16 +244,7 @@ class ApiServer:
             """Serve robotdashboard HTML endpoint function"""
             robot_dashboard_html = open("robot_dashboard.html", "r").read()
             robot_dashboard_html = robot_dashboard_html.replace(
-                '"placeholder_admin_section_hide"', self.admin_section_hide
-            )
-            robot_dashboard_html = robot_dashboard_html.replace(
-                '"placeholder_admin_graph_hide"', self.admin_graph_hide
-            )
-            robot_dashboard_html = robot_dashboard_html.replace(
-                '"placeholder_admin_section_show"', self.admin_section_show
-            )
-            robot_dashboard_html = robot_dashboard_html.replace(
-                '"placeholder_admin_graph_show"', self.admin_graph_show
+                '"placeholder_admin_json_config"', self.admin_json_config
             )
             return robot_dashboard_html
 
@@ -271,40 +256,34 @@ class ApiServer:
             except Exception as error:
                 log_html = f"""<!DOCTYPE html>
                     <html lang="en">
-                    <head>
-                    <meta charset="UTF-8">
-                    <title>404 - File Not Found</title>
-                    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==" />
-                    </head>
-                    <body>
-                    <h1>404 - File Not Found</h1>
-                    <p>The file you are looking for ({path}) could not be found on the server!</p>
-                    </body>
+                        <head>
+                            <meta charset="UTF-8">
+                            <title>404 - File Not Found</title>
+                            <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==" />
+                        </head>
+                        <body>
+                            <h1>404 - File Not Found</h1>
+                            <p>The file you are looking for ({path}) could not be found on the server!</p>
+                        </body>
                     </html>
                 """
             return log_html
 
-        @self.app.get("/get-customized-view-config", include_in_schema=False)
-        async def get_customized_view_config() -> CustomizedViewConfig:
+        @self.app.get("/get-admin-json-config", include_in_schema=False)
+        async def get_admin_json_config() -> AdminJsonConfig:
             response = {
-                "admin_section_hide": self.admin_section_hide,
-                "admin_graph_hide": self.admin_graph_hide,
-                "admin_section_show": self.admin_section_show,
-                "admin_graph_show": self.admin_graph_show,
+                "admin_json_config": self.admin_json_config,
             }
             return response
 
-        @self.app.post("/set-customized-view-config", include_in_schema=False)
-        async def set_customized_view_config(
-            config: CustomizedViewConfig,
+        @self.app.post("/set-admin-json-config", include_in_schema=False)
+        async def set_admin_json_config(
+            config: AdminJsonConfig,
         ) -> ResponseMessage:
             """Adds the config to the class variables for use when generating the dashboard"""
             console = "no console output"
             try:
-                self.admin_section_hide = config.admin_section_hide
-                self.admin_graph_hide = config.admin_graph_hide
-                self.admin_section_show = config.admin_section_show
-                self.admin_graph_show = config.admin_graph_show
+                self.admin_json_config = config.admin_json_config
                 console = self.robotdashboard.create_dashboard()
             except Exception as error:
                 response = {
@@ -376,7 +355,9 @@ class ApiServer:
                 if add_output.output_path != None:
                     input = add_output.output_path
                     outputs = [[add_output.output_path, add_output.output_tags]]
-                    console = self.robotdashboard.process_outputs(output_file_info_list=outputs)
+                    console = self.robotdashboard.process_outputs(
+                        output_file_info_list=outputs
+                    )
                 if add_output.output_folder_path != None:
                     input = add_output.output_folder_path
                     output_folder_path = [
@@ -399,7 +380,9 @@ class ApiServer:
                     file.write(add_output.output_data)
                     file.close()
                     outputs = [[output_path, add_output.output_tags]]
-                    console = self.robotdashboard.process_outputs(output_file_info_list=outputs)
+                    console = self.robotdashboard.process_outputs(
+                        output_file_info_list=outputs
+                    )
                     remove(input)
                 console += self.robotdashboard.create_dashboard()
                 response = {
@@ -466,7 +449,9 @@ class ApiServer:
                 log_path = join(self.log_dir, add_log.log_name)
                 console += self.robotdashboard.update_output_path(log_path)
                 if "ERROR" in console:
-                    raise Exception('A problem occurred while adding the log file, check the console message!')
+                    raise Exception(
+                        "A problem occurred while adding the log file, check the console message!"
+                    )
                 console += "======================================================================================\n"
                 log_file = open(log_path, "w", encoding="utf-8")
                 log_file.write(add_log.log_data)
@@ -475,7 +460,9 @@ class ApiServer:
                 console += "======================================================================================\n"
                 console += self.robotdashboard.create_dashboard()
                 if "ERROR" in console:
-                    raise Exception('A problem occurred while adding the log file, check the console message!')
+                    raise Exception(
+                        "A problem occurred while adding the log file, check the console message!"
+                    )
             except Exception as error:
                 response = {
                     "success": "0",
@@ -495,7 +482,7 @@ class ApiServer:
             """Removes the log file from the folder on the server"""
             console = ""
             try:
-                if remove_log.log_name.lower() == 'all':
+                if remove_log.log_name.lower() == "all":
                     for file in listdir(self.log_dir):
                         remove(join(self.log_dir, file))
                         console += f"Removed {file} from the folder {self.log_dir}\n"

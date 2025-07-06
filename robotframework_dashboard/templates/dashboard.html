@@ -1087,6 +1087,7 @@
 
         var message_config = '"placeholder_message_config"'
         var json_config = "placeholder_json_config"
+        var admin_json_config = "placeholder_admin_json_config"
         var filteredAmount = "placeholder_amount"
         var filteredAmountDefault = 0
         const use_logs = "placeholder_use_logs"
@@ -1958,7 +1959,7 @@
             "themeDark": "Theme",
             "database": "Database Summary",
             "versionInformation": '"placeholder_version"',
-            "bug": "Report a bug or feature request",
+            "bug": "Report a bug or request a feature",
             "github": "Github",
             "amount": "Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.",
             "amountLabel": "Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.",
@@ -2522,7 +2523,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         id
                     };
                 }).filter(w => w.id);
-                set_local_storage_item(`layouts.${grid.id}`, JSON.stringify(layout));
+                if (layout.length > 0) {
+                    set_local_storage_item(`layouts.${grid.id}`, JSON.stringify(layout));
+                }
                 const shown = document.querySelectorAll(`#${grid.id} .shown-graph:not([hidden])`);
                 const hidden = document.querySelectorAll(`#${grid.id} .hidden-graph:not([hidden])`);
                 shown.forEach(btn => {
@@ -2539,10 +2542,14 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         hiddenDashboardItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Hidden", "")).label)
                     }
                 })
-                set_local_storage_item("view.dashboard.graphs.show", shownDashboardItems)
-                set_local_storage_item("view.dashboard.graphs.hide", hiddenDashboardItems)
-                set_local_storage_item("view.compare.graphs.show", shownCompareItems)
-                set_local_storage_item("view.compare.graphs.hide", hiddenCompareItems)
+                if (shownDashboardItems.length + hiddenDashboardItems.length > 0) {
+                    set_local_storage_item("view.dashboard.graphs.show", shownDashboardItems)
+                    set_local_storage_item("view.dashboard.graphs.hide", hiddenDashboardItems)
+                }
+                if (shownCompareItems.length + hiddenCompareItems.length > 0) {
+                    set_local_storage_item("view.compare.graphs.show", shownCompareItems)
+                    set_local_storage_item("view.compare.graphs.hide", hiddenCompareItems)
+                }
             });
             // save table section layout
             const shownTables = [...document.querySelectorAll("#gridTable .shown-graph:not([hidden])")]
@@ -2556,8 +2563,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     const key = el.id.replace("Hidden", "");
                     return graphMetadata.find(graph => graph.key === key)?.label;
                 });
-            set_local_storage_item("view.tables.graphs.show", shownTables)
-            set_local_storage_item("view.tables.graphs.hide", hiddenTables)
+            if (shownTables.length + hiddenTables.length > 0) {
+                set_local_storage_item("view.tables.graphs.show", shownTables)
+                set_local_storage_item("view.tables.graphs.hide", hiddenTables)
+            }
             // save dashboard section layout
             const shownDashboardSections = [...document.querySelectorAll(".shown-section:not([hidden])")]
                 .map(el => {
@@ -2571,8 +2580,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     key = String(key).charAt(0).toUpperCase() + String(key).slice(1);
                     return `${key} Statistics`
                 });
-            set_local_storage_item("view.dashboard.sections.show", shownDashboardSections)
-            set_local_storage_item("view.dashboard.sections.hide", hiddenDashboardSections)
+            if (shownDashboardSections.length + hiddenDashboardSections.length > 0) {
+                set_local_storage_item("view.dashboard.sections.show", shownDashboardSections)
+                set_local_storage_item("view.dashboard.sections.hide", hiddenDashboardSections)
+            }
 
             add_alert("Layout has been updated and saved to settings!", "success")
         }
@@ -2623,7 +2634,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
-        // function to add an alert to the admin page
+        // function to add an alert to the page
         function add_alert(message, category, timeout = 5000) {
             const alertHTML = `<div class="row alert alert-${category} alert-dismissible" role="alert">
                 <div class="col">${message}</div>
@@ -3178,7 +3189,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         localStorage.setItem("settings", JSON.stringify(newSettings));
                         location.reload();
                     } catch (e) {
-                        add_alert("Invalid JSON: " + e.message, "danger")
+                        add_alert("Failed to update admin json config: " + e, "danger")
                     }
                 }
             }
@@ -7061,6 +7072,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             } else if (typeof json_config != "string") {
                 settings = json_config
                 localStorage.setItem('settings', JSON.stringify(json_config));
+            } else if (typeof admin_json_config != "string") {
+                settings = admin_json_config
+                localStorage.setItem('settings', JSON.stringify(settings));
             } else {
                 localStorage.setItem('settings', JSON.stringify(settings));
             }
