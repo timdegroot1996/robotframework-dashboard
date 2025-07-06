@@ -6606,6 +6606,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function update_height(verticalId, labels, graphType) {
             const vertical = document.getElementById(verticalId);
             const fullscreen = vertical.closest(".grid-stack-item-content")
+            if (!fullscreen) return; // return if item is hidden
             const baseHeight = parseFloat(getComputedStyle(fullscreen).height);
             vertical.style.height = `${baseHeight}px`;
             if (labels > 10 && graphType != "bar") {
