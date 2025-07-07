@@ -179,6 +179,19 @@
             cursor: pointer;
         }
 
+        .navbar-disabled {
+            opacity: 0.5;
+            user-select: none;
+        }
+
+        .navbar-disabled a {
+            pointer-events: none;
+        }
+
+        .navbar-disabled a:hover {
+            pointer-events: auto;
+        }
+
         .tooltip-popup {
             position: fixed;
             max-width: 360px;
@@ -2607,17 +2620,48 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             add_alert("Layout has been updated and saved to settings in local storage!", "success")
         }
 
+        function setup_edit_mode_icons(hidden) {
+            document.querySelectorAll(".bar-graph").forEach(btn => btn.hidden = hidden)
+            document.querySelectorAll(".line-graph").forEach(btn => btn.hidden = hidden)
+            document.querySelectorAll(".timeline-graph").forEach(btn => btn.hidden = hidden)
+            document.querySelectorAll(".radar-graph").forEach(btn => btn.hidden = hidden)
+            document.querySelectorAll(".pie-graph").forEach(btn => btn.hidden = hidden)
+            document.querySelectorAll(".percentage-graph").forEach(btn => btn.hidden = hidden)
+            document.querySelectorAll(".stats-graph").forEach(btn => btn.hidden = hidden)
+            document.querySelectorAll(".boxplot-graph").forEach(btn => btn.hidden = hidden)
+            document.querySelectorAll(".fullscreen-graph").forEach(btn => btn.hidden = hidden)
+            if (hidden) {
+                document.querySelector('.navbar-nav').classList.add('navbar-disabled');
+                document.querySelectorAll('.navbar-disabled').forEach(el => {
+                    el.classList.add("information")
+                    el.setAttribute("data-title", "Save your layout changes first! (Save Icon)");
+                });
+            } else {
+                document.querySelectorAll('.navbar-disabled').forEach(el => {
+                    el.classList.remove("information")
+                    el.removeAttribute("data-title")
+                });
+                document.querySelector('.navbar-nav').classList.remove('navbar-disabled');
+            }
+        }
+
         // function to add the layout eventlisteners
         function setup_layout() {
             document.getElementById("customizeLayout").addEventListener("click", (e) => {
                 gridEditMode = !gridEditMode;
-                customize_layout()
+                customize_layout();
                 setup_data_and_graphs();
+                requestAnimationFrame(() => {
+                    setup_edit_mode_icons(true);
+                })
             });
             document.getElementById("saveLayout").addEventListener("click", (e) => {
                 gridEditMode = !gridEditMode;
                 save_layout()
                 setup_data_and_graphs();
+                requestAnimationFrame(() => {
+                    setup_edit_mode_icons(false);
+                })
             });
             // disable or enable sections
             document.querySelectorAll(".shown-section").forEach(btn => {
@@ -2792,11 +2836,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 const maxWidth = 440;
 
                 const baseCharWidth = 8;
-                let dynamicMinWidth = Math.min(Math.max(text.length * baseCharWidth + 24, 80), 200);
+                const dynamicWidth = Math.min(text.length * baseCharWidth + 26, maxWidth);
 
-                tooltipEl.style.width = 'auto';
+                tooltipEl.style.width = dynamicWidth + 'px';
                 tooltipEl.style.maxWidth = maxWidth + 'px';
-                tooltipEl.style.minWidth = dynamicMinWidth + 'px';
 
                 let left = rect.left + rect.width / 2;
                 let top = rect.bottom + 8;
@@ -2805,28 +2848,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 tooltipEl.style.top = `${top}px`;
                 tooltipEl.style.transform = 'translateX(-50%)';
 
-                let tooltipRect = tooltipEl.getBoundingClientRect();
+                const tooltipRect = tooltipEl.getBoundingClientRect();
 
-                if (tooltipRect.left < padding) {
-                    let availableWidthRight = window.innerWidth - padding - left;
-                    let newWidth = Math.min(availableWidthRight * 2, maxWidth);
-                    newWidth = dynamicMinWidth < 150 ? dynamicMinWidth : newWidth;
-                    tooltipEl.style.width = newWidth + 'px';
+                const overflowLeft = tooltipRect.left < padding;
+                const overflowRight = tooltipRect.right > window.innerWidth - padding;
 
-                    tooltipRect = tooltipEl.getBoundingClientRect();
-                    let adjustedLeft = padding + tooltipRect.width / 2;
-                    tooltipEl.style.left = `${adjustedLeft}px`;
-                    tooltipEl.style.transform = 'translateX(-50%)';
-                } else if (tooltipRect.right > window.innerWidth - padding) {
-                    let availableWidthLeft = left - padding;
-                    let newWidth = Math.min(availableWidthLeft * 2, maxWidth);
-                    newWidth = dynamicMinWidth < 150 ? dynamicMinWidth : newWidth;
-                    tooltipEl.style.width = newWidth + 'px';
-
-                    tooltipRect = tooltipEl.getBoundingClientRect();
-                    let adjustedLeft = window.innerWidth - padding - tooltipRect.width / 2;
-                    tooltipEl.style.left = `${adjustedLeft}px`;
-                    tooltipEl.style.transform = 'translateX(-50%)';
+                if (overflowLeft) {
+                    const shiftAmount = padding - tooltipRect.left;
+                    tooltipEl.style.transform = `translateX(calc(-50% + ${shiftAmount}px))`;
+                } else if (overflowRight) {
+                    const shiftAmount = tooltipRect.right - (window.innerWidth - padding);
+                    tooltipEl.style.transform = `translateX(calc(-50% - ${shiftAmount}px))`;
                 }
             }
 
@@ -5681,7 +5713,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     .map(id => document.getElementById(id).value)
                     .filter(val => val !== "None")
             )];
-            const [labels, runStarts, datasets] = [[], [], []];
+            const [runStarts, datasets] = [[], []];
+            var labels = [];
             function getTestLabel(test) {
                 if (settings.menu.dashboard) {
                     return settings.switch.suitePathsTestSection ? test.full_name : test.name;
@@ -5793,31 +5826,43 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         // function to prepare the data in the correct format for duration graphs
         function get_donut_total_graph_data(dataType, filteredData) {
             let passed = 0, failed = 0, skipped = 0;
-            const labels = [], backgroundColors = [], backgroundBorderColors = [];
             for (const value of filteredData) {
                 if (value.passed > 0) {
-                    if (!labels.includes("Passed")) { labels.push("Passed") };
-                    if (!backgroundColors.includes(passedBackgroundColor)) { backgroundColors.push(passedBackgroundColor) };
-                    if (!backgroundBorderColors.includes(passedBackgroundBorderColor)) { backgroundBorderColors.push(passedBackgroundBorderColor) };
                     passed = passed + value.passed;
                 }
                 if (value.failed > 0) {
-                    if (!labels.includes("Failed")) { labels.push("Failed") };
-                    if (!backgroundColors.includes(failedBackgroundColor)) { backgroundColors.push(failedBackgroundColor) };
-                    if (!backgroundBorderColors.includes(failedBackgroundBorderColor)) { backgroundBorderColors.push(failedBackgroundBorderColor) };
                     failed = failed + value.failed;
                 }
                 if (value.skipped > 0) {
-                    if (!labels.includes("Skipped")) { labels.push("Skipped") };
-                    if (!backgroundColors.includes(skippedBackgroundColor)) { backgroundColors.push(skippedBackgroundColor) };
-                    if (!backgroundBorderColors.includes(skippedBackgroundBorderColor)) { backgroundBorderColors.push(skippedBackgroundBorderColor) };
                     skipped = skipped + value.skipped;
                 }
+            }
+            var data = []
+            var labels = []
+            var backgroundColors = []
+            var backgroundBorderColors = []
+            if (passed > 0) {
+                data.push(passed)
+                labels.push("Passed")
+                backgroundColors.push(passedBackgroundColor)
+                backgroundBorderColors.push(passedBackgroundBorderColor)
+            }
+            if (failed > 0) {
+                data.push(failed)
+                labels.push("Failed")
+                backgroundColors.push(failedBackgroundColor)
+                backgroundBorderColors.push(failedBackgroundBorderColor)
+            }
+            if (skipped > 0) {
+                data.push(skipped)
+                labels.push("Skipped")
+                backgroundColors.push(skippedBackgroundColor)
+                backgroundBorderColors.push(skippedBackgroundBorderColor)
             }
             const graphData = {
                 labels: labels,
                 datasets: [{
-                    data: [passed, failed, skipped],
+                    data: data,
                     backgroundColor: backgroundColors,
                     borderColor: backgroundBorderColors,
                     hoverOffset: 4
