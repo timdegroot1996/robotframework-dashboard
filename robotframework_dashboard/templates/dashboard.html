@@ -3258,80 +3258,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function to setup eventlisteners for filter buttons
         function setup_sections_filters() {
-            // has to be added after the creation of the sections and graphs
-            document.getElementById("suiteFolderDonutGoUp").addEventListener("click", function () {
-                function remove_last_folder(path) {
-                    const parts = path.split(".");
-                    parts.pop();
-                    return parts.length > 0 ? parts.join('.') : "";
-                }
-                const folder = remove_last_folder(previousFolder)
-                if (previousFolder == "" && folder == "") { return }
-                create_suite_folder_donut_graph(folder)
-            });
-            // eventlisteners for fullscreen buttons
-            for (let fullscreenButton of fullscreenButtons) {
-                const fullscreenId = `${fullscreenButton}Fullscreen`;
-                const closeId = `${fullscreenButton}Close`;
-                const graphFunctionName = `create_${camelcase_to_underscore(fullscreenButton)}_graph`;
-
-                const toggleFullscreen = (entering) => {
-                    const fullscreen = document.getElementById(fullscreenId);
-                    const close = document.getElementById(closeId);
-                    const content = fullscreen.closest(".grid-stack-item-content");
-
-                    inFullscreen = entering;
-                    fullscreen.hidden = entering;
-                    close.hidden = !entering;
-                    content.classList.toggle("fullscreen", entering);
-                    document.body.classList.toggle("lock-scroll", entering);
-
-                    if (typeof window[graphFunctionName] === "function") {
-                        window[graphFunctionName]();
-                    }
-
-                    if (fullscreenButton === "runDonut") {
-                        create_run_donut_total_graph();
-                    } else if (fullscreenButton === "suiteFolderDonut") {
-                        create_suite_folder_fail_donut_graph();
-                    }
-
-                    let section = null;
-                    if (fullscreenButton.includes("suite")) {
-                        section = "suite";
-                    } else if (fullscreenButton.includes("test")) {
-                        section = "test";
-                    } else if (fullscreenButton.includes("keyword")) {
-                        section = "keyword";
-                    } else if (fullscreenButton.includes("compare")) {
-                        section = "compare";
-                    }
-                    if (section) {
-                        const filters = document.getElementById(`${section}SectionFilters`);
-                        const originalContainer = document.getElementById(`${section}SectionFiltersContainer`);
-                        if (entering) {
-                            const fullscreenHeader = document.querySelector('.grid-stack-item-content.fullscreen');
-                            fullscreenHeader.insertBefore(filters, fullscreenHeader.firstChild);
-                        } else {
-                            originalContainer.appendChild(filters);
-                        }
-                    }
-                };
-
-                document.getElementById(fullscreenId).addEventListener("click", () => {
-                    inFullscreenGraph = fullscreenId;
-                    lastScrollY = window.scrollY;
-                    $("#navigation").hide();
-                    toggleFullscreen(true);
-                });
-
-                document.getElementById(closeId).addEventListener("click", () => {
-                    inFullscreenGraph = ""
-                    $("#navigation").show();
-                    toggleFullscreen(false);
-                    window.scrollTo({ top: lastScrollY, behavior: "auto" });
-                });
-            }
             update_switch_local_storage("switch.runTags", settings.switch.runTags, true);
             document.getElementById("switchRunTags").addEventListener("click", function () {
                 settings.switch.runTags = !settings.switch.runTags
@@ -3420,6 +3346,80 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function to setup eventlisteners for changing the graph view buttons
         function setup_graph_view_buttons() {
+            // eventlisteners for fullscreen buttons
+            for (let fullscreenButton of fullscreenButtons) {
+                const fullscreenId = `${fullscreenButton}Fullscreen`;
+                const closeId = `${fullscreenButton}Close`;
+                const graphFunctionName = `create_${camelcase_to_underscore(fullscreenButton)}_graph`;
+
+                const toggleFullscreen = (entering) => {
+                    const fullscreen = document.getElementById(fullscreenId);
+                    const close = document.getElementById(closeId);
+                    const content = fullscreen.closest(".grid-stack-item-content");
+
+                    inFullscreen = entering;
+                    fullscreen.hidden = entering;
+                    close.hidden = !entering;
+                    content.classList.toggle("fullscreen", entering);
+                    document.body.classList.toggle("lock-scroll", entering);
+
+                    if (typeof window[graphFunctionName] === "function") {
+                        window[graphFunctionName]();
+                    }
+
+                    if (fullscreenButton === "runDonut") {
+                        create_run_donut_total_graph();
+                    } else if (fullscreenButton === "suiteFolderDonut") {
+                        create_suite_folder_fail_donut_graph();
+                    }
+
+                    let section = null;
+                    if (fullscreenButton.includes("suite")) {
+                        section = "suite";
+                    } else if (fullscreenButton.includes("test")) {
+                        section = "test";
+                    } else if (fullscreenButton.includes("keyword")) {
+                        section = "keyword";
+                    } else if (fullscreenButton.includes("compare")) {
+                        section = "compare";
+                    }
+                    if (section) {
+                        const filters = document.getElementById(`${section}SectionFilters`);
+                        const originalContainer = document.getElementById(`${section}SectionFiltersContainer`);
+                        if (entering) {
+                            const fullscreenHeader = document.querySelector('.grid-stack-item-content.fullscreen');
+                            fullscreenHeader.insertBefore(filters, fullscreenHeader.firstChild);
+                        } else {
+                            originalContainer.appendChild(filters);
+                        }
+                    }
+                };
+
+                document.getElementById(fullscreenId).addEventListener("click", () => {
+                    inFullscreenGraph = fullscreenId;
+                    lastScrollY = window.scrollY;
+                    $("#navigation").hide();
+                    toggleFullscreen(true);
+                });
+
+                document.getElementById(closeId).addEventListener("click", () => {
+                    inFullscreenGraph = ""
+                    $("#navigation").show();
+                    toggleFullscreen(false);
+                    window.scrollTo({ top: lastScrollY, behavior: "auto" });
+                });
+            }
+            // has to be added after the creation of the sections and graphs
+            document.getElementById("suiteFolderDonutGoUp").addEventListener("click", function () {
+                function remove_last_folder(path) {
+                    const parts = path.split(".");
+                    parts.pop();
+                    return parts.length > 0 ? parts.join('.') : "";
+                }
+                const folder = remove_last_folder(previousFolder)
+                if (previousFolder == "" && folder == "") { return }
+                create_suite_folder_donut_graph(folder)
+            });
             // ignore skip button eventlisteners
             document.getElementById("ignoreSkips").addEventListener("change", () => {
                 ignoreSkips = !ignoreSkips;
@@ -6740,7 +6740,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 setup_section_order();
                 setup_graph_order();
                 setup_information_popups();
-                setup_sections_filters();
                 setup_graph_view_buttons();
                 setup_theme();
 
@@ -7171,6 +7170,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             setup_local_storage();
             setup_database_stats();
             setup_layout();
+            setup_sections_filters();
             setup_collapsables();
             setup_filter_modal();
             setup_settings_modal();
