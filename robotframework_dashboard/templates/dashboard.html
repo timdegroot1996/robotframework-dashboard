@@ -219,7 +219,7 @@
             left: 0 !important;
             top: 0 !important;
             z-index: 10 !important;
-            padding: 11px 20px 70px 20px !important;
+            padding: 20px 20px 20px 20px !important;
             border-radius: 0px !important;
         }
 
@@ -337,7 +337,15 @@
         .grid-stack-item-content .graph-body {
             flex: 1 1 auto;
             display: flex;
-            overflow: auto;
+            overflow-x: hidden;
+            overflow-y: auto;
+            width: 100%;
+        }
+
+        .graph-body .row {
+            flex-wrap: wrap;
+            margin-left: 0;
+            margin-right: 0;
         }
 
         .grid-stack-item-content .graph-body .vertical {
@@ -705,6 +713,15 @@
                                     </div>
                                     <div class="btn-group">
                                         <select class="form-select form-select-sm" id="compareRun4"></select>
+                                    </div>
+                                </div>
+                                <div class="col-auto d-flex me-2">
+                                    <label class="form-check-label mb-0 me-2" for="switchSuitePathsCompareSection">Use
+                                        Suite
+                                        Paths</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                            id="switchSuitePathsCompareSection" />
                                     </div>
                                 </div>
                             </div>
@@ -1116,6 +1133,7 @@
         // some global vars for various functionalities
         var showingRunTags = false; // used to keep track if the runtags popup is showing and determine if it should be closed when clicked outside
         var inFullscreen = false; // used to keep track if fullscreen view is being shown
+        var inFullscreenGraph = ""; // used to keep track of the graph being shown in fullscreen
         var heatMapHourAll = true; // used to keep track of the heatmap setting, is it set to an hour or all
         var previousFolder = ""; // used to update the suite folder donut to the previous folder with the button
         var lastScrollY = 0; // used to scroll back to where you were previously
@@ -1202,7 +1220,7 @@
                 </div>
                 <div class="graph-body">
                     <div class="w-100 h-100">
-                        <div class="d-flex flex-column justify-content-between h-75">
+                        <div class="d-flex flex-column justify-content-between h-100">
                             <div class="row text-center mb-4">
                                 <div class="col">
                                     <div class="stat-label">Executed Runs</div>
@@ -2244,7 +2262,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             switch: {
                 runTags: false,
                 suitePathsSuiteSection: false,
-                suitePathsTestSection: false
+                suitePathsTestSection: false,
+                suitePathsCompareSection: false,
             },
             show: {
                 dateLabels: true,
@@ -2585,7 +2604,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 set_local_storage_item("view.dashboard.sections.hide", hiddenDashboardSections)
             }
 
-            add_alert("Layout has been updated and saved to settings!", "success")
+            add_alert("Layout has been updated and saved to settings in local storage!", "success")
         }
 
         // function to add the layout eventlisteners
@@ -3300,12 +3319,14 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 };
 
                 document.getElementById(fullscreenId).addEventListener("click", () => {
+                    inFullscreenGraph = fullscreenId;
                     lastScrollY = window.scrollY;
                     $("#navigation").hide();
                     toggleFullscreen(true);
                 });
 
                 document.getElementById(closeId).addEventListener("click", () => {
+                    inFullscreenGraph = ""
                     $("#navigation").show();
                     toggleFullscreen(false);
                     window.scrollTo({ top: lastScrollY, behavior: "auto" });
@@ -3386,6 +3407,14 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         create_compare_tests_graph();
                     });
                 }
+            });
+            update_switch_local_storage("switch.suitePathsCompareSection", settings.switch.suitePathsCompareSection, true);
+            document.getElementById("switchSuitePathsCompareSection").addEventListener("change", (e) => {
+                settings.switch.suitePathsCompareSection = !settings.switch.suitePathsCompareSection;
+                update_switch_local_storage("switch.suitePathsCompareSection", settings.switch.suitePathsCompareSection);
+                create_compare_statistics_graph();
+                create_compare_suite_duration_graph();
+                create_compare_tests_graph();
             });
         }
 
@@ -4060,7 +4089,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             var graphData = get_duration_graph_data("run", settings.graphTypes.runDurationGraphType, "elapsed_s", filteredRuns);
             var config;
             if (settings.graphTypes.runDurationGraphType == "bar") {
-                const limit = inFullscreen ? 100 : 30;
+                const limit = inFullscreen && inFullscreenGraph.includes("runDuration") ? 100 : 30;
                 config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (settings.graphTypes.runDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "", "Date", "Duration");
@@ -4313,7 +4342,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphData = get_duration_graph_data("suite", settings.graphTypes.suiteDurationGraphType, "elapsed_s", filteredSuites);
             var config;
             if (settings.graphTypes.suiteDurationGraphType == "bar") {
-                const limit = inFullscreen ? 100 : 30;
+                const limit = inFullscreen && inFullscreenGraph.includes("suiteDuration") ? 100 : 30;
                 config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (settings.graphTypes.suiteDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "", "Date", "Duration");
@@ -4334,7 +4363,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphData = data[0];
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen && inFullscreenGraph.includes("suiteMostFailed") ? 50 : 10;
             if (settings.graphTypes.suiteMostFailedGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit}`, "Suite", "Fails");
                 config.options.plugins.legend = { display: false };
@@ -4477,7 +4506,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             var graphData = get_duration_graph_data("test", settings.graphTypes.testDurationGraphType, "elapsed_s", filteredTests);
             var config;
             if (settings.graphTypes.testDurationGraphType == "bar") {
-                const limit = inFullscreen ? 100 : 30;
+                const limit = inFullscreen && inFullscreenGraph.includes("testDuration") ? 100 : 30;
                 config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (settings.graphTypes.testDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "", "Date", "Duration");
@@ -4498,7 +4527,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphData = data[0];
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen && inFullscreenGraph.includes("testMessages") ? 50 : 10;
             if (settings.graphTypes.testMessagesGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit}`, "Message", "Times");
                 config.options.plugins.legend = { display: false };
@@ -4588,7 +4617,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphData = data[0]
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen && inFullscreenGraph.includes("testMostFlaky") ? 50 : 10;
             if (settings.graphTypes.testMostFlakyGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit}`, "Test", "Status Flips");
                 config.options.plugins.legend = false
@@ -4639,7 +4668,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphData = data[0];
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen && inFullscreenGraph.includes("testRecentMostFlaky") ? 50 : 10;
             if (settings.graphTypes.testRecentMostFlakyGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit}`, "Test", "Status Flips");
                 config.options.plugins.legend = false
@@ -4690,7 +4719,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphData = data[0]
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen && inFullscreenGraph.includes("testMostFailed") ? 50 : 10;
             if (settings.graphTypes.testMostFailedGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit}`, "Test", "Fails");
                 config.options.plugins.legend = { display: false };
@@ -4748,7 +4777,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphData = data[0]
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen && inFullscreenGraph.includes("testRecentMostFailed") ? 50 : 10;
             if (settings.graphTypes.testRecentMostFailedGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit}`, "Test", "Fails");
                 config.options.plugins.legend = { display: false };
@@ -4872,7 +4901,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphData = get_duration_graph_data("keyword", settings.graphTypes.keywordTimesRunGraphType, "times_run", filteredKeywords);
             var config;
             if (settings.graphTypes.keywordTimesRunGraphType == "bar") {
-                const limit = inFullscreen ? 100 : 30;
+                const limit = inFullscreen && inFullscreenGraph.includes("keywordTimesRun") ? 100 : 30;
                 config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (settings.graphTypes.keywordTimesRunGraphType == "line") {
                 config = get_graph_config("line", graphData, "", "Date", "Duration");
@@ -4892,7 +4921,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphData = get_duration_graph_data("keyword", settings.graphTypes.keywordTotalDurationGraphType, "total_time_s", filteredKeywords);
             var config;
             if (settings.graphTypes.keywordTotalDurationGraphType == "bar") {
-                const limit = inFullscreen ? 100 : 30;
+                const limit = inFullscreen && inFullscreenGraph.includes("keywordTotalDuration") ? 100 : 30;
                 config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (settings.graphTypes.keywordTotalDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "", "Date", "Duration");
@@ -4912,7 +4941,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphData = get_duration_graph_data("keyword", settings.graphTypes.keywordAverageDurationGraphType, "average_time_s", filteredKeywords);
             var config;
             if (settings.graphTypes.keywordAverageDurationGraphType == "bar") {
-                const limit = inFullscreen ? 100 : 30;
+                const limit = inFullscreen && inFullscreenGraph.includes("keywordAverageDuration") ? 100 : 30;
                 config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (settings.graphTypes.keywordAverageDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "", "Date", "Duration");
@@ -4932,7 +4961,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphData = get_duration_graph_data("keyword", settings.graphTypes.keywordMinDurationGraphType, "min_time_s", filteredKeywords);
             var config;
             if (settings.graphTypes.keywordMinDurationGraphType == "bar") {
-                const limit = inFullscreen ? 100 : 30;
+                const limit = inFullscreen && inFullscreenGraph.includes("keywordMinDuration") ? 100 : 30;
                 config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (settings.graphTypes.keywordMinDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "", "Date", "Duration");
@@ -4952,7 +4981,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphData = get_duration_graph_data("keyword", settings.graphTypes.keywordMaxDurationGraphType, "max_time_s", filteredKeywords);
             var config;
             if (settings.graphTypes.keywordMaxDurationGraphType == "bar") {
-                const limit = inFullscreen ? 100 : 30;
+                const limit = inFullscreen && inFullscreenGraph.includes("keywordMaxDuration") ? 100 : 30;
                 config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
             } else if (settings.graphTypes.keywordMaxDurationGraphType == "line") {
                 config = get_graph_config("line", graphData, "", "Date", "Duration");
@@ -4973,7 +5002,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphData = data[0]
             const callbackData = data[1];
             var config;
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen && inFullscreenGraph.includes("keywordMostFailed") ? 50 : 10;
             if (settings.graphTypes.keywordMostFailedGraphType == "bar") {
                 config = get_graph_config("bar", graphData, `Top ${limit}`, "Keyword", "Fails");
                 config.options.plugins.legend = { display: false };
@@ -5653,85 +5682,73 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     .map(id => document.getElementById(id).value)
                     .filter(val => val !== "None")
             )];
-            var [labels, runStarts, datasets] = [[], [], []];
-            for (test of filteredTests) {
+            const [labels, runStarts, datasets] = [[], [], []];
+            function getTestLabel(test) {
                 if (settings.menu.dashboard) {
-                    if (settings.switch.suitePathsTestSection) {
-                        if (suiteSelectTests != "All" && test.full_name != `${suiteSelectTests}.${test.name}`) {
-                            continue;
-                        }
-                    } else {
-                        if (suiteSelectTests != "All" && !test.full_name.includes(`.${suiteSelectTests}.${test.name}`) && test.full_name != `${suiteSelectTests}.${test.name}`) {
-                            continue;
-                        }
+                    return settings.switch.suitePathsTestSection ? test.full_name : test.name;
+                } else if (settings.menu.compare) {
+                    return settings.switch.suitePathsCompareSection ? test.full_name : test.name;
+                }
+                return test.name;
+            }
+            for (const test of filteredTests) {
+                if (settings.menu.dashboard) {
+                    const testLabel = getTestLabel(test);
+                    const testBaseName = test.name;
+                    if (suiteSelectTests !== "All") {
+                        const expectedFull = `${suiteSelectTests}.${testBaseName}`;
+                        const isMatch = settings.switch.suitePathsTestSection
+                            ? test.full_name === expectedFull
+                            : test.full_name.includes(`.${suiteSelectTests}.${testBaseName}`) || test.full_name === expectedFull;
+                        if (!isMatch) continue;
                     }
-                    if (testSelect != "All" && test.name != testSelect) {
-                        continue;
-                    }
-                    if (testTagsSelect != "All" && !test.tags.replace(/\[|\]/g, "").split(",").includes(testTagsSelect)) {
-                        continue
+                    if (testSelect !== "All" && testBaseName !== testSelect) continue;
+
+                    if (testTagsSelect !== "All") {
+                        const tagList = test.tags.replace(/\[|\]/g, "").split(",");
+                        if (!tagList.includes(testTagsSelect)) continue;
                     }
                 } else if (settings.menu.compare) {
                     if (!(selectedRuns.includes(test.run_start) || selectedRuns.includes(test.run_alias))) continue;
                 }
-                if (!labels.includes(test.name)) {
-                    labels.push(test.name);
+                const testLabel = getTestLabel(test);
+                if (!labels.includes(testLabel)) {
+                    labels.push(testLabel);
                 }
-                if (settings.show.aliases) {
-                    if (!runStarts.includes(test.run_alias)) {
-                        runStarts.push(test.run_alias);
-                    }
-                    var runAxis = runStarts.indexOf(test.run_alias)
-                } else {
-                    if (!runStarts.includes(test.run_start)) {
-                        runStarts.push(test.run_start);
-                    }
-                    var runAxis = runStarts.indexOf(test.run_start)
+                const runId = settings.show.aliases ? test.run_alias : test.run_start;
+
+                if (!runStarts.includes(runId)) {
+                    runStarts.push(runId);
                 }
-                if (test.passed == 1) {
+                const runAxis = runStarts.indexOf(runId);
+                const config =
+                    test.passed == 1 ? passedConfig :
+                        test.failed == 1 ? failedConfig :
+                            test.skipped == 1 ? skippedConfig : null;
+                if (config) {
                     datasets.push({
-                        label: test.name,
-                        data: [{ x: [runAxis, runAxis + 1], y: test.name }],
-                        ...passedConfig,
-                    });
-                } else if (test.failed == 1) {
-                    datasets.push({
-                        label: test.name,
-                        data: [{ x: [runAxis, runAxis + 1], y: test.name }],
-                        ...failedConfig,
-                    });
-                } else if (test.skipped == 1) {
-                    datasets.push({
-                        label: test.name,
-                        data: [{ x: [runAxis, runAxis + 1], y: test.name }],
-                        ...skippedConfig,
+                        label: testLabel,
+                        data: [{ x: [runAxis, runAxis + 1], y: testLabel }],
+                        ...config,
                     });
                 }
             }
-            datasets = convert_timeline_data(datasets)
+            let finalDatasets = convert_timeline_data(datasets);
             if (testOnlyChanges || compareOnlyChanges) {
-                const unique = {}
-                for (const dataset of datasets) {
-                    if (unique[dataset.label]) {
-                        unique[dataset.label] = unique[dataset.label] + 1
-                    } else {
-                        unique[dataset.label] = 1
-                    }
+                const countMap = {};
+                for (const ds of finalDatasets) {
+                    countMap[ds.label] = (countMap[ds.label] || 0) + 1;
                 }
-                const labelsToRemove = []
-                for (const label of Object.keys(unique)) {
-                    if (unique[label] == 1) {
-                        labelsToRemove.push(label)
-                    }
-                }
-                datasets = datasets.filter(dataset => !labelsToRemove.includes(dataset.label))
-                labels = labels.filter(label => !labelsToRemove.includes(label))
+                const labelsToKeep = new Set(Object.keys(countMap).filter(label => countMap[label] > 1));
+
+                finalDatasets = finalDatasets.filter(ds => labelsToKeep.has(ds.label));
+                labels = labels.filter(label => labelsToKeep.has(label));
             }
             const graphData = {
-                labels: labels,
-                datasets: datasets,
+                labels,
+                datasets: finalDatasets,
             };
-            return [graphData, runStarts]
+            return [graphData, runStarts];
         }
 
         // function to prepare the data in the correct format for last run donut graphs
@@ -6068,7 +6085,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 if (dataType === "test" && testTagsSelect !== "All" && !value.tags.replace(/\[|\]/g, "").split(",").includes(testTagsSelect)) return false;
                 return true;
             };
-            const limit = inFullscreen ? 100 : 30;
+            const limit = inFullscreen && inFullscreenGraph.includes("Duration") ? 100 : 30;
             if (graphType === "bar") {
                 const labels = [];
                 const data = new Map();
@@ -6214,44 +6231,45 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         // function to prepare the data in the correct format for (recent) most flaky test graph
         function get_most_flaky_data(dataType, graphType, filteredData, ignore, recent) {
             var data = {};
-            for (value of filteredData) {
-                if (data[value.name]) {
-                    data[value.name]["run_starts"].push(value.run_start)
-                    var current_status
-                    if (value.passed == 1) { current_status = "passed" }
-                    else if (value.failed == 1) {
-                        current_status = "failed"
-                        data[value.name]["failed_run_starts"].push(value.run_start)
-                    }
-                    else if (!ignore) {
+            for (const value of filteredData) {
+                const key = settings.switch.suitePathsTestSection ? value.full_name : value.name;
+                if (data[key]) {
+                    data[key]["run_starts"].push(value.run_start);
+                    let current_status;
+                    if (value.passed == 1) {
+                        current_status = "passed";
+                    } else if (value.failed == 1) {
+                        current_status = "failed";
+                        data[key]["failed_run_starts"].push(value.run_start);
+                    } else if (!ignore) {
                         if (value.skipped == 1) {
-                            current_status = "skipped"
-                            data[value.name]["failed_run_starts"].push(value.run_start)
+                            current_status = "skipped";
+                            data[key]["failed_run_starts"].push(value.run_start);
                         }
                     }
-                    if (current_status != data[value.name]["previous_status"]) {
-                        data[value.name]["flips"] += 1
-                        data[value.name]["previous_status"] = current_status
+                    if (current_status !== data[key]["previous_status"]) {
+                        data[key]["flips"] += 1;
+                        data[key]["previous_status"] = current_status;
                     }
                 } else {
-                    var previous_status
-                    data[value.name] = {
+                    let previous_status;
+                    data[key] = {
                         "run_starts": [value.run_start],
                         "flips": 0,
                         "failed_run_starts": []
-                    }
-                    if (value.passed == 1) { previous_status = "passed" }
-                    else if (value.failed == 1) {
-                        previous_status = "failed"
-                        data[value.name]["failed_run_starts"].push(value.run_start)
-                    }
-                    else if (!ignore) {
+                    };
+                    if (value.passed == 1) {
+                        previous_status = "passed";
+                    } else if (value.failed == 1) {
+                        previous_status = "failed";
+                        data[key]["failed_run_starts"].push(value.run_start);
+                    } else if (!ignore) {
                         if (value.skipped == 1) {
-                            previous_status = "skipped"
-                            data[value.name]["failed_run_starts"].push(value.run_start)
+                            previous_status = "skipped";
+                            data[key]["failed_run_starts"].push(value.run_start);
                         }
                     }
-                    data[value.name]["previous_status"] = previous_status
+                    data[key]["previous_status"] = previous_status;
                 }
             }
             var sortedData = [];
@@ -6268,7 +6286,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     return new Date(b[1].failed_run_starts[b[1].failed_run_starts.length - 1]).getTime() - new Date(a[1].failed_run_starts[a[1].failed_run_starts.length - 1]).getTime()
                 })
             }
-            const limit = inFullscreen ? 50 : 10;
+            var limit
+            if (recent) {
+                limit = inFullscreen && inFullscreenGraph.includes("testRecentMostFlaky") ? 50 : 10;
+            } else {
+                limit = inFullscreen && inFullscreenGraph.includes("testMostFlaky") ? 50 : 10;
+            }
             if (graphType == "bar") {
                 var [datasets, labels, count] = [[], [], 0];
                 for (key in sortedData) {
@@ -6308,7 +6331,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     for (label of labels) {
                         var foundValues = [];
                         for (value of filteredData) {
-                            if (value.name == label && value.run_start == runStart) {
+                            const compareKey = settings.switch.suitePathsTestSection ? value.full_name : value.name;
+                            if (compareKey == label && value.run_start == runStart) {
+                                // if (value.name == label && value.run_start == runStart) {
                                 foundValues.push(value);
                                 if (!run_aliases.includes(value.run_alias)) { run_aliases.push(value.run_alias) }
                             }
@@ -6352,29 +6377,40 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function to prepare the data in the correct format for most failed graphs
         function get_most_failed_data(dataType, graphType, filteredData, recent) {
-            const data = new Map();
-            const aliases = new Map();
-            for (const value of filteredData) {
-                if (value.failed > 0) {
-                    if (!data.has(value.name)) {
-                        data.set(value.name, []);
-                        aliases.set(value.name, []);
-                    }
-                    data.get(value.name).push(value.run_start);
-                    aliases.get(value.name).push(value.run_alias);
+            function getTestKey(value, dataType) {
+                if (dataType === "suite" && settings.switch.suitePathsSuiteSection) {
+                    return value.full_name;
+                } else if (dataType === "test" && settings.switch.suitePathsTestSection) {
+                    return value.full_name;
+                } else {
+                    return value.name;
                 }
             }
-            var sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length);
-            if (recent) { // Do extra filtering to get most most failed tests at the top
+            const data = new Map();
+            const aliases = new Map();
+
+            for (const value of filteredData) {
+                if (value.failed > 0) {
+                    const key = getTestKey(value, dataType);
+                    if (!data.has(key)) {
+                        data.set(key, []);
+                        aliases.set(key, []);
+                    }
+                    data.get(key).push(value.run_start);
+                    aliases.get(key).push(value.run_alias);
+                }
+            }
+            let sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length);
+            if (recent) {
                 sortedData = sortedData.slice().sort((a, b) => {
                     const latestA = a[1][a[1].length - 1];
                     const latestB = b[1][b[1].length - 1];
                     if (latestA > latestB) return -1;
                     if (latestA < latestB) return 1;
-                    return 0; // Preserve original order if equal (stable sort)
+                    return 0;
                 });
             }
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen && inFullscreenGraph.includes("MostFailed") ? 50 : 10;
             if (graphType === "bar") {
                 const datasets = [];
                 const labels = [];
@@ -6387,7 +6423,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         data.set(name, aliases.get(name));
                     }
                     datasets.push(runStarts.length);
-                    runStartsLabels.set(name, runStarts)
+                    runStartsLabels.set(name, runStarts);
                     count++;
                 }
                 const graphData = {
@@ -6398,8 +6434,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     }],
                 };
                 const callbackData = settings.show.aliases
-                    ? Object.fromEntries(sortedData.map(([name, runs]) => [name, aliases.get(name)]))
-                    : Object.fromEntries(sortedData.map(([name, runs]) => [name, runStartsLabels.get(name)]));
+                    ? Object.fromEntries(sortedData.map(([name]) => [name, aliases.get(name)]))
+                    : Object.fromEntries(sortedData.map(([name]) => [name, runStartsLabels.get(name)]));
+
                 return [graphData, callbackData];
             } else if (graphType === "timeline") {
                 const labels = [];
@@ -6413,11 +6450,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     count++;
                 }
                 const runStarts = Array.from(runStartsSet).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-                var datasets = [];
+                let datasets = [];
                 let runAxis = 0;
                 for (const runStart of runStarts) {
                     for (const label of labels) {
-                        const foundValues = filteredData.filter(value => value.name === label && value.run_start === runStart && value.failed > 0);
+                        const foundValues = filteredData.filter(value =>
+                            getTestKey(value, dataType) === label && value.run_start === runStart && value.failed > 0
+                        );
                         if (foundValues.length > 0) {
                             const value = foundValues[0];
                             datasets.push({
@@ -6425,12 +6464,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                 data: [{ x: [runAxis, runAxis + 1], y: label }],
                                 ...failedConfig,
                             });
-                            foundValues.forEach(value => runAliasesSet.add(value.run_alias));
+                            foundValues.forEach(v => runAliasesSet.add(v.run_alias));
                         }
                     }
                     runAxis++;
                 }
-                datasets = convert_timeline_data(datasets)
+                datasets = convert_timeline_data(datasets);
                 const runStartsArray = settings.show.aliases ? Array.from(runAliasesSet) : runStarts;
                 const graphData = {
                     labels,
@@ -6479,7 +6518,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     data.set(message, [...new Set(arrayWithDuplicates)])
                 }
             }
-            const limit = inFullscreen ? 50 : 10;
+            const limit = inFullscreen && inFullscreenGraph.includes("Messages") ? 50 : 10;
             const sortedData = [...data.entries()].sort((a, b) => b[1].length - a[1].length); // Sort messages by failure count
             if (graphType === "bar") {
                 const [datasets, labels] = [[], []];
@@ -6583,7 +6622,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             for (const value of filteredData) {
                 for (const run of selectedRuns) {
                     if (value.run_start === run || value.run_alias === run) {
-                        labelSet.add(value.name);
+                        if (settings.switch.suitePathsCompareSection) {
+                            labelSet.add(value.full_name)
+                        } else {
+                            labelSet.add(value.name);
+                        }
                         if (!dataMap.has(run)) dataMap.set(run, []);
                         dataMap.get(run).push(value.elapsed_s);
                     }
@@ -6607,7 +6650,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const vertical = document.getElementById(verticalId);
             const fullscreen = vertical.closest(".grid-stack-item-content")
             if (!fullscreen) return; // return if item is hidden
-            const baseHeight = parseFloat(getComputedStyle(fullscreen).height);
+            var baseHeight = parseFloat(getComputedStyle(fullscreen).height);
+            if (inFullscreen) {
+                baseHeight = baseHeight - 103;
+            } else { // fix for not in fullscreen take off the svg row and padding
+                baseHeight = baseHeight - 72;
+            }
             vertical.style.height = `${baseHeight}px`;
             if (labels > 10 && graphType != "bar") {
                 const newHeight = baseHeight + (labels - 10) * 35;
