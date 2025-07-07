@@ -55,9 +55,10 @@ The Dashboard will provide information across your runs across all levels.
 - Compare page in which you can compare up to 4 runs directly
 
 ### Available Settings
-- Fully customizable order of sections and graphs
+- Fully customizable order and size of sections and graphs
 - Light/Dark mode
 - Show/hide graph legends
+- Show/hide graph axis titles
 - Show/hide graph labels (run_starts or aliases)
 - Show/hide graph alias labels (instead of default run_starts)
 - Show/hide milliseconds in run_start labels
@@ -178,6 +179,10 @@ The test Normal Test ${number} has failed for some strange reason
 # Set the default amount of runs shown in the amount filter when opening the dashboard. This improves load times with a lot of runs and can help read graphs better. The default value is 20.
 robotdashboard -q 7
 robotdashboard --quantity 50
+
+# Set a default dashboard config that will be used on first load unless there is already a config in place. This config can be found in a dashboard under Settings > Copy Settings. 
+robotdashboard -j ./path/to/config.json
+robotdashboard --jsonconfig default_settings.json
 
 # Make use of a custom DatabaseProcessor class, see also `Custom Database Class` on this page for examples and more details of the requirements.
 robotdashboard -c ./path/to/custom_class.py
