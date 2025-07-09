@@ -226,7 +226,7 @@ class ApiServer:
         self.robotdashboard: RobotDashboard
         self.server_host = server_host
         self.server_port = server_port
-        self.admin_json_config = ""
+        self.admin_json_config = "{}"
         self.log_dir = "robot_logs"
 
         @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)

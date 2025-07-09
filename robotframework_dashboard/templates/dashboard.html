@@ -7172,7 +7172,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             } else if (typeof json_config != "string") {
                 settings = json_config
                 localStorage.setItem('settings', JSON.stringify(json_config));
-            } else if (typeof admin_json_config != "string") {
+            } else if (typeof admin_json_config != "string" && Object.keys(admin_json_config).length != 0) {
                 settings = admin_json_config
                 localStorage.setItem('settings', JSON.stringify(settings));
             } else {
