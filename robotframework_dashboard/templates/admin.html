@@ -859,7 +859,7 @@
                     const config = JSON.parse(xhr.responseText)
                     const serverSettings = config.admin_json_config;
                     const storageSettings = JSON.parse(localStorage.getItem("adminSettings"));
-                    if (serverSettings != '') {
+                    if (serverSettings != '{}') {
                         // if there IS a serversetting use that
                         adminSettings = JSON.parse(serverSettings);
                         if (!storageSettings) {
