@@ -189,7 +189,9 @@ robotdashboard -c ./path/to/custom_class.py
 robotdashboard --databaseclass mysql.py
 
 # Start the robotdashboard server, see also `Dashboard Server` on this page for examples and more details of the requirements.
-robotdashboard -s default
+robotdashboard --server default
+# TIP: when using the server on docker use the following server config:
+robotdashboard -s 0.0.0.0:8543
 ```
 
 <a name="Examples"></a>
