@@ -220,8 +220,11 @@
             color: #eee;
         }
 
+        .navbar {
+            margin-bottom: 1rem;
+        }
+
         .card {
-            margin-top: 1rem;
             margin-bottom: 1rem;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
@@ -2831,7 +2834,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         const targetTop = target.getBoundingClientRect().top + window.pageYOffset;
                         const top = targetTop < 200 ? 0 : targetTop - stickyHeight - 8; // exception for the section at the top, scroll to 0
                         window.scrollTo({
-                            top: top,
+                            top: top - 7,
                             behavior: "auto"
                         });
                     }
@@ -6826,9 +6829,52 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             update_menu(selectedMenu);
         }
 
+        function get_most_visible_section() {
+            const SECTION_IDS = [
+                "overviewStatisticsSection",
+                "runStatisticsSection",
+                "suiteStatisticsSection",
+                "testStatisticsSection",
+                "keywordStatisticsSection",
+                "compareStatisticsSection",
+                "runTableCanvas",
+                "suiteTableCanvas",
+                "testTableCanvas",
+                "keywordTableCanvas"
+            ];
+            const viewportTop = window.scrollY;
+            const viewportBottom = viewportTop + window.innerHeight;
+            const focusTop = viewportTop + window.innerHeight * 0.2;
+            const focusBottom = viewportTop + window.innerHeight * 0.5;
+
+            let bestMatchId = null;
+            let maxVisibleArea = 0;
+
+            SECTION_IDS.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el || el.offsetParent === null) return; // skip hidden elements
+
+                const rect = el.getBoundingClientRect();
+                const elTop = rect.top + window.scrollY;
+                const elBottom = elTop + rect.height;
+
+                const visibleTop = Math.max(elTop, focusTop);
+                const visibleBottom = Math.min(elBottom, focusBottom);
+
+                const visibleHeight = visibleBottom - visibleTop;
+                if (visibleHeight > maxVisibleArea) {
+                    maxVisibleArea = visibleHeight;
+                    bestMatchId = id;
+                }
+            });
+
+            return bestMatchId;
+        }
+
         // function to update all graph data, function is called when updating filters and when the page loads
         function setup_data_and_graphs(menuUpdate = false) {
-            lastScrollY = window.scrollY;
+            // lastScrollY = window.scrollY;
+            const mostVisibleSectionId = get_most_visible_section();
             setup_spinner(false);
 
             // Let the spinner render before starting heavy setup
@@ -6848,14 +6894,15 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     setup_dasbhoard_graphs();
 
                     if (!menuUpdate) {
-                        requestAnimationFrame(() => {
-                            if (lastScrollY > 0) {
+                        setTimeout(() => {
+                            if (mostVisibleSectionId) {
+                                const offsetTop = document.getElementById(mostVisibleSectionId).getBoundingClientRect().top;
                                 window.scrollTo({
-                                    top: lastScrollY,
+                                    top: offsetTop - 67, // navbar offset
                                     behavior: "auto"
                                 });
                             }
-                        });
+                        }, 100);
                     }
                 });
             });
