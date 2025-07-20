@@ -1,4 +1,4 @@
-<html data-bs-theme="dark" class="dark-mode w-100">
+<html data-bs-theme="dark" class="dark-mode w-100 html-scroll">
 
 <head>
     <title>"placeholder_dashboard_title"</title>
@@ -143,7 +143,7 @@
             font-family: Helvetica, sans-serif;
         }
 
-        html {
+        .html-scroll {
             overflow-y: scroll;
         }
 
@@ -3401,6 +3401,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     close.hidden = !entering;
                     content.classList.toggle("fullscreen", entering);
                     document.body.classList.toggle("lock-scroll", entering);
+                    document.documentElement.classList.toggle("html-scroll", !entering)
 
                     if (typeof window[graphFunctionName] === "function") {
                         window[graphFunctionName]();
