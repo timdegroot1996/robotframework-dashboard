@@ -49,7 +49,6 @@ add_output_model_config = {
 <suite id="s1" name="Scripts" source="C:\\docs">
 <suite id="s1-s1" name="Google" source="C:\\docs\\google.robot">
 <test id="s1-s1-t1" name="Test 01" line="6">... etc""",
-                "output_tags": [],
                 "output_alias": "some_cool_alias",
             },
             {
@@ -95,7 +94,6 @@ add_outputs_openapi_examples = {
 <suite id="s1" name="Scripts" source="C:\\docs">
 <suite id="s1-s1" name="Google" source="C:\\docs\\google.robot">
 <test id="s1-s1-t1" name="Test 01" line="6">... etc""",
-            "output_tags": [],
             "output_alias": "some_cool_alias",
         },
     },
@@ -327,9 +325,9 @@ class ApiServer:
         ) -> ResponseMessage:
             """Add output to database endpoint function
             The following combinations of parameters are valid:
-            1. output_path: str valid path to output.xml + output_tags: list[str] tags for that output.xml
-            2. output_data: str output.xml content + output_tags: list[str] tags for that output.xml + optional output_alias
-            3. output_folder_path: str valid path to folder (might have subfolders) that contain output.xml (multiple allowed) + output_tags: list[str] tags for that output.xml
+            1. output_path: str valid path to output.xml (+ optional: output_tags: list[str] tags for that output.xml)
+            2. output_data: str output.xml content (+ optional: output_tags: list[str] tags for that output.xml + optional output_alias)
+            3. output_folder_path: str valid path to folder (might have subfolders) that contain output.xml (multiple allowed) (+ optional: output_tags: list[str] tags for that output.xml)
             """
             input = "provided input, overwritten on runtime"
             console = "no console output"
@@ -352,9 +350,12 @@ class ApiServer:
                     raise Exception(
                         "Please only provide output_path, output_data or output_folder_path, not more than 1 type at the same time!"
                     )
+                output_tags = []
+                if add_output.output_tags:
+                    output_tags = add_output.output_tags
                 if add_output.output_path != None:
                     input = add_output.output_path
-                    outputs = [[add_output.output_path, add_output.output_tags]]
+                    outputs = [[add_output.output_path, output_tags]]
                     console = self.robotdashboard.process_outputs(
                         output_file_info_list=outputs
                     )
@@ -362,7 +363,7 @@ class ApiServer:
                     input = add_output.output_folder_path
                     output_folder_path = [
                         add_output.output_folder_path,
-                        add_output.output_tags,
+                        output_tags,
                     ]
                     console = self.robotdashboard.process_outputs(
                         output_folder_config=output_folder_path
@@ -379,7 +380,7 @@ class ApiServer:
                         output_path = abspath(input)
                     file.write(add_output.output_data)
                     file.close()
-                    outputs = [[output_path, add_output.output_tags]]
+                    outputs = [[output_path, output_tags]]
                     console = self.robotdashboard.process_outputs(
                         output_file_info_list=outputs
                     )
