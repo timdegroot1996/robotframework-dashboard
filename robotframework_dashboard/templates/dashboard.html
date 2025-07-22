@@ -3706,7 +3706,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 }
             }
             suiteNames = [...suiteNames].sort()
-            suiteSelectSuites.options.add(new Option("All", "All"));
+            suiteSelectSuites.options.add(new Option("All Suites Separate", "All Suites Separate"));
+            suiteSelectSuites.options.add(new Option("All Suites Combined", "All Suites Combined"));
             suiteNames.forEach(suiteName => {
                 suiteSelectSuites.options.add(new Option(suiteName, suiteName));
             });
@@ -5656,7 +5657,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const suiteSelectSuitesOptions = [...document.getElementById("suiteSelectSuites").options].map(o => o.value);
             const suiteFolder = document.getElementById("suiteFolder").innerText;
             const isFolderAll = suiteFolder === "All";
-            const isSuiteAll = suiteSelectSuites === "All";
+            const isSuiteAll = suiteSelectSuites === "All Suites Separate" || suiteSelectSuites === "All Suites Combined";
             const usingSuitePaths = settings.switch.suitePathsSuiteSection;
 
             const folderMatches = (val) => val.full_name === suiteFolder || val.full_name.startsWith(`${suiteFolder}.`);
@@ -5690,60 +5691,88 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function to prepare the data in the correct format for statistics graphs
         function get_statistics_graph_data(dataType, graphType, filteredData) {
+            const suiteSelectSuitesCombined = document.getElementById("suiteSelectSuites").value === "All Suites Combined";
             const keywordSelect = document.getElementById("keywordSelect").value;
-            const passed = [], failed = [], skipped = [], labels = [], aliases = [], names = [];
-            const calculate_percentage = (value, total) => Math.round((value / total) * 100);
+            const rawPassed = [], rawFailed = [], rawSkipped = [], labels = [], aliases = [];
+            let names = [];
             const process_value = (value) => {
-                const total = value.passed + value.failed + value.skipped;
-                const passedPercentage = calculate_percentage(value.passed, total);
-                const failedPercentage = calculate_percentage(value.failed, total);
-                const skippedPercentage = calculate_percentage(value.skipped, total);
-                passed.push(passedPercentage);
-                failed.push(failedPercentage);
-                skipped.push(skippedPercentage);
+                rawPassed.push(value.passed);
+                rawFailed.push(value.failed);
+                rawSkipped.push(value.skipped);
                 labels.push(value.run_start);
                 aliases.push(value.run_alias);
-                names.push(value.name)
+                names.push(value.name);
             };
             for (const value of filteredData) {
-                if (exclude_from_suite_data(dataType, value)) { continue }
+                if (exclude_from_suite_data(dataType, value)) continue;
                 if (dataType === "keyword" && value.name !== keywordSelect) continue;
-                // Process percentage-based data
-                if (graphType === "percentages") {
-                    if (dataType === "keyword") {
-                        if (value.name === keywordSelect) {
-                            process_value(value);
-                        }
-                    } else {
-                        process_value(value);
-                    }
-                } else {
-                    passed.push(value.passed);
-                    failed.push(value.failed);
-                    skipped.push(value.skipped);
-                    labels.push(value.run_start);
-                    aliases.push(value.run_alias);
-                    names.push(value.name)
-                }
+                process_value(value);
             }
             const finalLabels = graphType !== "line" ? (settings.show.aliases ? aliases : labels) : labels;
             const styling = graphType !== "line" ? barConfig : lineConfig;
-            const create_data_set = (label, data, backgroundColor, borderColor) => ({
-                label,
-                data,
-                backgroundColor,
-                borderColor,
-                ...styling,
-                stack: graphType === "percentages" || "amount" ? "Stack 0" : undefined,
-            });
-            const statisticsData = {
+            let statisticsData = {
                 labels: finalLabels,
                 datasets: [
-                    create_data_set("Failed", failed, failedBackgroundColor, failedBackgroundBorderColor),
-                    create_data_set("Skipped", skipped, skippedBackgroundColor, skippedBackgroundBorderColor),
-                    create_data_set("Passed", passed, passedBackgroundColor, passedBackgroundBorderColor),
-                ],
+                    {
+                        label: "Failed",
+                        data: rawFailed.slice(),
+                        backgroundColor: failedBackgroundColor,
+                        borderColor: failedBackgroundBorderColor,
+                        ...styling,
+                        stack: graphType === "percentages" || graphType === "amount" ? "Stack 0" : undefined,
+                    },
+                    {
+                        label: "Skipped",
+                        data: rawSkipped.slice(),
+                        backgroundColor: skippedBackgroundColor,
+                        borderColor: skippedBackgroundBorderColor,
+                        ...styling,
+                        stack: graphType === "percentages" || graphType === "amount" ? "Stack 0" : undefined,
+                    },
+                    {
+                        label: "Passed",
+                        data: rawPassed.slice(),
+                        backgroundColor: passedBackgroundColor,
+                        borderColor: passedBackgroundBorderColor,
+                        ...styling,
+                        stack: graphType === "percentages" || graphType === "amount" ? "Stack 0" : undefined,
+                    }
+                ]
             };
+            if (dataType === "suite" && suiteSelectSuitesCombined) {
+                const bundled = {};
+                const groupedLabels = [];
+                const groupedData = Array(statisticsData.datasets.length).fill().map(() => []);
+
+                statisticsData.labels.forEach((label, i) => {
+                    if (!(label in bundled)) {
+                        bundled[label] = groupedLabels.length;
+                        groupedLabels.push(label);
+                        statisticsData.datasets.forEach((_, d) => groupedData[d].push(0));
+                    }
+                    const idx = bundled[label];
+                    statisticsData.datasets.forEach((dataset, d) => {
+                        groupedData[d][idx] += dataset.data[i];
+                    });
+                });
+                statisticsData.datasets.forEach((dataset, i) => {
+                    dataset.data = groupedData[i];
+                });
+                statisticsData.labels = groupedLabels;
+                names = Array(statisticsData.labels.length).fill("All Suites Combined");
+            }
+            if (graphType === "percentages") {
+                const totalPoints = statisticsData.datasets[0].data.length;
+                for (let i = 0; i < totalPoints; i++) {
+                    const passed = statisticsData.datasets[2].data[i];
+                    const failed = statisticsData.datasets[0].data[i];
+                    const skipped = statisticsData.datasets[1].data[i];
+                    const total = passed + failed + skipped;
+                    statisticsData.datasets[2].data[i] = total ? Math.round((passed / total) * 100) : 0;
+                    statisticsData.datasets[0].data[i] = total ? Math.round((failed / total) * 100) : 0;
+                    statisticsData.datasets[1].data[i] = total ? Math.round((skipped / total) * 100) : 0;
+                }
+            }
             return [statisticsData, names];
         }
 
@@ -6157,11 +6186,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function to prepare the data in the correct format for duration graphs
         function get_duration_graph_data(dataType, graphType, objectDataAttribute, filteredData) {
-            const suiteSelectSuites = document.getElementById("suiteSelectSuites").value;
+            const suiteSelectSuitesCombined = document.getElementById("suiteSelectSuites").value === "All Suites Combined";
             const suiteSelectTests = document.getElementById("suiteSelectTests").value;
             const testSelect = document.getElementById("testSelect").value;
             const testTagsSelect = document.getElementById("testTagsSelect").value;
             const keywordSelect = document.getElementById("keywordSelect").value;
+            const limit = inFullscreen && inFullscreenGraph.includes("Duration") ? 100 : 30;
+
             const should_include = (value) => {
                 if (dataType === "keyword" && value.name !== keywordSelect) return false;
                 if (exclude_from_suite_data(dataType, value)) return false;
@@ -6174,61 +6205,106 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 if (dataType === "test" && testTagsSelect !== "All" && !value.tags.replace(/\[|\]/g, "").split(",").includes(testTagsSelect)) return false;
                 return true;
             };
-            const limit = inFullscreen && inFullscreenGraph.includes("Duration") ? 100 : 30;
-            if (graphType === "bar") {
-                const labels = [];
-                const data = new Map();
-                const aliases = [];
+
+            const collect_raw_entries = () => {
+                const entries = [];
                 for (const value of filteredData) {
                     if (!should_include(value)) continue;
-                    labels.push(value.run_start);
-                    aliases.push(value.run_alias);
-                    const roundedValue = Math.round(value[objectDataAttribute] * 100) / 100;
-                    for (const [key, arr] of data.entries()) {
-                        arr.push(key === value.name ? roundedValue : 0); // Append to each dataset
-                    }
-                    if (!data.has(value.name)) {
-                        const arr = Array(labels.length - 1).fill(0); // Fill up to current length
-                        arr.push(roundedValue);
-                        data.set(value.name, arr);
-                    }
-                    if (labels.length > limit) break;
+                    const label = settings.show.aliases ? value.run_alias : value.run_start;
+                    const duration = Math.round(value[objectDataAttribute] * 100) / 100;
+                    entries.push({ label, name: value.name, duration });
                 }
-                if (settings.show.aliases) {
-                    labels.length = 0;
-                    labels.push(...aliases);
+                return entries;
+            };
+
+            const combine_entries = (entries) => {
+                const map = new Map();
+                for (const { label, duration } of entries) {
+                    map.set(label, (map.get(label) || 0) + duration);
                 }
-                const graphData = {
-                    labels,
-                    datasets: Array.from(data.entries()).map(([label, dataset]) => ({
-                        label: label.slice(0, 40),
-                        data: dataset,
-                        stack: "Stack 0",
-                        ...barConfig,
-                    })),
-                };
-                return graphData;
-            }
-            else if (graphType === "line") {
+                return Array.from(map.entries())
+                    .sort(([a], [b]) => new Date(a) - new Date(b))
+                    .slice(-limit)
+                    .map(([label, total]) => [label, Math.round(total * 100) / 100]);
+            };
+
+            const generate_grouped_line_data = (sets) => {
+                const grouped = new Map();
+                for (const points of sets.values()) {
+                    for (const { x, y } of points) {
+                        const ts = x.getTime();
+                        grouped.set(ts, (grouped.get(ts) || 0) + y);
+                    }
+                }
+                return Array.from(grouped.entries()).map(([ts, y]) => ({
+                    x: new Date(Number(ts)),
+                    y,
+                })).sort((a, b) => a.x - b.x);
+            };
+
+            if (graphType === "bar") {
+                const rawEntries = collect_raw_entries();
+
+                if (dataType === "suite" && suiteSelectSuitesCombined) {
+                    const combined = combine_entries(rawEntries);
+                    return {
+                        labels: combined.map(([label]) => label),
+                        datasets: [{
+                            label: "All Suites Combined",
+                            data: combined.map(([, val]) => val),
+                            stack: "Stack 0",
+                            ...barConfig,
+                        }],
+                    };
+                } else {
+                    const labels = [], data = new Map();
+                    for (const entry of rawEntries.slice(0, limit)) {
+                        labels.push(entry.label);
+                        for (const [key, arr] of data.entries()) {
+                            arr.push(key === entry.name ? entry.duration : 0);
+                        }
+                        if (!data.has(entry.name)) {
+                            const arr = Array(labels.length - 1).fill(0);
+                            arr.push(entry.duration);
+                            data.set(entry.name, arr);
+                        }
+                    }
+                    return {
+                        labels,
+                        datasets: Array.from(data.entries()).map(([label, dataset]) => ({
+                            label: label.slice(0, 40),
+                            data: dataset,
+                            stack: "Stack 0",
+                            ...barConfig,
+                        })),
+                    };
+                }
+            } else if (graphType === "line") {
                 const sets = new Map();
                 for (const value of filteredData) {
                     if (!should_include(value)) continue;
-                    const name = value.name;
+                    const name = suiteSelectSuitesCombined && dataType === "suite" ? "All Suites Combined" : value.name;
                     const run_start = new Date(value.run_start);
-                    const roundedValue = Math.round(value[objectDataAttribute] * 100) / 100;
-                    if (!sets.has(name)) {
-                        sets.set(name, [{ x: run_start, y: roundedValue }]);
-                    } else {
-                        sets.get(name).push({ x: run_start, y: roundedValue });
-                    }
+                    const val = Math.round(value[objectDataAttribute] * 100) / 100;
+                    if (!sets.has(name)) sets.set(name, [{ x: run_start, y: val }]);
+                    else sets.get(name).push({ x: run_start, y: val });
                 }
-                const datasets = Array.from(sets.entries()).map(([key, values]) => ({
-                    label: key.slice(0, 40),
+
+                if (dataType === "suite" && suiteSelectSuitesCombined) {
+                    return [{
+                        label: "All Suites Combined",
+                        fill: false,
+                        data: generate_grouped_line_data(sets),
+                        ...lineConfig,
+                    }];
+                }
+
+                return Array.from(sets.entries()).map(([label, data]) => ({
+                    label: label.slice(0, 40),
                     fill: false,
-                    data: values,
+                    data,
                     ...lineConfig,
                 }));
-                return datasets;
             }
         }
 
