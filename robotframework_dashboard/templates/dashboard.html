@@ -954,7 +954,7 @@
                                             id="toggleAnimations" />
                                     </div>
                                 </div>
-                                <div class="row mb-3">
+                                <div class="row">
                                     <div class="col-8 btn-group ms-1">
                                         <label class="form-check-label mt-1" for="toggleAnimationDuration">Animation
                                             Duration (Milliseconds)</label>
@@ -962,6 +962,21 @@
                                     <div class="col-2 ps-0 mt-1">
                                         <input class="form-control form-control-sm" type="number"
                                             id="toggleAnimationDuration" />
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-8 btn-group ms-1">
+                                        <label class="form-check-label mt-1" for="toggleBarRounding">Bar Graph Edge
+                                            Rounding (Pixels)</label>
+                                    </div>
+                                    <div class="col-2 ps-0 mt-1">
+                                        <select class="form-select form-select-sm" id="toggleBarRounding">
+                                            <option value="0">0</option>
+                                            <option value="2">2</option>
+                                            <option value="4">4</option>
+                                            <option value="6">6</option>
+                                            <option value="8">8</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -1094,13 +1109,18 @@
         // base bar config
         const barConfig = {
             borderSkipped: false,
-            borderRadius: {
-                topLeft: 8,
-                topRight: 8,
-                bottomLeft: 8,
-                bottomRight: 8,
-            },
-        }
+            borderRadius: (context) => {
+                const { chart, parsed, index, dataset } = context;
+                const barHeight = chart.scales.y.getPixelForValue(0) - chart.scales.y.getPixelForValue(parsed.y);
+                const radius = Math.min(settings.show.rounding, Math.abs(barHeight / 2));
+                return {
+                    topLeft: radius,
+                    topRight: radius,
+                    bottomLeft: radius,
+                    bottomRight: radius
+                };
+            }
+        };
         const passedConfig = {
             backgroundColor: passedBackgroundColor,
             borderColor: passedBackgroundBorderColor,
@@ -2320,6 +2340,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 axisTitles: true,
                 animation: true,
                 duration: 1500,
+                rounding: 6,
             },
             menu: {
                 overview: false,
@@ -3212,6 +3233,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 isNumber: true
             });
 
+            const toggle_bar_rounding = create_toggle_handler({
+                key: "show.rounding",
+                elementId: "toggleBarRounding",
+                isNumber: true
+            });
+
             // Initial load
             toggle_labels(true);
             toggle_legends(true);
@@ -3220,6 +3247,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             toggle_axis_titles(true);
             toggle_animations(true);
             toggle_animation_duration(true);
+            toggle_bar_rounding(true);
 
             // Add event listeners
             document.getElementById("toggleLabels").addEventListener("click", () => toggle_labels());
@@ -3229,6 +3257,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             document.getElementById("toggleAxisTitles").addEventListener("click", () => toggle_axis_titles());
             document.getElementById("toggleAnimations").addEventListener("click", () => toggle_animations());
             document.getElementById("toggleAnimationDuration").addEventListener("change", () => toggle_animation_duration());
+            document.getElementById("toggleBarRounding").addEventListener("change", () => toggle_bar_rounding());
             document.getElementById("themeLight").addEventListener("click", () => toggle_theme());
             document.getElementById("themeDark").addEventListener("click", () => toggle_theme());
 
