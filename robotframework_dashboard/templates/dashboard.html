@@ -964,7 +964,7 @@
                                             id="toggleAnimationDuration" />
                                     </div>
                                 </div>
-                                <div class="row mb-3">
+                                <div class="row">
                                     <div class="col-8 btn-group ms-1">
                                         <label class="form-check-label mt-1" for="toggleBarRounding">Bar Graph Edge
                                             Rounding (Pixels)</label>
@@ -977,6 +977,16 @@
                                             <option value="6">6</option>
                                             <option value="8">8</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-8 btn-group ms-1">
+                                        <label class="form-check-label mt-1" for="toggleTimezone">Use Local
+                                            Timezone For Run_Starts</label>
+                                    </div>
+                                    <div class="col btn-group form-switch ms-2">
+                                        <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                            id="toggleTimezone" />
                                     </div>
                                 </div>
                             </div>
@@ -1111,14 +1121,16 @@
             borderSkipped: false,
             borderRadius: (context) => {
                 const { chart, parsed, index, dataset } = context;
-                const barHeight = chart.scales.y.getPixelForValue(0) - chart.scales.y.getPixelForValue(parsed.y);
-                const radius = Math.min(settings.show.rounding, Math.abs(barHeight / 2));
-                return {
-                    topLeft: radius,
-                    topRight: radius,
-                    bottomLeft: radius,
-                    bottomRight: radius
-                };
+                try {
+                    const barHeight = chart.scales.y.getPixelForValue(0) - chart.scales.y.getPixelForValue(parsed.y);
+                    const radius = Math.min(settings.show.rounding, Math.abs(barHeight / 2));
+                    return {
+                        topLeft: radius,
+                        topRight: radius,
+                        bottomLeft: radius,
+                        bottomRight: radius
+                    };
+                } catch (error) { } // if there is no data prevent crashes based on non existent y scale
             }
         };
         const passedConfig = {
@@ -2341,6 +2353,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 animation: true,
                 duration: 1500,
                 rounding: 6,
+                timezone: false,
             },
             menu: {
                 overview: false,
@@ -3167,6 +3180,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             // function to catch the closing of the settings modal
             $("#settingsModal").on("hidden.bs.modal", function () {
                 setup_data_and_graphs();
+                setup_lowest_highest_dates(); // update the lowset/highest because the timezone setting might have changed
             });
             // function to create setting toggle handlers
             function create_toggle_handler({ key, elementId, isNumber = false }) {
@@ -3196,48 +3210,44 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     }
                 };
             }
-
             const toggle_labels = create_toggle_handler({
                 key: "show.dateLabels",
                 elementId: "toggleLabels"
             });
-
             const toggle_legends = create_toggle_handler({
                 key: "show.legends",
                 elementId: "toggleLegends"
             });
-
             const toggle_aliases = create_toggle_handler({
                 key: "show.aliases",
                 elementId: "toggleAliases"
             });
-
             const toggle_milliseconds = create_toggle_handler({
                 key: "show.milliseconds",
                 elementId: "toggleMilliseconds"
             });
-
             const toggle_axis_titles = create_toggle_handler({
                 key: "show.axisTitles",
                 elementId: "toggleAxisTitles"
             });
-
             const toggle_animations = create_toggle_handler({
                 key: "show.animation",
                 elementId: "toggleAnimations"
             });
-
             const toggle_animation_duration = create_toggle_handler({
                 key: "show.duration",
                 elementId: "toggleAnimationDuration",
                 isNumber: true
             });
-
             const toggle_bar_rounding = create_toggle_handler({
                 key: "show.rounding",
                 elementId: "toggleBarRounding",
                 isNumber: true
             });
+            const toggle_timezone = create_toggle_handler({
+                key: "show.timezone",
+                elementId: "toggleTimezone"
+            })
 
             // Initial load
             toggle_labels(true);
@@ -3248,6 +3258,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             toggle_animations(true);
             toggle_animation_duration(true);
             toggle_bar_rounding(true);
+            toggle_timezone(true);
 
             // Add event listeners
             document.getElementById("toggleLabels").addEventListener("click", () => toggle_labels());
@@ -3257,6 +3268,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             document.getElementById("toggleAxisTitles").addEventListener("click", () => toggle_axis_titles());
             document.getElementById("toggleAnimations").addEventListener("click", () => toggle_animations());
             document.getElementById("toggleAnimationDuration").addEventListener("change", () => toggle_animation_duration());
+            document.getElementById("toggleTimezone").addEventListener("change", () => toggle_timezone());
             document.getElementById("toggleBarRounding").addEventListener("change", () => toggle_bar_rounding());
             document.getElementById("themeLight").addEventListener("click", () => toggle_theme());
             document.getElementById("themeDark").addEventListener("click", () => toggle_theme());
@@ -3608,28 +3620,56 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function that initializes the from date/time and to date/time selection boxes in the filters
         function setup_lowest_highest_dates() {
-            var dates = [];
-            for (run of runs) {
-                dates.push(new Date(run.run_start));
-            }
-            if (dates.length == 0) {
+            const dates = runs
+                .map(run => {
+                    const originalDate = new Date(run.run_start);
+                    if (settings.show.timezone) {
+                        // Adjust to local timezone manually
+                        // Get original offset from run_start
+                        const match = run.run_start.match(/([+-])(\d{2}):(\d{2})$/);
+                        if (match) {
+                            const [, sign, h, m] = match;
+                            const originalOffset = (parseInt(h) * 60 + parseInt(m)) * (sign === '+' ? -1 : 1);
+                            const localOffset = new Date().getTimezoneOffset(); // Also in minutes, inverted
+
+                            const offsetDiff = (localOffset - originalOffset) * 60 * 1000; // in ms
+                            return new Date(originalDate.getTime() + offsetDiff);
+                        }
+                    }
+                    return originalDate;
+                })
+                .filter(date => !isNaN(date)); // remove invalid dates
+
+            if (dates.length === 0) {
                 document.getElementById("fromDate").value = "1900-01-01";
                 document.getElementById("fromTime").value = "00:00";
                 document.getElementById("toDate").value = "9999-12-31";
                 document.getElementById("toTime").value = "23:59";
-                return
+                return;
             }
-            var lowest = new Date(Math.min.apply(null, dates));
-            var highest = new Date(Math.max.apply(null, dates));
-            var tzoffset = new Date().getTimezoneOffset() * 60000;
-            lowest = new Date(new Date(lowest - tzoffset).getTime() + -1 * 60000); // this is to account for seconds in the initial filter value
-            highest = new Date(new Date(highest - tzoffset).getTime() + 1 * 60000); // this is to account for seconds in the initial filter value
-            lowest.setTime(lowest.getTime() - 1 * 60 * 60 * 1000) // minus 1 hour to account for possible daylight saving time switches of 1 hour!
-            highest.setTime(highest.getTime() + 1 * 60 * 60 * 1000) // plus 1 hour to account for possible daylight saving time switches of 1 hour!
-            document.getElementById("fromDate").value = lowest.toISOString().split("T")[0];
-            document.getElementById("fromTime").value = lowest.toISOString().split("T")[1].substring(0, 5);
-            document.getElementById("toDate").value = highest.toISOString().split("T")[0];
-            document.getElementById("toTime").value = highest.toISOString().split("T")[1].substring(0, 5);
+
+            let lowest = new Date(Math.min(...dates));
+            let highest = new Date(Math.max(...dates));
+
+            // Optional padding for filters
+            lowest = new Date(lowest.getTime() - 61 * 1000 - 60 * 60 * 1000); // 1 min + 1 hour
+            highest = new Date(highest.getTime() + 61 * 1000 + 60 * 60 * 1000);
+
+            const toLocalDateInput = (dt) => {
+                const pad = (n) => String(n).padStart(2, '0');
+                return {
+                    date: `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`,
+                    time: `${pad(dt.getHours())}:${pad(dt.getMinutes())}`
+                };
+            };
+
+            const from = toLocalDateInput(lowest);
+            const to = toLocalDateInput(highest);
+
+            document.getElementById("fromDate").value = from.date;
+            document.getElementById("fromTime").value = from.time;
+            document.getElementById("toDate").value = to.date;
+            document.getElementById("toTime").value = to.time;
         }
 
         // function to setup metadata filter if there is metadata in the data
@@ -3817,13 +3857,79 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         ///////////////////////////
 
         // function to remove milliseconds if needed
-        function remove_milliseconds(data) {
-            if (settings.show.milliseconds) { return data; }
+        function setup_timezone_and_milliseconds(data) {
+            if (!settings.show.timezone && settings.show.milliseconds) {
+                return data.map(obj => {
+                    return {
+                        ...obj,
+                        run_start: obj.run_start.slice(0, 26),
+                    }
+                });
+            }
 
-            return data.map(obj => ({
-                ...obj,
-                run_start: obj.run_start.slice(0, 19)
-            }));
+            const localOffsetMinutes = -new Date().getTimezoneOffset(); // e.g., UTC+2 => +120
+
+            return data.map(obj => {
+                const original = obj.run_start;
+
+                // === CASE 1: DO NOT adjust timezone ===
+                if (!settings.show.timezone) {
+                    let value = original;
+
+                    if (!settings.show.milliseconds) {
+                        value = value.replace(/^(.{19}).*$/, '$1'); // Cut after seconds
+                    } else {
+                        value = value.slice(0, 26); // Keep microseconds
+                    }
+
+                    return {
+                        ...obj,
+                        run_start: value
+                    };
+                }
+
+                // === CASE 2: Adjust to local timezone ===
+                const match = original.match(/^(.{19})(\.\d{1,6})?([+-]\d{2}:\d{2})$/);
+
+                if (!match) {
+                    console.warn("Unrecognized datetime format:", original);
+                    return obj; // Leave unchanged
+                }
+
+                const [, baseDate, microsec = "", offset] = match;
+
+                // Convert to UTC using offset
+                const date = new Date(`${baseDate}${offset}`);
+                const originalOffsetMatch = offset.match(/([+-])(\d{2}):(\d{2})/);
+                let adjustedDate = date;
+
+                if (originalOffsetMatch) {
+                    const [, sign, h, m] = originalOffsetMatch;
+                    const originalOffset = (parseInt(h) * 60 + parseInt(m)) * (sign === '+' ? 1 : -1);
+                    const offsetDiffMinutes = localOffsetMinutes - originalOffset;
+                    adjustedDate = new Date(date.getTime() + offsetDiffMinutes * 60 * 1000);
+                }
+
+                // Format adjusted date manually (yyyy-MM-dd HH:mm:ss)
+                const pad = (n, len = 2) => String(n).padStart(len, '0');
+                const formatted =
+                    `${adjustedDate.getFullYear()}-${pad(adjustedDate.getMonth() + 1)}-${pad(adjustedDate.getDate())} ` +
+                    `${pad(adjustedDate.getHours())}:${pad(adjustedDate.getMinutes())}:${pad(adjustedDate.getSeconds())}`;
+
+                // Combine with sliced microseconds
+                let final = formatted;
+                if (settings.show.milliseconds) {
+                    const milli = String(adjustedDate.getMilliseconds()).padStart(3, '0');
+                    const fullMicro = (microsec + "000000").slice(0, 6); // Ensure 6 digits
+                    final += `${fullMicro}`;
+                }
+                console.log(final)
+
+                return {
+                    ...obj,
+                    run_start: final
+                };
+            });
         }
 
         // function to filter run data based on the runs (aka run name) filter
@@ -4506,16 +4612,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             suiteMostFailedGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(suiteMostFailedGraph, event)
             });
-
-            // const vertical = document.getElementById("suiteMostFailedVertical");
-            // const observer = new ResizeObserver(entries => {
-            //     for (let entry of entries) {
-            //         update_height("suiteMostFailedVertical", config.data.labels.length, settings.graphTypes.suiteMostFailedGraphType);
-            //         suiteMostFailedGraph.resize();
-            //     }
-            // });
-
-            // observer.observe(vertical.closest(".grid-stack-item"));
         }
 
         // function to create suite table in the suite section
@@ -7015,10 +7111,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function updates the data in the graphs whenever filters are updated
         function setup_filtered_data_and_filters() {
-            filteredRuns = remove_milliseconds(runs)
-            filteredSuites = remove_milliseconds(suites)
-            filteredTests = remove_milliseconds(tests)
-            filteredKeywords = remove_milliseconds(keywords)
+            filteredRuns = setup_timezone_and_milliseconds(runs)
+            filteredSuites = setup_timezone_and_milliseconds(suites)
+            filteredTests = setup_timezone_and_milliseconds(tests)
+            filteredKeywords = setup_timezone_and_milliseconds(keywords)
             // filter run data
             filteredRuns = filter_runs(filteredRuns);
             filteredRuns = filter_runtags(filteredRuns);

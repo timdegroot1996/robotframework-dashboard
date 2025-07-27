@@ -1,15 +1,15 @@
 from robot.api import ExecutionResult, ResultVisitor
 from robot.result.model import TestCase, TestSuite, Keyword
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
-from re import sub
 
 
 class OutputProcessor:
     """This class creates an output processor that collects all the relevant data for the database"""
 
-    def __init__(self, output_path: Path):
+    def __init__(self, output_path: Path, output_timezone: timezone):
         self.output_path = output_path
+        self.output_timezone = output_timezone
         self.execution_result = ExecutionResult(output_path)
 
     def get_run_start(self):
@@ -32,7 +32,7 @@ class OutputProcessor:
                                 generation_time, "%Y%m%d %H:%M:%S.%f"
                             )
                         break
-        self.generation_time = generation_time
+        self.generation_time = generation_time.astimezone(self.output_timezone)
         return self.generation_time
 
     def get_output_data(self):

@@ -1,5 +1,5 @@
 import argparse
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from sys import exit
 from re import split
 from os import getcwd
@@ -126,6 +126,15 @@ class ArgumentParser:
             default=False,
         )
         parser.add_argument(
+            "-z",
+            "--timezone",
+            type=str,
+            help="`string` Specifies the timezone offset to adjust timestamps in the report. Accepts values in the format `+HH:MM` or `-HH:MM`, where `HH:MM` is the offset from UTC. \
+                This is useful when reports are generated in a different timezone than they are viewed. In the dashboard you can then anable that the time context matches the user's local timezone. \
+                For example, `-z +05:00` will shift all timestamps forward by 5 hours, and `-z \\-3` will shift them back by 3 hours. NOTE: Be aware that negative timezones need to be escaped in some terminals!",
+            default=None,
+        )
+        parser.add_argument(
             "-g",
             "--generatedashboard",
             help="`boolean` Specifies if you want to generate the HTML \
@@ -156,6 +165,16 @@ class ArgumentParser:
             default=None,
         )
         return parser.parse_args()
+    
+    def _parse_timezone_offset(self, offset_str: str) -> timezone:
+        """ Validate and parses strings like "+01:30" or "-05:00 """
+        sign = 1 if offset_str.startswith("+") else -1
+        try:
+            hours, minutes = map(int, offset_str[1:].split(":"))
+            delta = timedelta(hours=hours, minutes=minutes)
+            return timezone(sign * delta)
+        except Exception:
+            raise ValueError(f"Invalid timezone format: {offset_str}")
 
     def _process_arguments(self, arguments):
         """handles the version execution"""
@@ -223,6 +242,14 @@ class ArgumentParser:
         # generates the datetime used in the file dashboard name and the html title
         generation_datetime = datetime.now()
 
+        # checks for a provided timezone, if none provided use local timezone
+        time_zone = arguments.timezone
+        if not time_zone:
+            timezone_datetime = generation_datetime.astimezone()
+            time_zone = self._parse_timezone_offset(str(timezone_datetime)[-6:])
+        else:
+            time_zone = self._parse_timezone_offset(time_zone)
+
         # handles the custom test message handling
         message_config = []
         if arguments.messageconfig:
@@ -283,6 +310,7 @@ class ArgumentParser:
             "generate_dashboard": generate_dashboard,
             "dashboard_name": dashboard_name,
             "generation_datetime": generation_datetime,
+            "timezone": time_zone,
             "list_runs": list_runs,
             "remove_runs": remove_runs,
             "dashboard_title": arguments.dashboardtitle,

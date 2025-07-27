@@ -6,6 +6,7 @@ from os import walk, getcwd
 from time import time
 from pathlib import Path
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 
 class RobotDashboard:
@@ -74,7 +75,12 @@ class RobotDashboard:
             )
         return console
 
-    def process_outputs(self, output_file_info_list=None, output_folder_config=None):
+    def process_outputs(
+        self,
+        output_timezone,
+        output_file_info_list=None,
+        output_folder_config=None,
+    ):
         """Function that processes output XML files and inserts the data into the database.
 
         Parameters:
@@ -97,7 +103,9 @@ class RobotDashboard:
                     run_alias = (
                         basename(full_path).replace("output_", "").replace(".xml", "")
                     )
-                    console += self._process_single_output(full_path, tags, run_alias)
+                    console += self._process_single_output(
+                        full_path, tags, output_timezone, run_alias
+                    )
                 except Exception as e:
                     console += self._print_console(
                         f"  ERROR: Could not process output XML '{file_path}', error: {e}"
@@ -119,7 +127,7 @@ class RobotDashboard:
                                     ".xml", ""
                                 )
                                 console += self._process_single_output(
-                                    full_path, tags, run_alias
+                                    full_path, tags, output_timezone, run_alias
                                 )
                             except Exception as e:
                                 console += self._print_console(
@@ -130,13 +138,13 @@ class RobotDashboard:
         self.database.close_database()
         return console
 
-    def _process_single_output(self, output_path, tags, run_alias=None):
+    def _process_single_output(self, output_path, tags, output_timezone, run_alias):
         """Function that processes a single XML output file and inserts it into the database."""
         output_basename = basename(output_path)
         start = time()
         console = self._print_console(f"  Processing output XML '{output_basename}'")
 
-        outputProcessor = OutputProcessor(output_path)
+        outputProcessor = OutputProcessor(output_path, output_timezone)
         run_start = outputProcessor.get_run_start()
         if not self.database.run_start_exists(run_start):
             output_data = outputProcessor.get_output_data()
