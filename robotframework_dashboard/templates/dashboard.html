@@ -1105,70 +1105,6 @@
         const moveUpDarkSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up-icon lucide-chevron-up"><path d="m18 15-6-6-6 6"/></svg>`
         const moveUpLightSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up-icon lucide-chevron-up"><path d="m18 15-6-6-6 6"/></svg>`
 
-        // colors
-        const passedBackgroundBorderColor = "#97bd61";
-        const passedBackgroundColor = "rgba(151, 189, 97, 0.7)";
-        const skippedBackgroundBorderColor = "#fed84f";
-        const skippedBackgroundColor = "rgba(254, 216, 79, 0.7)";
-        const failedBackgroundBorderColor = "#ce3e01";
-        const failedBackgroundColor = "rgba(206, 62, 1, 0.7)";
-        const greyBackgroundBorderColor = "#0f172a";
-        const greyBackgroundColor = "rgba(33, 37, 41, 0.7)";
-        const graphFontSize = 12;
-
-        // base bar config
-        const barConfig = {
-            borderSkipped: false,
-            borderRadius: (context) => {
-                const { chart, parsed, index, dataset } = context;
-                try {
-                    const barHeight = chart.scales.y.getPixelForValue(0) - chart.scales.y.getPixelForValue(parsed.y);
-                    const radius = Math.min(settings.show.rounding, Math.abs(barHeight / 2));
-                    return {
-                        topLeft: radius,
-                        topRight: radius,
-                        bottomLeft: radius,
-                        bottomRight: radius
-                    };
-                } catch (error) { } // if there is no data prevent crashes based on non existent y scale
-            }
-        };
-        const passedConfig = {
-            backgroundColor: passedBackgroundColor,
-            borderColor: passedBackgroundBorderColor,
-            ...barConfig,
-        }
-        const failedConfig = {
-            backgroundColor: failedBackgroundColor,
-            borderColor: failedBackgroundBorderColor,
-            ...barConfig,
-        }
-        const skippedConfig = {
-            backgroundColor: skippedBackgroundColor,
-            borderColor: skippedBackgroundBorderColor,
-            ...barConfig,
-        }
-        // base line config
-        const lineConfig = {
-            tension: 0.1,
-            pointRadius: 4,
-            pointHoverRadius: 6
-        }
-        // data label background rectangle config
-        const dataLabelConfig = {
-            color: "#eee",
-            backgroundColor: function (context) {
-                return "rgba(0, 0, 0, 0.6)";
-            },
-            borderRadius: 4,
-            padding: 3,
-            align: "center",
-            anchor: "center",
-            font: {
-                size: graphFontSize,
-            },
-        }
-
         // prepare input data
         const runs = decode_and_decompress("placeholder_runs").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         const suites = decode_and_decompress("placeholder_suites").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
@@ -1190,6 +1126,12 @@
         const server = "placeholder_server"
         if (!message_config.includes("placeholder_message_config")) { message_config = JSON.parse(message_config) }
 
+        // converted data vars
+        var convertedRuns;
+        var convertedSuites;
+        var convertedTests;
+        var convertedKeywords;
+
         // filtered data vars
         var filteredRuns;
         var filteredSuites;
@@ -1210,6 +1152,7 @@
         var selectedTagSetting = '';
 
         // some global vars for various functionalities
+        var initialized = false; // used to see if the date filters have to be set again
         var showingRunTags = false; // used to keep track if the runtags popup is showing and determine if it should be closed when clicked outside
         var inFullscreen = false; // used to keep track if fullscreen view is being shown
         var inFullscreenGraph = ""; // used to keep track of the graph being shown in fullscreen
@@ -2406,6 +2349,63 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
         };
 
+        // colors
+        const passedBackgroundBorderColor = "#97bd61";
+        const passedBackgroundColor = "rgba(151, 189, 97, 0.7)";
+        const skippedBackgroundBorderColor = "#fed84f";
+        const skippedBackgroundColor = "rgba(254, 216, 79, 0.7)";
+        const failedBackgroundBorderColor = "#ce3e01";
+        const failedBackgroundColor = "rgba(206, 62, 1, 0.7)";
+        const greyBackgroundBorderColor = "#0f172a";
+        const greyBackgroundColor = "rgba(33, 37, 41, 0.7)";
+        const graphFontSize = 12;
+
+        // base bar config
+        const barConfig = {
+            borderSkipped: false,
+            borderRadius: {
+                topLeft: settings.show.rounding,
+                topRight: settings.show.rounding,
+                bottomLeft: settings.show.rounding,
+                bottomRight: settings.show.rounding
+            }
+        };
+        const passedConfig = {
+            backgroundColor: passedBackgroundColor,
+            borderColor: passedBackgroundBorderColor,
+            ...barConfig,
+        }
+        const failedConfig = {
+            backgroundColor: failedBackgroundColor,
+            borderColor: failedBackgroundBorderColor,
+            ...barConfig,
+        }
+        const skippedConfig = {
+            backgroundColor: skippedBackgroundColor,
+            borderColor: skippedBackgroundBorderColor,
+            ...barConfig,
+        }
+        // base line config
+        const lineConfig = {
+            tension: 0.1,
+            pointRadius: 4,
+            pointHoverRadius: 6
+        }
+        // data label background rectangle config
+        const dataLabelConfig = {
+            color: "#eee",
+            backgroundColor: function (context) {
+                return "rgba(0, 0, 0, 0.6)";
+            },
+            borderRadius: 4,
+            padding: 3,
+            align: "center",
+            anchor: "center",
+            font: {
+                size: graphFontSize,
+            },
+        }
+
         /////////////////////////////
         // GENERIC SETUP FUNCTIONS //
         /////////////////////////////
@@ -3139,7 +3139,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 }
                 document.getElementById("amount").value = filteredAmountDefault;
                 document.getElementById("metadata").value = "All";
-                setup_lowest_highest_dates(runs);
+                setup_lowest_highest_dates();
                 add_alert("Filters have been set to default values!", "success")
             });
             // eventlistener for all runs button
@@ -3169,7 +3169,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
             // fill the filters with default values
             setup_run_amount_filter();
-            setup_lowest_highest_dates();
             setup_metadata_filter();
             setup_runs_in_select_filter_buttons();
             setup_runtags_in_select_filter_buttons();
@@ -3179,8 +3178,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function setup_settings_modal() {
             // function to catch the closing of the settings modal
             $("#settingsModal").on("hidden.bs.modal", function () {
+                initialized = false; // update the lowset/highest because the timezone setting might have changed
                 setup_data_and_graphs();
-                setup_lowest_highest_dates(); // update the lowset/highest because the timezone setting might have changed
             });
             // function to create setting toggle handlers
             function create_toggle_handler({ key, elementId, isNumber = false }) {
@@ -3620,7 +3619,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function that initializes the from date/time and to date/time selection boxes in the filters
         function setup_lowest_highest_dates() {
-            const dates = runs
+            const dates = convertedRuns
                 .map(run => {
                     const originalDate = new Date(run.run_start);
                     if (settings.show.timezone) {
@@ -3858,77 +3857,58 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function to remove milliseconds if needed
         function setup_timezone_and_milliseconds(data) {
-            if (!settings.show.timezone && settings.show.milliseconds) {
-                return data.map(obj => {
-                    return {
-                        ...obj,
-                        run_start: obj.run_start.slice(0, 26),
-                    }
-                });
-            }
-
             const localOffsetMinutes = -new Date().getTimezoneOffset(); // e.g., UTC+2 => +120
+            const pad = (n, len = 2) => String(n).padStart(len, '0');
+            const formatLocalTime = (dateObj, microsec = "") => {
+                const base =
+                    `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())} ` +
+                    `${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:${pad(dateObj.getSeconds())}`;
+                if (settings.show.milliseconds) {
+                    const fullMicro = (microsec + "000000").slice(0, 6); // Ensure 6 digits
+                    return base + fullMicro;
+                }
+                return base;
+            };
 
             return data.map(obj => {
                 const original = obj.run_start;
-
-                // === CASE 1: DO NOT adjust timezone ===
-                if (!settings.show.timezone) {
-                    let value = original;
-
-                    if (!settings.show.milliseconds) {
-                        value = value.replace(/^(.{19}).*$/, '$1'); // Cut after seconds
-                    } else {
-                        value = value.slice(0, 26); // Keep microseconds
-                    }
-
-                    return {
-                        ...obj,
-                        run_start: value
-                    };
+                // === CASE 1: Don't show timezone, don't show milliseconds ===
+                if (!settings.show.timezone && !settings.show.milliseconds) {
+                    const trimmed = original.replace(/^(.{19}).*$/, '$1'); // Keep up to seconds
+                    return { ...obj, run_start: trimmed };
                 }
-
-                // === CASE 2: Adjust to local timezone ===
+                // === CASE 2: Don't show timezone, but show milliseconds ===
+                if (!settings.show.timezone && settings.show.milliseconds) {
+                    const trimmed = original.slice(0, 26); // Keep microseconds
+                    return { ...obj, run_start: trimmed };
+                }
+                // From here on, timezone *is* shown (converted to local time)
                 const match = original.match(/^(.{19})(\.\d{1,6})?([+-]\d{2}:\d{2})$/);
-
                 if (!match) {
                     console.warn("Unrecognized datetime format:", original);
                     return obj; // Leave unchanged
                 }
-
                 const [, baseDate, microsec = "", offset] = match;
-
-                // Convert to UTC using offset
                 const date = new Date(`${baseDate}${offset}`);
-                const originalOffsetMatch = offset.match(/([+-])(\d{2}):(\d{2})/);
+                const offsetMatch = offset.match(/([+-])(\d{2}):(\d{2})/);
                 let adjustedDate = date;
-
-                if (originalOffsetMatch) {
-                    const [, sign, h, m] = originalOffsetMatch;
+                if (offsetMatch) {
+                    const [, sign, h, m] = offsetMatch;
                     const originalOffset = (parseInt(h) * 60 + parseInt(m)) * (sign === '+' ? 1 : -1);
                     const offsetDiffMinutes = localOffsetMinutes - originalOffset;
                     adjustedDate = new Date(date.getTime() + offsetDiffMinutes * 60 * 1000);
                 }
 
-                // Format adjusted date manually (yyyy-MM-dd HH:mm:ss)
-                const pad = (n, len = 2) => String(n).padStart(len, '0');
-                const formatted =
-                    `${adjustedDate.getFullYear()}-${pad(adjustedDate.getMonth() + 1)}-${pad(adjustedDate.getDate())} ` +
-                    `${pad(adjustedDate.getHours())}:${pad(adjustedDate.getMinutes())}:${pad(adjustedDate.getSeconds())}`;
-
-                // Combine with sliced microseconds
-                let final = formatted;
-                if (settings.show.milliseconds) {
-                    const milli = String(adjustedDate.getMilliseconds()).padStart(3, '0');
-                    const fullMicro = (microsec + "000000").slice(0, 6); // Ensure 6 digits
-                    final += `${fullMicro}`;
+                // === CASE 3: Show timezone, don't show milliseconds ===
+                if (settings.show.timezone && !settings.show.milliseconds) {
+                    const base =
+                        `${adjustedDate.getFullYear()}-${pad(adjustedDate.getMonth() + 1)}-${pad(adjustedDate.getDate())} ` +
+                        `${pad(adjustedDate.getHours())}:${pad(adjustedDate.getMinutes())}:${pad(adjustedDate.getSeconds())}`;
+                    return { ...obj, run_start: base };
                 }
-                console.log(final)
-
-                return {
-                    ...obj,
-                    run_start: final
-                };
+                // === CASE 4: Show timezone, show milliseconds ===
+                const finalFormatted = formatLocalTime(adjustedDate, microsec);
+                return { ...obj, run_start: finalFormatted };
             });
         }
 
@@ -7109,12 +7089,25 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
-        // function updates the data in the graphs whenever filters are updated
+        function setup_initial_state() {
+            // Only run to set the filters correctly
+            // This function might also run when settings are changed!
+            if (initialized) return;
+            convertedRuns = setup_timezone_and_milliseconds(runs);
+            convertedSuites = setup_timezone_and_milliseconds(suites);
+            convertedTests = setup_timezone_and_milliseconds(tests);
+            convertedKeywords = setup_timezone_and_milliseconds(keywords);
+            setup_lowest_highest_dates(convertedRuns);
+            initialized = true;
+        }
+
         function setup_filtered_data_and_filters() {
-            filteredRuns = setup_timezone_and_milliseconds(runs)
-            filteredSuites = setup_timezone_and_milliseconds(suites)
-            filteredTests = setup_timezone_and_milliseconds(tests)
-            filteredKeywords = setup_timezone_and_milliseconds(keywords)
+            setup_initial_state();
+            // Always restart from the full timezone-adjusted dataset
+            filteredRuns = [...convertedRuns];
+            filteredSuites = [...convertedSuites];
+            filteredTests = [...convertedTests];
+            filteredKeywords = [...convertedKeywords];
             // filter run data
             filteredRuns = filter_runs(filteredRuns);
             filteredRuns = filter_runtags(filteredRuns);
@@ -7122,12 +7115,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             filteredRuns = filter_amount(filteredRuns);
             filteredRuns = filter_metadata(filteredRuns);
             // filter suites and tests based on filtered runs
-            filteredSuites = filter_data(filteredSuites);
-            filteredTests = filter_data(filteredTests);
-            filteredKeywords = filter_data(filteredKeywords);
+            filteredSuites = filter_data(filteredSuites, filteredRuns);
+            filteredTests = filter_data(filteredTests, filteredRuns);
+            filteredKeywords = filter_data(filteredKeywords, filteredRuns);
             // set titles with amount of filtered items
-            const runAmount = Object.keys(filteredRuns).length
-            const message = `<h6>showing ${runAmount} of ${filteredAmount} runs</h6>`
+            const runAmount = Object.keys(filteredRuns).length;
+            const message = `<h6>showing ${runAmount} of ${convertedRuns.length} runs</h6>`;
             document.getElementById("runTitle").innerHTML = `Run Statistics (${runAmount}) ${message}`;
             document.getElementById("suiteTitle").innerHTML = `Suite Statistics (${Object.keys(filteredSuites).length}) ${message}`;
             document.getElementById("testTitle").innerHTML = `Test Statistics (${Object.keys(filteredTests).length}) ${message}`;
