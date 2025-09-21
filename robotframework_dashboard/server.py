@@ -1,12 +1,14 @@
 from .robotdashboard import RobotDashboard
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from typing import Annotated
 from pydantic import BaseModel
 from uvicorn import run
 from os.path import join, abspath, dirname, exists
 from os import remove, mkdir, listdir
 from .version import __version__
+import secrets
 
 response_message_model_config = {
     "json_schema_extra": {
@@ -221,14 +223,27 @@ class ApiServer:
     def __init__(self, server_host: str, server_port: int):
         """Init function that starts up the fastapi app and initializes all the vars and endpoints"""
         self.app = FastAPI()
+        self.security = HTTPBasic()
         self.robotdashboard: RobotDashboard
         self.server_host = server_host
         self.server_port = server_port
         self.admin_json_config = "{}"
         self.log_dir = "robot_logs"
 
+        def authenticate(credentials: HTTPBasicCredentials = Depends(self.security)):
+            correct_username = secrets.compare_digest(credentials.username, "admin")
+            correct_password = secrets.compare_digest(credentials.password, "secret")
+
+            if not (correct_username and correct_password):
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Invalid authentication credentials",
+                    headers={"WWW-Authenticate": "Basic"},
+                )
+            return credentials.username
+
         @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
-        async def admin_page():
+        async def admin_page(username: str = Depends(authenticate)):
             """Admin page endpoint function"""
             admin_file = join(dirname(abspath(__file__)), "templates", "admin.html")
             admin_html = open(admin_file, "r").read()
