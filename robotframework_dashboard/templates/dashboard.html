@@ -4098,28 +4098,22 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const svg = document.getElementsByTagName("html")[0].getAttribute("data-bs-theme") == "dark" ? clockDarkSVG : clockLightSVG;
             document.getElementById("overviewTitle").innerHTML = `Overview Statistics <h6>showing ${Object.keys(runs).length} runs in ${keys.length} projects</h6`;
 
-            let cardCounter = 0; // global counter across all cards
+            let cardCounter = 0;
 
             keys.forEach(key => {
                 const runList = [...data[key].runs].reverse(); // newest first
+                const runsToShow = settings.switch.showAllRuns ? runList : [runList[0]];
 
-                // pick runs depending on setting
-                const runsToShow = settings.switch.showAllRuns
-                    ? runList
-                    : [runList[0]];
-
-                // filter by select when in showAllRuns mode
                 const selectedName = settings.switch.showAllRuns
                     ? document.getElementById("overviewSelectName").value
                     : null;
                 if (settings.switch.showAllRuns && selectedName && selectedName !== key) {
-                    return; // skip this project
+                    return;
                 }
 
                 runsToShow.forEach((r, runIndex) => {
                     const [passed, failed, skipped, duration, rawPath] = r.stats;
                     const path = transform_file_path(rawPath).replaceAll('\\', '\\\\');
-
                     const runNumber = runList.length - runIndex;
 
                     const durationsForAvg = runList.map(x => x.duration).slice(1);
@@ -4157,22 +4151,49 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 });
             });
 
-            // close last row if needed
             if (cardCounter % 3 !== 0) {
                 overviewHTML += '</div>';
             }
 
-
             document.getElementById("gridOverview").innerHTML = overviewHTML;
 
-            // create the charts
+            // attach click listeners (from original logic)
             keys.forEach(key => {
-                const runList = data[key].runs.slice().reverse(); // newest first
+                const runList = data[key].runs.slice().reverse();
+                const runsToShow = settings.switch.showAllRuns ? runList : [runList[0]];
+                const selectedName = settings.switch.showAllRuns
+                    ? document.getElementById("overviewSelectName").value
+                    : null;
 
-                const runsToShow = settings.switch.showAllRuns
-                    ? runList
-                    : [runList[0]];
+                if (settings.switch.showAllRuns && selectedName && selectedName !== key) {
+                    return;
+                }
 
+                runsToShow.forEach((r, runIndex) => {
+                    const cardEl = document.getElementById(`${key}Card${runIndex}`);
+                    if (cardEl) {
+                        cardEl.addEventListener("click", () => {
+                            document.getElementById("runs").value = "All";
+                            const tagElements = document.getElementById("runTag").getElementsByTagName("input");
+                            for (const input of tagElements) {
+                                input.checked = false;
+                                if (input.id == "All") input.checked = true;
+                            }
+                            if (key.startsWith("project_")) {
+                                selectedTagSetting = key;
+                            } else {
+                                selectedRunSetting = key;
+                            }
+                            update_menu("menuDashboard");
+                        });
+                    }
+                });
+            });
+
+            // build charts
+            keys.forEach(key => {
+                const runList = data[key].runs.slice().reverse();
+                const runsToShow = settings.switch.showAllRuns ? runList : [runList[0]];
                 const selectedName = settings.switch.showAllRuns
                     ? document.getElementById("overviewSelectName").value
                     : null;
