@@ -11,3 +11,4 @@ robot_dashboard*.html
 index.txt
 .pabotsuitenames
 *.db
+*.vscode

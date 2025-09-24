@@ -507,7 +507,8 @@
                                     <label class="form-check-label" for="switchShowAllRuns">Display All Runs</label>
                                 </div>
                                 <div class="btn-group form-switch ms-1">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="switchShowAllRuns" />
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                        id="switchShowAllRuns" />
                                 </div>
                             </div>
                             <div class="col-auto" id="overviewName" hidden>
@@ -2073,7 +2074,8 @@
 - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
 - Passed runs represent the percentage of runs with zero failures.
 - You can define your own projects or groupings by appending '-o path/to/output.xml:project_yourprojectname' when generating results.
-- If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle.`,
+- If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle.
+- The All Runs toggle controls whether only the latest run of each project is shown, or all past runs are displayed in reverse order (newest first). When enabled, you can also filter which project's runs are shown using the selection box.`,
             "runStatisticsGraphPercentages": "Percentages: Displays the distribution of passed, failed, skipped tests per run, where 100% equals all tests combined",
             "runStatisticsGraphAmount": "Amount: Displays the actual number of passed, failed, skipped tests per run",
             "runStatisticsGraphLine": "Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times",
@@ -3390,6 +3392,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 setup_names_in_overview_select();
                 create_overview_statistics_graphs();
             });
+            document.getElementById("overviewSelectName").addEventListener("change", function () {
+                create_overview_statistics_graphs();
+            });
             document.getElementById("overviewDurationPercentage").addEventListener("change", function () {
                 create_overview_statistics_graphs();
             });
@@ -3758,7 +3763,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 }
                 names.add(name)
             }
-            console.log(names)
             overviewSelectName.innerHTML = ""
             names.forEach(item => overviewSelectName.options.add(new Option(item, item)));
         }
@@ -4026,13 +4030,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             for (const run of runs) {
                 var name = '';
                 if (settings.switch.runTags) {
-                    const tags = run.tags.split(",")
+                    const tags = run.tags.split(",");
                     var foundTag = false;
                     for (const tag of tags) {
                         if (tag.startsWith('project_')) {
                             name = tag;
                             foundTag = true;
-                            break
+                            break;
                         }
                     }
                     if (!foundTag) name = run.name;
@@ -4041,12 +4045,15 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 }
 
                 if (!data[name]) {
-                    data[name] = { stats: [], duration: [], passed_runs: [] };
+                    data[name] = { runs: [] };
                 }
-                data[name].duration.push(run.elapsed_s);
-                data[name].stats = [run.passed, run.failed, run.skipped, run.elapsed_s, run.path];
-                data[name].passed_runs.push(run.failed === 0 ? 1 : 0);
+                data[name].runs.push({
+                    stats: [run.passed, run.failed, run.skipped, run.elapsed_s, run.path],
+                    duration: run.elapsed_s,
+                    passed_run: run.failed === 0 ? 1 : 0
+                });
             }
+
             const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
             const compare_to_average = (duration, avg, percent) => {
                 const t = parseFloat(percent) / 100;
@@ -4054,108 +4061,157 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     duration > avg * (1 + t) ? 'text-failed' : '';
             };
 
-            const overviewCard = (name, stats, duration, status, amount, compares, passed_runs, log_path, log_name, svg) => `
-            <div class="col-4 overview-card" id="${name}Card">
-                <div class="card border-3 border-${status}">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col text-center"><h5 class="card-title mb-0">${name}</h5></div>
-                            <div class="col-auto"><h5>#${amount}</h5></div>
+            const overviewCard = (name, stats, duration, status, amount, compares, passed_runs, log_path, log_name, svg, runIndex) => `
+        <div class="col-4 overview-card" id="${name}Card${runIndex}">
+            <div class="card border-3 border-${status}">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col text-center"><h5 class="card-title mb-0">${name}</h5></div>
+                        <div class="col-auto"><h5>#${amount}</h5></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 overview-canvas">
+                            <canvas id="${name}Graph${runIndex}"></canvas>
                         </div>
-                        <div class="row">
-                            <div class="col-4 overview-canvas">
-                                <canvas id="${name}Graph"></canvas>
+                        <div class="col-3 d-flex align-items-center">
+                            <div>
+                                <div class="green-text">Passed: ${stats[0]}</div>
+                                <div class="red-text">Failed: ${stats[1]}</div>
+                                <div class="yellow-text">Skipped: ${stats[2]}</div>
                             </div>
-                            <div class="col-3 d-flex align-items-center">
-                                <div>
-                                    <div class="green-text">Passed: ${stats[0]}</div>
-                                    <div class="red-text">Failed: ${stats[1]}</div>
-                                    <div class="yellow-text">Skipped: ${stats[2]}</div>
-                                </div>
-                            </div>
-                            <div class="col-5 d-flex align-items-center" style="overflow:auto;">
-                                <div>
-                                    <div class="${compares}">${svg} <i>${Math.round(duration)}s</i></div>
-                                    <div>Passed Runs: ${passed_runs}%</div>
-                                    <a href="#" onclick="event.stopPropagation(); open_log_from_path('${log_path}'); return false;" target="_blank">${log_name}</a>
-                                </div>
+                        </div>
+                        <div class="col-5 d-flex align-items-center" style="overflow:auto;">
+                            <div>
+                                <div class="${compares}">${svg} <i>${Math.round(duration)}s</i></div>
+                                <div>Passed Runs: ${passed_runs}%</div>
+                                <a href="#" onclick="event.stopPropagation(); open_log_from_path('${log_path}'); return false;" target="_blank">${log_name}</a>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
 
             let overviewHTML = '';
             const overviewDurationPercentage = document.getElementById('overviewDurationPercentage').value;
             const keys = Object.keys(data).sort();
             const svg = document.getElementsByTagName("html")[0].getAttribute("data-bs-theme") == "dark" ? clockDarkSVG : clockLightSVG;
             document.getElementById("overviewTitle").innerHTML = `Overview Statistics <h6>showing ${Object.keys(runs).length} runs in ${keys.length} projects</h6`;
-            keys.forEach((key, i) => {
-                const d = data[key];
-                const [passed, failed, skipped, duration, rawPath] = d.stats;
-                const path = transform_file_path(rawPath).replaceAll('\\', '\\\\');
-                const amount = d.duration.length;
-                if (amount > 1) d.duration.pop(); // remove current run for averaging
-                const average = avg(d.duration);
-                const compares = compare_to_average(duration, average, overviewDurationPercentage);
-                const passedRuns = (d.passed_runs.reduce((a, b) => a + b, 0) / d.passed_runs.length * 100).toFixed(2);
-                const status = failed > 0 ? 'failed' : skipped > 0 ? 'skipped' : 'passed';
-                const log_path = use_logs ? path : '';
-                const log_name = use_logs ? 'log.html' : '';
 
-                if (i % 3 === 0) overviewHTML += '<div class="row">';
-                overviewHTML += overviewCard(key, d.stats, duration, status, amount, compares, passedRuns, log_path, log_name, svg);
-                if (i % 3 === 2 || i === keys.length - 1) overviewHTML += '</div>';
+            let cardCounter = 0; // global counter across all cards
+
+            keys.forEach(key => {
+                const runList = [...data[key].runs].reverse(); // newest first
+
+                // pick runs depending on setting
+                const runsToShow = settings.switch.showAllRuns
+                    ? runList
+                    : [runList[0]];
+
+                // filter by select when in showAllRuns mode
+                const selectedName = settings.switch.showAllRuns
+                    ? document.getElementById("overviewSelectName").value
+                    : null;
+                if (settings.switch.showAllRuns && selectedName && selectedName !== key) {
+                    return; // skip this project
+                }
+
+                runsToShow.forEach((r, runIndex) => {
+                    const [passed, failed, skipped, duration, rawPath] = r.stats;
+                    const path = transform_file_path(rawPath).replaceAll('\\', '\\\\');
+
+                    const runNumber = runList.length - runIndex;
+
+                    const durationsForAvg = runList.map(x => x.duration).slice(1);
+                    const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
+
+                    const compares = compare_to_average(duration, average, overviewDurationPercentage);
+                    const passedRuns = (runList.reduce((a, b) => a + b.passed_run, 0) / runList.length * 100).toFixed(2);
+                    const status = failed > 0 ? 'failed' : skipped > 0 ? 'skipped' : 'passed';
+                    const log_path = use_logs ? path : '';
+                    const log_name = use_logs ? 'log.html' : '';
+
+                    if (cardCounter % 3 === 0) {
+                        overviewHTML += '<div class="row">';
+                    }
+
+                    overviewHTML += overviewCard(
+                        key,
+                        r.stats,
+                        duration,
+                        status,
+                        runNumber,
+                        compares,
+                        passedRuns,
+                        log_path,
+                        log_name,
+                        svg,
+                        runIndex
+                    );
+
+                    cardCounter++;
+
+                    if (cardCounter % 3 === 0) {
+                        overviewHTML += '</div>';
+                    }
+                });
             });
+
+            // close last row if needed
+            if (cardCounter % 3 !== 0) {
+                overviewHTML += '</div>';
+            }
+
 
             document.getElementById("gridOverview").innerHTML = overviewHTML;
 
-            for (const key of keys) {
-                document.getElementById(`${key}Card`).addEventListener('click', () => {
-                    // reset any previous run name or run tag
-                    document.getElementById("runs").value = "All";
-                    const tagElements = document.getElementById("runTag").getElementsByTagName("input");
-                    for (const input of tagElements) {
-                        input.checked = false;
-                        if (input.id == "All") input.checked = true;
-                    }
-                    // set the correct value based on prefix
-                    if (key.startsWith('project_')) {
-                        selectedTagSetting = key;
-                    } else {
-                        selectedRunSetting = key;
-                    }
-                    update_menu('menuDashboard')
-                });
-                const el = document.getElementById(`${key}Graph`);
-                const [passed, failed, skipped] = data[key].stats;
-                const chartData = {
-                    labels: [],
-                    datasets: [{
-                        data: [],
-                        backgroundColor: [],
-                        borderColor: [],
-                        hoverOffset: 4
-                    }]
-                };
-                const pushIf = (label, value, bg, border) => {
-                    if (value > 0) {
-                        chartData.labels.push(label);
-                        chartData.datasets[0].data.push(value);
-                        chartData.datasets[0].backgroundColor.push(bg);
-                        chartData.datasets[0].borderColor.push(border);
-                    }
-                };
-                pushIf('passed', passed, passedBackgroundColor, passedBackgroundBorderColor);
-                pushIf('failed', failed, failedBackgroundColor, failedBackgroundBorderColor);
-                pushIf('skipped', skipped, skippedBackgroundColor, skippedBackgroundBorderColor);
+            // create the charts
+            keys.forEach(key => {
+                const runList = data[key].runs.slice().reverse(); // newest first
 
-                const config = get_graph_config('donut', chartData, 'Last Run Status');
-                delete config.options.plugins.datalabels;
-                config.options.plugins.legend.display = false;
-                window[`${key}Graph`] = new Chart(el, config);
-                overviewGraphs.push(`${key}Graph`);
-            }
+                const runsToShow = settings.switch.showAllRuns
+                    ? runList
+                    : [runList[0]];
+
+                const selectedName = settings.switch.showAllRuns
+                    ? document.getElementById("overviewSelectName").value
+                    : null;
+
+                if (settings.switch.showAllRuns && selectedName && selectedName !== key) {
+                    return;
+                }
+
+                runsToShow.forEach((r, runIndex) => {
+                    const el = document.getElementById(`${key}Graph${runIndex}`);
+                    const [passed, failed, skipped] = r.stats;
+                    const chartData = {
+                        labels: [],
+                        datasets: [{
+                            data: [],
+                            backgroundColor: [],
+                            borderColor: [],
+                            hoverOffset: 4
+                        }]
+                    };
+                    const pushIf = (label, value, bg, border) => {
+                        if (value > 0) {
+                            chartData.labels.push(label);
+                            chartData.datasets[0].data.push(value);
+                            chartData.datasets[0].backgroundColor.push(bg);
+                            chartData.datasets[0].borderColor.push(border);
+                        }
+                    };
+                    pushIf('passed', passed, passedBackgroundColor, passedBackgroundBorderColor);
+                    pushIf('failed', failed, failedBackgroundColor, failedBackgroundBorderColor);
+                    pushIf('skipped', skipped, skippedBackgroundColor, skippedBackgroundBorderColor);
+
+                    const config = get_graph_config('donut', chartData, 'Run Status');
+                    delete config.options.plugins.datalabels;
+                    config.options.plugins.legend.display = false;
+                    window[`${key}Graph${runIndex}`] = new Chart(el, config);
+                    overviewGraphs.push(`${key}Graph${runIndex}`);
+                });
+            });
         }
 
         // function to create run statistics graph in the run section
