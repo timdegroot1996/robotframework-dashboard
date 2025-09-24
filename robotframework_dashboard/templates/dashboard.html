@@ -7058,14 +7058,43 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             document.getElementById("menuCompare").addEventListener("click", () => update_menu("menuCompare"));
             document.getElementById("menuTables").addEventListener("click", () => update_menu("menuTables"));
 
-            // Determine which menu was previously active from settings
-            const menuSettings = settings.menu;
-            let selectedMenu
+            const params = new URLSearchParams(window.location.search);
+            const pageParam = params.get("page");
+            let selectedMenu;
 
-            if (menuSettings.overview) selectedMenu = "menuOverview";
-            else if (menuSettings.dashboard) selectedMenu = "menuDashboard";
-            else if (menuSettings.compare) selectedMenu = "menuCompare";
-            else if (menuSettings.tables) selectedMenu = "menuTables";
+            if (pageParam) {
+                switch (pageParam.toLowerCase()) {
+                    case "overview":
+                        selectedMenu = "menuOverview";
+                        break;
+                    case "dashboard":
+                        selectedMenu = "menuDashboard";
+                        break;
+                    case "compare":
+                        selectedMenu = "menuCompare";
+                        break;
+                    case "tables":
+                        selectedMenu = "menuTables";
+                        break;
+                }
+                if (selectedMenu) {
+                    settings.menu = {
+                        overview: selectedMenu === "menuOverview",
+                        dashboard: selectedMenu === "menuDashboard",
+                        compare: selectedMenu === "menuCompare",
+                        tables: selectedMenu === "menuTables",
+                    };
+                }
+            }
+
+            // Priority 2: fall back to settings if no valid URL param
+            if (!selectedMenu) {
+                const menuSettings = settings.menu;
+                if (menuSettings.overview) selectedMenu = "menuOverview";
+                else if (menuSettings.dashboard) selectedMenu = "menuDashboard";
+                else if (menuSettings.compare) selectedMenu = "menuCompare";
+                else if (menuSettings.tables) selectedMenu = "menuTables";
+            }
             update_menu(selectedMenu);
         }
 
