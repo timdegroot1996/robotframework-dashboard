@@ -1,7 +1,7 @@
 <html data-bs-theme="dark" class="dark-mode w-100 html-scroll">
 
 <head>
-    <title>Robot Framework Dashboard - 2025-07-22 21:58:14</title>
+    <title>Robot Framework Dashboard - 2025-09-25 01:25:12</title>
     <!-- ChartJs import -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
@@ -401,6 +401,11 @@
             filter: brightness(0.5);
         }
 
+        #runTag {
+            max-height: 400px;
+            overflow: auto;
+        }
+
         @media print {
             table {
                 width: 100%;
@@ -499,7 +504,24 @@
                         <div class="d-flex flex-wrap align-items-start col align-items-center">
                             <div class="col-auto">
                                 <div class="btn-group">
-                                    <label class="form-check-label" for="switchRunTags">Use Run Tags</label>
+                                    <label class="form-check-label" for="switchShowAllRuns">Display All Runs</label>
+                                </div>
+                                <div class="btn-group form-switch ms-1">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                        id="switchShowAllRuns" />
+                                </div>
+                            </div>
+                            <div class="col-auto" id="overviewName" hidden>
+                                <div class="btn-group">
+                                    <label class="form-check-label" for="overviewSelectName">Name</label>
+                                </div>
+                                <div class="btn-group">
+                                    <select class="form-select form-select-sm mt-1" id="overviewSelectName"></select>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="btn-group">
+                                    <label class="form-check-label ms-2" for="switchRunTags">Use Run Tags</label>
                                 </div>
                                 <div class="btn-group form-switch ms-1">
                                     <input class="form-check-input" type="checkbox" role="switch" id="switchRunTags" />
@@ -954,7 +976,7 @@
                                             id="toggleAnimations" />
                                     </div>
                                 </div>
-                                <div class="row mb-3">
+                                <div class="row">
                                     <div class="col-8 btn-group ms-1">
                                         <label class="form-check-label mt-1" for="toggleAnimationDuration">Animation
                                             Duration (Milliseconds)</label>
@@ -962,6 +984,21 @@
                                     <div class="col-2 ps-0 mt-1">
                                         <input class="form-control form-control-sm" type="number"
                                             id="toggleAnimationDuration" />
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-8 btn-group ms-1">
+                                        <label class="form-check-label mt-1" for="toggleBarRounding">Bar Graph Edge
+                                            Rounding (Pixels)</label>
+                                    </div>
+                                    <div class="col-2 ps-0 mt-1">
+                                        <select class="form-select form-select-sm" id="toggleBarRounding">
+                                            <option value="0">0</option>
+                                            <option value="2">2</option>
+                                            <option value="4">4</option>
+                                            <option value="6">6</option>
+                                            <option value="8">8</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -1094,13 +1131,18 @@
         // base bar config
         const barConfig = {
             borderSkipped: false,
-            borderRadius: {
-                topLeft: 8,
-                topRight: 8,
-                bottomLeft: 8,
-                bottomRight: 8,
-            },
-        }
+            borderRadius: (context) => {
+                const { chart, parsed, index, dataset } = context;
+                const barHeight = chart.scales.y.getPixelForValue(0) - chart.scales.y.getPixelForValue(parsed.y);
+                const radius = Math.min(settings.show.rounding, Math.abs(barHeight / 2));
+                return {
+                    topLeft: radius,
+                    topRight: radius,
+                    bottomLeft: radius,
+                    bottomRight: radius
+                };
+            }
+        };
         const passedConfig = {
             backgroundColor: passedBackgroundColor,
             borderColor: passedBackgroundBorderColor,
@@ -2023,7 +2065,7 @@
             "themeLight": "Theme",
             "themeDark": "Theme",
             "database": "Database Summary",
-            "versionInformation": 'Robotdashboard 1.1.3',
+            "versionInformation": 'Robotdashboard 1.2.0',
             "bug": "Report a bug or request a feature",
             "github": "Github",
             "amount": "Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.",
@@ -2032,7 +2074,8 @@
 - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
 - Passed runs represent the percentage of runs with zero failures.
 - You can define your own projects or groupings by appending '-o path/to/output.xml:project_yourprojectname' when generating results.
-- If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle.`,
+- If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle.
+- The All Runs toggle controls whether only the latest run of each project is shown, or all past runs are displayed in reverse order (newest first). When enabled, you can also filter which project's runs are shown using the selection box.`,
             "runStatisticsGraphPercentages": "Percentages: Displays the distribution of passed, failed, skipped tests per run, where 100% equals all tests combined",
             "runStatisticsGraphAmount": "Amount: Displays the actual number of passed, failed, skipped tests per run",
             "runStatisticsGraphLine": "Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times",
@@ -2307,6 +2350,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         // settings var
         var settings = {
             switch: {
+                showAllRuns: false,
                 runTags: false,
                 suitePathsSuiteSection: false,
                 suitePathsTestSection: false,
@@ -2320,6 +2364,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 axisTitles: true,
                 animation: true,
                 duration: 1500,
+                rounding: 6,
             },
             menu: {
                 overview: false,
@@ -3212,6 +3257,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 isNumber: true
             });
 
+            const toggle_bar_rounding = create_toggle_handler({
+                key: "show.rounding",
+                elementId: "toggleBarRounding",
+                isNumber: true
+            });
+
             // Initial load
             toggle_labels(true);
             toggle_legends(true);
@@ -3220,6 +3271,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             toggle_axis_titles(true);
             toggle_animations(true);
             toggle_animation_duration(true);
+            toggle_bar_rounding(true);
 
             // Add event listeners
             document.getElementById("toggleLabels").addEventListener("click", () => toggle_labels());
@@ -3229,6 +3281,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             document.getElementById("toggleAxisTitles").addEventListener("click", () => toggle_axis_titles());
             document.getElementById("toggleAnimations").addEventListener("click", () => toggle_animations());
             document.getElementById("toggleAnimationDuration").addEventListener("change", () => toggle_animation_duration());
+            document.getElementById("toggleBarRounding").addEventListener("change", () => toggle_bar_rounding());
             document.getElementById("themeLight").addEventListener("click", () => toggle_theme());
             document.getElementById("themeDark").addEventListener("click", () => toggle_theme());
 
@@ -3323,10 +3376,23 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function to setup eventlisteners for filter buttons
         function setup_sections_filters() {
+            update_switch_local_storage("switch.showAllRuns", settings.switch.showAllRuns, true)
+            document.getElementById("overviewName").hidden = !settings.switch.showAllRuns; // set the initial state of the overview name select
+            document.getElementById("switchShowAllRuns").addEventListener("click", function () {
+                settings.switch.showAllRuns = !settings.switch.showAllRuns
+                document.getElementById("overviewName").hidden = !settings.switch.showAllRuns;
+                update_switch_local_storage("switch.showAllRuns", settings.switch.showAllRuns);
+                create_overview_statistics_graphs();
+            });
             update_switch_local_storage("switch.runTags", settings.switch.runTags, true);
+            setup_names_in_overview_select(); // update the names in the select to make sure the runTags option is taken into account
             document.getElementById("switchRunTags").addEventListener("click", function () {
                 settings.switch.runTags = !settings.switch.runTags
                 update_switch_local_storage("switch.runTags", settings.switch.runTags);
+                setup_names_in_overview_select();
+                create_overview_statistics_graphs();
+            });
+            document.getElementById("overviewSelectName").addEventListener("change", function () {
                 create_overview_statistics_graphs();
             });
             document.getElementById("overviewDurationPercentage").addEventListener("change", function () {
@@ -3676,6 +3742,31 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
         }
 
+        function setup_names_in_overview_select() {
+            const overviewSelectName = document.getElementById("overviewSelectName")
+            const names = new Set()
+            for (const run of runs) {
+                var name = '';
+                if (settings.switch.runTags) {
+                    const tags = run.tags.split(",")
+                    var foundTag = false;
+                    for (const tag of tags) {
+                        if (tag.startsWith('project_')) {
+                            name = tag;
+                            foundTag = true;
+                            break
+                        }
+                    }
+                    if (!foundTag) name = run.name;
+                } else {
+                    name = run.name;
+                }
+                names.add(name)
+            }
+            overviewSelectName.innerHTML = ""
+            names.forEach(item => overviewSelectName.options.add(new Option(item, item)));
+        }
+
         // function to update the available runs in the selects
         function setup_runs_in_compare_selects() {
             const selects = compareRunIds.map(id => document.getElementById(id));
@@ -3939,13 +4030,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             for (const run of runs) {
                 var name = '';
                 if (settings.switch.runTags) {
-                    const tags = run.tags.split(",")
+                    const tags = run.tags.split(",");
                     var foundTag = false;
                     for (const tag of tags) {
                         if (tag.startsWith('project_')) {
                             name = tag;
                             foundTag = true;
-                            break
+                            break;
                         }
                     }
                     if (!foundTag) name = run.name;
@@ -3954,12 +4045,15 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 }
 
                 if (!data[name]) {
-                    data[name] = { stats: [], duration: [], passed_runs: [] };
+                    data[name] = { runs: [] };
                 }
-                data[name].duration.push(run.elapsed_s);
-                data[name].stats = [run.passed, run.failed, run.skipped, run.elapsed_s, run.path];
-                data[name].passed_runs.push(run.failed === 0 ? 1 : 0);
+                data[name].runs.push({
+                    stats: [run.passed, run.failed, run.skipped, run.elapsed_s, run.path],
+                    duration: run.elapsed_s,
+                    passed_run: run.failed === 0 ? 1 : 0
+                });
             }
+
             const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
             const compare_to_average = (duration, avg, percent) => {
                 const t = parseFloat(percent) / 100;
@@ -3967,108 +4061,178 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     duration > avg * (1 + t) ? 'text-failed' : '';
             };
 
-            const overviewCard = (name, stats, duration, status, amount, compares, passed_runs, log_path, log_name, svg) => `
-            <div class="col-4 overview-card" id="${name}Card">
-                <div class="card border-3 border-${status}">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col text-center"><h5 class="card-title mb-0">${name}</h5></div>
-                            <div class="col-auto"><h5>#${amount}</h5></div>
+            const overviewCard = (name, stats, duration, status, amount, compares, passed_runs, log_path, log_name, svg, runIndex) => `
+        <div class="col-4 overview-card" id="${name}Card${runIndex}">
+            <div class="card border-3 border-${status}">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col text-center"><h5 class="card-title mb-0">${name}</h5></div>
+                        <div class="col-auto"><h5>#${amount}</h5></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 overview-canvas">
+                            <canvas id="${name}Graph${runIndex}"></canvas>
                         </div>
-                        <div class="row">
-                            <div class="col-4 overview-canvas">
-                                <canvas id="${name}Graph"></canvas>
+                        <div class="col-3 d-flex align-items-center">
+                            <div>
+                                <div class="green-text">Passed: ${stats[0]}</div>
+                                <div class="red-text">Failed: ${stats[1]}</div>
+                                <div class="yellow-text">Skipped: ${stats[2]}</div>
                             </div>
-                            <div class="col-3 d-flex align-items-center">
-                                <div>
-                                    <div class="green-text">Passed: ${stats[0]}</div>
-                                    <div class="red-text">Failed: ${stats[1]}</div>
-                                    <div class="yellow-text">Skipped: ${stats[2]}</div>
-                                </div>
-                            </div>
-                            <div class="col-5 d-flex align-items-center" style="overflow:auto;">
-                                <div>
-                                    <div class="${compares}">${svg} <i>${Math.round(duration)}s</i></div>
-                                    <div>Passed Runs: ${passed_runs}%</div>
-                                    <a href="#" onclick="event.stopPropagation(); open_log_from_path('${log_path}'); return false;" target="_blank">${log_name}</a>
-                                </div>
+                        </div>
+                        <div class="col-5 d-flex align-items-center" style="overflow:auto;">
+                            <div>
+                                <div class="${compares}">${svg} <i>${Math.round(duration)}s</i></div>
+                                <div>Passed Runs: ${passed_runs}%</div>
+                                <a href="#" onclick="event.stopPropagation(); open_log_from_path('${log_path}'); return false;" target="_blank">${log_name}</a>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
 
             let overviewHTML = '';
             const overviewDurationPercentage = document.getElementById('overviewDurationPercentage').value;
             const keys = Object.keys(data).sort();
             const svg = document.getElementsByTagName("html")[0].getAttribute("data-bs-theme") == "dark" ? clockDarkSVG : clockLightSVG;
             document.getElementById("overviewTitle").innerHTML = `Overview Statistics <h6>showing ${Object.keys(runs).length} runs in ${keys.length} projects</h6`;
-            keys.forEach((key, i) => {
-                const d = data[key];
-                const [passed, failed, skipped, duration, rawPath] = d.stats;
-                const path = transform_file_path(rawPath).replaceAll('\\', '\\\\');
-                const amount = d.duration.length;
-                if (amount > 1) d.duration.pop(); // remove current run for averaging
-                const average = avg(d.duration);
-                const compares = compare_to_average(duration, average, overviewDurationPercentage);
-                const passedRuns = (d.passed_runs.reduce((a, b) => a + b, 0) / d.passed_runs.length * 100).toFixed(2);
-                const status = failed > 0 ? 'failed' : skipped > 0 ? 'skipped' : 'passed';
-                const log_path = use_logs ? path : '';
-                const log_name = use_logs ? 'log.html' : '';
 
-                if (i % 3 === 0) overviewHTML += '<div class="row">';
-                overviewHTML += overviewCard(key, d.stats, duration, status, amount, compares, passedRuns, log_path, log_name, svg);
-                if (i % 3 === 2 || i === keys.length - 1) overviewHTML += '</div>';
+            let cardCounter = 0;
+
+            keys.forEach(key => {
+                const runList = [...data[key].runs].reverse(); // newest first
+                const runsToShow = settings.switch.showAllRuns ? runList : [runList[0]];
+
+                const selectedName = settings.switch.showAllRuns
+                    ? document.getElementById("overviewSelectName").value
+                    : null;
+                if (settings.switch.showAllRuns && selectedName && selectedName !== key) {
+                    return;
+                }
+
+                runsToShow.forEach((r, runIndex) => {
+                    const [passed, failed, skipped, duration, rawPath] = r.stats;
+                    const path = transform_file_path(rawPath).replaceAll('\\', '\\\\');
+                    const runNumber = runList.length - runIndex;
+
+                    const durationsForAvg = runList.map(x => x.duration).slice(1);
+                    const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
+
+                    const compares = compare_to_average(duration, average, overviewDurationPercentage);
+                    const passedRuns = (runList.reduce((a, b) => a + b.passed_run, 0) / runList.length * 100).toFixed(2);
+                    const status = failed > 0 ? 'failed' : skipped > 0 ? 'skipped' : 'passed';
+                    const log_path = use_logs ? path : '';
+                    const log_name = use_logs ? 'log.html' : '';
+
+                    if (cardCounter % 3 === 0) {
+                        overviewHTML += '<div class="row">';
+                    }
+
+                    overviewHTML += overviewCard(
+                        key,
+                        r.stats,
+                        duration,
+                        status,
+                        runNumber,
+                        compares,
+                        passedRuns,
+                        log_path,
+                        log_name,
+                        svg,
+                        runIndex
+                    );
+
+                    cardCounter++;
+
+                    if (cardCounter % 3 === 0) {
+                        overviewHTML += '</div>';
+                    }
+                });
             });
+
+            if (cardCounter % 3 !== 0) {
+                overviewHTML += '</div>';
+            }
 
             document.getElementById("gridOverview").innerHTML = overviewHTML;
 
-            for (const key of keys) {
-                document.getElementById(`${key}Card`).addEventListener('click', () => {
-                    // reset any previous run name or run tag
-                    document.getElementById("runs").value = "All";
-                    const tagElements = document.getElementById("runTag").getElementsByTagName("input");
-                    for (const input of tagElements) {
-                        input.checked = false;
-                        if (input.id == "All") input.checked = true;
-                    }
-                    // set the correct value based on prefix
-                    if (key.startsWith('project_')) {
-                        selectedTagSetting = key;
-                    } else {
-                        selectedRunSetting = key;
-                    }
-                    update_menu('menuDashboard')
-                });
-                const el = document.getElementById(`${key}Graph`);
-                const [passed, failed, skipped] = data[key].stats;
-                const chartData = {
-                    labels: [],
-                    datasets: [{
-                        data: [],
-                        backgroundColor: [],
-                        borderColor: [],
-                        hoverOffset: 4
-                    }]
-                };
-                const pushIf = (label, value, bg, border) => {
-                    if (value > 0) {
-                        chartData.labels.push(label);
-                        chartData.datasets[0].data.push(value);
-                        chartData.datasets[0].backgroundColor.push(bg);
-                        chartData.datasets[0].borderColor.push(border);
-                    }
-                };
-                pushIf('passed', passed, passedBackgroundColor, passedBackgroundBorderColor);
-                pushIf('failed', failed, failedBackgroundColor, failedBackgroundBorderColor);
-                pushIf('skipped', skipped, skippedBackgroundColor, skippedBackgroundBorderColor);
+            // attach click listeners (from original logic)
+            keys.forEach(key => {
+                const runList = data[key].runs.slice().reverse();
+                const runsToShow = settings.switch.showAllRuns ? runList : [runList[0]];
+                const selectedName = settings.switch.showAllRuns
+                    ? document.getElementById("overviewSelectName").value
+                    : null;
 
-                const config = get_graph_config('donut', chartData, 'Last Run Status');
-                delete config.options.plugins.datalabels;
-                config.options.plugins.legend.display = false;
-                window[`${key}Graph`] = new Chart(el, config);
-                overviewGraphs.push(`${key}Graph`);
-            }
+                if (settings.switch.showAllRuns && selectedName && selectedName !== key) {
+                    return;
+                }
+
+                runsToShow.forEach((r, runIndex) => {
+                    const cardEl = document.getElementById(`${key}Card${runIndex}`);
+                    if (cardEl) {
+                        cardEl.addEventListener("click", () => {
+                            document.getElementById("runs").value = "All";
+                            const tagElements = document.getElementById("runTag").getElementsByTagName("input");
+                            for (const input of tagElements) {
+                                input.checked = false;
+                                if (input.id == "All") input.checked = true;
+                            }
+                            if (key.startsWith("project_")) {
+                                selectedTagSetting = key;
+                            } else {
+                                selectedRunSetting = key;
+                            }
+                            update_menu("menuDashboard");
+                        });
+                    }
+                });
+            });
+
+            // build charts
+            keys.forEach(key => {
+                const runList = data[key].runs.slice().reverse();
+                const runsToShow = settings.switch.showAllRuns ? runList : [runList[0]];
+                const selectedName = settings.switch.showAllRuns
+                    ? document.getElementById("overviewSelectName").value
+                    : null;
+
+                if (settings.switch.showAllRuns && selectedName && selectedName !== key) {
+                    return;
+                }
+
+                runsToShow.forEach((r, runIndex) => {
+                    const el = document.getElementById(`${key}Graph${runIndex}`);
+                    const [passed, failed, skipped] = r.stats;
+                    const chartData = {
+                        labels: [],
+                        datasets: [{
+                            data: [],
+                            backgroundColor: [],
+                            borderColor: [],
+                            hoverOffset: 4
+                        }]
+                    };
+                    const pushIf = (label, value, bg, border) => {
+                        if (value > 0) {
+                            chartData.labels.push(label);
+                            chartData.datasets[0].data.push(value);
+                            chartData.datasets[0].backgroundColor.push(bg);
+                            chartData.datasets[0].borderColor.push(border);
+                        }
+                    };
+                    pushIf('passed', passed, passedBackgroundColor, passedBackgroundBorderColor);
+                    pushIf('failed', failed, failedBackgroundColor, failedBackgroundBorderColor);
+                    pushIf('skipped', skipped, skippedBackgroundColor, skippedBackgroundBorderColor);
+
+                    const config = get_graph_config('donut', chartData, 'Run Status');
+                    delete config.options.plugins.datalabels;
+                    config.options.plugins.legend.display = false;
+                    window[`${key}Graph${runIndex}`] = new Chart(el, config);
+                    overviewGraphs.push(`${key}Graph${runIndex}`);
+                });
+            });
         }
 
         // function to create run statistics graph in the run section
@@ -5351,6 +5515,27 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const win = window.open(fileUrl, "_blank")
         }
 
+        // helper to format seconds into d/h/m/s + 100ths of a second
+        function format_duration(seconds) {
+            if (seconds < 60) {
+                // keep up to 2 decimals for sub-minute values
+                const fixed = seconds.toFixed(2);
+                return `${fixed.replace(/\.?0+$/, "")}s`; // strip trailing zeros
+            }
+
+            const days = Math.floor(seconds / 86400);
+            const hours = Math.floor((seconds % 86400) / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const sec = Math.floor(seconds % 60);
+
+            let parts = [];
+            if (days > 0) parts.push(`${days}d`);
+            if (hours > 0) parts.push(`${hours}h`);
+            if (minutes > 0) parts.push(`${minutes}m`);
+            if (sec > 0 && days === 0) parts.push(`${sec}s`); // only show seconds if <1d
+            return parts.join(" ");
+        }
+
         // function to retrieve the required graph config for chartjs, based on the different type of graphs
         // Generate a Chart.js config object based on the graph type and data
         function get_graph_config(graphType, graphData, graphTitle, xTitle, yTitle, dataSets = true) {
@@ -5634,6 +5819,32 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             };
 
             const config = configMap[graphType]?.();
+
+            if (config?.options?.scales) {
+                if (xTitle === "Duration" && config.options.scales.x) {
+                    config.options.scales.x.ticks.callback = (value) => format_duration(value);
+                }
+                if (yTitle === "Duration" && config.options.scales.y) {
+                    config.options.scales.y.ticks.callback = (value) => format_duration(value);
+                }
+            }
+
+            if (xTitle === "Duration" || yTitle === "Duration") {
+                config.options.plugins.tooltip = {
+                    ...config.options.plugins.tooltip,
+                    callbacks: {
+                        ...config.options.plugins.tooltip?.callbacks,
+                        label: function (context) {
+                            const val = context.parsed.y ?? context.parsed.x ?? context.raw;
+                            if (typeof val === "number") {
+                                return format_duration(val);
+                            }
+                            return val;
+                        },
+                    },
+                };
+            }
+
             if (!settings.show.legends) {
                 config.options.plugins.legend = config.options.plugins.legend || {};
                 config.options.plugins.legend.display = false;
@@ -6894,14 +7105,43 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             document.getElementById("menuCompare").addEventListener("click", () => update_menu("menuCompare"));
             document.getElementById("menuTables").addEventListener("click", () => update_menu("menuTables"));
 
-            // Determine which menu was previously active from settings
-            const menuSettings = settings.menu;
-            let selectedMenu
+            const params = new URLSearchParams(window.location.search);
+            const pageParam = params.get("page");
+            let selectedMenu;
 
-            if (menuSettings.overview) selectedMenu = "menuOverview";
-            else if (menuSettings.dashboard) selectedMenu = "menuDashboard";
-            else if (menuSettings.compare) selectedMenu = "menuCompare";
-            else if (menuSettings.tables) selectedMenu = "menuTables";
+            if (pageParam) {
+                switch (pageParam.toLowerCase()) {
+                    case "overview":
+                        selectedMenu = "menuOverview";
+                        break;
+                    case "dashboard":
+                        selectedMenu = "menuDashboard";
+                        break;
+                    case "compare":
+                        selectedMenu = "menuCompare";
+                        break;
+                    case "tables":
+                        selectedMenu = "menuTables";
+                        break;
+                }
+                if (selectedMenu) {
+                    settings.menu = {
+                        overview: selectedMenu === "menuOverview",
+                        dashboard: selectedMenu === "menuDashboard",
+                        compare: selectedMenu === "menuCompare",
+                        tables: selectedMenu === "menuTables",
+                    };
+                }
+            }
+
+            // Priority 2: fall back to settings if no valid URL param
+            if (!selectedMenu) {
+                const menuSettings = settings.menu;
+                if (menuSettings.overview) selectedMenu = "menuOverview";
+                else if (menuSettings.dashboard) selectedMenu = "menuDashboard";
+                else if (menuSettings.compare) selectedMenu = "menuCompare";
+                else if (menuSettings.tables) selectedMenu = "menuTables";
+            }
             update_menu(selectedMenu);
         }
 
@@ -7010,6 +7250,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             document.getElementById("compareTitle").innerHTML = `Compare Statistics ${message}`;
             document.getElementById("tablesTitle").innerHTML = `Table Statistics (${runAmount}) ${message}`;
             // update filters based on data
+            setup_names_in_overview_select();
             setup_runs_in_compare_selects();
             setup_suites_in_suite_select();
             setup_suites_in_test_select();
