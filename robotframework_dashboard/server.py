@@ -1,15 +1,18 @@
 from .robotdashboard import RobotDashboard
+
 from fastapi import FastAPI, Body, Depends, HTTPException, status
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-# from typing import Annotated
 from pydantic import BaseModel
 from uvicorn import run
+
 from os.path import join, abspath, dirname, exists
 from os import remove, mkdir, listdir
-from .version import __version__
+from pathlib import Path
 from typing import List, Optional
 import secrets
+
+from .version import __version__
 
 response_message_model_config = {
     "json_schema_extra": {
@@ -226,13 +229,18 @@ class ApiServer:
         self.server_pass = server_pass
         self.admin_json_config = "{}"
         self.log_dir = "robot_logs"
+        self.latest_log_dir: Path | None = None
 
+        self._setup_routes()
+        self._setup_catch_all_route()
+
+    def _setup_routes(self):
         def authenticate(credentials: HTTPBasicCredentials = Depends(self.security)):
-            if not server_user or not server_pass:
+            if not self.server_user or not self.server_pass:
                 return "anonymous"
 
-            correct_username = secrets.compare_digest(credentials.username, server_user)
-            correct_password = secrets.compare_digest(credentials.password, server_pass)
+            correct_username = secrets.compare_digest(credentials.username, self.server_user)
+            correct_password = secrets.compare_digest(credentials.password, self.server_pass)
 
             if not (correct_username and correct_password):
                 raise HTTPException(
@@ -242,7 +250,7 @@ class ApiServer:
                 )
             return credentials.username
 
-        if not server_user or not server_pass:
+        if not self.server_user or not self.server_pass:
             @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
             async def admin_page():
                 """Admin page endpoint function"""
@@ -272,24 +280,23 @@ class ApiServer:
 
         @self.app.get("/log", response_class=HTMLResponse, include_in_schema=False)
         async def log_page(path: str):
-            """Serve log HTML endpoint function"""
+            """Serve log HTML and store the log directory for resources."""
             try:
-                log_html = open(path, "r", encoding="utf-8").read()
-            except Exception as error:
+                log_path = Path(path).resolve()
+                log_html = log_path.read_text(encoding="utf-8")
+                self.latest_log_dir = log_path.parent
+
+            except Exception:
                 log_html = f"""<!DOCTYPE html>
                     <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <title>404 - File Not Found</title>
-                            <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==" />
-                        </head>
+                        <head><meta charset="UTF-8"><title>404 - File Not Found</title></head>
                         <body>
                             <h1>404 - File Not Found</h1>
                             <p>The file you are looking for ({path}) could not be found on the server!</p>
                         </body>
                     </html>
                 """
-            return log_html
+            return HTMLResponse(content=log_html)
 
         @self.app.get("/get-admin-json-config", include_in_schema=False)
         async def get_admin_json_config() -> AdminJsonConfig:
@@ -526,6 +533,24 @@ class ApiServer:
                 "console": console,
             }
             return response
+        
+    def _setup_catch_all_route(self):
+        """Catch-all route for any resource after all other routes
+        This will try to resolve based on screenshots that are relative to the log files
+        If it doesn't find any matching file nothing will happen"""
+        @self.app.get("/{full_path:path}", include_in_schema=False)
+        async def catch_all(full_path: str):
+            if self.latest_log_dir is None:
+                raise HTTPException(404, "No log file opened yet")
+
+            resource_path = (self.latest_log_dir / full_path).resolve()
+            if not str(resource_path).startswith(str(self.latest_log_dir)):
+                raise HTTPException(403, "Access denied")
+
+            if not resource_path.exists():
+                raise HTTPException(404, f"Resource {full_path} not found")
+
+            return FileResponse(resource_path)
 
     def set_robotdashboard(self, robotdashboard: RobotDashboard):
         """Function to initialize the RobotDashboard class"""
