@@ -151,8 +151,16 @@ class ArgumentParser:
         parser.add_argument(
             "-s",
             "--server",
-            help="Provide the server argument like 'robotdashboard --server default' or 'robotdashboard --server yourhost:yourport' \
-                to start a server. See http://github.com/timdegroot1996/robotframework-dashboard?tab=readme-ov-file#Dashboard-Server for additional information!",
+            help=(
+                "Provide the server argument like:"
+                "  robotdashboard --server default[:username:password], or"
+                "  robotdashboard --server host:port[:username:password] "
+                "Examples:"
+                "  robotdashboard --server default:admin:secret, or "
+                "  robotdashboard --server 0.0.0.0:8080:admin:secret"
+                "If no username:password is given, security is disabled."
+                "See http://github.com/timdegroot1996/robotframework-dashboard?tab=readme-ov-file#Dashboard-Server for additional information!"
+            ),
             default=None,
         )
         return parser.parse_args()
@@ -260,11 +268,24 @@ class ArgumentParser:
         # handles the server argument
         server_host = "127.0.0.1"
         server_port = 8543
+        server_user = ""
+        server_pass = ""
         if arguments.server:
             start_server = True
-            if arguments.server != "default":
-                server_host, server_port = arguments.server.split(":")
-                server_port = int(server_port)
+            parts = arguments.server.split(":")
+
+            if parts[0] == "default":
+                # e.g. default[:username:password]
+                if len(parts) == 3:
+                    server_user = parts[1]
+                    server_pass = parts[2]
+            else:
+                # e.g. host:port or host:port:username:password
+                server_host = parts[0]
+                server_port = int(parts[1])
+                if len(parts) == 4:
+                    server_user = parts[2]
+                    server_pass = parts[3]
         else:
             start_server = False
 
@@ -290,6 +311,8 @@ class ArgumentParser:
             "start_server": start_server,
             "server_host": server_host,
             "server_port": server_port,
+            "server_user": server_user,
+            "server_pass": server_pass,
             "json_config": json_config,
             "message_config": message_config,
             "quantity": quantity,

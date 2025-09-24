@@ -53,7 +53,7 @@ def main():
     robotdashboard.create_dashboard()
     # If required start the server, this will happen after the first normal run
     if arguments.start_server:
-        server = ApiServer(arguments.server_host, arguments.server_port)
+        server = ApiServer(arguments.server_host, arguments.server_port, arguments.server_user, arguments.server_pass)
         server.set_robotdashboard(robotdashboard)
         server.run()
 

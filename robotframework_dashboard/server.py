@@ -215,19 +215,24 @@ class RemoveLog(BaseModel):
 class ApiServer:
     """Robot Dashboard server implementation, this class handles the admin page and all functions related to the server"""
 
-    def __init__(self, server_host: str, server_port: int):
+    def __init__(self, server_host: str, server_port: int, server_user: str, server_pass: str):
         """Init function that starts up the fastapi app and initializes all the vars and endpoints"""
         self.app = FastAPI()
         self.security = HTTPBasic()
         self.robotdashboard: RobotDashboard
         self.server_host = server_host
         self.server_port = server_port
+        self.server_user = server_user
+        self.server_pass = server_pass
         self.admin_json_config = "{}"
         self.log_dir = "robot_logs"
 
         def authenticate(credentials: HTTPBasicCredentials = Depends(self.security)):
-            correct_username = secrets.compare_digest(credentials.username, "admin")
-            correct_password = secrets.compare_digest(credentials.password, "secret")
+            if not server_user or not server_pass:
+                return "anonymous"
+
+            correct_username = secrets.compare_digest(credentials.username, server_user)
+            correct_password = secrets.compare_digest(credentials.password, server_pass)
 
             if not (correct_username and correct_password):
                 raise HTTPException(
@@ -237,13 +242,22 @@ class ApiServer:
                 )
             return credentials.username
 
-        @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
-        async def admin_page(username: str = Depends(authenticate)):
-            """Admin page endpoint function"""
-            admin_file = join(dirname(abspath(__file__)), "templates", "admin.html")
-            admin_html = open(admin_file, "r").read()
-            admin_html = admin_html.replace('"placeholder_version"', __version__)
-            return admin_html
+        if not server_user or not server_pass:
+            @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
+            async def admin_page():
+                """Admin page endpoint function"""
+                admin_file = join(dirname(abspath(__file__)), "templates", "admin.html")
+                admin_html = open(admin_file, "r").read()
+                admin_html = admin_html.replace('"placeholder_version"', __version__)
+                return admin_html
+        else:
+            @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
+            async def admin_page(username: str = Depends(authenticate)):
+                """Admin page endpoint function"""
+                admin_file = join(dirname(abspath(__file__)), "templates", "admin.html")
+                admin_html = open(admin_file, "r").read()
+                admin_html = admin_html.replace('"placeholder_version"', __version__)
+                return admin_html
 
         @self.app.get(
             "/dashboard", response_class=HTMLResponse, include_in_schema=False
