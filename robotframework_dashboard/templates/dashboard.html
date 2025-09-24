@@ -5515,6 +5515,27 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const win = window.open(fileUrl, "_blank")
         }
 
+        // helper to format seconds into d/h/m/s + 100ths of a second
+        function format_duration(seconds) {
+            if (seconds < 60) {
+                // keep up to 2 decimals for sub-minute values
+                const fixed = seconds.toFixed(2);
+                return `${fixed.replace(/\.?0+$/, "")}s`; // strip trailing zeros
+            }
+
+            const days = Math.floor(seconds / 86400);
+            const hours = Math.floor((seconds % 86400) / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const sec = Math.floor(seconds % 60);
+
+            let parts = [];
+            if (days > 0) parts.push(`${days}d`);
+            if (hours > 0) parts.push(`${hours}h`);
+            if (minutes > 0) parts.push(`${minutes}m`);
+            if (sec > 0 && days === 0) parts.push(`${sec}s`); // only show seconds if <1d
+            return parts.join(" ");
+        }
+
         // function to retrieve the required graph config for chartjs, based on the different type of graphs
         // Generate a Chart.js config object based on the graph type and data
         function get_graph_config(graphType, graphData, graphTitle, xTitle, yTitle, dataSets = true) {
@@ -5798,6 +5819,32 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             };
 
             const config = configMap[graphType]?.();
+
+            if (config?.options?.scales) {
+                if (xTitle === "Duration" && config.options.scales.x) {
+                    config.options.scales.x.ticks.callback = (value) => format_duration(value);
+                }
+                if (yTitle === "Duration" && config.options.scales.y) {
+                    config.options.scales.y.ticks.callback = (value) => format_duration(value);
+                }
+            }
+
+            if (xTitle === "Duration" || yTitle === "Duration") {
+                config.options.plugins.tooltip = {
+                    ...config.options.plugins.tooltip,
+                    callbacks: {
+                        ...config.options.plugins.tooltip?.callbacks,
+                        label: function (context) {
+                            const val = context.parsed.y ?? context.parsed.x ?? context.raw;
+                            if (typeof val === "number") {
+                                return format_duration(val);
+                            }
+                            return val;
+                        },
+                    },
+                };
+            }
+
             if (!settings.show.legends) {
                 config.options.plugins.legend = config.options.plugins.legend || {};
                 config.options.plugins.legend.display = false;
