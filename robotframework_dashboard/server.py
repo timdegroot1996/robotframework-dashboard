@@ -2,12 +2,13 @@ from .robotdashboard import RobotDashboard
 from fastapi import FastAPI, Body, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from typing import Annotated
+# from typing import Annotated
 from pydantic import BaseModel
 from uvicorn import run
 from os.path import join, abspath, dirname, exists
 from os import remove, mkdir, listdir
 from .version import __version__
+from typing import List, Optional
 import secrets
 
 response_message_model_config = {
@@ -160,7 +161,6 @@ remove_log_model_config = {
 
 class ResponseMessage(BaseModel):
     """The response message model for Adding or Removing runs from the database"""
-
     success: str
     message: str
     console: str
@@ -173,7 +173,6 @@ class AdminJsonConfig(BaseModel):
 
 class GetOutput(BaseModel):
     """The response model that is returned when getting outputs"""
-
     run_start: str
     name: str
     alias: str
@@ -183,28 +182,25 @@ class GetOutput(BaseModel):
 
 class AddOutput(BaseModel):
     """The model that has to be provided when trying to add outputs to the database"""
-
-    output_path: str = None
-    output_data: str = None
-    output_folder_path: str = None
-    output_tags: list[str] = None
-    output_alias: str = None
+    output_path: Optional[str] = None
+    output_data: Optional[str] = None
+    output_folder_path: Optional[str] = None
+    output_tags: Optional[List[str]] = None
+    output_alias: Optional[str] = None
     model_config = add_output_model_config
 
 
 class RemoveOutputs(BaseModel):
     """The model that has to be provided when trying to delete outputs from the database"""
-
-    run_starts: list[str] = None
-    indexes: list[str] = None
-    aliases: list[str] = None
-    tags: list[str] = None
+    run_starts: Optional[List[str]] = None
+    indexes: Optional[List[str]] = None
+    aliases: Optional[List[str]] = None
+    tags: Optional[List[str]] = None
     model_config = remove_outputs_model_config
 
 
 class AddLog(BaseModel):
     """The model to add log files to the server"""
-
     log_data: str
     log_name: str
     model_config = add_log_model_config
@@ -212,7 +208,6 @@ class AddLog(BaseModel):
 
 class RemoveLog(BaseModel):
     """The model to remove log files from the server"""
-
     log_name: str
     model_config = remove_log_model_config
 
@@ -313,7 +308,7 @@ class ApiServer:
             return response
 
         @self.app.get("/get-outputs")
-        async def get_outputs() -> list[GetOutput]:
+        async def get_outputs() -> List[GetOutput]:
             """Get a list of dictionaries containting the runs (run_starts) and names of the runs
             currently available in the database"""
             runs, names, aliases, tags = self.robotdashboard.get_runs()
@@ -331,18 +326,16 @@ class ApiServer:
 
         @self.app.post("/add-outputs")
         async def add_output_to_database(
-            add_output: Annotated[
-                AddOutput,
-                Body(
-                    openapi_examples=add_outputs_openapi_examples,
-                ),
-            ],
+            add_output: AddOutput = Body(
+                ...,
+                openapi_examples=add_outputs_openapi_examples,
+            ),
         ) -> ResponseMessage:
             """Add output to database endpoint function
             The following combinations of parameters are valid:
-            1. output_path: str valid path to output.xml (+ optional: output_tags: list[str] tags for that output.xml)
-            2. output_data: str output.xml content (+ optional: output_tags: list[str] tags for that output.xml + optional output_alias)
-            3. output_folder_path: str valid path to folder (might have subfolders) that contain output.xml (multiple allowed) (+ optional: output_tags: list[str] tags for that output.xml)
+            1. output_path: str valid path to output.xml (+ optional: output_tags: List[str] tags for that output.xml)
+            2. output_data: str output.xml content (+ optional: output_tags: List[str] tags for that output.xml + optional output_alias)
+            3. output_folder_path: str valid path to folder (might have subfolders) that contain output.xml (multiple allowed) (+ optional: output_tags: List[str] tags for that output.xml)
             """
             input = "provided input, overwritten on runtime"
             console = "no console output"
@@ -413,12 +406,10 @@ class ApiServer:
 
         @self.app.delete("/remove-outputs")
         async def remove_outputs_from_database(
-            remove_output: Annotated[
-                RemoveOutputs,
-                Body(
-                    openapi_examples=remove_outputs_openapi_examples,
-                ),
-            ],
+            remove_output: RemoveOutputs = Body(
+                ...,
+                openapi_examples=remove_outputs_openapi_examples,
+            ),
         ) -> ResponseMessage:
             """Remove outputs from database endpoint function
             Can be either indexes or run_starts that are known in the database

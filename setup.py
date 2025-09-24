@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="robotframework-dashboard",
-    version="1.1.3",
+    version="1.1.4",
     description="Output processor and dashboard generator for Robot Framework output files",
     long_description="""# Robot Framework Dashboard
 
@@ -334,7 +334,7 @@ Note: This project is not officially affiliated with or endorsed by robotframewo
     install_requires=[
         "robotframework>=6.0",
         "fastapi>=0.115.11",
-        "uvicorn>=0.34.0",
+        "uvicorn>=0.33.0",
     ],
     entry_points={
         "console_scripts": [
