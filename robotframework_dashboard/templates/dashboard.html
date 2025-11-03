@@ -700,6 +700,14 @@
                                         <select class="form-select form-select-sm" id="keywordSelect"></select>
                                     </div>
                                 </div>
+                                <div class="col-auto d-flex me-2">
+                                    <label class="form-check-label mb-0 me-2" for="switchUseLibraryNames">Use Library
+                                        Names</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                            id="switchUseLibraryNames" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-auto ms-auto">
@@ -897,8 +905,8 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title" id="settingsModalLabel">Settings</h1>
-                        <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
-                            data-bs-dismiss="modal" id="closeSettings">Close</button>
+                        <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5" data-bs-dismiss="modal"
+                            id="closeSettings">Close</button>
                     </div>
                     <div class="modal-body">
                         <ul class="nav nav-tabs" id="settingsTab" role="tablist">
@@ -2363,6 +2371,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 suitePathsSuiteSection: false,
                 suitePathsTestSection: false,
                 suitePathsCompareSection: false,
+                useLibraryNames: false,
             },
             show: {
                 dateLabels: true,
@@ -3516,6 +3525,18 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_keyword_min_duration_graph();
                 create_keyword_max_duration_graph();
             });
+            update_switch_local_storage("switch.useLibraryNames", settings.switch.useLibraryNames, true);
+            document.getElementById("switchUseLibraryNames").addEventListener("change", () => {
+                settings.switch.useLibraryNames = !settings.switch.useLibraryNames;
+                update_switch_local_storage("switch.useLibraryNames", settings.switch.useLibraryNames);
+                setup_keywords_in_select();
+                create_keyword_statistics_graph();
+                create_keyword_times_run_graph();
+                create_keyword_total_duration_graph();
+                create_keyword_average_duration_graph();
+                create_keyword_min_duration_graph();
+                create_keyword_max_duration_graph();
+            });
             // compare filters
             compareRunIds.forEach(id => {
                 const element = document.getElementById(id);
@@ -3931,9 +3952,27 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function setup_keywords_in_select() {
             const keywordSelect = document.getElementById("keywordSelect");
             keywordSelect.innerHTML = "";
-            const keywordNames = [...new Set(filteredKeywords.map(keyword => keyword.name))].sort();
-            keywordNames.forEach(keywordName => keywordSelect.options.add(new Option(keywordName, keywordName)));
-            keywordSelect.selectedIndex = keywordNames.length - 1;
+            const useLibraryNames = settings?.switch?.useLibraryNames === true;
+
+            // Build display names depending on the setting
+            const keywordNames = [
+                ...new Set(
+                    filteredKeywords.map(keyword =>
+                        useLibraryNames && keyword.owner
+                            ? `${keyword.owner}.${keyword.name}`
+                            : keyword.name
+                    )
+                )
+            ].sort();
+
+            // Add options to select
+            keywordNames.forEach(keywordName => {
+                keywordSelect.options.add(new Option(keywordName, keywordName));
+            });
+            // Optionally select the last one
+            if (keywordNames.length > 0) {
+                keywordSelect.selectedIndex = keywordNames.length - 1;
+            }
         }
 
         ///////////////////////////
@@ -5952,6 +5991,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function get_statistics_graph_data(dataType, graphType, filteredData) {
             const suiteSelectSuitesCombined = document.getElementById("suiteSelectSuites").value === "All Suites Combined";
             const keywordSelect = document.getElementById("keywordSelect").value;
+            const useLibraryNames = settings?.switch?.useLibraryNames === true;
             const rawPassed = [], rawFailed = [], rawSkipped = [], labels = [], aliases = [];
             let names = [];
             const process_value = (value) => {
@@ -5964,7 +6004,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             };
             for (const value of filteredData) {
                 if (exclude_from_suite_data(dataType, value)) continue;
-                if (dataType === "keyword" && value.name !== keywordSelect) continue;
+                if (dataType === "keyword") {
+                    const keywordKey = useLibraryNames && value.owner
+                        ? `${value.owner}.${value.name}`
+                        : value.name;
+                    if (keywordKey !== keywordSelect) continue;
+                }
                 process_value(value);
             }
             const finalLabels = graphType !== "line" ? (settings.show.aliases ? aliases : labels) : labels;
@@ -6450,18 +6495,36 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const testSelect = document.getElementById("testSelect").value;
             const testTagsSelect = document.getElementById("testTagsSelect").value;
             const keywordSelect = document.getElementById("keywordSelect").value;
+            const useLibraryNames = settings?.switch?.useLibraryNames === true;
             const limit = inFullscreen && inFullscreenGraph.includes("Duration") ? 100 : 30;
-
             const should_include = (value) => {
-                if (dataType === "keyword" && value.name !== keywordSelect) return false;
+                // --- keyword filtering ---
+                if (dataType === "keyword") {
+                    const keywordKey = useLibraryNames && value.owner
+                        ? `${value.owner}.${value.name}`
+                        : value.name;
+
+                    if (keywordKey !== keywordSelect) return false;
+                }
+                // --- suite/test filtering ---
                 if (exclude_from_suite_data(dataType, value)) return false;
                 if (settings.switch.suitePathsTestSection) {
-                    if (dataType === "test" && suiteSelectTests !== "All" && value.full_name !== `${suiteSelectTests}.${value.name}`) return false;
+                    if (dataType === "test" && suiteSelectTests !== "All" &&
+                        value.full_name !== `${suiteSelectTests}.${value.name}`) {
+                        return false;
+                    }
                 } else {
-                    if (dataType === "test" && suiteSelectTests !== "All" && !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) && value.full_name !== `${suiteSelectTests}.${value.name}`) return false;
+                    if (dataType === "test" && suiteSelectTests !== "All" &&
+                        !value.full_name.includes(`.${suiteSelectTests}.${value.name}`) &&
+                        value.full_name !== `${suiteSelectTests}.${value.name}`) {
+                        return false;
+                    }
                 }
                 if (dataType === "test" && testSelect !== "All" && value.name !== testSelect) return false;
-                if (dataType === "test" && testTagsSelect !== "All" && !value.tags.replace(/\[|\]/g, "").split(",").includes(testTagsSelect)) return false;
+                if (dataType === "test" && testTagsSelect !== "All") {
+                    const tags = value.tags?.replace(/\[|\]/g, "").split(",").map(t => t.trim()) || [];
+                    if (!tags.includes(testTagsSelect)) return false;
+                }
                 return true;
             };
 
