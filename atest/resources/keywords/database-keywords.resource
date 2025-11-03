@@ -20,9 +20,8 @@ Validate Database
     VAR    @{new_result}    @{EMPTY}
     IF    $table == 'runs'
         FOR    ${row}    IN    @{result}
-            Log    ${row}[-1]
-            ${path}    Split String From Right    string=${row}[-1]    separator=\\    max_split=1
-            Set List Value    ${row}    index=-1    value=${path}[1]
+            ${path}    Split String From Right    string=${row}[-2]    separator=\\    max_split=1
+            Set List Value    ${row}    index=-2    value=${path}[1]
             Append To List    ${new_result}    ${row}
         END
     ELSE

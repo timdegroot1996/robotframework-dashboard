@@ -27,4 +27,3 @@ Move All Screenshots
             END
         END
     END
-    
