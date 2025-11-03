@@ -908,10 +908,16 @@
                                     aria-selected="true">Graphs</button>
                             </li>
                             <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="keywords-tab" data-bs-toggle="tab"
+                                    data-bs-target="#keywords" type="button" role="tab" aria-controls="keywords"
+                                    aria-selected="false">Keywords</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="json-tab" data-bs-toggle="tab" data-bs-target="#json"
                                     type="button" role="tab" aria-controls="json" aria-selected="false">JSON</button>
                             </li>
                         </ul>
+
                         <div class="tab-content pt-3" id="settingsTabContent">
                             <div class="tab-pane fade show active" id="general" role="tabpanel"
                                 aria-labelledby="general-tab">
@@ -1027,6 +1033,11 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="tab-pane fade" id="keywords" role="tabpanel" aria-labelledby="keywords-tab">
+                                <p><i>Enable or disable libraries used for the keyword graphs.</i></p>
+                                <div id="keywordLibraryList" class="list-group"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1131,15 +1142,12 @@
         // base bar config
         const barConfig = {
             borderSkipped: false,
-            borderRadius: (context) => {
-                const { chart, parsed, index, dataset } = context;
-                const barHeight = chart.scales.y.getPixelForValue(0) - chart.scales.y.getPixelForValue(parsed.y);
-                const radius = Math.min(settings.show.rounding, Math.abs(barHeight / 2));
+            borderRadius: () => {
                 return {
-                    topLeft: radius,
-                    topRight: radius,
-                    bottomLeft: radius,
-                    bottomRight: radius
+                    topLeft: settings.show.rounding,
+                    topRight: settings.show.rounding,
+                    bottomLeft: settings.show.rounding,
+                    bottomRight: settings.show.rounding
                 };
             }
         };
@@ -2366,6 +2374,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 duration: 1500,
                 rounding: 6,
             },
+            libraries: {
+            },
             menu: {
                 overview: false,
                 dashboard: true,
@@ -3213,6 +3223,37 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             $("#settingsModal").on("hidden.bs.modal", function () {
                 setup_data_and_graphs();
             });
+            // function to catch the closing of the settings modal
+            $("#settingsModal").on("shown.bs.modal", function () {
+                const libraries = [...new Set(
+                    keywords
+                        .map(item => item.owner)
+                        .filter(owner => owner) // remove null, undefined, or empty string
+                )];
+                const keywordPrefs = settings.libraries
+                function render_keyword_libraries() {
+                    const container = document.getElementById("keywordLibraryList");
+                    container.innerHTML = "";
+                    libraries.forEach(lib => {
+                        const isChecked = keywordPrefs[lib] ?? true;
+                        const item = document.createElement("div");
+                        item.className = "list-group-item d-flex justify-content-between align-items-center";
+                        item.innerHTML = `
+                            <span>${lib}</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="keyword-${lib}"
+                                    ${isChecked ? "checked" : ""}>
+                            </div>
+                        `;
+                        container.appendChild(item);
+                        document.getElementById(`keyword-${lib}`).addEventListener("change", e => {
+                            keywordPrefs[lib] = e.target.checked;
+                            set_local_storage_item("libraries", keywordPrefs)
+                        });
+                    });
+                }
+                render_keyword_libraries();
+            });
             // function to create setting toggle handlers
             function create_toggle_handler({ key, elementId, isNumber = false }) {
                 return function (load = false) {
@@ -4025,15 +4066,20 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function to filter suites/tests/keywords based on the already filtered runs
         function filter_data(data) {
-            var validRunStarts = [];
-            for (value of filteredRuns) {
-                validRunStarts.push(value.run_start);
-            }
-            var filteredData = [];
-            for (value of data) {
-                if (validRunStarts.includes(value.run_start)) {
-                    filteredData.push(value);
-                }
+            // Step 1: Only include entries that match filteredRuns
+            const validRunStarts = filteredRuns.map(v => v.run_start);
+            let filteredData = data.filter(v => validRunStarts.includes(v.run_start));
+            // Step 2: Check if the first element has an "owner" key
+            if (filteredData.length > 0 && "owner" in filteredData[0]) {
+                const libraries = settings.libraries || {};
+                filteredData = filteredData.filter(item => {
+                    // if item has no owner, keep it
+                    if (!item.owner) return true;
+                    // if owner not in settings.libraries, assume enabled
+                    if (!(item.owner in libraries)) return true;
+                    // otherwise, include only if library is enabled
+                    return libraries[item.owner];
+                });
             }
             return filteredData;
         }
@@ -5332,6 +5378,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     keyword.min_time_s,
                     keyword.max_time_s,
                     keyword.run_alias,
+                    keyword.owner,
                 ]);
             }
             keywordTable = new DataTable("#keywordTable", {
@@ -5351,6 +5398,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     { title: "min_execution_time" },
                     { title: "max_execution_time" },
                     { title: "alias" },
+                    { title: "owner" },
                 ],
                 data: data,
             });

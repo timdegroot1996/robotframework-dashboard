@@ -24,12 +24,14 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         self.connection.row_factory = sqlite3.Row
 
     def run_start_exists(self, run_start: str):
-        run_rows = self.connection.cursor().execute(SELECT_RUN_STARTS_FROM_RUNS).fetchall()
+        run_rows = (
+            self.connection.cursor().execute(SELECT_RUN_STARTS_FROM_RUNS).fetchall()
+        )
         rows = []
         for row in run_rows:
             rows.append(self._dict_from_row(row))
-        run_starts = [item['run_start'] for item in rows]
-        return f'{run_start}' in run_starts
+        run_starts = [item["run_start"] for item in rows]
+        return f"{run_start}" in run_starts
 
     def _create_tables(self):
         """Helper function to create the tables (they use IF NOT EXISTS to not override)"""
@@ -99,6 +101,10 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
                 self.connection.cursor().execute(KEYWORD_TABLE_UPDATE_ALIAS)
                 self.connection.commit()
                 keyword_table_length = get_keywords_length()
+            if keyword_table_length == 11:
+                self.connection.cursor().execute(KEYWORD_TABLE_UPDATE_OWNER)
+                self.connection.commit()
+                keyword_table_length = get_keywords_length()
         else:
             self.connection.cursor().execute(CREATE_RUNS)
             self.connection.cursor().execute(CREATE_SUITES)
@@ -120,9 +126,7 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
             self._insert_tests(output_data["tests"], run_alias)
             self._insert_keywords(output_data["keywords"], run_alias)
         except Exception as error:
-            print(
-                f"   ERROR: something went wrong with the database: {error}"
-            )
+            print(f"   ERROR: something went wrong with the database: {error}")
 
     def _insert_runs(self, runs: list, tags: list, run_alias: str, path: Path):
         """Helper function to insert the run data with the run tags"""
@@ -160,7 +164,9 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         """Helper function to insert the keyword data"""
         full_keywords = []
         for keyword in keywords:
-            keyword += (run_alias,)
+            keyword = list(keyword)
+            keyword.insert(10, run_alias)
+            keyword = tuple(keyword)
             full_keywords.append(keyword)
         self.connection.executemany(INSERT_INTO_KEYWORDS, full_keywords)
         self.connection.commit()

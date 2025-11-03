@@ -2,7 +2,6 @@ from robot.api import ExecutionResult, ResultVisitor
 from robot.result.model import TestCase, TestSuite, Keyword
 from datetime import datetime
 from pathlib import Path
-from re import sub
 
 
 class OutputProcessor:
@@ -57,19 +56,21 @@ class OutputProcessor:
         """Helper function to calculate keyword statistics"""
         average_keyword_dict = {}
         average_keyword_list = []
+        run_start = keyword_list[0][0]
         for keyword in keyword_list:
-            run_start = keyword[0]
             name = keyword[1]
             passed = int(keyword[2])
             failed = int(keyword[3])
             skipped = int(keyword[4])
             elapsed_s = keyword[5]
+            owner = keyword[6]
             if not name in average_keyword_dict.keys():
                 average_keyword_dict[name] = {
                     "passed": passed,
                     "failed": failed,
                     "skipped": skipped,
                     "elapsed_s": [elapsed_s],
+                    "owner": owner,
                 }
             else:
                 average_keyword_dict[name]["passed"] += passed
@@ -94,6 +95,7 @@ class OutputProcessor:
                     round(sum_elapsed_list / len_elapsed_list, 3),  # average usage time
                     round(min_elapsed_list, 3),  # fastest usage time
                     round(max_elapsed_list, 3),  # slowest usage time
+                    average_keyword_dict[name]["owner"],  # library
                 )
             )
         return average_keyword_list
@@ -277,5 +279,6 @@ class KeywordProcessor(ResultVisitor):
                 keyword.failed,
                 keyword.skipped,
                 elapsed_time,
+                keyword.owner,
             )
         )
