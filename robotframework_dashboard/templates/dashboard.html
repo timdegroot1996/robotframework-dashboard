@@ -5164,9 +5164,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             var config;
             if (settings.graphTypes.keywordTimesRunGraphType == "bar") {
                 const limit = inFullscreen && inFullscreenGraph.includes("keywordTimesRun") ? 100 : 30;
-                config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Duration");
+                config = get_graph_config("bar", graphData, `Max ${limit} Bars`, "Run", "Times Run");
             } else if (settings.graphTypes.keywordTimesRunGraphType == "line") {
-                config = get_graph_config("line", graphData, "", "Date", "Duration");
+                config = get_graph_config("line", graphData, "", "Date", "Times Run");
             }
             if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
             keywordTimesRunGraph = new Chart("keywordTimesRunGraph", config);
