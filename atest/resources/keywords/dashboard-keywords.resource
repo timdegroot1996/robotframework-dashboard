@@ -51,6 +51,38 @@ Validate Screenshot
 
 Validate Component
     [Arguments]    ${id}    ${name}    ${folder}
-    Sleep    time_=200ms
+    Sleep    time_=1s
     Take Screenshot    filename=${SCREENSHOT_FOLDER}/${name}    selector=id=${id}
     Validate Screenshot    screenshot=${name}    reference=${name}    folder=${folder}
+
+Set Run Filter
+    [Arguments]    ${value}
+    Click    selector=id=filters
+    Select Options By    id=runs    value    ${value}
+    Click    selector=id=closeFilters
+
+Set Date Filter
+    [Arguments]    ${fromDate}=${None}    ${fromTime}=${None}    ${toDate}=${None}    ${toTime}=${None}
+    Click    selector=id=filters
+    Sleep    time_=500ms
+    IF    '${fromDate}' != '${None}'    Type Text    selector=id=fromDate    txt=${fromDate}    clear=True
+    IF    '${fromTime}' != '${None}'    Type Text    selector=id=fromTime    txt=${fromTime}    clear=True
+    IF    '${toDate}' != '${None}'    Type Text    selector=id=toDate    txt=${toDate}    clear=True
+    IF    '${toTime}' != '${None}'    Type Text    selector=id=toTime    txt=${toTime}    clear=True
+    Take Screenshot
+    Click    selector=id=closeFilters
+
+Set Amount Filter
+    [Arguments]    ${amount}
+    Click    selector=id=filters
+    Fill Text    selector=id=amount    txt=${amount}
+    Click    selector=id=closeFilters
+
+Change Settings
+    Click    selector=id=themeDark
+    Click    selector=id=settings
+    Click    selector=id=toggleLegends
+    Click    selector=id=toggleAxisTitles
+    Click    selector=id=toggleLabels
+    Select Options By    id=toggleBarRounding    value    0
+    Click    selector=id=closeSettings

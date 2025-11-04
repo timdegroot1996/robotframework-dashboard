@@ -11,13 +11,14 @@ Test Teardown    Run Keywords    Close Dashboard    Remove Database And Dashboar
 
 
 *** Test Cases ***
-Validate dashboard runs filter
-    Validate Run Filter    option=Tests
-    Validate Run Filter    option=Testsuites
-    Validate Run Filter    option=Other
-    Validate Run Filter    option=All
+Validate Dashboard Run Name Filter
+    Set Run Filter    value=Tests
+    Validate Component    id=runStatisticsSection    name=runNameFilter    folder=run
 
-Validate dashboard run tags filter
-    Validate Run Tag Filter    option=dev
-    Validate Run Tag Filter    option=prod
-    Validate Run Tag Filter    option=All
+Validate Dashboard Date Filter
+    Set Date Filter    fromDate=13032025    fromTime=0025
+    Validate Component    id=runStatisticsSection    name=runDateFilter    folder=run
+
+Validate Dashboard Amount Filter
+    Set Amount Filter    amount=5
+    Validate Component    id=runStatisticsSection    name=runAmountFilter    folder=run
