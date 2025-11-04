@@ -323,6 +323,7 @@ To be able to automatically follow up on the server implementation and not have 
 <a name="Contributing"></a>
 ## Contributing
 Contributions are welcome! If you encounter any issues, have suggestions for improvements, or would like to add new features, feel free to open an issue or submit a pull request.
+Additional information can be found here in [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 <a name="License"></a>
 ## License
