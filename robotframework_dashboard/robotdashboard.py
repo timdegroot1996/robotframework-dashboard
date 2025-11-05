@@ -111,6 +111,7 @@ class RobotDashboard:
                 )
             else:
                 for subdir, _, files in walk(folder_path):
+                    files.sort()
                     for file in files:
                         if "output" in file and file.endswith(".xml"):
                             try:

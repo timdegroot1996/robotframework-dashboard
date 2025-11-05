@@ -20,4 +20,4 @@
 ======================================================================================
  5. Creating dashboard HTML
   WARNING: There are no runs so the dashboard will be empty!
-  created dashboard '*:\*\robot_dashboard.html' in * seconds
+  created dashboard '*robot_dashboard.html' in * seconds

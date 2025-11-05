@@ -20,7 +20,7 @@ Stop Browser
 
 Open Dashboard
     New Context    colorScheme=dark    viewport={"width": 1920, "height": 1080}
-    New Page    url=${ROOT_FOLDER}/robotdashboard_${DASHBOARD_INDEX}.html
+    New Page    url=file:${ROOT_FOLDER}/robotdashboard_${DASHBOARD_INDEX}.html
     Wait For Elements State    selector=id=loading    state=hidden
     Click    selector=id=settings
     Fill Text    selector=id=toggleAnimationDuration    txt=0
