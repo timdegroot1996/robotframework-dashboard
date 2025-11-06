@@ -4185,37 +4185,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
             const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
 
-            const overviewCard = (name, stats, duration, status, amount, compares, passed_runs, log_path, log_name, svg, runIndex) => `
-        <div class="col-4 overview-card" id="${name}Card${runIndex}">
-            <div class="card border-3 border-${status}">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col text-center"><h5 class="card-title mb-0">${name}</h5></div>
-                        <div class="col-auto"><h5>#${amount}</h5></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4 overview-canvas">
-                            <canvas id="${name}Graph${runIndex}"></canvas>
-                        </div>
-                        <div class="col-3 d-flex align-items-center">
-                            <div>
-                                <div class="green-text">Passed: ${stats[0]}</div>
-                                <div class="red-text">Failed: ${stats[1]}</div>
-                                <div class="yellow-text">Skipped: ${stats[2]}</div>
-                            </div>
-                        </div>
-                        <div class="col-5 d-flex align-items-center" style="overflow:auto;">
-                            <div>
-                                <div class="${compares}">${svg} <i>${Math.round(duration)}s</i></div>
-                                <div>Passed Runs: ${passed_runs}%</div>
-                                <a href="#" onclick="event.stopPropagation(); open_log_from_path('${log_path}'); return false;" target="_blank">${log_name}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>`;
-
             let overviewHTML = '';
             const overviewDurationPercentage = document.getElementById('overviewDurationPercentage').value;
             const keys = Object.keys(data).sort();
@@ -4244,6 +4213,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
 
                     const compares = compare_to_average(duration, average, overviewDurationPercentage);
+                    const rounded_duration = Math.round(duration);
                     const passedRuns = (runList.reduce((a, b) => a + b.passed_run, 0) / runList.length * 100).toFixed(2);
                     const status = failed > 0 ? 'failed' : skipped > 0 ? 'skipped' : 'passed';
                     const log_path = use_logs ? path : '';
@@ -4253,10 +4223,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         overviewHTML += '<div class="row">';
                     }
 
-                    overviewHTML += overviewCard(
+                    overviewHTML += generate_overview_card_html(
                         key,
                         r.stats,
-                        duration,
+                        rounded_duration,
                         status,
                         runNumber,
                         compares,
@@ -4348,6 +4318,46 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     overviewGraphs.push(`${key}Graph${runIndex}`);
                 });
             });
+        }
+
+        // ProjectNamePostfix is for differentiating overview statistic and project specific statistics
+        // since the project specific statistics are differentiated by adding project_ after projectName to the id
+        function generate_overview_card_html(projectName, stats, rounded_duration, status, runNumber, compares, passed_runs, log_path, log_name, svg, runIndex, projectNamePostfix = "") {
+            return `
+            <div class="col-4 overview-card" id="${projectName}${projectNamePostfix}Card${runIndex}">
+                <div class="card border-3 border-${status}">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col text-center"><h5 class="card-title mb-0">${projectName}</h5></div>
+                            <div class="col-auto"><h5>#${runNumber}</h5></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 overview-canvas">
+                                <canvas id="${projectName}${projectNamePostfix}Graph${runIndex}"></canvas>
+                            </div>
+                            <div class="col-3 d-flex align-items-center">
+                                <div>
+                                    <div class="green-text">Passed: ${stats[0]}</div>
+                                    <div class="red-text">Failed: ${stats[1]}</div>
+                                    <div class="yellow-text">Skipped: ${stats[2]}</div>
+                                </div>
+                            </div>
+                            <div class="col-5 d-flex align-items-center" style="overflow:auto;">
+                                <div>
+                                    <div class="${compares}" id="${projectName}${projectNamePostfix}RunCardCompares${runIndex}">
+                                        ${svg}
+                                        <i id="${projectName}${projectNamePostfix}RunCardComparesValue${runIndex}" value="${rounded_duration}">
+                                            ${rounded_duration}s
+                                        </i>
+                                    </div>
+                                    <div>Passed Runs: ${passed_runs}%</div>
+                                    <a href="#" onclick="event.stopPropagation(); open_log_from_path('${log_path}'); return false;" target="_blank">${log_name}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
         }
 
         // function to create run statistics graph in the run section
