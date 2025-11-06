@@ -1231,7 +1231,6 @@
         var gridEditMode = false; // used to check how the graphs should be shown when rendered
 
         // global vars for switching between overview and dashboard
-        var overviewGraphs = [];
         var selectedRunSetting = '';
         var selectedTagSetting = '';
 
@@ -3978,6 +3977,56 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
         }
 
+      function create_overview_run_donut(run, runIndex, projectName, IsForOverviewStats = true) {
+          let idGraphSubString, passed, failed, skipped;
+
+          if (IsForOverviewStats) {
+              idGraphSubString = "Graph";
+              [passed, failed, skipped] = run.stats;
+          } else {
+              idGraphSubString = "_projectGraph";
+              passed = run.passed;
+              failed = run.failed;
+              skipped = run.skipped;
+          }
+
+          const el = document.getElementById(`${projectName}${idGraphSubString}${runIndex}`);
+
+          if (!el) {
+              console.warn(
+                  `No element with ID ${projectName}${idGraphSubString}${runIndex} found for donut chart creation`
+              );
+              return;
+          }
+
+          if (el.chartInstance) el.chartInstance.destroy();
+          const chartData = {
+              labels: [],
+              datasets: [{
+                  data: [],
+                  backgroundColor: [],
+                  borderColor: [],
+                  hoverOffset: 4
+              }]
+          };
+          const pushIf = (label, value, bg, border) => {
+              if (value > 0) {
+                  chartData.labels.push(label);
+                  chartData.datasets[0].data.push(value);
+                  chartData.datasets[0].backgroundColor.push(bg);
+                  chartData.datasets[0].borderColor.push(border);
+              }
+          };
+          pushIf('passed', passed, passedBackgroundColor, passedBackgroundBorderColor);
+          pushIf('skipped', skipped, skippedBackgroundColor, skippedBackgroundBorderColor);
+          pushIf('failed', failed, failedBackgroundColor, failedBackgroundBorderColor);
+
+          const config = get_graph_config('donut', chartData, 'Run Status');
+          delete config.options.plugins.datalabels;
+          config.options.plugins.legend.display = false;
+
+          el.chartInstance = new Chart(el, config);
+      }
         ///////////////////////////
         // DATA FILTER FUNCTIONS //
         ///////////////////////////
@@ -4152,9 +4201,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function to create overview statistics blocks in the overview section
         function create_overview_statistics_graphs() {
-            for (const g of overviewGraphs) window[g].destroy();
-            overviewGraphs = [];
-
             const data = {};
             for (const run of runs) {
                 var name = '';
@@ -4288,34 +4334,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 }
 
                 runsToShow.forEach((r, runIndex) => {
-                    const el = document.getElementById(`${key}Graph${runIndex}`);
-                    const [passed, failed, skipped] = r.stats;
-                    const chartData = {
-                        labels: [],
-                        datasets: [{
-                            data: [],
-                            backgroundColor: [],
-                            borderColor: [],
-                            hoverOffset: 4
-                        }]
-                    };
-                    const pushIf = (label, value, bg, border) => {
-                        if (value > 0) {
-                            chartData.labels.push(label);
-                            chartData.datasets[0].data.push(value);
-                            chartData.datasets[0].backgroundColor.push(bg);
-                            chartData.datasets[0].borderColor.push(border);
-                        }
-                    };
-                    pushIf('passed', passed, passedBackgroundColor, passedBackgroundBorderColor);
-                    pushIf('failed', failed, failedBackgroundColor, failedBackgroundBorderColor);
-                    pushIf('skipped', skipped, skippedBackgroundColor, skippedBackgroundBorderColor);
-
-                    const config = get_graph_config('donut', chartData, 'Run Status');
-                    delete config.options.plugins.datalabels;
-                    config.options.plugins.legend.display = false;
-                    window[`${key}Graph${runIndex}`] = new Chart(el, config);
-                    overviewGraphs.push(`${key}Graph${runIndex}`);
+                    create_overview_run_donut(r, runIndex, key);
                 });
             });
         }
