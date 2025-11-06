@@ -2817,9 +2817,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             document.getElementById("alertContainer").innerHTML = ""
         }
 
-        // function to setup all collapse buttons and icons
-        function setup_collapsables() {
-            document.querySelectorAll(".collapse-icon").forEach(icon => {
+        // function to setup collapse buttons and icons
+        function setup_collapsables(elementToSearch = document) {
+            elementToSearch.querySelectorAll(".collapse-icon").forEach(icon => {
                 const sectionId = icon.id.replace("collapse", "");
                 const update_icon = () => {
                     const section = document.getElementById(sectionId);
