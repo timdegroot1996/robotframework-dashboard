@@ -1145,6 +1145,8 @@
         const failedBackgroundColor = "rgba(206, 62, 1, 0.7)";
         const greyBackgroundBorderColor = "#0f172a";
         const greyBackgroundColor = "rgba(33, 37, 41, 0.7)";
+        const blueBackgroundBorderColor = "rgba(54, 162, 235)";
+        const blueBackgroundColor = "rgba(54, 162, 235, 0.5)";
         const graphFontSize = 12;
 
         // base bar config
@@ -1172,6 +1174,11 @@
         const skippedConfig = {
             backgroundColor: skippedBackgroundColor,
             borderColor: skippedBackgroundBorderColor,
+            ...barConfig,
+        }
+        const blueConfig = {
+            backgroundColor: blueBackgroundColor,
+            borderColor: blueBackgroundBorderColor,
             ...barConfig,
         }
         // base line config
@@ -1577,6 +1584,29 @@
                 </div>`,
             },
             {
+                key: "suiteMostTimeConsuming",
+                label: "Suite Most Time Consuming",
+                defaultType: "timeline",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                html: `<div class="graph-header">
+                    <h6>Most Time Consuming</h6>
+                    <div class="graph-controls">
+                        <a class="bar-graph information" id="suiteMostTimeConsumingGraphBar"></a>
+                        <a class="timeline-graph information" id="suiteMostTimeConsumingGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="suiteMostTimeConsumingFullscreen"></a>
+                        <a class="close-graph information" id="suiteMostTimeConsumingClose" hidden></a>
+                        <a class="shown-graph information" id="suiteMostTimeConsumingShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="suiteMostTimeConsumingHidden" hideGraphHidden></a>
+                    </div>
+                </div>
+                <div class="graph-body">
+                    <div id="suiteMostTimeConsumingVertical" class="w-100 vertical">
+                        <canvas id="suiteMostTimeConsumingGraph"></canvas>
+                    </div
+                </div>`,
+            },
+            {
                 key: "testStatistics",
                 label: "Test Statistics",
                 defaultType: "timeline",
@@ -1773,6 +1803,29 @@
                 </div>`,
             },
             {
+                key: "testMostTimeConsuming",
+                label: "Test Most Time Consuming",
+                defaultType: "timeline",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                html: `<div class="graph-header">
+                    <h6>Most Time Consuming</h6>
+                    <div class="graph-controls">
+                        <a class="bar-graph information" id="testMostTimeConsumingGraphBar"></a>
+                        <a class="timeline-graph information" id="testMostTimeConsumingGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="testMostTimeConsumingFullscreen"></a>
+                        <a class="close-graph information" id="testMostTimeConsumingClose" hidden></a>
+                        <a class="shown-graph information" id="testMostTimeConsumingShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="testMostTimeConsumingHidden" hideGraphHidden></a>
+                    </div>
+                </div>
+                <div class="graph-body">
+                    <div id="testMostTimeConsumingVertical" class="w-100 vertical">
+                        <canvas id="testMostTimeConsumingGraph"></canvas>
+                    </div
+                </div>`,
+            },
+            {
                 key: "keywordStatistics",
                 label: "Keyword Statistics",
                 defaultType: "percentages",
@@ -1919,6 +1972,29 @@
                 <div class="graph-body">
                     <div id="keywordMostFailedVertical" class="w-100 vertical">
                         <canvas id="keywordMostFailedGraph"></canvas>
+                    </div
+                </div>`,
+            },
+            {
+                key: "keywordMostTimeConsuming",
+                label: "Keyword Most Time Consuming",
+                defaultType: "timeline",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                html: `<div class="graph-header">
+                    <h6>Most Time Consuming</h6>
+                    <div class="graph-controls">
+                        <a class="bar-graph information" id="keywordMostTimeConsumingGraphBar"></a>
+                        <a class="timeline-graph information" id="keywordMostTimeConsumingGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="keywordMostTimeConsumingFullscreen"></a>
+                        <a class="close-graph information" id="keywordMostTimeConsumingClose" hidden></a>
+                        <a class="shown-graph information" id="keywordMostTimeConsumingShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="keywordMostTimeConsumingHidden" hideGraphHidden></a>
+                    </div>
+                </div>
+                <div class="graph-body">
+                    <div id="keywordMostTimeConsumingVertical" class="w-100 vertical">
+                        <canvas id="keywordMostTimeConsumingGraph"></canvas>
                     </div
                 </div>`,
             },
@@ -2160,6 +2236,12 @@
             "suiteMostFailedClose": "Close",
             "suiteMostFailedShown": "Hide Graph",
             "suiteMostFailedHidden": "Show Graph",
+            "suiteMostTimeConsumingGraphBar": "Bar: Displays suites ranked by how often they were the slowest (most time-consuming) suite in a run. Each bar represents how many times a suite was the single slowest one across all runs. The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.",
+            "suiteMostTimeConsumingGraphTimeline": "Timeline: Displays the slowest suite for each run on a timeline. For every run, only the single most time-consuming suite is shown. The regular view shows the Top 10 most frequently slowest suites; fullscreen mode expands the list to the Top 50.",
+            "suiteMostTimeConsumingFullscreen": "Fullscreen",
+            "suiteMostTimeConsumingClose": "Close",
+            "suiteMostTimeConsumingShown": "Hide Graph",
+            "suiteMostTimeConsumingHidden": "Show Graph",
             "testStatisticsGraphTimeline": `This graph displays the statistics of the tests in a timeline format
 Only Changes: Displays only tests that have changed statuses at some point in time`,
             "testStatisticsFullscreen": "Fullscreen",
@@ -2220,6 +2302,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             "testRecentMostFailedClose": "Close",
             "testRecentMostFailedShown": "Hide Graph",
             "testRecentMostFailedHidden": "Show Graph",
+            "testMostTimeConsumingGraphBar": "Bar: Displays tests ranked by how often they were the slowest (most time-consuming) test in a run. Each bar represents how many times a test was the single slowest one across all runs. The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.",
+            "testMostTimeConsumingGraphTimeline": "Timeline: Displays the slowest test for each run on a timeline. For every run, only the single most time-consuming test is shown. The regular view shows the Top 10 most frequently slowest tests; fullscreen mode expands the list to the Top 50.",
+            "testMostTimeConsumingFullscreen": "Fullscreen",
+            "testMostTimeConsumingClose": "Close",
+            "testMostTimeConsumingShown": "Hide Graph",
+            "testMostTimeConsumingHidden": "Show Graph",
             "keywordStatisticsGraphPercentages": "Percentages: Displays the distribution of passed, failed, skipped statuses for each keyword per run",
             "keywordStatisticsGraphAmount": "Amount: Displays raw counts of each status per run",
             "keywordStatisticsGraphLine": "Line: Displays the same data but over a time axis",
@@ -2263,6 +2351,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             "keywordMostFailedClose": "Close",
             "keywordMostFailedShown": "Hide Graph",
             "keywordMostFailedHidden": "Show Graph",
+            "keywordMostTimeConsumingGraphBar": "Bar: Displays keywords ranked by how often they were the slowest (most time-consuming) keyword in a run. Each bar represents how many times a keyword was the single slowest one across all runs. The regular view shows the Top 10; fullscreen mode expands the list to the Top 50.",
+            "keywordMostTimeConsumingGraphTimeline": "Timeline: Displays the slowest keyword for each run on a timeline. For every run, only the single most time-consuming keyword is shown. The regular view shows the Top 10 most frequently slowest keywords; fullscreen mode expands the list to the Top 50.",
+            "keywordMostTimeConsumingFullscreen": "Fullscreen",
+            "keywordMostTimeConsumingClose": "Close",
+            "keywordMostTimeConsumingShown": "Hide Graph",
+            "keywordMostTimeConsumingHidden": "Show Graph",
             "compareStatisticsGraphBar": "This graph displays the overall statistics of the selected runs",
             "compareStatisticsFullscreen": "Fullscreen",
             "compareStatisticsClose": "Close",
@@ -3481,6 +3575,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_suite_statistics_graph();
                 create_suite_duration_graph();
                 create_suite_most_failed_graph();
+                create_suite_most_time_consuming_graph();
             });
             document.getElementById("resetSuiteFolder").addEventListener("click", () => {
                 create_suite_folder_donut_graph("");
@@ -3505,6 +3600,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_test_recent_most_flaky_graph();
                 create_test_most_failed_graph();
                 create_test_recent_most_failed_graph();
+                create_test_most_time_consuming_graph();
             });
             document.getElementById("testTagsSelect").addEventListener("change", () => {
                 setup_tests_in_select();
@@ -3537,6 +3633,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_keyword_min_duration_graph();
                 create_keyword_max_duration_graph();
                 create_keyword_most_failed_graph();
+                create_keyword_most_time_consuming_graph();
             });
             // compare filters
             compareRunIds.forEach(id => {
@@ -4748,16 +4845,64 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             suiteMostFailedGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(suiteMostFailedGraph, event)
             });
+        }
 
-            // const vertical = document.getElementById("suiteMostFailedVertical");
-            // const observer = new ResizeObserver(entries => {
-            //     for (let entry of entries) {
-            //         update_height("suiteMostFailedVertical", config.data.labels.length, settings.graphTypes.suiteMostFailedGraphType);
-            //         suiteMostFailedGraph.resize();
-            //     }
-            // });
-
-            // observer.observe(vertical.closest(".grid-stack-item"));
+        // function to create the most time consuming suite graph in the suite section
+        function create_suite_most_time_consuming_graph() {
+            if (suiteMostTimeConsumingGraph) {
+                suiteMostTimeConsumingGraph.destroy();
+            }
+            const data = get_most_time_consuming_data("suite", settings.graphTypes.suiteMostTimeConsumingGraphType, filteredSuites, false);
+            const graphData = data[0]
+            const callbackData = data[1];
+            var config;
+            const limit = inFullscreen && inFullscreenGraph.includes("suiteMostTimeConsuming") ? 50 : 10;
+            if (settings.graphTypes.suiteMostTimeConsumingGraphType == "bar") {
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Suite", "Fails");
+                config.options.plugins.legend = { display: false };
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return callbackData[tooltipItem.label];
+                        },
+                    },
+                };
+                delete config.options.onClick
+            } else if (settings.graphTypes.suiteMostTimeConsumingGraphType == "timeline") {
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Suite");
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (context) {
+                            return callbackData[context.raw.x[0]];
+                        },
+                    },
+                };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 45,
+                        maxRotation: 45,
+                        stepSize: 1,
+                        callback: function (value, index, ticks) {
+                            return callbackData[this.getLabelForValue(value)];
+                        },
+                    },
+                    title: {
+                        display: settings.show.axisTitles,
+                        text: "Run",
+                    },
+                };
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData)
+                    }
+                };
+                if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
+            }
+            update_height("suiteMostTimeConsumingVertical", config.data.labels.length, settings.graphTypes.suiteMostTimeConsumingGraphType);
+            suiteMostTimeConsumingGraph = new Chart("suiteMostTimeConsumingGraph", config);
+            suiteMostTimeConsumingGraph.canvas.addEventListener("click", (event) => {
+                open_log_from_label(suiteMostTimeConsumingGraph, event)
+            });
         }
 
         // function to create suite table in the suite section
@@ -5174,6 +5319,64 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
+        // function to create the most time consuming test graph in the test section
+        function create_test_most_time_consuming_graph() {
+            if (testMostTimeConsumingGraph) {
+                testMostTimeConsumingGraph.destroy();
+            }
+            const data = get_most_time_consuming_data("test", settings.graphTypes.testMostTimeConsumingGraphType, filteredTests, false);
+            const graphData = data[0]
+            const callbackData = data[1];
+            var config;
+            const limit = inFullscreen && inFullscreenGraph.includes("testMostTimeConsuming") ? 50 : 10;
+            if (settings.graphTypes.testMostTimeConsumingGraphType == "bar") {
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Test", "Fails");
+                config.options.plugins.legend = { display: false };
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return callbackData[tooltipItem.label];
+                        },
+                    },
+                };
+                delete config.options.onClick
+            } else if (settings.graphTypes.testMostTimeConsumingGraphType == "timeline") {
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Test");
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (context) {
+                            return callbackData[context.raw.x[0]];
+                        },
+                    },
+                };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 45,
+                        maxRotation: 45,
+                        stepSize: 1,
+                        callback: function (value, index, ticks) {
+                            return callbackData[this.getLabelForValue(value)];
+                        },
+                    },
+                    title: {
+                        display: settings.show.axisTitles,
+                        text: "Run",
+                    },
+                };
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData)
+                    }
+                };
+                if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
+            }
+            update_height("testMostTimeConsumingVertical", config.data.labels.length, settings.graphTypes.testMostTimeConsumingGraphType);
+            testMostTimeConsumingGraph = new Chart("testMostTimeConsumingGraph", config);
+            testMostTimeConsumingGraph.canvas.addEventListener("click", (event) => {
+                open_log_from_label(testMostTimeConsumingGraph, event)
+            });
+        }
+
         // function to create test table in the test section
         function create_test_table() {
             if (testTable) {
@@ -5341,7 +5544,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
-        // function to create test most failed graph in the test section
+        // function to create test most failed graph in the keyword section
         function create_keyword_most_failed_graph() {
             if (keywordMostFailedGraph) {
                 keywordMostFailedGraph.destroy();
@@ -5399,7 +5602,65 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
-        // function to create keyword table in the keyword section
+        // function to create the most time consuming keyword graph in the keyword section
+        function create_keyword_most_time_consuming_graph() {
+            if (keywordMostTimeConsumingGraph) {
+                keywordMostTimeConsumingGraph.destroy();
+            }
+            const data = get_most_time_consuming_data("keyword", settings.graphTypes.keywordMostTimeConsumingGraphType, filteredKeywords, false);
+            const graphData = data[0]
+            const callbackData = data[1];
+            var config;
+            const limit = inFullscreen && inFullscreenGraph.includes("keywordMostTimeConsuming") ? 50 : 10;
+            if (settings.graphTypes.keywordMostTimeConsumingGraphType == "bar") {
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Keyword", "Fails");
+                config.options.plugins.legend = { display: false };
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return callbackData[tooltipItem.label];
+                        },
+                    },
+                };
+                delete config.options.onClick
+            } else if (settings.graphTypes.keywordMostTimeConsumingGraphType == "timeline") {
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Keyword");
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (context) {
+                            return callbackData[context.raw.x[0]];
+                        },
+                    },
+                };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 45,
+                        maxRotation: 45,
+                        stepSize: 1,
+                        callback: function (value, index, ticks) {
+                            return callbackData[this.getLabelForValue(value)];
+                        },
+                    },
+                    title: {
+                        display: settings.show.axisTitles,
+                        text: "Run",
+                    },
+                };
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData)
+                    }
+                };
+                if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
+            }
+            update_height("keywordMostTimeConsumingVertical", config.data.labels.length, settings.graphTypes.keywordMostTimeConsumingGraphType);
+            keywordMostTimeConsumingGraph = new Chart("keywordMostTimeConsumingGraph", config);
+            keywordMostTimeConsumingGraph.canvas.addEventListener("click", (event) => {
+                open_log_from_label(keywordMostTimeConsumingGraph, event)
+            });
+        }
+
+        // function to create keyword table in the tables tab
         function create_keyword_table() {
             if (keywordTable) {
                 keywordTable.destroy();
@@ -6973,6 +7234,143 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
         }
 
+        function get_most_time_consuming_data(dataType, graphType, filteredData) {
+            const useLibraryNames = settings?.switch?.useLibraryNames === true;
+
+            function getTestKey(value, dataType) {
+                if (dataType === "keyword" && useLibraryNames && value.owner) {
+                    return `${value.owner}.${value.name}`;
+                }
+                if (dataType === "suite" && settings.switch.suitePathsSuiteSection) {
+                    return value.full_name;
+                } else if (dataType === "test" && settings.switch.suitePathsTestSection) {
+                    return value.full_name;
+                } else {
+                    return value.name;
+                }
+            }
+
+            /** For each run_start, find only the SLOWEST item */
+            const slowestPerRun = new Map(); // run_start -> { key, duration, alias }
+
+            for (const value of filteredData) {
+                const duration =
+                    dataType === "keyword"
+                        ? Number(value.total_time_s)
+                        : Number(value.elapsed_s);
+
+                const run = value.run_start;
+                const key = getTestKey(value, dataType);
+
+                if (!slowestPerRun.has(run)) {
+                    slowestPerRun.set(run, {
+                        key,
+                        duration,
+                        alias: value.run_alias,
+                        runStart: run,
+                    });
+                } else {
+                    const existing = slowestPerRun.get(run);
+                    if (duration > existing.duration) {
+                        slowestPerRun.set(run, {
+                            key,
+                            duration,
+                            alias: value.run_alias,
+                            runStart: run,
+                        });
+                    }
+                }
+            }
+
+            // Data grouped by keyword/test/suite (how many times it was slowest)
+            const hitCount = new Map();
+            const aliases = new Map();
+            const slowestPerRunEntries = Array.from(slowestPerRun.values());
+
+            for (const entry of slowestPerRunEntries) {
+                if (!hitCount.has(entry.key)) {
+                    hitCount.set(entry.key, []);
+                    aliases.set(entry.key, []);
+                }
+                hitCount.get(entry.key).push(entry.runStart);
+                aliases.get(entry.key).push(entry.alias);
+            }
+
+            let sortedData = [...hitCount.entries()].sort((a, b) => b[1].length - a[1].length);
+            const limit = inFullscreen && inFullscreenGraph.includes("MostTimeConsuming") ? 50 : 10;
+
+            if (graphType === "bar") {
+                const labels = [];
+                const datasets = [];
+                let count = 0;
+
+                for (const [key, durations] of sortedData) {
+                    if (count === limit) break;
+                    labels.push(key);
+                    datasets.push(durations.length); // how many times it was the slowest
+                    count++;
+                }
+
+                const graphData = {
+                    labels,
+                    datasets: [
+                        {
+                            data: datasets,
+                            ...blueConfig,
+                        },
+                    ],
+                };
+
+                return [
+                    graphData,
+                    settings.show.aliases
+                        ? Object.fromEntries(sortedData.map(([name]) => [name, aliases.get(name)]))
+                        : Object.fromEntries(
+                            sortedData.map(([name]) => [
+                                name,
+                                slowestPerRunEntries
+                                    .filter(entry => entry.key === name)
+                                    .map(entry => entry.runStart),
+                            ])
+                        ),
+                ];
+            }
+
+            if (graphType === "timeline") {
+                const labels = [];
+                const runStarts = Array.from(slowestPerRun.values())
+                    .sort((a, b) => new Date(a.runStart) - new Date(b.runStart));
+
+                const uniqueKeys = [...new Set(runStarts.map(e => e.key))];
+                const limitKeys = uniqueKeys.slice(0, limit);
+                labels.push(...limitKeys);
+
+                let datasets = [];
+                let runAxis = 0;
+
+                for (const s of runStarts) {
+                    if (!limitKeys.includes(s.key)) continue;
+
+                    datasets.push({
+                        label: s.key,
+                        data: [{ x: [runAxis, runAxis + 1], y: s.key }],
+                        ...blueConfig,
+                    });
+                    runAxis++;
+                }
+
+                datasets = convert_timeline_data(datasets);
+                const runStartOutput = settings.show.aliases
+                    ? runStarts.map(r => r.alias)
+                    : runStarts.map(r => r.runStart);
+
+                return [
+                    { labels, datasets },
+                    runStartOutput,
+                ];
+            }
+        }
+
         // function to prepare the data in the correct format for messages graphs
         function get_messages_data(dataType, graphType, filteredData) {
             const data = new Map();
@@ -7393,6 +7791,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_suite_folder_fail_donut_graph();
                 create_suite_duration_graph();
                 create_suite_most_failed_graph();
+                create_suite_most_time_consuming_graph();
                 create_test_statistics_graph();
                 create_test_duration_graph();
                 create_test_duration_deviation_graph();
@@ -7401,6 +7800,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_test_recent_most_flaky_graph();
                 create_test_most_failed_graph();
                 create_test_recent_most_failed_graph();
+                create_test_most_time_consuming_graph();
                 create_keyword_statistics_graph();
                 create_keyword_times_run_graph();
                 create_keyword_total_duration_graph();
@@ -7408,6 +7808,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_keyword_min_duration_graph();
                 create_keyword_max_duration_graph();
                 create_keyword_most_failed_graph();
+                create_keyword_most_time_consuming_graph();
             } else if (settings.menu.compare) {
                 create_compare_statistics_graph();
                 create_compare_suite_duration_graph();
@@ -7518,6 +7919,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const graphShow = [...settings.view.dashboard.graphs.show, ...settings.view.compare.graphs.show]
             const graphHide = [...settings.view.dashboard.graphs.hide, ...settings.view.compare.graphs.hide]
 
+            console.log(graphShow)
+            console.log(graphHide)
             if (settings.layouts && settings.layouts[`${grid}`]) {
                 const savedLayout = JSON.parse(settings.layouts[`${grid}`]);
                 if (gridEditMode) {
@@ -7757,6 +8160,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         }
 
         main() // trigger on first load
+
+        // DO NOT FORGET TO FIX NEW GRAPHS TO LOCALSTORAGE GOES WRONG!!!
     </script>
 </body>
 
