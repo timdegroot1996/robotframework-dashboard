@@ -3161,6 +3161,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             return parts.join(" ");
         }
 
+        // returns run card duration class
+        function compare_to_average(duration, average, percent) {
+            const t = parseFloat(percent) / 100;
+            return duration < average * (1 - t) ? 'text-passed' :
+                duration > average * (1 + t) ? 'text-failed' : '';
+        }
+
         //////////////////////////////
         // CUSTOMIZE VIEW FUNCTIONS //
         //////////////////////////////
@@ -4177,11 +4184,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
 
             const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
-            const compare_to_average = (duration, avg, percent) => {
-                const t = parseFloat(percent) / 100;
-                return duration < avg * (1 - t) ? 'text-passed' :
-                    duration > avg * (1 + t) ? 'text-failed' : '';
-            };
 
             const overviewCard = (name, stats, duration, status, amount, compares, passed_runs, log_path, log_name, svg, runIndex) => `
         <div class="col-4 overview-card" id="${name}Card${runIndex}">
