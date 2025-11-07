@@ -3984,6 +3984,59 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
         }
 
+      // create project bar (the collapsables below overview statistic) in overview
+      function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate) {
+          const projectOverviewData = document.getElementById("projectOverviewData");
+          const projectCard = `
+          <div class="card mb-3" id="${projectName}_projectCard">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-auto align-self-center">
+                            <div class="btn btn-sm collapse-icon" id="collapse${projectName}_projectBody">
+                                ${arrowRight}
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <h4>${projectName}</h4>
+                            <h6>Total Runs: ${totalRunsAmount} | Passed Runs: ${passRate}%</h6>
+                        </div>
+                        <div class="d-flex flex-wrap align-items-start col align-items-center">
+                            <div class="col-auto">
+                                <div class="btn-group">
+                                    <label class="form-check-label" for="${projectName}_projectDurationPercentage">Percentage</label>
+                                </div>
+                                <div class="btn-group">
+                                    <select class="form-select form-select-sm mt-1" id="${projectName}_projectDurationPercentage">
+                                        <option value="10">10</option>
+                                        <option value="20" selected="">20</option>
+                                        <option value="30">30</option>
+                                        <option value="40">40</option>
+                                        <option value="50">50</option>
+                                        <option value="60">60</option>
+                                        <option value="70">70</option>
+                                        <option value="80">80</option>
+                                        <option value="90">90</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" id="${projectName}_projectBody" hidden="">
+                    <div id="${projectName}_projectRunCardsContainer">
+                    </div>
+                </div>
+            </div>
+          `;
+          projectOverviewData.appendChild(document.createRange().createContextualFragment(projectCard));
+          const projectPercentageSelector = document.getElementById(`${projectName}_projectDurationPercentage`);
+          projectPercentageSelector.addEventListener('change', () => {
+              const newPercent = parseInt(projectPercentageSelector.value, 10);
+              update_duration_comparison_for_project(projectName, projectRuns, newPercent);
+          });
+      }
+
       function create_overview_run_donut(run, runIndex, projectName, IsForOverviewStats = true) {
           let idGraphSubString, passed, failed, skipped;
 
