@@ -4027,6 +4027,19 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
           el.chartInstance = new Chart(el, config);
       }
+
+        // prevents regeneration of run cards, just changes class for duration highlight
+        function update_duration_comparison_for_project(projectName, projectRuns, percentage) {
+          const durations = projectRuns.map(r => r.elapsed_s);
+          const averageDuration = durations.reduce((a,b) => a + parseFloat(b), 0) / durations.length;
+
+          for (let i = 0; i < projectRuns.length; i++) {
+            comparesElement = document.getElementById(`${projectName}_projectRunCardCompares${i}`);
+            duration = document.getElementById(`${projectName}_projectRunCardComparesValue${i}`).getAttribute("value");
+            comparesElement.className = compare_to_average(duration, averageDuration, percentage);
+          }
+        }
+
         ///////////////////////////
         // DATA FILTER FUNCTIONS //
         ///////////////////////////
