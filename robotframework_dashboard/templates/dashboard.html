@@ -4037,6 +4037,56 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
           });
       }
 
+      // create a run card that will be displayed within each project section in overview
+      function create_project_run_card(run, projectName, runIndex, runNumber, passRate, percent, averageDuration) {
+        const stats = [run.passed, run.failed, run.skipped, run.elapsed_s, run.path];
+        const duration = run.elapsed_s;
+        const duration_rounded = Math.round(duration);
+        const status = run.failed > 0 ? 'failed' : run.skipped > 0 ? 'skipped' : 'passed';
+
+        const logPath = use_logs ? transform_file_path(run.path).replaceAll('\\', '\\\\') : '';
+        const logName = use_logs ? 'log.html' : '';
+
+        const isDark = document.documentElement.classList.contains("dark-mode");
+        const svg = isDark ? clockDarkSVG : clockLightSVG;
+
+        const compares = compare_to_average(duration, averageDuration, percent);
+
+        const projectRunCardHTML = generate_overview_card_html(
+            projectName,
+            stats,
+            duration_rounded,
+            status,
+            runNumber,
+            compares,
+            passRate,
+            logPath,
+            logName,
+            svg,
+            runIndex,
+            "_project",
+          )
+
+        const existingRunCard = document.getElementById(`${projectName}_projectCard${runIndex}`);
+
+        if (existingRunCard) {
+            // preserves listeners of element
+            existingRunCard.replaceWith(document.createRange().createContextualFragment(projectRunCardHTML));
+        } else {
+            const cardsContainer = document.getElementById(`${projectName}_projectRunCardsContainer`);
+            cardsContainer.appendChild(document.createRange().createContextualFragment(projectRunCardHTML));
+
+            const createdRunCard = document.getElementById(`${projectName}_projectCard${runIndex}`);
+
+            createdRunCard.addEventListener("click", () => {
+                clear_project_filter();
+                set_filter_show_current_project(projectName);
+                update_menu("menuDashboard");
+            });
+        }
+        return `${projectName}_projectCard${runIndex}`;
+      }
+
       function create_overview_run_donut(run, runIndex, projectName, IsForOverviewStats = true) {
           let idGraphSubString, passed, failed, skipped;
 
