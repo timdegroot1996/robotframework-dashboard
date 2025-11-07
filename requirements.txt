@@ -4,6 +4,8 @@ build
 wheel
 twine
 fastapi
+mysql
+mysql-connector-python
 robotframework==7.3.2
 robotframework-pabot==5.1.0
 robotframework-browser==19.10.1
