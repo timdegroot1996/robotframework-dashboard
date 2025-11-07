@@ -3470,6 +3470,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 update_switch_local_storage("switch.runTags", settings.switch.runTags);
                 setup_names_in_overview_select();
                 create_overview_statistics_graphs();
+                create_project_overview();
             });
             document.getElementById("overviewSelectName").addEventListener("change", function () {
                 create_overview_statistics_graphs();
@@ -3983,6 +3984,24 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 keywordSelect.selectedIndex = keywordNames.length - 1;
             }
         }
+
+      function create_project_overview() {
+        const projectOverviewData = document.getElementById("projectOverviewData");
+        projectOverviewData.innerHTML = "";
+
+        const isDark = document.documentElement.classList.contains("dark-mode");
+        const svg = isDark ? clockDarkSVG: clockLightSVG;
+
+        const projectData = settings.switch.runTags ? projects['by_tag'] : projects['by_name'];
+
+        // create run cards for each project
+        Object.keys(projectData).sort().forEach(projectName => {
+            create_project_cards_container(projectName, projectData[projectName]);
+        });
+
+        // setup collapsables specifically for overview project sections
+        setup_collapsables(projectOverviewData);
+      }
 
       // create project bar (the collapsables below overview statistic) in overview
       function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate) {
@@ -7585,6 +7604,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function setup_dasbhoard_graphs() {
             if (settings.menu.overview) {
                 create_overview_statistics_graphs();
+                create_project_overview();
             } else if (settings.menu.dashboard) {
                 create_run_statistics_graph();
                 create_run_donut_graph();
