@@ -1206,6 +1206,11 @@
         const tests = decode_and_decompress("placeholder_tests").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         const keywords = decode_and_decompress("placeholder_keywords").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
 
+        // populated by prepare_projects_grouped_data()
+        const projects_by_tag = {};
+        const projects_by_name = {};
+        let areGroupedProjectsPrepared = false; 
+
         function decode_and_decompress(base64Str) {
             const compressedData = Uint8Array.from(atob(base64Str), c => c.charCodeAt(0));
             const decompressedData = pako.inflate(compressedData, { to: 'string' });
@@ -3992,7 +3997,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         const isDark = document.documentElement.classList.contains("dark-mode");
         const svg = isDark ? clockDarkSVG: clockLightSVG;
 
-        const projectData = settings.switch.runTags ? projects['by_tag'] : projects['by_name'];
+        const projectData = settings.switch.runTags ? projects_by_tag : projects_by_name;
 
         // create run cards for each project
         Object.keys(projectData).sort().forEach(projectName => {
@@ -4376,6 +4381,29 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             } else {
                 selectedRunSetting = projectName;
             }
+            return;
+        }
+
+        function prepare_projects_grouped_data() {
+            for (const run of runs) {
+                const tags = run.tags.split(",");
+                // in case multiple project_ tags are set
+                const project_tags = tags.filter(tag => tag.toLowerCase().startsWith("project_"));
+
+                for (const project of project_tags) {
+                    if (!projects_by_tag[project]) {
+                        projects_by_tag[project] = [];
+                    }
+                    projects_by_tag[project].push(run);
+                }
+
+                if (!projects_by_name[run.name]) {
+                    projects_by_name[run.name] = [];
+                }
+                projects_by_name[run.name].push(run);
+            }
+            areGroupedProjectsPrepared = true;
+            create_project_overview();
             return;
         }
 
@@ -7435,6 +7463,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 document.getElementById(id).classList.toggle("active", id === item);
                 document.getElementById("customizeLayout").hidden = item == "menuOverview";
             });
+            if (item === "menuOverview" && !areGroupedProjectsPrepared) prepare_projects_grouped_data();
             document.getElementById("projectOverview").hidden = item !== "menuOverview";
             setup_data_and_graphs(true);
         }
@@ -7604,7 +7633,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function setup_dasbhoard_graphs() {
             if (settings.menu.overview) {
                 create_overview_statistics_graphs();
-                create_project_overview();
             } else if (settings.menu.dashboard) {
                 create_run_statistics_graph();
                 create_run_donut_graph();
