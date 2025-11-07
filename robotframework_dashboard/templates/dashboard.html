@@ -4037,6 +4037,49 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
           });
       }
 
+      // holds rows, each containing 3 run cards, for overview project section
+      function create_project_cards_container(projectName, projectRuns, percent = 20) {
+          const totalRunsAmount = projectRuns.length;
+
+          const passedRunsAmount = projectRuns.filter(run => run.failed === 0).length;
+
+          const passRate = ((passedRunsAmount / totalRunsAmount) * 100).toFixed(2);
+
+          const cardsContainer = document.getElementById(`${projectName}_projectRunCardsContainer`);
+
+          const durations = projectRuns.map(r => r.elapsed_s);
+          const averageDuration = durations.reduce((a,b) => a + parseFloat(b), 0) / durations.length;
+
+          // create section for project in overview if not present
+          if (!cardsContainer) create_project_bar(projectName, projectRuns, totalRunsAmount, passRate);
+
+          const container = document.getElementById(`${projectName}_projectRunCardsContainer`);
+          container.innerHTML = '';
+          const projectRunsToShow = projectRuns.slice().reverse();
+
+          // create cards and charts for each run card
+          let cardCounter = 0;
+          let currentRow;
+
+          projectRunsToShow.forEach((run, idx) => {
+            const runNumber = projectRunsToShow.length - idx;
+            const createdRunCardId = create_project_run_card(run, projectName, idx, runNumber, passRate, percent, averageDuration)
+            const createdRunCard = document.getElementById(createdRunCardId);
+
+            // group 3 cards into row
+            if (cardCounter % 3 === 0) {
+              currentRow = document.createElement('div');
+              currentRow.className = 'row';
+              container.appendChild(currentRow);
+            }
+
+            currentRow.appendChild(createdRunCard);
+            create_overview_run_donut(run, idx, projectName, false);
+            cardCounter++;
+          });
+
+      }
+
       // create a run card that will be displayed within each project section in overview
       function create_project_run_card(run, projectName, runIndex, runNumber, passRate, percent, averageDuration) {
         const stats = [run.passed, run.failed, run.skipped, run.elapsed_s, run.path];
