@@ -558,6 +558,11 @@
                 <div class="card-body" id="gridOverview"></div>
             </div>
         </div>
+        <div id="projectOverview" hidden>
+            <!-- Placeholder to add the project overview-->
+            <div id="projectOverviewData">
+            </div>
+        </div>
 
         <div id="dashboard" hidden>
             <div id="topSection" hidden></div>
@@ -3013,11 +3018,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             if (hide) {
                 $("#loading").fadeOut(100)
                 $("#overview").fadeIn()
+                $("#projectOverview").fadeIn()
                 $("#dashboard").fadeIn()
                 $("#compare").fadeIn()
                 $("#tables").fadeIn()
             } else {
                 $("#overview").hide()
+                $("#projectOverview").hide()
                 $("#dashboard").hide()
                 $("#compare").hide()
                 $("#tables").hide()
@@ -7263,6 +7270,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 document.getElementById(id).classList.toggle("active", id === item);
                 document.getElementById("customizeLayout").hidden = item == "menuOverview";
             });
+            document.getElementById("projectOverview").hidden = item !== "menuOverview";
             setup_data_and_graphs(true);
         }
 
