@@ -1,1 +1,0 @@
-pabot --pabotlib --testlevelsplit --artifacts png,jpg --artifactsinsubfolders --processes 8 -d results .\atest\testsuites\*.robot

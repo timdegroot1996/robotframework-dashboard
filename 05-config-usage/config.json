@@ -1,0 +1,171 @@
+{
+  "switch": {
+    "showAllRuns": false,
+    "runTags": true,
+    "suitePathsSuiteSection": false,
+    "suitePathsTestSection": false,
+    "suitePathsCompareSection": false,
+    "useLibraryNames": false
+  },
+  "show": {
+    "dateLabels": true,
+    "legends": false,
+    "aliases": true,
+    "milliseconds": false,
+    "axisTitles": false,
+    "animation": true,
+    "duration": 5000,
+    "rounding": 0
+  },
+  "libraries": {
+    "OperatingSystem": false,
+    "BuiltIn": false,
+    "cli-keywords": false,
+    "general-keywords": false,
+    "pabot.pabotlib": false,
+    "Browser": false,
+    "dashboard-keywords": false,
+    "DocTest.VisualTest": false,
+    "String": false,
+    "DatabaseLibrary": false,
+    "database-keywords": false,
+    "Collections": false
+  },
+  "menu": {
+    "overview": false,
+    "dashboard": true,
+    "compare": false,
+    "tables": false
+  },
+  "graphTypes": {
+    "runStatisticsGraphType": "percentages",
+    "runDonutGraphType": "donut",
+    "runDonutTotalGraphType": "donut",
+    "runStatsGraphType": "stats",
+    "runDurationGraphType": "line",
+    "runHeatmapGraphType": "heatmap",
+    "suiteFolderDonutGraphType": "donut",
+    "suiteFolderFailDonutGraphType": "donut",
+    "suiteStatisticsGraphType": "percentages",
+    "suiteDurationGraphType": "line",
+    "suiteMostFailedGraphType": "bar",
+    "testStatisticsGraphType": "timeline",
+    "testDurationGraphType": "line",
+    "testDurationDeviationGraphType": "bar",
+    "testMessagesGraphType": "timeline",
+    "testMostFlakyGraphType": "timeline",
+    "testRecentMostFlakyGraphType": "timeline",
+    "testMostFailedGraphType": "timeline",
+    "testRecentMostFailedGraphType": "timeline",
+    "keywordStatisticsGraphType": "percentages",
+    "keywordTimesRunGraphType": "line",
+    "keywordTotalDurationGraphType": "line",
+    "keywordAverageDurationGraphType": "line",
+    "keywordMinDurationGraphType": "line",
+    "keywordMaxDurationGraphType": "line",
+    "keywordMostFailedGraphType": "timeline",
+    "compareStatisticsGraphType": "bar",
+    "compareSuiteDurationGraphType": "radar",
+    "compareTestsGraphType": "timeline",
+    "runTableGraphType": "table",
+    "suiteTableGraphType": "table",
+    "testTableGraphType": "table",
+    "keywordTableGraphType": "table"
+  },
+  "view": {
+    "overview": {
+      "sections": {
+        "show": [
+          "Overview"
+        ],
+        "hide": []
+      },
+      "graphs": {
+        "show": [],
+        "hide": []
+      }
+    },
+    "dashboard": {
+      "sections": {
+        "show": [
+          "Run Statistics",
+          "Suite Statistics",
+          "Test Statistics",
+          "Keyword Statistics"
+        ],
+        "hide": []
+      },
+      "graphs": {
+        "show": [
+          "Run Statistics",
+          "Run Duration",
+          "Suite Folder Donut",
+          "Suite Statistics",
+          "Suite Duration",
+          "Suite Most Failed",
+          "Test Statistics",
+          "Test Duration",
+          "Test Duration Deviation",
+          "Test Messages",
+          "Test Most Flaky",
+          "Test Recent Most Flaky",
+          "Test Most Failed",
+          "Test Recent Most Failed",
+          "Keyword Statistics",
+          "Keyword Times Run",
+          "Keyword Total Duration",
+          "Keyword Average Duration",
+          "Keyword Min Duration",
+          "Keyword Max Duration",
+          "Keyword Most Failed"
+        ],
+        "hide": [
+          "Run Donut",
+          "Run Stats",
+          "Run Heatmap"
+        ]
+      }
+    },
+    "compare": {
+      "sections": {
+        "show": [
+          "Compare Statistics"
+        ],
+        "hide": []
+      },
+      "graphs": {
+        "show": [
+          "Compare Statistics",
+          "Compare Suite Duration",
+          "Compare Tests"
+        ],
+        "hide": []
+      }
+    },
+    "tables": {
+      "sections": {
+        "show": [
+          "Table Statistics"
+        ],
+        "hide": []
+      },
+      "graphs": {
+        "show": [
+          "Table Run",
+          "Table Suite",
+          "Table Test",
+          "Table Keyword"
+        ],
+        "hide": []
+      }
+    }
+  },
+  "theme": "light",
+  "layouts": {
+    "gridRun": "[{\"x\":0,\"y\":0,\"w\":12,\"h\":4,\"id\":\"Run Statistics\"},{\"x\":0,\"y\":4,\"w\":12,\"h\":4,\"id\":\"Run Duration\"},{\"x\":0,\"y\":8,\"w\":4,\"h\":4,\"id\":\"Run Heatmap\"},{\"x\":4,\"y\":8,\"w\":4,\"h\":4,\"id\":\"Run Donut\"},{\"x\":8,\"y\":8,\"w\":4,\"h\":4,\"id\":\"Run Stats\"}]",
+    "gridSuite": "[{\"x\":0,\"y\":0,\"w\":4,\"h\":4,\"id\":\"Suite Folder Donut\"},{\"x\":4,\"y\":0,\"w\":4,\"h\":4,\"id\":\"Suite Statistics\"},{\"x\":8,\"y\":0,\"w\":4,\"h\":4,\"id\":\"Suite Duration\"},{\"x\":0,\"y\":4,\"w\":4,\"h\":4,\"id\":\"Suite Most Failed\"}]",
+    "gridTest": "[{\"x\":0,\"y\":0,\"w\":4,\"h\":4,\"id\":\"Test Statistics\"},{\"x\":4,\"y\":0,\"w\":4,\"h\":4,\"id\":\"Test Duration\"},{\"x\":8,\"y\":0,\"w\":4,\"h\":4,\"id\":\"Test Duration Deviation\"},{\"x\":0,\"y\":4,\"w\":4,\"h\":4,\"id\":\"Test Messages\"},{\"x\":4,\"y\":4,\"w\":4,\"h\":4,\"id\":\"Test Most Flaky\"},{\"x\":8,\"y\":4,\"w\":4,\"h\":4,\"id\":\"Test Recent Most Flaky\"},{\"x\":0,\"y\":8,\"w\":4,\"h\":4,\"id\":\"Test Most Failed\"},{\"x\":4,\"y\":8,\"w\":4,\"h\":4,\"id\":\"Test Recent Most Failed\"}]",
+    "gridKeyword": "[{\"x\":0,\"y\":0,\"w\":4,\"h\":4,\"id\":\"Keyword Statistics\"},{\"x\":4,\"y\":0,\"w\":4,\"h\":4,\"id\":\"Keyword Times Run\"},{\"x\":8,\"y\":0,\"w\":4,\"h\":4,\"id\":\"Keyword Total Duration\"},{\"x\":0,\"y\":4,\"w\":4,\"h\":4,\"id\":\"Keyword Average Duration\"},{\"x\":4,\"y\":4,\"w\":4,\"h\":4,\"id\":\"Keyword Min Duration\"},{\"x\":8,\"y\":4,\"w\":4,\"h\":4,\"id\":\"Keyword Max Duration\"},{\"x\":0,\"y\":8,\"w\":4,\"h\":4,\"id\":\"Keyword Most Failed\"}]",
+    "gridCompare": "[{\"x\":0,\"y\":0,\"w\":4,\"h\":4,\"id\":\"Compare Statistics\"},{\"x\":4,\"y\":0,\"w\":4,\"h\":4,\"id\":\"Compare Suite Duration\"},{\"x\":8,\"y\":0,\"w\":4,\"h\":4,\"id\":\"Compare Tests\"}]"
+  }
+}
