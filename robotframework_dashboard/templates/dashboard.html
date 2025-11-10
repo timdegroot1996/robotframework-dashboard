@@ -3467,23 +3467,15 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function setup_sections_filters() {
             update_switch_local_storage("switch.runTags", settings.switch.runTags, true);
             update_switch_local_storage("switch.runName", settings.switch.runName, true);
-
-            const switchRunTags = document.getElementById("switchRunTags");
-            const switchRunName = document.getElementById("switchRunName");
-
-            switchRunTags.addEventListener("click", function () {
+            document.getElementById("switchRunTags").addEventListener("click", function () {
                 settings.switch.runTags = !settings.switch.runTags
                 update_switch_local_storage("switch.runTags", settings.switch.runTags);
-                ensureOneOn("runTags", "runName", switchRunName);
-                update_switch_local_storage("switch.runName", settings.switch.runName);
                 create_overview_statistics_graphs();
                 update_projectbar_visibility();
             });
-            switchRunName.addEventListener("click", function () {
+            document.getElementById("switchRunName").addEventListener("click", function () {
                 settings.switch.runName = !settings.switch.runName
                 update_switch_local_storage("switch.runName", settings.switch.runName);
-                ensureOneOn("runName", "runTags", switchRunTags);
-                update_switch_local_storage("switch.runTags", settings.switch.runTags);
                 create_overview_statistics_graphs();
                 update_projectbar_visibility();
             });
@@ -3740,15 +3732,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             Object.entries(graphChangeButtons).forEach(([graphChangeButton, buttonTypes]) => {
                 add_graph_eventlisteners(graphChangeButton, buttonTypes);
             });
-        }
-
-        // If user turns one off while the other is also off,
-        // automatically re-enable the other one.
-        function ensureOneOn(changedKey, otherKey, otherBox) {
-            if (!settings.switch[changedKey] && !settings.switch[otherKey]) {
-                settings.switch[otherKey] = true;
-                otherBox.checked = true;
-            }
         }
 
         /////////////////////////////////////
