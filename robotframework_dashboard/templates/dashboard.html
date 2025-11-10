@@ -4062,7 +4062,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
           const cardsContainer = document.getElementById(`${projectName}_projectRunCardsContainer`);
 
           const durations = projectRuns.map(r => r.elapsed_s);
-          const averageDuration = durations.reduce((a,b) => a + parseFloat(b), 0) / durations.length;
 
           // create section for project in overview if not present
           if (!cardsContainer) create_project_bar(projectName, projectRuns, totalRunsAmount, passRate);
@@ -4077,7 +4076,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
           projectRunsToShow.forEach((run, idx) => {
             const runNumber = projectRunsToShow.length - idx;
-            const createdRunCardId = create_project_run_card(run, projectName, idx, runNumber, passRate, percent, averageDuration)
+            const createdRunCardId = create_project_run_card(run, projectName, idx, runNumber, passRate, percent, durations)
             const createdRunCard = document.getElementById(createdRunCardId);
 
             // group 3 cards into row
@@ -4095,10 +4094,16 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
       }
 
       // create a run card that will be displayed within each project section in overview
-      function create_project_run_card(run, projectName, runIndex, runNumber, passRate, percent, averageDuration) {
+      function create_project_run_card(run, projectName, runIndex, runNumber, passRate, percent, durations) {
+        const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
+
         const stats = [run.passed, run.failed, run.skipped, run.elapsed_s, run.path];
+
         const duration = run.elapsed_s;
         const duration_rounded = Math.round(duration);
+        const durationsForAvg = durations.filter(item => item !== duration);
+        const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
+
         const status = run.failed > 0 ? 'failed' : run.skipped > 0 ? 'skipped' : 'passed';
 
         const logPath = use_logs ? transform_file_path(run.path).replaceAll('\\', '\\\\') : '';
@@ -4107,7 +4112,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         const isDark = document.documentElement.classList.contains("dark-mode");
         const svg = isDark ? clockDarkSVG : clockLightSVG;
 
-        const compares = compare_to_average(duration, averageDuration, percent);
+        const compares = compare_to_average(duration, average, percent);
 
         const projectRunCardHTML = generate_overview_card_html(
             projectName,
@@ -4218,12 +4223,14 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // prevents regeneration of run cards, just changes class for duration highlight
         function update_duration_comparison_for_project(projectName, projectRuns, percentage) {
-          const durations = projectRuns.map(r => r.elapsed_s);
-          const averageDuration = durations.reduce((a,b) => a + parseFloat(b), 0) / durations.length;
 
           for (let i = 0; i < projectRuns.length; i++) {
-            comparesElement = document.getElementById(`${projectName}_projectRunCardCompares${i}`);
-            duration = document.getElementById(`${projectName}_projectRunCardComparesValue${i}`).getAttribute("value");
+            const comparesElement = document.getElementById(`${projectName}_projectRunCardCompares${i}`);
+            const duration = document.getElementById(`${projectName}_projectRunCardComparesValue${i}`).getAttribute("value");
+            const durationsForAvg = projectRuns
+                                    .map(r => r.elapsed_s)
+                                    .filter(item => item !== duration);
+            const averageDuration = durationsForAvg.reduce((a,b) => a + parseFloat(b), 0) / durationsForAvg.length;
             comparesElement.className = compare_to_average(duration, averageDuration, percentage);
           }
         }
@@ -4467,7 +4474,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     const path = transform_file_path(rawPath).replaceAll('\\', '\\\\');
                     const runNumber = runList.length - runIndex;
 
-                    const durationsForAvg = runList.map(x => x.duration).slice(1);
+                    const durationsForAvg = runList
+                                            .map(x => x.duration)
+                                            .filter(item => item !== duration);
                     const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
 
                     const compares = compare_to_average(duration, average, overviewDurationPercentage);
