@@ -2095,11 +2095,13 @@
             "amount": "Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.",
             "amountLabel": "Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.",
             "overviewStatisticsInformation": `This section shows the projects and their associated runs:
-- Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
-- Passed runs represent the percentage of runs with zero failures.
+- Overview Statistics show the latest result for each project
+- The additional project bars contain all runs for that project
 - You can define your own projects or groupings by appending '-o path/to/output.xml:project_yourprojectname' when generating results.
-- If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle.
-- The All Runs toggle controls whether only the latest run of each project is shown, or all past runs are displayed in reverse order (newest first). When enabled, you can also filter which project's runs are shown using the selection box.`,
+- If runs don't include custom 'project_' tags, they will be grouped by their run name by default.
+- Choose which project types to show by toggling their respective "Display by" switch.
+- Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
+- Passed runs represent the percentage of runs with zero failures.`,
             "runStatisticsGraphPercentages": "Percentages: Displays the distribution of passed, failed, skipped tests per run, where 100% equals all tests combined",
             "runStatisticsGraphAmount": "Amount: Displays the actual number of passed, failed, skipped tests per run",
             "runStatisticsGraphLine": "Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times",
