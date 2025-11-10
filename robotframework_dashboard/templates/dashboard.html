@@ -1153,7 +1153,7 @@
 
         // UI defaults
         const CARDS_PER_ROW = 3;
-
+        const DEFAULT_DURATION_PERCENTAGE = 20;
 
         // base bar config
         const barConfig = {
@@ -4027,16 +4027,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                 </div>
                                 <div class="btn-group">
                                     <select class="form-select form-select-sm mt-1" id="${projectName}_projectDurationPercentage">
-                                        <option value="10">10</option>
-                                        <option value="20" selected="">20</option>
-                                        <option value="30">30</option>
-                                        <option value="40">40</option>
-                                        <option value="50">50</option>
-                                        <option value="60">60</option>
-                                        <option value="70">70</option>
-                                        <option value="80">80</option>
-                                        <option value="90">90</option>
-                                        <option value="100">100</option>
+                                        ${[10,20,30,40,50,60,70,80,90,100].map(val =>
+                                        `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
+                                        ).join('')}
                                     </select>
                                 </div>
                             </div>
