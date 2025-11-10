@@ -512,6 +512,12 @@
                             </div>
                             <div class="col-auto">
                                 <div class="btn-group">
+                                    <label class="form-check-label ms-2" for="switchRunName">Display by Name</label>
+                                </div>
+                                <div class="btn-group form-switch ms-1">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="switchRunName"/>
+                                </div>
+                            </div>
                             <div class="col-auto">
                                 <div class="btn-group">
                                     <label class="form-check-label ms-2" for="switchRunTags">Display by Tag</label>
@@ -2369,6 +2375,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         var settings = {
             switch: {
                 runTags: false,
+                runName: true,
                 suitePathsSuiteSection: false,
                 suitePathsTestSection: false,
                 suitePathsCompareSection: false,
@@ -3453,8 +3460,23 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         // function to setup eventlisteners for filter buttons
         function setup_sections_filters() {
             update_switch_local_storage("switch.runTags", settings.switch.runTags, true);
-            document.getElementById("switchRunTags").addEventListener("click", function () {
+            update_switch_local_storage("switch.runName", settings.switch.runName, true);
+
+            const switchRunTags = document.getElementById("switchRunTags");
+            const switchRunName = document.getElementById("switchRunName");
+
+            switchRunTags.addEventListener("click", function () {
                 settings.switch.runTags = !settings.switch.runTags
+                update_switch_local_storage("switch.runTags", settings.switch.runTags);
+                ensureOneOn("runTags", "runName", switchRunName);
+                update_switch_local_storage("switch.runName", settings.switch.runName);
+                create_overview_statistics_graphs();
+                create_project_overview();
+            });
+            switchRunName.addEventListener("click", function () {
+                settings.switch.runName = !settings.switch.runName
+                update_switch_local_storage("switch.runName", settings.switch.runName);
+                ensureOneOn("runName", "runTags", switchRunTags);
                 update_switch_local_storage("switch.runTags", settings.switch.runTags);
                 create_overview_statistics_graphs();
                 create_project_overview();
@@ -3714,6 +3736,15 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
+        // If user turns one off while the other is also off,
+        // automatically re-enable the other one.
+        function ensureOneOn(changedKey, otherKey, otherBox) {
+            if (!settings.switch[changedKey] && !settings.switch[otherKey]) {
+                settings.switch[otherKey] = true;
+                otherBox.checked = true;
+            }
+        }
+
         /////////////////////////////////////
         // FILTER BUTTON CONTENT FUNCTIONS //
         /////////////////////////////////////
@@ -3954,7 +3985,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         const isDark = document.documentElement.classList.contains("dark-mode");
         const svg = isDark ? clockDarkSVG: clockLightSVG;
 
-        const projectData = settings.switch.runTags ? projects_by_tag : projects_by_name;
+        const { runName, runTags } = settings.switch;
+        const projectData = runName && runTags
+            ? { ...projects_by_name, ...projects_by_tag }
+            : runName
+            ? projects_by_name
+            : projects_by_tag;
+
 
         // create run cards for each project
         Object.keys(projectData).sort().forEach(projectName => {
@@ -4373,30 +4410,25 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function create_overview_statistics_graphs() {
             const data = {};
             for (const run of runs) {
-                var name = '';
+                const projects = new Set();
                 if (settings.switch.runTags) {
-                    const tags = run.tags.split(",");
-                    var foundTag = false;
-                    for (const tag of tags) {
-                        if (tag.startsWith('project_')) {
-                            name = tag;
-                            foundTag = true;
-                            break;
-                        }
-                    }
-                    if (!foundTag) name = run.name;
-                } else {
-                    name = run.name;
+                    const tag = run.tags.split(",").find(t => t.startsWith("project_"));
+                    projects.add(tag);
+                }
+                if (settings.switch.runName) {
+                    projects.add(run.name);
                 }
 
-                if (!data[name]) {
-                    data[name] = { runs: [] };
+                for (const project of projects) {
+                    if (!data[project]) {
+                        data[project] = { runs: [] };
+                    }
+                    data[project].runs.push({
+                        stats: [run.passed, run.failed, run.skipped, run.elapsed_s, run.path],
+                        duration: run.elapsed_s,
+                        passed_run: run.failed === 0 ? 1 : 0
+                    });
                 }
-                data[name].runs.push({
-                    stats: [run.passed, run.failed, run.skipped, run.elapsed_s, run.path],
-                    duration: run.elapsed_s,
-                    passed_run: run.failed === 0 ? 1 : 0
-                });
             }
 
             const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
