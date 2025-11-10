@@ -4223,13 +4223,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // prevents regeneration of run cards, just changes class for duration highlight
         function update_duration_comparison_for_project(projectName, projectRuns, percentage) {
-
           for (let i = 0; i < projectRuns.length; i++) {
             const comparesElement = document.getElementById(`${projectName}_projectRunCardCompares${i}`);
             const duration = document.getElementById(`${projectName}_projectRunCardComparesValue${i}`).getAttribute("value");
             const durationsForAvg = projectRuns
-                                    .map(r => r.elapsed_s)
-                                    .filter(item => item !== duration);
+                                    .map(r => parseFloat(r.elapsed_s))
+                                    .reverse()
+                                    .filter((_, idx) => idx !== i)
             const averageDuration = durationsForAvg.reduce((a,b) => a + parseFloat(b), 0) / durationsForAvg.length;
             comparesElement.className = compare_to_average(duration, averageDuration, percentage);
           }
