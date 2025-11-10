@@ -502,15 +502,6 @@
                             <h4 id="overviewTitle"></h4>
                         </div>
                         <div class="d-flex flex-wrap align-items-start col align-items-center">
-                            <div class="col-auto">
-                                <div class="btn-group">
-                                    <label class="form-check-label" for="switchShowAllRuns">Display All Runs</label>
-                                </div>
-                                <div class="btn-group form-switch ms-1">
-                                    <input class="form-check-input" type="checkbox" role="switch"
-                                        id="switchShowAllRuns" />
-                                </div>
-                            </div>
                             <div class="col-auto" id="overviewName" hidden>
                                 <div class="btn-group">
                                     <label class="form-check-label" for="overviewSelectName">Name</label>
@@ -521,7 +512,9 @@
                             </div>
                             <div class="col-auto">
                                 <div class="btn-group">
-                                    <label class="form-check-label ms-2" for="switchRunTags">Use Run Tags</label>
+                            <div class="col-auto">
+                                <div class="btn-group">
+                                    <label class="form-check-label ms-2" for="switchRunTags">Display by Tag</label>
                                 </div>
                                 <div class="btn-group form-switch ms-1">
                                     <input class="form-check-input" type="checkbox" role="switch" id="switchRunTags" />
@@ -2375,7 +2368,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         // settings var
         var settings = {
             switch: {
-                showAllRuns: false,
                 runTags: false,
                 suitePathsSuiteSection: false,
                 suitePathsTestSection: false,
@@ -3460,20 +3452,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function to setup eventlisteners for filter buttons
         function setup_sections_filters() {
-            update_switch_local_storage("switch.showAllRuns", settings.switch.showAllRuns, true)
-            document.getElementById("overviewName").hidden = !settings.switch.showAllRuns; // set the initial state of the overview name select
-            document.getElementById("switchShowAllRuns").addEventListener("click", function () {
-                settings.switch.showAllRuns = !settings.switch.showAllRuns
-                document.getElementById("overviewName").hidden = !settings.switch.showAllRuns;
-                update_switch_local_storage("switch.showAllRuns", settings.switch.showAllRuns);
-                create_overview_statistics_graphs();
-            });
             update_switch_local_storage("switch.runTags", settings.switch.runTags, true);
-            setup_names_in_overview_select(); // update the names in the select to make sure the runTags option is taken into account
             document.getElementById("switchRunTags").addEventListener("click", function () {
                 settings.switch.runTags = !settings.switch.runTags
                 update_switch_local_storage("switch.runTags", settings.switch.runTags);
-                setup_names_in_overview_select();
                 create_overview_statistics_graphs();
                 create_project_overview();
             });
@@ -3838,31 +3820,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             } else {
                 document.getElementById("runTagFilter").hidden = true
             }
-        }
-
-        function setup_names_in_overview_select() {
-            const overviewSelectName = document.getElementById("overviewSelectName")
-            const names = new Set()
-            for (const run of runs) {
-                var name = '';
-                if (settings.switch.runTags) {
-                    const tags = run.tags.split(",")
-                    var foundTag = false;
-                    for (const tag of tags) {
-                        if (tag.startsWith('project_')) {
-                            name = tag;
-                            foundTag = true;
-                            break
-                        }
-                    }
-                    if (!foundTag) name = run.name;
-                } else {
-                    name = run.name;
-                }
-                names.add(name)
-            }
-            overviewSelectName.innerHTML = ""
-            names.forEach(item => overviewSelectName.options.add(new Option(item, item)));
         }
 
         // function to update the available runs in the selects
@@ -4454,14 +4411,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
             keys.forEach(key => {
                 const runList = [...data[key].runs].reverse(); // newest first
-                const runsToShow = settings.switch.showAllRuns ? runList : [runList[0]];
-
-                const selectedName = settings.switch.showAllRuns
-                    ? document.getElementById("overviewSelectName").value
-                    : null;
-                if (settings.switch.showAllRuns && selectedName && selectedName !== key) {
-                    return;
-                }
+                const runsToShow = [runList[0]];
 
                 runsToShow.forEach((r, runIndex) => {
                     const [passed, failed, skipped, duration, rawPath] = r.stats;
@@ -4513,14 +4463,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             // attach click listeners (from original logic)
             keys.forEach(key => {
                 const runList = data[key].runs.slice().reverse();
-                const runsToShow = settings.switch.showAllRuns ? runList : [runList[0]];
-                const selectedName = settings.switch.showAllRuns
-                    ? document.getElementById("overviewSelectName").value
-                    : null;
-
-                if (settings.switch.showAllRuns && selectedName && selectedName !== key) {
-                    return;
-                }
+                const runsToShow = [runList[0]];
 
                 runsToShow.forEach((r, runIndex) => {
                     const cardEl = document.getElementById(`${key}Card${runIndex}`);
@@ -4537,14 +4480,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             // build charts
             keys.forEach(key => {
                 const runList = data[key].runs.slice().reverse();
-                const runsToShow = settings.switch.showAllRuns ? runList : [runList[0]];
-                const selectedName = settings.switch.showAllRuns
-                    ? document.getElementById("overviewSelectName").value
-                    : null;
-
-                if (settings.switch.showAllRuns && selectedName && selectedName !== key) {
-                    return;
-                }
+                const runsToShow = [runList[0]];
 
                 runsToShow.forEach((r, runIndex) => {
                     create_overview_run_donut(r, runIndex, key);
@@ -7620,7 +7556,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             document.getElementById("compareTitle").innerHTML = `Compare Statistics ${message}`;
             document.getElementById("tablesTitle").innerHTML = `Table Statistics (${runAmount}) ${message}`;
             // update filters based on data
-            setup_names_in_overview_select();
             setup_runs_in_compare_selects();
             setup_suites_in_suite_select();
             setup_suites_in_test_select();
