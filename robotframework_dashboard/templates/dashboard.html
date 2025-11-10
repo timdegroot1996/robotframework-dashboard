@@ -1151,6 +1151,10 @@
         const greyBackgroundColor = "rgba(33, 37, 41, 0.7)";
         const graphFontSize = 12;
 
+        // UI defaults
+        const CARDS_PER_ROW = 3;
+
+
         // base bar config
         const barConfig = {
             borderSkipped: false,
@@ -4082,7 +4086,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const createdRunCard = document.getElementById(createdRunCardId);
 
             // group 3 cards into row
-            if (cardCounter % 3 === 0) {
+            if (cardCounter % CARDS_PER_ROW === 0) {
               currentRow = document.createElement('div');
               currentRow.className = 'row';
               container.appendChild(currentRow);
@@ -4488,7 +4492,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     const log_path = use_logs ? path : '';
                     const log_name = use_logs ? 'log.html' : '';
 
-                    if (cardCounter % 3 === 0) {
+                    if (cardCounter % CARDS_PER_ROW === 0) {
                         overviewHTML += '<div class="row">';
                     }
 
@@ -4508,13 +4512,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
                     cardCounter++;
 
-                    if (cardCounter % 3 === 0) {
+                    if (cardCounter % CARDS_PER_ROW === 0) {
                         overviewHTML += '</div>';
                     }
                 });
             });
 
-            if (cardCounter % 3 !== 0) {
+            if (cardCounter % CARDS_PER_ROW !== 0) {
                 overviewHTML += '</div>';
             }
 
