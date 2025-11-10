@@ -3471,7 +3471,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 ensureOneOn("runTags", "runName", switchRunName);
                 update_switch_local_storage("switch.runName", settings.switch.runName);
                 create_overview_statistics_graphs();
-                create_project_overview();
+                update_projectbar_visibility();
             });
             switchRunName.addEventListener("click", function () {
                 settings.switch.runName = !settings.switch.runName
@@ -3479,7 +3479,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 ensureOneOn("runName", "runTags", switchRunTags);
                 update_switch_local_storage("switch.runTags", settings.switch.runTags);
                 create_overview_statistics_graphs();
-                create_project_overview();
+                update_projectbar_visibility();
             });
             document.getElementById("overviewSelectName").addEventListener("change", function () {
                 create_overview_statistics_graphs();
@@ -3985,13 +3985,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         const isDark = document.documentElement.classList.contains("dark-mode");
         const svg = isDark ? clockDarkSVG: clockLightSVG;
 
-        const { runName, runTags } = settings.switch;
-        const projectData = runName && runTags
-            ? { ...projects_by_name, ...projects_by_tag }
-            : runName
-            ? projects_by_name
-            : projects_by_tag;
-
+        const projectData = { ...projects_by_name, ...projects_by_tag };
 
         // create run cards for each project
         Object.keys(projectData).sort().forEach(projectName => {
@@ -4000,6 +3994,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // setup collapsables specifically for overview project sections
         setup_collapsables(projectOverviewData);
+        // set project bar visibility based on switch settings
+        update_projectbar_visibility();
       }
 
       // create project bar (the collapsables below overview statistic) in overview
@@ -4198,6 +4194,27 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
           el.chartInstance = new Chart(el, config);
       }
+
+        // hide project bars based on switch config
+        function update_projectbar_visibility() {
+            const container = document.getElementById("projectOverviewData");
+            if (!container) return;
+
+            const bars = container.querySelectorAll('[id$="_projectCard"]');
+
+            const tagged = [];
+            const untagged = [];
+            for (const el of bars) {
+              (el.id.startsWith("project_") ? tagged : untagged).push(el);
+            }
+
+            const toggleVisibility = (elements, visible) => {
+              for (const el of elements) el.hidden = !visible;
+            };
+
+            toggleVisibility(tagged, settings.switch.runTags);
+            toggleVisibility(untagged, settings.switch.runName);
+        }
 
         // prevents regeneration of run cards, just changes class for duration highlight
         function update_duration_comparison_for_project(projectName, projectRuns, percentage) {
