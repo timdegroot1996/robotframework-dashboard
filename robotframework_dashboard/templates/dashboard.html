@@ -3967,254 +3967,224 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
         }
 
-      function create_project_overview() {
-        const projectOverviewData = document.getElementById("projectOverviewData");
-        projectOverviewData.innerHTML = "";
+        function create_project_overview() {
+            const projectOverviewData = document.getElementById("projectOverviewData");
+            projectOverviewData.innerHTML = "";
 
-        const isDark = document.documentElement.classList.contains("dark-mode");
-        const svg = isDark ? clockDarkSVG: clockLightSVG;
+            const isDark = document.documentElement.classList.contains("dark-mode");
+            const svg = isDark ? clockDarkSVG: clockLightSVG;
 
-        const projectData = { ...projects_by_name, ...projects_by_tag };
+            const projectData = { ...projects_by_name, ...projects_by_tag };
 
-        // create run cards for each project
-        Object.keys(projectData).sort().forEach(projectName => {
-            create_project_cards_container(projectName, projectData[projectName]);
-        });
+            // create run cards for each project
+            Object.keys(projectData).sort().forEach(projectName => {
+                create_project_cards_container(projectName, projectData[projectName]);
+            });
 
-        // setup collapsables specifically for overview project sections
-        setup_collapsables(projectOverviewData);
-        // set project bar visibility based on switch settings
-        update_projectbar_visibility();
-      }
+            // setup collapsables specifically for overview project sections
+            setup_collapsables(projectOverviewData);
+            // set project bar visibility based on switch settings
+            update_projectbar_visibility();
+        }
 
-      // create project bar (the collapsables below overview statistic) in overview
-      function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate) {
-          const projectOverviewData = document.getElementById("projectOverviewData");
-          const projectCard = `
-          <div class="card mb-3" id="${projectName}_projectCard">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col-auto align-self-center">
-                            <div class="btn btn-sm collapse-icon" id="collapse${projectName}_projectBody">
-                                ${arrowRight}
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <h4>${projectName}</h4>
-                            <h6>Total Runs: ${totalRunsAmount} | Passed Runs: ${passRate}%</h6>
-                        </div>
-                        <div class="d-flex flex-wrap align-items-start col align-items-center">
-                            <div class="col-auto">
-                                <div class="btn-group">
-                                    <label class="form-check-label" for="${projectName}_projectDurationPercentage">Percentage</label>
-                                </div>
-                                <div class="btn-group">
-                                    <select class="form-select form-select-sm mt-1" id="${projectName}_projectDurationPercentage">
-                                        ${[10,20,30,40,50,60,70,80,90,100].map(val =>
-                                        `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
-                                        ).join('')}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body" id="${projectName}_projectBody" hidden="">
-                    <div id="${projectName}_projectRunCardsContainer">
-                    </div>
-                </div>
-            </div>
-          `;
-          projectOverviewData.appendChild(document.createRange().createContextualFragment(projectCard));
-          const projectPercentageSelector = document.getElementById(`${projectName}_projectDurationPercentage`);
-          projectPercentageSelector.addEventListener('change', () => {
-              const newPercent = parseInt(projectPercentageSelector.value, 10);
-              update_duration_comparison_for_project(projectName, projectRuns, newPercent);
-          });
-      }
-
-      // holds rows, each containing 3 run cards, for overview project section
-      function create_project_cards_container(projectName, projectRuns, percent = 20) {
-          const totalRunsAmount = projectRuns.length;
-
-          const passedRunsAmount = projectRuns.filter(run => run.failed === 0).length;
-
-          const passRate = ((passedRunsAmount / totalRunsAmount) * 100).toFixed(2);
-
-          const cardsContainer = document.getElementById(`${projectName}_projectRunCardsContainer`);
-
-          const durations = projectRuns.map(r => r.elapsed_s);
-
-          // create section for project in overview if not present
-          if (!cardsContainer) create_project_bar(projectName, projectRuns, totalRunsAmount, passRate);
-
-          const container = document.getElementById(`${projectName}_projectRunCardsContainer`);
-          container.innerHTML = '';
-          const projectRunsToShow = projectRuns.slice().reverse();
-
-          // create cards and charts for each run card
-          let cardCounter = 0;
-          let currentRow;
-
-          projectRunsToShow.forEach((run, idx) => {
-            const runNumber = projectRunsToShow.length - idx;
-            const createdRunCardId = create_project_run_card(run, projectName, idx, runNumber, passRate, percent, durations)
-            const createdRunCard = document.getElementById(createdRunCardId);
-
-            // group 3 cards into row
-            if (cardCounter % CARDS_PER_ROW === 0) {
-              currentRow = document.createElement('div');
-              currentRow.className = 'row';
-              container.appendChild(currentRow);
-            }
-
-            currentRow.appendChild(createdRunCard);
-            create_overview_run_donut(run, idx, projectName, false);
-            cardCounter++;
-          });
-
-      }
-
-      // create a run card that will be displayed within each project section in overview
-      function create_project_run_card(run, projectName, runIndex, runNumber, passRate, percent, durations) {
-        const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
-
-        const stats = [run.passed, run.failed, run.skipped, run.elapsed_s, run.path];
-
-        const duration = run.elapsed_s;
-        const duration_rounded = Math.round(duration);
-        const durationsForAvg = durations.filter(item => item !== duration);
-        const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
-
-        const status = run.failed > 0 ? 'failed' : run.skipped > 0 ? 'skipped' : 'passed';
-
-        const logPath = use_logs ? transform_file_path(run.path).replaceAll('\\', '\\\\') : '';
-        const logName = use_logs ? 'log.html' : '';
-
-        const isDark = document.documentElement.classList.contains("dark-mode");
-        const svg = isDark ? clockDarkSVG : clockLightSVG;
-
-        const compares = compare_to_average(duration, average, percent);
-
-        const projectRunCardHTML = generate_overview_card_html(
-            projectName,
-            stats,
-            duration_rounded,
-            status,
-            runNumber,
-            compares,
-            passRate,
-            logPath,
-            logName,
-            svg,
-            runIndex,
-            "_project",
-          )
-
-        const existingRunCard = document.getElementById(`${projectName}_projectCard${runIndex}`);
-
-        if (existingRunCard) {
-            // preserves listeners of element
-            existingRunCard.replaceWith(document.createRange().createContextualFragment(projectRunCardHTML));
-        } else {
-            const cardsContainer = document.getElementById(`${projectName}_projectRunCardsContainer`);
-            cardsContainer.appendChild(document.createRange().createContextualFragment(projectRunCardHTML));
-
-            const createdRunCard = document.getElementById(`${projectName}_projectCard${runIndex}`);
-
-            createdRunCard.addEventListener("click", () => {
-                clear_project_filter();
-                set_filter_show_current_project(projectName);
-                update_menu("menuDashboard");
+        // create project bar (the collapsables below overview statistic) in overview
+        function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate) {
+            const projectOverviewData = document.getElementById("projectOverviewData");
+            const projectCard = `
+            <div class="card mb-3" id="${projectName}_projectCard">
+                  <div class="card-header">
+                      <div class="row">
+                          <div class="col-auto align-self-center">
+                              <div class="btn btn-sm collapse-icon" id="collapse${projectName}_projectBody">
+                                  ${arrowRight}
+                              </div>
+                          </div>
+                          <div class="col-4">
+                              <h4>${projectName}</h4>
+                              <h6>Total Runs: ${totalRunsAmount} | Passed Runs: ${passRate}%</h6>
+                          </div>
+                          <div class="d-flex flex-wrap align-items-start col align-items-center">
+                              <div class="col-auto">
+                                  <div class="btn-group">
+                                      <label class="form-check-label" for="${projectName}_projectDurationPercentage">Percentage</label>
+                                  </div>
+                                  <div class="btn-group">
+                                      <select class="form-select form-select-sm mt-1" id="${projectName}_projectDurationPercentage">
+                                          ${[10,20,30,40,50,60,70,80,90,100].map(val =>
+                                          `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
+                                          ).join('')}
+                                      </select>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="card-body" id="${projectName}_projectBody" hidden="">
+                      <div id="${projectName}_projectRunCardsContainer">
+                      </div>
+                  </div>
+              </div>
+            `;
+            projectOverviewData.appendChild(document.createRange().createContextualFragment(projectCard));
+            const projectPercentageSelector = document.getElementById(`${projectName}_projectDurationPercentage`);
+            projectPercentageSelector.addEventListener('change', () => {
+                const newPercent = parseInt(projectPercentageSelector.value, 10);
+                update_duration_comparison_for_project(projectName, projectRuns, newPercent);
             });
         }
-        return `${projectName}_projectCard${runIndex}`;
-      }
 
-      function create_overview_run_donut(run, runIndex, projectName, IsForOverviewStats = true) {
-          let idGraphSubString, passed, failed, skipped;
+        // holds rows, each containing 3 run cards, for overview project section
+        function create_project_cards_container(projectName, projectRuns, percent = 20) {
+            const totalRunsAmount = projectRuns.length;
+            const passedRunsAmount = projectRuns.filter(run => run.failed === 0).length;
+            const passRate = ((passedRunsAmount / totalRunsAmount) * 100).toFixed(2);
+            const cardsContainer = document.getElementById(`${projectName}_projectRunCardsContainer`);
+            const durations = projectRuns.map(r => r.elapsed_s);
+            // create section for project in overview if not present
+            if (!cardsContainer) create_project_bar(projectName, projectRuns, totalRunsAmount, passRate);
+            const container = document.getElementById(`${projectName}_projectRunCardsContainer`);
+            container.innerHTML = '';
+            const projectRunsToShow = projectRuns.slice().reverse();
+            // create cards and charts for each run card
+            let cardCounter = 0;
+            let currentRow;
+            projectRunsToShow.forEach((run, idx) => {
+                const runNumber = projectRunsToShow.length - idx;
+                const createdRunCardId = create_project_run_card(run, projectName, idx, runNumber, passRate, percent, durations)
+                const createdRunCard = document.getElementById(createdRunCardId);
+                // group 3 cards into row
+                if (cardCounter % CARDS_PER_ROW === 0) {
+                    currentRow = document.createElement('div');
+                    currentRow.className = 'row';
+                    container.appendChild(currentRow);
+                }
+                currentRow.appendChild(createdRunCard);
+                create_overview_run_donut(run, idx, projectName, false);
+                cardCounter++;
+            });
+        }
 
-          if (IsForOverviewStats) {
-              idGraphSubString = "Graph";
-              [passed, failed, skipped] = run.stats;
-          } else {
-              idGraphSubString = "_projectGraph";
-              passed = run.passed;
-              failed = run.failed;
-              skipped = run.skipped;
-          }
+        // create a run card that will be displayed within each project section in overview
+        function create_project_run_card(run, projectName, runIndex, runNumber, passRate, percent, durations) {
+            const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
 
-          const el = document.getElementById(`${projectName}${idGraphSubString}${runIndex}`);
+            const stats = [run.passed, run.failed, run.skipped, run.elapsed_s, run.path];
+            const duration = run.elapsed_s;
+            const duration_rounded = Math.round(duration);
+            const durationsForAvg = durations.filter(item => item !== duration);
+            const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
+            const status = run.failed > 0 ? 'failed' : run.skipped > 0 ? 'skipped' : 'passed';
+            const logPath = use_logs ? transform_file_path(run.path).replaceAll('\\', '\\\\') : '';
+            const logName = use_logs ? 'log.html' : '';
+            const isDark = document.documentElement.classList.contains("dark-mode");
+            const svg = isDark ? clockDarkSVG : clockLightSVG;
+            const compares = compare_to_average(duration, average, percent);
 
-          if (!el) {
-              console.warn(
-                  `No element with ID ${projectName}${idGraphSubString}${runIndex} found for donut chart creation`
-              );
-              return;
-          }
+            const projectRunCardHTML = generate_overview_card_html(
+                projectName,
+                stats,
+                duration_rounded,
+                status,
+                runNumber,
+                compares,
+                passRate,
+                logPath,
+                logName,
+                svg,
+                runIndex,
+                "_project",
+            )
+            const existingRunCard = document.getElementById(`${projectName}_projectCard${runIndex}`);
+            if (existingRunCard) {
+                // preserves listeners of element
+                existingRunCard.replaceWith(document.createRange().createContextualFragment(projectRunCardHTML));
+            } else {
+                const cardsContainer = document.getElementById(`${projectName}_projectRunCardsContainer`);
+                cardsContainer.appendChild(document.createRange().createContextualFragment(projectRunCardHTML));
+                const createdRunCard = document.getElementById(`${projectName}_projectCard${runIndex}`);
+                createdRunCard.addEventListener("click", () => {
+                    clear_project_filter();
+                    set_filter_show_current_project(projectName);
+                    update_menu("menuDashboard");
+                });
+            }
+            return `${projectName}_projectCard${runIndex}`;
+        }
 
-          if (el.chartInstance) el.chartInstance.destroy();
-          const chartData = {
-              labels: [],
-              datasets: [{
-                  data: [],
-                  backgroundColor: [],
-                  borderColor: [],
-                  hoverOffset: 4
-              }]
-          };
-          const pushIf = (label, value, bg, border) => {
-              if (value > 0) {
-                  chartData.labels.push(label);
-                  chartData.datasets[0].data.push(value);
-                  chartData.datasets[0].backgroundColor.push(bg);
-                  chartData.datasets[0].borderColor.push(border);
-              }
-          };
-          pushIf('passed', passed, passedBackgroundColor, passedBackgroundBorderColor);
-          pushIf('skipped', skipped, skippedBackgroundColor, skippedBackgroundBorderColor);
-          pushIf('failed', failed, failedBackgroundColor, failedBackgroundBorderColor);
-
-          const config = get_graph_config('donut', chartData, 'Run Status');
-          delete config.options.plugins.datalabels;
-          config.options.plugins.legend.display = false;
-
-          el.chartInstance = new Chart(el, config);
-      }
+        function create_overview_run_donut(run, runIndex, projectName, IsForOverviewStats = true) {
+            let idGraphSubString, passed, failed, skipped;
+            if (IsForOverviewStats) {
+                idGraphSubString = "Graph";
+                [passed, failed, skipped] = run.stats;
+            } else {
+                idGraphSubString = "_projectGraph";
+                passed = run.passed;
+                failed = run.failed;
+                skipped = run.skipped;
+            }
+            const el = document.getElementById(`${projectName}${idGraphSubString}${runIndex}`);
+            if (!el) {
+                console.warn(
+                    `No element with ID ${projectName}${idGraphSubString}${runIndex} found for donut chart creation`
+                );
+                return;
+            }
+            if (el.chartInstance) el.chartInstance.destroy();
+            const chartData = {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: [],
+                    borderColor: [],
+                    hoverOffset: 4
+                }]
+            };
+            const pushIf = (label, value, bg, border) => {
+                if (value > 0) {
+                    chartData.labels.push(label);
+                    chartData.datasets[0].data.push(value);
+                    chartData.datasets[0].backgroundColor.push(bg);
+                    chartData.datasets[0].borderColor.push(border);
+                }
+            };
+            pushIf('passed', passed, passedBackgroundColor, passedBackgroundBorderColor);
+            pushIf('skipped', skipped, skippedBackgroundColor, skippedBackgroundBorderColor);
+            pushIf('failed', failed, failedBackgroundColor, failedBackgroundBorderColor);
+            const config = get_graph_config('donut', chartData, 'Run Status');
+            delete config.options.plugins.datalabels;
+            config.options.plugins.legend.display = false;
+            el.chartInstance = new Chart(el, config);
+        }
 
         // hide project bars based on switch config
         function update_projectbar_visibility() {
             const container = document.getElementById("projectOverviewData");
             if (!container) return;
-
             const bars = container.querySelectorAll('[id$="_projectCard"]');
-
             const tagged = [];
             const untagged = [];
             for (const el of bars) {
-              (el.id.startsWith("project_") ? tagged : untagged).push(el);
+                (el.id.startsWith("project_") ? tagged : untagged).push(el);
             }
-
             const toggleVisibility = (elements, visible) => {
-              for (const el of elements) el.hidden = !visible;
+                for (const el of elements) el.hidden = !visible;
             };
-
             toggleVisibility(tagged, settings.switch.runTags);
             toggleVisibility(untagged, settings.switch.runName);
         }
 
         // prevents regeneration of run cards, just changes class for duration highlight
         function update_duration_comparison_for_project(projectName, projectRuns, percentage) {
-          for (let i = 0; i < projectRuns.length; i++) {
-            const comparesElement = document.getElementById(`${projectName}_projectRunCardCompares${i}`);
-            const duration = document.getElementById(`${projectName}_projectRunCardComparesValue${i}`).getAttribute("value");
-            const durationsForAvg = projectRuns
-                                    .map(r => parseFloat(r.elapsed_s))
-                                    .reverse()
-                                    .filter((_, idx) => idx !== i)
-            const averageDuration = durationsForAvg.reduce((a,b) => a + parseFloat(b), 0) / durationsForAvg.length;
-            comparesElement.className = compare_to_average(duration, averageDuration, percentage);
-          }
+            for (let i = 0; i < projectRuns.length; i++) {
+                const comparesElement = document.getElementById(`${projectName}_projectRunCardCompares${i}`);
+                const duration = document.getElementById(`${projectName}_projectRunCardComparesValue${i}`).getAttribute("value");
+                const durationsForAvg = projectRuns
+                                        .map(r => parseFloat(r.elapsed_s))
+                                        .reverse()
+                                        .filter((_, idx) => idx !== i)
+                const averageDuration = durationsForAvg.reduce((a,b) => a + parseFloat(b), 0) / durationsForAvg.length;
+                comparesElement.className = compare_to_average(duration, averageDuration, percentage);
+            }
         }
 
         ///////////////////////////
@@ -4387,16 +4357,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function prepare_projects_grouped_data() {
             for (const run of runs) {
                 const tags = run.tags.split(",");
-                // in case multiple project_ tags are set
                 const project_tags = tags.filter(tag => tag.toLowerCase().startsWith("project_"));
-
                 for (const project of project_tags) {
                     if (!projects_by_tag[project]) {
                         projects_by_tag[project] = [];
                     }
                     projects_by_tag[project].push(run);
                 }
-
                 if (!projects_by_name[run.name]) {
                     projects_by_name[run.name] = [];
                 }
@@ -4404,9 +4371,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
             areGroupedProjectsPrepared = true;
             create_project_overview();
-            return;
         }
-
 
         //////////////////////////////////////
         // GRAPH & TABLE CREATION FUNCTIONS //
@@ -4455,12 +4420,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     const [passed, failed, skipped, duration, rawPath] = r.stats;
                     const path = transform_file_path(rawPath).replaceAll('\\', '\\\\');
                     const runNumber = runList.length - runIndex;
-
                     const durationsForAvg = runList
                                             .map(x => x.duration)
                                             .filter(item => item !== duration);
                     const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
-
                     const compares = compare_to_average(duration, average, overviewDurationPercentage);
                     const rounded_duration = Math.round(duration);
                     const passedRuns = (runList.reduce((a, b) => a + b.passed_run, 0) / runList.length * 100).toFixed(2);
@@ -4471,7 +4434,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     if (cardCounter % CARDS_PER_ROW === 0) {
                         overviewHTML += '<div class="row">';
                     }
-
                     overviewHTML += generate_overview_card_html(
                         key,
                         r.stats,
@@ -4485,9 +4447,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         svg,
                         runIndex
                     );
-
                     cardCounter++;
-
                     if (cardCounter % CARDS_PER_ROW === 0) {
                         overviewHTML += '</div>';
                     }
@@ -4497,14 +4457,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             if (cardCounter % CARDS_PER_ROW !== 0) {
                 overviewHTML += '</div>';
             }
-
             document.getElementById("gridOverview").innerHTML = overviewHTML;
-
             // attach click listeners (from original logic)
             keys.forEach(key => {
                 const runList = data[key].runs.slice().reverse();
                 const runsToShow = [runList[0]];
-
                 runsToShow.forEach((r, runIndex) => {
                     const cardEl = document.getElementById(`${key}Card${runIndex}`);
                     if (cardEl) {
@@ -4521,7 +4478,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             keys.forEach(key => {
                 const runList = data[key].runs.slice().reverse();
                 const runsToShow = [runList[0]];
-
                 runsToShow.forEach((r, runIndex) => {
                     create_overview_run_donut(r, runIndex, key);
                 });
