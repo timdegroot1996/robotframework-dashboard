@@ -3991,11 +3991,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate) {
             const projectOverviewData = document.getElementById("projectOverviewData");
             const projectCard = `
-            <div class="card mb-3" id="${projectName}_projectCard">
+            <div class="card mb-3" id="${projectName}Card">
                   <div class="card-header">
                       <div class="row">
                           <div class="col-auto align-self-center">
-                              <div class="btn btn-sm collapse-icon" id="collapse${projectName}_projectBody">
+                              <div class="btn btn-sm collapse-icon" id="collapse${projectName}Body">
                                   ${arrowRight}
                               </div>
                           </div>
@@ -4006,10 +4006,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                           <div class="d-flex flex-wrap align-items-start col align-items-center">
                               <div class="col-auto">
                                   <div class="btn-group">
-                                      <label class="form-check-label" for="${projectName}_projectDurationPercentage">Percentage</label>
+                                      <label class="form-check-label" for="${projectName}DurationPercentage">Percentage</label>
                                   </div>
                                   <div class="btn-group">
-                                      <select class="form-select form-select-sm mt-1" id="${projectName}_projectDurationPercentage">
+                                      <select class="form-select form-select-sm mt-1" id="${projectName}DurationPercentage">
                                           ${[10,20,30,40,50,60,70,80,90,100].map(val =>
                                           `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
                                           ).join('')}
@@ -4019,14 +4019,14 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                           </div>
                       </div>
                   </div>
-                  <div class="card-body" id="${projectName}_projectBody" hidden="">
-                      <div id="${projectName}_projectRunCardsContainer">
+                  <div class="card-body" id="${projectName}Body" hidden="">
+                      <div id="${projectName}RunCardsContainer">
                       </div>
                   </div>
               </div>
             `;
             projectOverviewData.appendChild(document.createRange().createContextualFragment(projectCard));
-            const projectPercentageSelector = document.getElementById(`${projectName}_projectDurationPercentage`);
+            const projectPercentageSelector = document.getElementById(`${projectName}DurationPercentage`);
             projectPercentageSelector.addEventListener('change', () => {
                 const newPercent = parseInt(projectPercentageSelector.value, 10);
                 update_duration_comparison_for_project(projectName, projectRuns, newPercent);
@@ -4038,11 +4038,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const totalRunsAmount = projectRuns.length;
             const passedRunsAmount = projectRuns.filter(run => run.failed === 0).length;
             const passRate = ((passedRunsAmount / totalRunsAmount) * 100).toFixed(2);
-            const cardsContainer = document.getElementById(`${projectName}_projectRunCardsContainer`);
+            const cardsContainer = document.getElementById(`${projectName}RunCardsContainer`);
             const durations = projectRuns.map(r => r.elapsed_s);
             // create section for project in overview if not present
             if (!cardsContainer) create_project_bar(projectName, projectRuns, totalRunsAmount, passRate);
-            const container = document.getElementById(`${projectName}_projectRunCardsContainer`);
+            const container = document.getElementById(`${projectName}RunCardsContainer`);
             container.innerHTML = '';
             const projectRunsToShow = projectRuns.slice().reverse();
             // create cards and charts for each run card
@@ -4059,7 +4059,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     container.appendChild(currentRow);
                 }
                 currentRow.appendChild(createdRunCard);
-                create_overview_run_donut(run, idx, projectName, false);
+                create_overview_run_donut(run, idx, projectName);
                 cardCounter++;
             });
         }
@@ -4092,40 +4092,41 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 logName,
                 svg,
                 runIndex,
-                "_project",
             )
-            const existingRunCard = document.getElementById(`${projectName}_projectCard${runIndex}`);
+            const existingRunCard = document.getElementById(`${projectName}Card${runIndex}`);
             if (existingRunCard) {
                 // preserves listeners of element
                 existingRunCard.replaceWith(document.createRange().createContextualFragment(projectRunCardHTML));
             } else {
-                const cardsContainer = document.getElementById(`${projectName}_projectRunCardsContainer`);
+                const cardsContainer = document.getElementById(`${projectName}RunCardsContainer`);
                 cardsContainer.appendChild(document.createRange().createContextualFragment(projectRunCardHTML));
-                const createdRunCard = document.getElementById(`${projectName}_projectCard${runIndex}`);
+                const createdRunCard = document.getElementById(`${projectName}Card${runIndex}`);
                 createdRunCard.addEventListener("click", () => {
                     clear_project_filter();
                     set_filter_show_current_project(projectName);
                     update_menu("menuDashboard");
                 });
             }
-            return `${projectName}_projectCard${runIndex}`;
+            return `${projectName}Card${runIndex}`;
         }
 
-        function create_overview_run_donut(run, runIndex, projectName, IsForOverviewStats = true) {
-            let idGraphSubString, passed, failed, skipped;
-            if (IsForOverviewStats) {
-                idGraphSubString = "Graph";
+        function create_overview_run_donut(run, chartElementPostfix, projectName) {
+            let passed, failed, skipped;
+            const idGraphSubString = "Graph";
+            // when called for overview statistics
+            if (run.stats) {
                 [passed, failed, skipped] = run.stats;
-            } else {
-                idGraphSubString = "_projectGraph";
+            }
+            // when called for projects section in overview
+            else {
                 passed = run.passed;
                 failed = run.failed;
                 skipped = run.skipped;
             }
-            const el = document.getElementById(`${projectName}${idGraphSubString}${runIndex}`);
+            const el = document.getElementById(`${projectName}${idGraphSubString}${chartElementPostfix}`);
             if (!el) {
                 console.warn(
-                    `No element with ID ${projectName}${idGraphSubString}${runIndex} found for donut chart creation`
+                    `No element with ID ${projectName}${idGraphSubString}${chartElementPostfix} found for donut chart creation`
                 );
                 return;
             }
@@ -4160,7 +4161,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function update_projectbar_visibility() {
             const container = document.getElementById("projectOverviewData");
             if (!container) return;
-            const bars = container.querySelectorAll('[id$="_projectCard"]');
+            const bars = container.querySelectorAll('[id$="Card"]');
             const tagged = [];
             const untagged = [];
             for (const el of bars) {
@@ -4176,8 +4177,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         // prevents regeneration of run cards, just changes class for duration highlight
         function update_duration_comparison_for_project(projectName, projectRuns, percentage) {
             for (let i = 0; i < projectRuns.length; i++) {
-                const comparesElement = document.getElementById(`${projectName}_projectRunCardCompares${i}`);
-                const duration = document.getElementById(`${projectName}_projectRunCardComparesValue${i}`).getAttribute("value");
+                const comparesElement = document.getElementById(`${projectName}RunCardCompares${i}`);
+                const duration = document.getElementById(`${projectName}RunCardComparesValue${i}`).getAttribute("value");
                 const durationsForAvg = projectRuns
                                         .map(r => parseFloat(r.elapsed_s))
                                         .reverse()
@@ -4411,84 +4412,71 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             document.getElementById("overviewTitle").innerHTML = `Overview Statistics <h6>showing ${Object.keys(runs).length} runs in ${keys.length} projects</h6`;
 
             let cardCounter = 0;
+            const idPostfix = "_OverviewStatistics"; // can be a set postfix because it is always unique with the name in this code
 
             keys.forEach(key => {
                 const runList = [...data[key].runs].reverse(); // newest first
-                const runsToShow = [runList[0]];
+                const r = runList[0];
+                const [passed, failed, skipped, duration, rawPath] = r.stats;
+                const path = transform_file_path(rawPath).replaceAll('\\', '\\\\');
+                const runNumber = runList.length;
+                const durationsForAvg = runList
+                    .map(x => x.duration)
+                    .filter(item => item !== duration);
+                const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
+                const compares = compare_to_average(duration, average, overviewDurationPercentage);
+                const rounded_duration = Math.round(duration);
+                const passedRuns = (runList.reduce((a, b) => a + b.passed_run, 0) / runList.length * 100).toFixed(2);
+                const status = failed > 0 ? 'failed' : skipped > 0 ? 'skipped' : 'passed';
+                const log_path = use_logs ? path : '';
+                const log_name = use_logs ? 'log.html' : '';
 
-                runsToShow.forEach((r, runIndex) => {
-                    const [passed, failed, skipped, duration, rawPath] = r.stats;
-                    const path = transform_file_path(rawPath).replaceAll('\\', '\\\\');
-                    const runNumber = runList.length - runIndex;
-                    const durationsForAvg = runList
-                                            .map(x => x.duration)
-                                            .filter(item => item !== duration);
-                    const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
-                    const compares = compare_to_average(duration, average, overviewDurationPercentage);
-                    const rounded_duration = Math.round(duration);
-                    const passedRuns = (runList.reduce((a, b) => a + b.passed_run, 0) / runList.length * 100).toFixed(2);
-                    const status = failed > 0 ? 'failed' : skipped > 0 ? 'skipped' : 'passed';
-                    const log_path = use_logs ? path : '';
-                    const log_name = use_logs ? 'log.html' : '';
-
-                    if (cardCounter % CARDS_PER_ROW === 0) {
-                        overviewHTML += '<div class="row">';
-                    }
-                    overviewHTML += generate_overview_card_html(
-                        key,
-                        r.stats,
-                        rounded_duration,
-                        status,
-                        runNumber,
-                        compares,
-                        passedRuns,
-                        log_path,
-                        log_name,
-                        svg,
-                        runIndex
-                    );
-                    cardCounter++;
-                    if (cardCounter % CARDS_PER_ROW === 0) {
-                        overviewHTML += '</div>';
-                    }
-                });
+                if (cardCounter % CARDS_PER_ROW === 0) {
+                    overviewHTML += '<div class="row">';
+                }
+                overviewHTML += generate_overview_card_html(
+                    key,
+                    r.stats,
+                    rounded_duration,
+                    status,
+                    runNumber,
+                    compares,
+                    passedRuns,
+                    log_path,
+                    log_name,
+                    svg,
+                    idPostfix
+                );
+                cardCounter++;
+                if (cardCounter % CARDS_PER_ROW === 0) {
+                    overviewHTML += '</div>';
+                }
             });
 
             if (cardCounter % CARDS_PER_ROW !== 0) {
                 overviewHTML += '</div>';
             }
             document.getElementById("gridOverview").innerHTML = overviewHTML;
-            // attach click listeners (from original logic)
             keys.forEach(key => {
                 const runList = data[key].runs.slice().reverse();
-                const runsToShow = [runList[0]];
-                runsToShow.forEach((r, runIndex) => {
-                    const cardEl = document.getElementById(`${key}Card${runIndex}`);
-                    if (cardEl) {
-                        cardEl.addEventListener("click", () => {
-                            clear_project_filter();
-                            set_filter_show_current_project(key);
-                            update_menu("menuDashboard");
-                        });
-                    }
-                });
-            });
-
-            // build charts
-            keys.forEach(key => {
-                const runList = data[key].runs.slice().reverse();
-                const runsToShow = [runList[0]];
-                runsToShow.forEach((r, runIndex) => {
-                    create_overview_run_donut(r, runIndex, key);
-                });
+                const r = runList[0];
+                const cardEl = document.getElementById(`${key}Card${idPostfix}`);
+                if (cardEl) {
+                    // build charts
+                    create_overview_run_donut(r, "_OverviewStatistics", key);
+                    // attach click listener
+                    cardEl.addEventListener("click", () => {
+                        clear_project_filter();
+                        set_filter_show_current_project(key);
+                        update_menu("menuDashboard");
+                    });
+                }
             });
         }
 
-        // ProjectNamePostfix is for differentiating overview statistic and project specific statistics
-        // since the project specific statistics are differentiated by adding project_ after projectName to the id
-        function generate_overview_card_html(projectName, stats, rounded_duration, status, runNumber, compares, passed_runs, log_path, log_name, svg, runIndex, projectNamePostfix = "") {
+        function generate_overview_card_html(projectName, stats, rounded_duration, status, runNumber, compares, passed_runs, log_path, log_name, svg, idPostfix) {
             return `
-            <div class="col-4 overview-card" id="${projectName}${projectNamePostfix}Card${runIndex}">
+            <div class="col-4 overview-card" id="${projectName}Card${idPostfix}">
                 <div class="card border-3 border-${status}">
                     <div class="card-body">
                         <div class="row">
@@ -4497,7 +4485,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         </div>
                         <div class="row">
                             <div class="col-4 overview-canvas">
-                                <canvas id="${projectName}${projectNamePostfix}Graph${runIndex}"></canvas>
+                                <canvas id="${projectName}Graph${idPostfix}"></canvas>
                             </div>
                             <div class="col-3 d-flex align-items-center">
                                 <div>
@@ -4508,9 +4496,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                             </div>
                             <div class="col-5 d-flex align-items-center" style="overflow:auto;">
                                 <div>
-                                    <div class="${compares}" id="${projectName}${projectNamePostfix}RunCardCompares${runIndex}">
+                                    <div class="${compares}" id="${projectName}RunCardCompares${idPostfix}">
                                         ${svg}
-                                        <i id="${projectName}${projectNamePostfix}RunCardComparesValue${runIndex}" value="${rounded_duration}">
+                                        <i id="${projectName}RunCardComparesValue${idPostfix}" value="${rounded_duration}">
                                             ${rounded_duration}s
                                         </i>
                                     </div>
