@@ -4180,8 +4180,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                         .reverse()
                                         .filter((_, idx) => idx !== i)
                 const averageDuration = durationsForAvg.reduce((a,b) => a + parseFloat(b), 0) / durationsForAvg.length;
-                compareClass = compare_to_average(duration, averageDuration, percentage);
-                if (compareClass) comparesElement.classList.add(compareClass);
+                comparesElement.className = compare_to_average(duration, averageDuration, percentage);
             }
         }
 
