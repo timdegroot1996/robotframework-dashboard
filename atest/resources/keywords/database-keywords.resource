@@ -20,7 +20,7 @@ Validate Database
     VAR    @{new_result}    @{EMPTY}
     IF    $table == 'runs'
         FOR    ${row}    IN    @{result}
-            ${contains_backslash}    Should Contain    container=${row}[-2]    item=\\
+            ${contains_backslash}    Run Keyword And Return Status    Should Contain    container=${row}[-2]    item=\\
             IF    ${contains_backslash}
                 ${path}    Split String From Right    string=${row}[-2]    separator=\\    max_split=1
             ELSE

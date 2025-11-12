@@ -2,6 +2,7 @@
 Library    OperatingSystem
 Library    pabot.pabotlib
 Suite Teardown    Run Teardown Only Once    keyword=Teardown
+Test Timeout    60s
 
 
 *** Keywords ***

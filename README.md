@@ -1,4 +1,8 @@
 # Robot Framework Dashboard
+[![PyPI - Version](https://img.shields.io/pypi/v/robotframework-dashboard.svg)](https://pypi.org/project/robotframework-dashboard)
+[![PyPI Downloads - Total](https://static.pepy.tech/badge/robotframework-dashboard)](https://pepy.tech/projects/robotframework-dashboard)
+[![PyPI Downloads - Monthly](https://static.pepy.tech/badge/robotframework-dashboard/month)](https://pepy.tech/projects/robotframework-dashboard)
+[![License](https://img.shields.io/pypi/l/robotframework-dashboard?cacheSeconds=600)](LICENSE)
 
 Before reading anything else here is a [Fully Functioning Dashboard](https://timdegroot1996.github.io/robotframework-dashboard/example/robot_dashboard.html) you can checkout right away!
 
