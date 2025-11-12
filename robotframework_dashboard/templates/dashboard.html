@@ -4383,8 +4383,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             for (const run of runs) {
                 const projects = new Set();
                 if (settings.switch.runTags) {
-                    const tag = run.tags.split(",").find(t => t.startsWith("project_"));
-                    projects.add(tag);
+                    const projectTags = run.tags.split(",").filter(t => t.startsWith("project_"));
+                    projectTags?.forEach(tag => projects.add(tag));
                 }
                 if (settings.switch.runName) {
                     projects.add(run.name);
