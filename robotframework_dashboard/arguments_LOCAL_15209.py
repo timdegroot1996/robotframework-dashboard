@@ -298,16 +298,6 @@ class ArgumentParser:
                 "  • '--server 0.0.0.0:8080' -> custom host/port\n"
                 "  • '--server 0.0.0.0:8080:admin:secret' -> custom host/port and admin username/password\n"
             ),
-        )
-        parser.add_argument(
-            "--project-version",
-            help=(
-                "Provide optional project version for run"
-                " | Example:"
-                "   robotdashboard -o output.xml --project-version=1.1"
-            ),
-            dest="project_version",
-            type=str,
             default=None,
         )
         return parser.parse_args()
@@ -451,6 +441,5 @@ class ArgumentParser:
             "quantity": quantity,
             "use_logs": use_logs,
             "offline_dependencies": offline_dependencies,
-            "project_version": arguments.project_version,
         }
         return dotdict(provided_args)

@@ -450,7 +450,10 @@ class ArgumentParser:
             "message_config": message_config,
             "quantity": quantity,
             "use_logs": use_logs,
+<<<<<<< HEAD
             "offline_dependencies": offline_dependencies,
+=======
             "project_version": arguments.project_version,
+>>>>>>> 8d9cdff (add --project-version cmdline flag)
         }
         return dotdict(provided_args)
