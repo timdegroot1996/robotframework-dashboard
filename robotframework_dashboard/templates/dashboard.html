@@ -2462,7 +2462,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 set_local_storage_item("theme", "dark");
             }
             setup_theme()
-            setup_dasbhoard_graphs()
+            setup_dashboard_graphs()
         }
 
         // theme function based on browser/machine color scheme
@@ -7503,7 +7503,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 requestAnimationFrame(() => {
                     setup_spinner(true);
                     setup_section_menu_buttons(); // sections have to be visible to update highlighting correctly
-                    setup_dasbhoard_graphs();
+                    setup_dashboard_graphs();
 
                     if (!menuUpdate) {
                         setTimeout(() => {
@@ -7555,7 +7555,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         }
 
         // function that updates all graphs based on the new filtered data and hidden choices
-        function setup_dasbhoard_graphs() {
+        function setup_dashboard_graphs() {
             if (settings.menu.overview) {
                 create_overview_statistics_graphs();
                 update_donut_charts("projectOverviewData");
