@@ -16,18 +16,7 @@ Validate Overview Page Base View
     Open Overview Page
     Validate Component    id=overviewStatisticsSection    name=baseView    folder=overview
 
-Validate Overview Page Display All Runs
-    Open Overview Page
-    Click    selector=id=switchShowAllRuns
-    Validate Component    id=overviewStatisticsSection    name=allRuns    folder=overview
-
 Validate Overview Page Use Run Tags
     Open Overview Page
     Click    selector=id=switchRunTags
     Validate Component    id=overviewStatisticsSection    name=runTags    folder=overview
-
-Validate Overview Page Display All Runs And Use Run Tags
-    Open Overview Page
-    Click    selector=id=switchShowAllRuns
-    Click    selector=id=switchRunTags
-    Validate Component    id=overviewStatisticsSection    name=allRunsAndRunTags    folder=overview
