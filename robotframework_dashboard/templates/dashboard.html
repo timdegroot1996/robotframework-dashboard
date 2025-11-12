@@ -3970,17 +3970,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function create_project_overview() {
             const projectOverviewData = document.getElementById("projectOverviewData");
             projectOverviewData.innerHTML = "";
-
-            const isDark = document.documentElement.classList.contains("dark-mode");
-            const svg = isDark ? clockDarkSVG: clockLightSVG;
-
             const projectData = { ...projects_by_name, ...projects_by_tag };
-
             // create run cards for each project
             Object.keys(projectData).sort().forEach(projectName => {
                 create_project_cards_container(projectName, projectData[projectName]);
             });
-
             // setup collapsables specifically for overview project sections
             setup_collapsables(projectOverviewData);
             // set project bar visibility based on switch settings
