@@ -2531,6 +2531,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         ".move-down-table": moveDownLightSVG,
                         ".move-up-section": moveUpLightSVG,
                         ".move-down-section": moveDownLightSVG,
+                        ".clock-icon": clockLightSVG,
                     }
                 };
                 for (const [id, svg] of Object.entries(svgMap.ids)) {
@@ -2593,6 +2594,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         ".move-down-table": moveDownDarkSVG,
                         ".move-up-section": moveUpDarkSVG,
                         ".move-down-section": moveDownDarkSVG,
+                        ".clock-icon": clockDarkSVG,
                     }
                 };
                 for (const [id, svg] of Object.entries(svgMap.ids)) {
@@ -4491,7 +4493,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                             <div class="col-5 d-flex align-items-center" style="overflow:auto;">
                                 <div>
                                     <div class="${compares}" id="${projectName}RunCardCompares${idPostfix}">
-                                        ${svg}
+                                        <span class="clock-icon">
+                                            ${svg}
+                                        </span>
                                         <i id="${projectName}RunCardComparesValue${idPostfix}" value="${rounded_duration}">
                                             ${rounded_duration}s
                                         </i>
