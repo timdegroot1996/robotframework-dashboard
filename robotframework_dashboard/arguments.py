@@ -161,6 +161,16 @@ class ArgumentParser:
                 "If no username:password is given, security is disabled."
                 "See http://github.com/timdegroot1996/robotframework-dashboard?tab=readme-ov-file#Dashboard-Server for additional information!"
             ),
+        )
+        parser.add_argument(
+            "--project-version",
+            help=(
+                "Provide optional project version for run"
+                " | Example:"
+                "   robotdashboard -o output.xml --project-version=1.1"
+            ),
+            dest="project_version",
+            type=str,
             default=None,
         )
         return parser.parse_args()
@@ -317,5 +327,6 @@ class ArgumentParser:
             "message_config": message_config,
             "quantity": quantity,
             "use_logs": use_logs,
+            "project_version": arguments.project_version,
         }
         return dotdict(provided_args)
