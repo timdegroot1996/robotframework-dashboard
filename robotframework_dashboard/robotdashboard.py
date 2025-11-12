@@ -27,6 +27,7 @@ class RobotDashboard:
         quantity: int,
         use_logs: bool,
         offline_dependencies: bool,
+        project_version: str,
     ):
         """Sets the parameters provided in the command line"""
         self.database_path = database_path
@@ -43,6 +44,7 @@ class RobotDashboard:
         self.offline_dependencies = offline_dependencies
         self.server = False
         self.database = None
+        self.project_version = project_version
 
     def initialize_database(self, suppress=True):
         """Function that initializes the database if it does not exist
