@@ -26,6 +26,7 @@ class RobotDashboard:
         message_config: list,
         quantity: int,
         use_logs: bool,
+        project_version: str,
     ):
         """Sets the parameters provided in the command line"""
         self.database_path = database_path
@@ -41,6 +42,7 @@ class RobotDashboard:
         self.use_logs = use_logs
         self.server = False
         self.database = None
+        self.project_version = project_version
 
     def initialize_database(self, suppress=True):
         """Function that initializes the database if it does not exist
