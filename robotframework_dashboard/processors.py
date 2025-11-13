@@ -271,14 +271,34 @@ class KeywordProcessor(ResultVisitor):
         else:
             elapsed_time = round(keyword.elapsedtime / 1000, 3)
 
+        if hasattr(keyword, "owner"):
+            name = keyword.name
+            owner = keyword.owner
+            if not owner:
+                # There is no owner, this happens when keywords are located in testsuites directly
+                # Add a default one to not be empty
+                owner = "TestSuite"
+        else:
+            name = keyword.name
+            owner = keyword.libname
+            if owner:   
+                # There is a parent library or resource file
+                if "." in name: 
+                    # There is a library name in the name of the keyword
+                    name = name.split(".", 1)[1]
+            else:   
+                # There is no owner, this happens when keywords are located in testsuites directly
+                # Add a default one to not be empty
+                owner = 'TestSuite'
+
         self.keyword_list.append(
             (
                 self.run_time,
-                keyword.name,
+                name,
                 keyword.passed,
                 keyword.failed,
                 keyword.skipped,
                 elapsed_time,
-                keyword.owner,
+                owner,
             )
         )
