@@ -4231,6 +4231,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 logName,
                 svg,
                 runIndex,
+                run.project_version,
+                true
             )
             const existingRunCard = document.getElementById(`${projectName}Card${runIndex}`);
             if (existingRunCard) {
@@ -4537,7 +4539,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     data[project].runs.push({
                         stats: [run.passed, run.failed, run.skipped, run.elapsed_s, run.path],
                         duration: run.elapsed_s,
-                        passed_run: run.failed === 0 ? 1 : 0
+                        passed_run: run.failed === 0 ? 1 : 0,
+                        project_version: run.project_version,
                     });
                 }
             }
@@ -4584,7 +4587,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     log_path,
                     log_name,
                     svg,
-                    idPostfix
+                    idPostfix,
+                    r.project_version,
                 );
                 cardCounter++;
                 if (cardCounter % CARDS_PER_ROW === 0) {
@@ -4613,13 +4617,30 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
-        function generate_overview_card_html(projectName, stats, rounded_duration, status, runNumber, compares, passed_runs, log_path, log_name, svg, idPostfix) {
+        function generate_overview_card_html(
+             projectName,
+             stats,
+             rounded_duration,
+             status,
+             runNumber,
+             compares,
+             passed_runs,
+             log_path,
+             log_name,
+             svg,
+             idPostfix,
+             projectVersion = null,
+             showOnlyVersion = false
+        ) {
+            const cardTitle = projectVersion
+                ? (showOnlyVersion ? projectVersion : `${projectName} ${projectVersion}`)
+                : "";
             return `
             <div class="col-4 overview-card" id="${projectName}Card${idPostfix}">
                 <div class="card border-3 border-${status}">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col text-center"><h5 class="card-title mb-0">${projectName}</h5></div>
+                            <div class="col text-center"><h5 class="card-title mb-0">${cardTitle}</h5></div>
                             <div class="col-auto"><h5>#${runNumber}</h5></div>
                         </div>
                         <div class="row">
