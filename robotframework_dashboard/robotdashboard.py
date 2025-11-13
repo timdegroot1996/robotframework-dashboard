@@ -146,7 +146,7 @@ class RobotDashboard:
         run_start = outputProcessor.get_run_start()
         if not self.database.run_start_exists(run_start):
             output_data = outputProcessor.get_output_data()
-            self.database.insert_output_data(output_data, tags, run_alias, output_path)
+            self.database.insert_output_data(output_data, tags, run_alias, output_path, self.project_version)
 
             end = time()
             console += self._print_console(

@@ -118,23 +118,35 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         self.connection.close()
 
     def insert_output_data(
-        self, output_data: dict, tags: list, run_alias: str, path: Path
+        self,
+        output_data: dict,
+        tags: list,
+        run_alias: str,
+        path: Path,
+        project_version: str | None = None
     ):
         """This function inserts the data of an output file into the database"""
         try:
-            self._insert_runs(output_data["runs"], tags, run_alias, path)
+            self._insert_runs(output_data["runs"], tags, run_alias, path, project_version)
             self._insert_suites(output_data["suites"], run_alias)
             self._insert_tests(output_data["tests"], run_alias)
             self._insert_keywords(output_data["keywords"], run_alias)
         except Exception as error:
             print(f"   ERROR: something went wrong with the database: {error}")
 
-    def _insert_runs(self, runs: list, tags: list, run_alias: str, path: Path):
+    def _insert_runs(self, runs: list, tags: list, run_alias: str, path: Path, project_version: str | None = None):
         """Helper function to insert the run data with the run tags"""
         full_runs = []
         for run in runs:
             *rest, last = run
-            new_run = tuple(rest) + (",".join(tags), run_alias, str(path)) + (last,)
+            new_run = (
+                    *rest,
+                    project_version,
+                    ",".join(tags),
+                    run_alias,
+                    str(path),
+                    last
+            )
             full_runs.append(new_run)
         self.connection.executemany(INSERT_INTO_RUNS, full_runs)
         self.connection.commit()
