@@ -43,7 +43,7 @@ Validate RobotDashboard r
 Validate RobotDashboard removerun
     Validate CLI    command=robotdashboard -d removerun.db --outputfolderpath ${OUTPUTS_FOLDER}
     Validate CLI
-    ...    command=robotdashboard -d removerun.db --removerun index=0:3;-1;6 --removerun "run_start=2025-03-13 00:27:39.871333" --removerun alias=abc,tag=tag1
+    ...    command=robotdashboard -d removerun.db --removerun "index=0:3;-1;6" --removerun "run_start=2025-03-13 00:27:39.871333" --removerun alias=abc,tag=tag1
     ...    expected=removerun
 
 Validate RobotDashboard d

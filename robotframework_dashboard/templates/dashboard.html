@@ -502,15 +502,6 @@
                             <h4 id="overviewTitle"></h4>
                         </div>
                         <div class="d-flex flex-wrap align-items-start col align-items-center">
-                            <div class="col-auto">
-                                <div class="btn-group">
-                                    <label class="form-check-label" for="switchShowAllRuns">Display All Runs</label>
-                                </div>
-                                <div class="btn-group form-switch ms-1">
-                                    <input class="form-check-input" type="checkbox" role="switch"
-                                        id="switchShowAllRuns" />
-                                </div>
-                            </div>
                             <div class="col-auto" id="overviewName" hidden>
                                 <div class="btn-group">
                                     <label class="form-check-label" for="overviewSelectName">Name</label>
@@ -521,7 +512,15 @@
                             </div>
                             <div class="col-auto">
                                 <div class="btn-group">
-                                    <label class="form-check-label ms-2" for="switchRunTags">Use Run Tags</label>
+                                    <label class="form-check-label ms-2" for="switchRunName">Display by Name</label>
+                                </div>
+                                <div class="btn-group form-switch ms-1">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="switchRunName" />
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="btn-group">
+                                    <label class="form-check-label ms-2" for="switchRunTags">Display by Tag</label>
                                 </div>
                                 <div class="btn-group form-switch ms-1">
                                     <input class="form-check-input" type="checkbox" role="switch" id="switchRunTags" />
@@ -556,6 +555,11 @@
                 <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card overviewData -->
                 <div id="overviewDataHidden" hidden></div>
                 <div class="card-body" id="gridOverview"></div>
+            </div>
+        </div>
+        <div id="projectOverview" hidden>
+            <!-- Placeholder to add the project overview-->
+            <div id="projectOverviewData">
             </div>
         </div>
 
@@ -1145,7 +1149,13 @@
         const failedBackgroundColor = "rgba(206, 62, 1, 0.7)";
         const greyBackgroundBorderColor = "#0f172a";
         const greyBackgroundColor = "rgba(33, 37, 41, 0.7)";
+        const blueBackgroundBorderColor = "rgba(54, 162, 235)";
+        const blueBackgroundColor = "rgba(54, 162, 235, 0.5)";
         const graphFontSize = 12;
+
+        // UI defaults
+        const CARDS_PER_ROW = 3;
+        const DEFAULT_DURATION_PERCENTAGE = 20;
 
         // base bar config
         const barConfig = {
@@ -1174,6 +1184,11 @@
             borderColor: skippedBackgroundBorderColor,
             ...barConfig,
         }
+        const blueConfig = {
+            backgroundColor: blueBackgroundColor,
+            borderColor: blueBackgroundBorderColor,
+            ...barConfig,
+        }
         // base line config
         const lineConfig = {
             tension: 0.1,
@@ -1200,6 +1215,11 @@
         const suites = decode_and_decompress("placeholder_suites").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         const tests = decode_and_decompress("placeholder_tests").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         const keywords = decode_and_decompress("placeholder_keywords").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+
+        // populated by prepare_projects_grouped_data()
+        const projects_by_tag = {};
+        const projects_by_name = {};
+        let areGroupedProjectsPrepared = false;
 
         function decode_and_decompress(base64Str) {
             const compressedData = Uint8Array.from(atob(base64Str), c => c.charCodeAt(0));
@@ -1231,7 +1251,6 @@
         var gridEditMode = false; // used to check how the graphs should be shown when rendered
 
         // global vars for switching between overview and dashboard
-        var overviewGraphs = [];
         var selectedRunSetting = '';
         var selectedTagSetting = '';
 
@@ -1577,6 +1596,35 @@
                 </div>`,
             },
             {
+                key: "suiteMostTimeConsuming",
+                label: "Suite Most Time Consuming",
+                defaultType: "timeline",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                html: `<div class="graph-header">
+                    <h6>Most Time Consuming</h6>
+                    <div class="graph-controls">
+                        <div class="btn-group">
+                            <label class="form-check-label" for="onlyLastRunSuite">Only Last Run</label>
+                        </div>
+                        <div class="btn-group form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="onlyLastRunSuite">
+                        </div>
+                        <a class="bar-graph information" id="suiteMostTimeConsumingGraphBar"></a>
+                        <a class="timeline-graph information" id="suiteMostTimeConsumingGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="suiteMostTimeConsumingFullscreen"></a>
+                        <a class="close-graph information" id="suiteMostTimeConsumingClose" hidden></a>
+                        <a class="shown-graph information" id="suiteMostTimeConsumingShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="suiteMostTimeConsumingHidden" hideGraphHidden></a>
+                    </div>
+                </div>
+                <div class="graph-body">
+                    <div id="suiteMostTimeConsumingVertical" class="w-100 vertical">
+                        <canvas id="suiteMostTimeConsumingGraph"></canvas>
+                    </div
+                </div>`,
+            },
+            {
                 key: "testStatistics",
                 label: "Test Statistics",
                 defaultType: "timeline",
@@ -1773,6 +1821,35 @@
                 </div>`,
             },
             {
+                key: "testMostTimeConsuming",
+                label: "Test Most Time Consuming",
+                defaultType: "timeline",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                html: `<div class="graph-header">
+                    <h6>Most Time Consuming</h6>
+                    <div class="graph-controls">
+                        <div class="btn-group">
+                            <label class="form-check-label" for="onlyLastRunTest">Only Last Run</label>
+                        </div>
+                        <div class="btn-group form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="onlyLastRunTest">
+                        </div>
+                        <a class="bar-graph information" id="testMostTimeConsumingGraphBar"></a>
+                        <a class="timeline-graph information" id="testMostTimeConsumingGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="testMostTimeConsumingFullscreen"></a>
+                        <a class="close-graph information" id="testMostTimeConsumingClose" hidden></a>
+                        <a class="shown-graph information" id="testMostTimeConsumingShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="testMostTimeConsumingHidden" hideGraphHidden></a>
+                    </div>
+                </div>
+                <div class="graph-body">
+                    <div id="testMostTimeConsumingVertical" class="w-100 vertical">
+                        <canvas id="testMostTimeConsumingGraph"></canvas>
+                    </div
+                </div>`,
+            },
+            {
                 key: "keywordStatistics",
                 label: "Keyword Statistics",
                 defaultType: "percentages",
@@ -1919,6 +1996,35 @@
                 <div class="graph-body">
                     <div id="keywordMostFailedVertical" class="w-100 vertical">
                         <canvas id="keywordMostFailedGraph"></canvas>
+                    </div
+                </div>`,
+            },
+            {
+                key: "keywordMostTimeConsuming",
+                label: "Keyword Most Time Consuming",
+                defaultType: "timeline",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                html: `<div class="graph-header">
+                    <h6>Most Time Consuming</h6>
+                    <div class="graph-controls">
+                        <div class="btn-group">
+                            <label class="form-check-label" for="onlyLastRunKeyword">Only Last Run</label>
+                        </div>
+                        <div class="btn-group form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="onlyLastRunKeyword">
+                        </div>
+                        <a class="bar-graph information" id="keywordMostTimeConsumingGraphBar"></a>
+                        <a class="timeline-graph information" id="keywordMostTimeConsumingGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="keywordMostTimeConsumingFullscreen"></a>
+                        <a class="close-graph information" id="keywordMostTimeConsumingClose" hidden></a>
+                        <a class="shown-graph information" id="keywordMostTimeConsumingShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="keywordMostTimeConsumingHidden" hideGraphHidden></a>
+                    </div>
+                </div>
+                <div class="graph-body">
+                    <div id="keywordMostTimeConsumingVertical" class="w-100 vertical">
+                        <canvas id="keywordMostTimeConsumingGraph"></canvas>
                     </div
                 </div>`,
             },
@@ -2087,11 +2193,13 @@
             "amount": "Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.",
             "amountLabel": "Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.",
             "overviewStatisticsInformation": `This section shows the projects and their associated runs:
-- Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
-- Passed runs represent the percentage of runs with zero failures.
+- Overview Statistics show the latest result for each project
+- The additional project bars contain all runs for that project
 - You can define your own projects or groupings by appending '-o path/to/output.xml:project_yourprojectname' when generating results.
-- If runs don't include custom 'project_' tags, they will be grouped by their run name by default. You can change this behavior using the Use Run Tags toggle.
-- The All Runs toggle controls whether only the latest run of each project is shown, or all past runs are displayed in reverse order (newest first). When enabled, you can also filter which project's runs are shown using the selection box.`,
+- If runs don't include custom 'project_' tags, they will be grouped by their run name by default.
+- Choose which project types to show by toggling their respective "Display by" switch.
+- Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
+- Passed runs represent the percentage of runs with zero failures.`,
             "runStatisticsGraphPercentages": "Percentages: Displays the distribution of passed, failed, skipped tests per run, where 100% equals all tests combined",
             "runStatisticsGraphAmount": "Amount: Displays the actual number of passed, failed, skipped tests per run",
             "runStatisticsGraphLine": "Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times",
@@ -2160,6 +2268,12 @@
             "suiteMostFailedClose": "Close",
             "suiteMostFailedShown": "Hide Graph",
             "suiteMostFailedHidden": "Show Graph",
+            "suiteMostTimeConsumingGraphBar": "Bar: Displays suites ranked by how often they were the slowest (most time-consuming) suite in a run. Each bar represents how many times a suite was the single slowest one across all runs. The regular view shows the Top 10; fullscreen mode expands the list to the Top 50. When 'Only Last Run' is enabled, this graph instead shows the Top 10 (or Top 50 in fullscreen) most time-consuming suites *within the latest run only*, ranked by duration.",
+            "suiteMostTimeConsumingGraphTimeline": "Timeline: Displays the slowest suite for each run on a timeline. For every run, only the single most time-consuming suite is shown. The regular view shows the Top 10 most frequently slowest suites; fullscreen mode expands the list to the Top 50. When 'Only Last Run' is enabled, the timeline shows only the latest run, highlighting its Top 10 (or Top 50 in fullscreen) most time-consuming suites by duration.",
+            "suiteMostTimeConsumingFullscreen": "Fullscreen",
+            "suiteMostTimeConsumingClose": "Close",
+            "suiteMostTimeConsumingShown": "Hide Graph",
+            "suiteMostTimeConsumingHidden": "Show Graph",
             "testStatisticsGraphTimeline": `This graph displays the statistics of the tests in a timeline format
 Only Changes: Displays only tests that have changed statuses at some point in time`,
             "testStatisticsFullscreen": "Fullscreen",
@@ -2220,6 +2334,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             "testRecentMostFailedClose": "Close",
             "testRecentMostFailedShown": "Hide Graph",
             "testRecentMostFailedHidden": "Show Graph",
+            "testMostTimeConsumingGraphBar": "Bar: Displays tests ranked by how often they were the slowest (most time-consuming) test in a run. Each bar represents how many times a test was the single slowest one across all runs. The regular view shows the Top 10; fullscreen mode expands the list to the Top 50. When 'Only Last Run' is enabled, this graph instead shows the Top 10 (or Top 50 in fullscreen) most time-consuming tests *within the latest run only*, ranked by duration.",
+            "testMostTimeConsumingGraphTimeline": "Timeline: Displays the slowest test for each run on a timeline. For every run, only the single most time-consuming test is shown. The regular view shows the Top 10 most frequently slowest tests; fullscreen mode expands the list to the Top 50. When 'Only Last Run' is enabled, the timeline shows only the latest run, highlighting its Top 10 (or Top 50 in fullscreen) most time-consuming tests by duration.",
+            "testMostTimeConsumingFullscreen": "Fullscreen",
+            "testMostTimeConsumingClose": "Close",
+            "testMostTimeConsumingShown": "Hide Graph",
+            "testMostTimeConsumingHidden": "Show Graph",
             "keywordStatisticsGraphPercentages": "Percentages: Displays the distribution of passed, failed, skipped statuses for each keyword per run",
             "keywordStatisticsGraphAmount": "Amount: Displays raw counts of each status per run",
             "keywordStatisticsGraphLine": "Line: Displays the same data but over a time axis",
@@ -2263,6 +2383,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             "keywordMostFailedClose": "Close",
             "keywordMostFailedShown": "Hide Graph",
             "keywordMostFailedHidden": "Show Graph",
+            "keywordMostTimeConsumingGraphBar": "Bar: Displays keywords ranked by how often they were the slowest (most time-consuming) keyword in a run. Each bar represents how many times a keyword was the single slowest one across all runs. The regular view shows the Top 10; fullscreen mode expands the list to the Top 50. When 'Only Last Run' is enabled, this graph instead shows the Top 10 (or Top 50 in fullscreen) most time-consuming keywords *within the latest run only*, ranked by duration.",
+            "keywordMostTimeConsumingGraphTimeline": "Timeline: Displays the slowest keyword for each run on a timeline. For every run, only the single most time-consuming keyword is shown. The regular view shows the Top 10 most frequently slowest keywords; fullscreen mode expands the list to the Top 50. When 'Only Last Run' is enabled, the timeline shows only the latest run, highlighting its Top 10 (or Top 50 in fullscreen) most time-consuming keywords by duration.",
+            "keywordMostTimeConsumingFullscreen": "Fullscreen",
+            "keywordMostTimeConsumingClose": "Close",
+            "keywordMostTimeConsumingShown": "Hide Graph",
+            "keywordMostTimeConsumingHidden": "Show Graph",
             "compareStatisticsGraphBar": "This graph displays the overall statistics of the selected runs",
             "compareStatisticsFullscreen": "Fullscreen",
             "compareStatisticsClose": "Close",
@@ -2366,8 +2492,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         // settings var
         var settings = {
             switch: {
-                showAllRuns: false,
                 runTags: false,
+                runName: true,
                 suitePathsSuiteSection: false,
                 suitePathsTestSection: false,
                 suitePathsCompareSection: false,
@@ -2448,7 +2574,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 set_local_storage_item("theme", "dark");
             }
             setup_theme()
-            setup_dasbhoard_graphs()
+            setup_dashboard_graphs()
         }
 
         // theme function based on browser/machine color scheme
@@ -2517,6 +2643,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         ".move-down-table": moveDownLightSVG,
                         ".move-up-section": moveUpLightSVG,
                         ".move-down-section": moveDownLightSVG,
+                        ".clock-icon": clockLightSVG,
                     }
                 };
                 for (const [id, svg] of Object.entries(svgMap.ids)) {
@@ -2579,6 +2706,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         ".move-down-table": moveDownDarkSVG,
                         ".move-up-section": moveUpDarkSVG,
                         ".move-down-section": moveDownDarkSVG,
+                        ".clock-icon": clockDarkSVG,
                     }
                 };
                 for (const [id, svg] of Object.entries(svgMap.ids)) {
@@ -2817,9 +2945,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             document.getElementById("alertContainer").innerHTML = ""
         }
 
-        // function to setup all collapse buttons and icons
-        function setup_collapsables() {
-            document.querySelectorAll(".collapse-icon").forEach(icon => {
+        // function to setup collapse buttons and icons
+        function setup_collapsables(elementToSearch = document) {
+            elementToSearch.querySelectorAll(".collapse-icon").forEach(icon => {
                 const sectionId = icon.id.replace("collapse", "");
                 const update_icon = () => {
                     const section = document.getElementById(sectionId);
@@ -3014,11 +3142,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             if (hide) {
                 $("#loading").fadeOut(100)
                 $("#overview").fadeIn()
+                $("#projectOverview").fadeIn()
                 $("#dashboard").fadeIn()
                 $("#compare").fadeIn()
                 $("#tables").fadeIn()
             } else {
                 $("#overview").hide()
+                $("#projectOverview").hide()
                 $("#dashboard").hide()
                 $("#compare").hide()
                 $("#tables").hide()
@@ -3161,6 +3291,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             return parts.join(" ");
         }
 
+        // returns run card duration class
+        function compare_to_average(duration, average, percent) {
+            const t = parseFloat(percent) / 100;
+            return duration < average * (1 - t) ? 'text-passed' :
+                duration > average * (1 + t) ? 'text-failed' : '';
+        }
+
         //////////////////////////////
         // CUSTOMIZE VIEW FUNCTIONS //
         //////////////////////////////
@@ -3182,12 +3319,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
             // eventlistener to reset the filters
             document.getElementById("resetFilters").addEventListener("click", function () {
-                document.getElementById("runs").value = "All";
-                const tagElements = document.getElementById("runTag").getElementsByTagName("input");
-                for (const input of tagElements) {
-                    input.checked = false;
-                    if (input.id == "All") input.checked = true;
-                }
+                clear_project_filter();
                 document.getElementById("amount").value = filteredAmountDefault;
                 document.getElementById("metadata").value = "All";
                 setup_lowest_highest_dates(runs);
@@ -3447,21 +3579,19 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // function to setup eventlisteners for filter buttons
         function setup_sections_filters() {
-            update_switch_local_storage("switch.showAllRuns", settings.switch.showAllRuns, true)
-            document.getElementById("overviewName").hidden = !settings.switch.showAllRuns; // set the initial state of the overview name select
-            document.getElementById("switchShowAllRuns").addEventListener("click", function () {
-                settings.switch.showAllRuns = !settings.switch.showAllRuns
-                document.getElementById("overviewName").hidden = !settings.switch.showAllRuns;
-                update_switch_local_storage("switch.showAllRuns", settings.switch.showAllRuns);
-                create_overview_statistics_graphs();
-            });
             update_switch_local_storage("switch.runTags", settings.switch.runTags, true);
-            setup_names_in_overview_select(); // update the names in the select to make sure the runTags option is taken into account
+            update_switch_local_storage("switch.runName", settings.switch.runName, true);
             document.getElementById("switchRunTags").addEventListener("click", function () {
                 settings.switch.runTags = !settings.switch.runTags
                 update_switch_local_storage("switch.runTags", settings.switch.runTags);
-                setup_names_in_overview_select();
                 create_overview_statistics_graphs();
+                update_projectbar_visibility();
+            });
+            document.getElementById("switchRunName").addEventListener("click", function () {
+                settings.switch.runName = !settings.switch.runName
+                update_switch_local_storage("switch.runName", settings.switch.runName);
+                create_overview_statistics_graphs();
+                update_projectbar_visibility();
             });
             document.getElementById("overviewSelectName").addEventListener("change", function () {
                 create_overview_statistics_graphs();
@@ -3481,6 +3611,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_suite_statistics_graph();
                 create_suite_duration_graph();
                 create_suite_most_failed_graph();
+                create_suite_most_time_consuming_graph();
             });
             document.getElementById("resetSuiteFolder").addEventListener("click", () => {
                 create_suite_folder_donut_graph("");
@@ -3505,6 +3636,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_test_recent_most_flaky_graph();
                 create_test_most_failed_graph();
                 create_test_recent_most_failed_graph();
+                create_test_most_time_consuming_graph();
             });
             document.getElementById("testTagsSelect").addEventListener("change", () => {
                 setup_tests_in_select();
@@ -3537,6 +3669,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_keyword_min_duration_graph();
                 create_keyword_max_duration_graph();
                 create_keyword_most_failed_graph();
+                create_keyword_most_time_consuming_graph();
             });
             // compare filters
             compareRunIds.forEach(id => {
@@ -3661,6 +3794,16 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
             document.getElementById("compareOnlyChanges").addEventListener("change", () => {
                 create_compare_tests_graph();
+            });
+            // most time consuming only latest run switch event listeners
+            document.getElementById("onlyLastRunSuite").addEventListener("change", () => {
+                create_suite_most_time_consuming_graph();
+            });
+            document.getElementById("onlyLastRunTest").addEventListener("change", () => {
+                create_test_most_time_consuming_graph();
+            });
+            document.getElementById("onlyLastRunKeyword").addEventListener("change", () => {
+                create_keyword_most_time_consuming_graph();
             });
             // graph layout changes
             document.querySelectorAll(".shown-graph").forEach(btn => {
@@ -3826,31 +3969,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
         }
 
-        function setup_names_in_overview_select() {
-            const overviewSelectName = document.getElementById("overviewSelectName")
-            const names = new Set()
-            for (const run of runs) {
-                var name = '';
-                if (settings.switch.runTags) {
-                    const tags = run.tags.split(",")
-                    var foundTag = false;
-                    for (const tag of tags) {
-                        if (tag.startsWith('project_')) {
-                            name = tag;
-                            foundTag = true;
-                            break
-                        }
-                    }
-                    if (!foundTag) name = run.name;
-                } else {
-                    name = run.name;
-                }
-                names.add(name)
-            }
-            overviewSelectName.innerHTML = ""
-            names.forEach(item => overviewSelectName.options.add(new Option(item, item)));
-        }
-
         // function to update the available runs in the selects
         function setup_runs_in_compare_selects() {
             const selects = compareRunIds.map(id => document.getElementById(id));
@@ -3973,6 +4091,221 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             // Optionally select the last one
             if (keywordNames.length > 0) {
                 keywordSelect.selectedIndex = keywordNames.length - 1;
+            }
+        }
+
+        function create_project_overview() {
+            const projectOverviewData = document.getElementById("projectOverviewData");
+            projectOverviewData.innerHTML = "";
+            const projectData = { ...projects_by_name, ...projects_by_tag };
+            // create run cards for each project
+            Object.keys(projectData).sort().forEach(projectName => {
+                create_project_cards_container(projectName, projectData[projectName]);
+            });
+            // setup collapsables specifically for overview project sections
+            setup_collapsables(projectOverviewData);
+            // set project bar visibility based on switch settings
+            update_projectbar_visibility();
+        }
+
+        // create project bar (the collapsables below overview statistic) in overview
+        function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate) {
+            const projectOverviewData = document.getElementById("projectOverviewData");
+            const projectCard = `
+            <div class="card mb-3" id="${projectName}Card">
+                  <div class="card-header">
+                      <div class="row">
+                          <div class="col-auto align-self-center">
+                              <div class="btn btn-sm collapse-icon" id="collapse${projectName}Body">
+                                  ${arrowRight}
+                              </div>
+                          </div>
+                          <div class="col-4">
+                              <h4>${projectName}</h4>
+                              <h6>Total Runs: ${totalRunsAmount} | Passed Runs: ${passRate}%</h6>
+                          </div>
+                          <div class="d-flex flex-wrap align-items-start col align-items-center">
+                              <div class="col-auto">
+                                  <div class="btn-group">
+                                      <label class="form-check-label" for="${projectName}DurationPercentage">Percentage</label>
+                                  </div>
+                                  <div class="btn-group">
+                                      <select class="form-select form-select-sm mt-1" id="${projectName}DurationPercentage">
+                                        ${[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(val =>
+                                        `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
+                                        ).join('')}
+                                      </select>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="card-body" id="${projectName}Body" hidden="">
+                      <div id="${projectName}RunCardsContainer">
+                      </div>
+                  </div>
+              </div>
+            `;
+            projectOverviewData.appendChild(document.createRange().createContextualFragment(projectCard));
+            const projectPercentageSelector = document.getElementById(`${projectName}DurationPercentage`);
+            projectPercentageSelector.addEventListener('change', () => {
+                const newPercent = parseInt(projectPercentageSelector.value, 10);
+                update_duration_comparison_for_project(projectName, projectRuns, newPercent);
+            });
+        }
+
+        // holds rows, each containing 3 run cards, for overview project section
+        function create_project_cards_container(projectName, projectRuns, percent = 20) {
+            const totalRunsAmount = projectRuns.length;
+            const passedRunsAmount = projectRuns.filter(run => run.failed === 0).length;
+            const passRate = ((passedRunsAmount / totalRunsAmount) * 100).toFixed(2);
+            const cardsContainer = document.getElementById(`${projectName}RunCardsContainer`);
+            const durations = projectRuns.map(r => r.elapsed_s);
+            // create section for project in overview if not present
+            if (!cardsContainer) create_project_bar(projectName, projectRuns, totalRunsAmount, passRate);
+            const container = document.getElementById(`${projectName}RunCardsContainer`);
+            container.innerHTML = '';
+            const projectRunsToShow = projectRuns.slice().reverse();
+            // create cards and charts for each run card
+            let cardCounter = 0;
+            let currentRow;
+            projectRunsToShow.forEach((run, idx) => {
+                const runNumber = projectRunsToShow.length - idx;
+                const createdRunCardId = create_project_run_card(run, projectName, idx, runNumber, passRate, percent, durations)
+                const createdRunCard = document.getElementById(createdRunCardId);
+                // group 3 cards into row
+                if (cardCounter % CARDS_PER_ROW === 0) {
+                    currentRow = document.createElement('div');
+                    currentRow.className = 'row';
+                    container.appendChild(currentRow);
+                }
+                currentRow.appendChild(createdRunCard);
+                create_overview_run_donut(run, idx, projectName);
+                cardCounter++;
+            });
+        }
+
+        // create a run card that will be displayed within each project section in overview
+        function create_project_run_card(run, projectName, runIndex, runNumber, passRate, percent, durations) {
+            const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
+
+            const stats = [run.passed, run.failed, run.skipped, run.elapsed_s, run.path];
+            const duration = run.elapsed_s;
+            const duration_rounded = Math.round(duration);
+            const durationsForAvg = durations.filter(item => item !== duration);
+            const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
+            const status = run.failed > 0 ? 'failed' : run.skipped > 0 ? 'skipped' : 'passed';
+            const logPath = use_logs ? transform_file_path(run.path).replaceAll('\\', '\\\\') : '';
+            const logName = use_logs ? 'log.html' : '';
+            const isDark = document.documentElement.classList.contains("dark-mode");
+            const svg = isDark ? clockDarkSVG : clockLightSVG;
+            const compares = compare_to_average(duration, average, percent);
+
+            const projectRunCardHTML = generate_overview_card_html(
+                projectName,
+                stats,
+                duration_rounded,
+                status,
+                runNumber,
+                compares,
+                passRate,
+                logPath,
+                logName,
+                svg,
+                runIndex,
+            )
+            const existingRunCard = document.getElementById(`${projectName}Card${runIndex}`);
+            if (existingRunCard) {
+                // preserves listeners of element
+                existingRunCard.replaceWith(document.createRange().createContextualFragment(projectRunCardHTML));
+            } else {
+                const cardsContainer = document.getElementById(`${projectName}RunCardsContainer`);
+                cardsContainer.appendChild(document.createRange().createContextualFragment(projectRunCardHTML));
+                const createdRunCard = document.getElementById(`${projectName}Card${runIndex}`);
+                createdRunCard.addEventListener("click", () => {
+                    clear_project_filter();
+                    set_filter_show_current_project(projectName);
+                    update_menu("menuDashboard");
+                });
+            }
+            return `${projectName}Card${runIndex}`;
+        }
+
+        function create_overview_run_donut(run, chartElementPostfix, projectName) {
+            let passed, failed, skipped;
+            const idGraphSubString = "Graph";
+            // when called for overview statistics
+            if (run.stats) {
+                [passed, failed, skipped] = run.stats;
+            }
+            // when called for projects section in overview
+            else {
+                passed = run.passed;
+                failed = run.failed;
+                skipped = run.skipped;
+            }
+            const el = document.getElementById(`${projectName}${idGraphSubString}${chartElementPostfix}`);
+            if (!el) {
+                console.warn(
+                    `No element with ID ${projectName}${idGraphSubString}${chartElementPostfix} found for donut chart creation`
+                );
+                return;
+            }
+            if (el.chartInstance) el.chartInstance.destroy();
+            const chartData = {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: [],
+                    borderColor: [],
+                    hoverOffset: 4
+                }]
+            };
+            const pushIf = (label, value, bg, border) => {
+                if (value > 0) {
+                    chartData.labels.push(label);
+                    chartData.datasets[0].data.push(value);
+                    chartData.datasets[0].backgroundColor.push(bg);
+                    chartData.datasets[0].borderColor.push(border);
+                }
+            };
+            pushIf('passed', passed, passedBackgroundColor, passedBackgroundBorderColor);
+            pushIf('skipped', skipped, skippedBackgroundColor, skippedBackgroundBorderColor);
+            pushIf('failed', failed, failedBackgroundColor, failedBackgroundBorderColor);
+            const config = get_graph_config('donut', chartData, 'Run Status');
+            delete config.options.plugins.datalabels;
+            config.options.plugins.legend.display = false;
+            el.chartInstance = new Chart(el, config);
+        }
+
+        // hide project bars based on switch config
+        function update_projectbar_visibility() {
+            const container = document.getElementById("projectOverviewData");
+            if (!container) return;
+            const bars = container.querySelectorAll('[id$="Card"]');
+            const tagged = [];
+            const untagged = [];
+            for (const el of bars) {
+                (el.id.startsWith("project_") ? tagged : untagged).push(el);
+            }
+            const toggleVisibility = (elements, visible) => {
+                for (const el of elements) el.hidden = !visible;
+            };
+            toggleVisibility(tagged, settings.switch.runTags);
+            toggleVisibility(untagged, settings.switch.runName);
+        }
+
+        // prevents regeneration of run cards, just changes class for duration highlight
+        function update_duration_comparison_for_project(projectName, projectRuns, percentage) {
+            for (let i = 0; i < projectRuns.length; i++) {
+                const comparesElement = document.getElementById(`${projectName}RunCardCompares${i}`);
+                const duration = document.getElementById(`${projectName}RunCardComparesValue${i}`).getAttribute("value");
+                const durationsForAvg = projectRuns
+                    .map(r => parseFloat(r.elapsed_s))
+                    .reverse()
+                    .filter((_, idx) => idx !== i)
+                const averageDuration = durationsForAvg.reduce((a, b) => a + parseFloat(b), 0) / durationsForAvg.length;
+                comparesElement.className = compare_to_average(duration, averageDuration, percentage);
             }
         }
 
@@ -4124,80 +4457,74 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             return filteredData;
         }
 
+        function clear_project_filter() {
+            document.getElementById("runs").value = "All";
+            const tagElements = document.getElementById("runTag").getElementsByTagName("input");
+            for (const input of tagElements) {
+                input.checked = false;
+                if (input.id == "All") input.checked = true;
+            }
+            return;
+        }
+
+        function set_filter_show_current_project(projectName) {
+            if (projectName.startsWith("project_")) {
+                selectedTagSetting = projectName;
+            } else {
+                selectedRunSetting = projectName;
+            }
+            return;
+        }
+
+        function prepare_projects_grouped_data() {
+            for (const run of runs) {
+                const tags = run.tags.split(",");
+                const project_tags = tags.filter(tag => tag.toLowerCase().startsWith("project_"));
+                for (const project of project_tags) {
+                    if (!projects_by_tag[project]) {
+                        projects_by_tag[project] = [];
+                    }
+                    projects_by_tag[project].push(run);
+                }
+                if (!projects_by_name[run.name]) {
+                    projects_by_name[run.name] = [];
+                }
+                projects_by_name[run.name].push(run);
+            }
+            areGroupedProjectsPrepared = true;
+            create_project_overview();
+        }
+
         //////////////////////////////////////
         // GRAPH & TABLE CREATION FUNCTIONS //
         //////////////////////////////////////
 
         // function to create overview statistics blocks in the overview section
         function create_overview_statistics_graphs() {
-            for (const g of overviewGraphs) window[g].destroy();
-            overviewGraphs = [];
-
             const data = {};
             for (const run of runs) {
-                var name = '';
+                const projects = new Set();
                 if (settings.switch.runTags) {
-                    const tags = run.tags.split(",");
-                    var foundTag = false;
-                    for (const tag of tags) {
-                        if (tag.startsWith('project_')) {
-                            name = tag;
-                            foundTag = true;
-                            break;
-                        }
-                    }
-                    if (!foundTag) name = run.name;
-                } else {
-                    name = run.name;
+                    const projectTags = run.tags.split(",").filter(t => t.startsWith("project_"));
+                    projectTags?.forEach(tag => projects.add(tag));
+                }
+                if (settings.switch.runName) {
+                    projects.add(run.name);
                 }
 
-                if (!data[name]) {
-                    data[name] = { runs: [] };
+                for (const project of projects) {
+                    if (!data[project]) {
+                        data[project] = { runs: [] };
+                    }
+                    data[project].runs.push({
+                        stats: [run.passed, run.failed, run.skipped, run.elapsed_s, run.path],
+                        duration: run.elapsed_s,
+                        passed_run: run.failed === 0 ? 1 : 0
+                    });
                 }
-                data[name].runs.push({
-                    stats: [run.passed, run.failed, run.skipped, run.elapsed_s, run.path],
-                    duration: run.elapsed_s,
-                    passed_run: run.failed === 0 ? 1 : 0
-                });
             }
 
             const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
-            const compare_to_average = (duration, avg, percent) => {
-                const t = parseFloat(percent) / 100;
-                return duration < avg * (1 - t) ? 'text-passed' :
-                    duration > avg * (1 + t) ? 'text-failed' : '';
-            };
-
-            const overviewCard = (name, stats, duration, status, amount, compares, passed_runs, log_path, log_name, svg, runIndex) => `
-        <div class="col-4 overview-card" id="${name}Card${runIndex}">
-            <div class="card border-3 border-${status}">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col text-center"><h5 class="card-title mb-0">${name}</h5></div>
-                        <div class="col-auto"><h5>#${amount}</h5></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4 overview-canvas">
-                            <canvas id="${name}Graph${runIndex}"></canvas>
-                        </div>
-                        <div class="col-3 d-flex align-items-center">
-                            <div>
-                                <div class="green-text">Passed: ${stats[0]}</div>
-                                <div class="red-text">Failed: ${stats[1]}</div>
-                                <div class="yellow-text">Skipped: ${stats[2]}</div>
-                            </div>
-                        </div>
-                        <div class="col-5 d-flex align-items-center" style="overflow:auto;">
-                            <div>
-                                <div class="${compares}">${svg} <i>${Math.round(duration)}s</i></div>
-                                <div>Passed Runs: ${passed_runs}%</div>
-                                <a href="#" onclick="event.stopPropagation(); open_log_from_path('${log_path}'); return false;" target="_blank">${log_name}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>`;
 
             let overviewHTML = '';
             const overviewDurationPercentage = document.getElementById('overviewDurationPercentage').value;
@@ -4206,140 +4533,106 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             document.getElementById("overviewTitle").innerHTML = `Overview Statistics <h6>showing ${Object.keys(runs).length} runs in ${keys.length} projects</h6`;
 
             let cardCounter = 0;
+            const idPostfix = "_OverviewStatistics"; // can be a set postfix because it is always unique with the name in this code
 
             keys.forEach(key => {
                 const runList = [...data[key].runs].reverse(); // newest first
-                const runsToShow = settings.switch.showAllRuns ? runList : [runList[0]];
+                const r = runList[0];
+                const [passed, failed, skipped, duration, rawPath] = r.stats;
+                const path = transform_file_path(rawPath).replaceAll('\\', '\\\\');
+                const runNumber = runList.length;
+                const durationsForAvg = runList
+                    .map(x => x.duration)
+                    .filter(item => item !== duration);
+                const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
+                const compares = compare_to_average(duration, average, overviewDurationPercentage);
+                const rounded_duration = Math.round(duration);
+                const passedRuns = (runList.reduce((a, b) => a + b.passed_run, 0) / runList.length * 100).toFixed(2);
+                const status = failed > 0 ? 'failed' : skipped > 0 ? 'skipped' : 'passed';
+                const log_path = use_logs ? path : '';
+                const log_name = use_logs ? 'log.html' : '';
 
-                const selectedName = settings.switch.showAllRuns
-                    ? document.getElementById("overviewSelectName").value
-                    : null;
-                if (settings.switch.showAllRuns && selectedName && selectedName !== key) {
-                    return;
+                if (cardCounter % CARDS_PER_ROW === 0) {
+                    overviewHTML += '<div class="row">';
                 }
-
-                runsToShow.forEach((r, runIndex) => {
-                    const [passed, failed, skipped, duration, rawPath] = r.stats;
-                    const path = transform_file_path(rawPath).replaceAll('\\', '\\\\');
-                    const runNumber = runList.length - runIndex;
-
-                    const durationsForAvg = runList.map(x => x.duration).slice(1);
-                    const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
-
-                    const compares = compare_to_average(duration, average, overviewDurationPercentage);
-                    const passedRuns = (runList.reduce((a, b) => a + b.passed_run, 0) / runList.length * 100).toFixed(2);
-                    const status = failed > 0 ? 'failed' : skipped > 0 ? 'skipped' : 'passed';
-                    const log_path = use_logs ? path : '';
-                    const log_name = use_logs ? 'log.html' : '';
-
-                    if (cardCounter % 3 === 0) {
-                        overviewHTML += '<div class="row">';
-                    }
-
-                    overviewHTML += overviewCard(
-                        key,
-                        r.stats,
-                        duration,
-                        status,
-                        runNumber,
-                        compares,
-                        passedRuns,
-                        log_path,
-                        log_name,
-                        svg,
-                        runIndex
-                    );
-
-                    cardCounter++;
-
-                    if (cardCounter % 3 === 0) {
-                        overviewHTML += '</div>';
-                    }
-                });
+                overviewHTML += generate_overview_card_html(
+                    key,
+                    r.stats,
+                    rounded_duration,
+                    status,
+                    runNumber,
+                    compares,
+                    passedRuns,
+                    log_path,
+                    log_name,
+                    svg,
+                    idPostfix
+                );
+                cardCounter++;
+                if (cardCounter % CARDS_PER_ROW === 0) {
+                    overviewHTML += '</div>';
+                }
             });
 
-            if (cardCounter % 3 !== 0) {
+            if (cardCounter % CARDS_PER_ROW !== 0) {
                 overviewHTML += '</div>';
             }
-
             document.getElementById("gridOverview").innerHTML = overviewHTML;
-
-            // attach click listeners (from original logic)
             keys.forEach(key => {
                 const runList = data[key].runs.slice().reverse();
-                const runsToShow = settings.switch.showAllRuns ? runList : [runList[0]];
-                const selectedName = settings.switch.showAllRuns
-                    ? document.getElementById("overviewSelectName").value
-                    : null;
-
-                if (settings.switch.showAllRuns && selectedName && selectedName !== key) {
-                    return;
+                const r = runList[0];
+                const cardEl = document.getElementById(`${key}Card${idPostfix}`);
+                if (cardEl) {
+                    // build charts
+                    create_overview_run_donut(r, "_OverviewStatistics", key);
+                    // attach click listener
+                    cardEl.addEventListener("click", () => {
+                        clear_project_filter();
+                        set_filter_show_current_project(key);
+                        update_menu("menuDashboard");
+                    });
                 }
-
-                runsToShow.forEach((r, runIndex) => {
-                    const cardEl = document.getElementById(`${key}Card${runIndex}`);
-                    if (cardEl) {
-                        cardEl.addEventListener("click", () => {
-                            document.getElementById("runs").value = "All";
-                            const tagElements = document.getElementById("runTag").getElementsByTagName("input");
-                            for (const input of tagElements) {
-                                input.checked = false;
-                                if (input.id == "All") input.checked = true;
-                            }
-                            if (key.startsWith("project_")) {
-                                selectedTagSetting = key;
-                            } else {
-                                selectedRunSetting = key;
-                            }
-                            update_menu("menuDashboard");
-                        });
-                    }
-                });
             });
+        }
 
-            // build charts
-            keys.forEach(key => {
-                const runList = data[key].runs.slice().reverse();
-                const runsToShow = settings.switch.showAllRuns ? runList : [runList[0]];
-                const selectedName = settings.switch.showAllRuns
-                    ? document.getElementById("overviewSelectName").value
-                    : null;
-
-                if (settings.switch.showAllRuns && selectedName && selectedName !== key) {
-                    return;
-                }
-
-                runsToShow.forEach((r, runIndex) => {
-                    const el = document.getElementById(`${key}Graph${runIndex}`);
-                    const [passed, failed, skipped] = r.stats;
-                    const chartData = {
-                        labels: [],
-                        datasets: [{
-                            data: [],
-                            backgroundColor: [],
-                            borderColor: [],
-                            hoverOffset: 4
-                        }]
-                    };
-                    const pushIf = (label, value, bg, border) => {
-                        if (value > 0) {
-                            chartData.labels.push(label);
-                            chartData.datasets[0].data.push(value);
-                            chartData.datasets[0].backgroundColor.push(bg);
-                            chartData.datasets[0].borderColor.push(border);
-                        }
-                    };
-                    pushIf('passed', passed, passedBackgroundColor, passedBackgroundBorderColor);
-                    pushIf('failed', failed, failedBackgroundColor, failedBackgroundBorderColor);
-                    pushIf('skipped', skipped, skippedBackgroundColor, skippedBackgroundBorderColor);
-
-                    const config = get_graph_config('donut', chartData, 'Run Status');
-                    delete config.options.plugins.datalabels;
-                    config.options.plugins.legend.display = false;
-                    window[`${key}Graph${runIndex}`] = new Chart(el, config);
-                    overviewGraphs.push(`${key}Graph${runIndex}`);
-                });
-            });
+        function generate_overview_card_html(projectName, stats, rounded_duration, status, runNumber, compares, passed_runs, log_path, log_name, svg, idPostfix) {
+            return `
+            <div class="col-4 overview-card" id="${projectName}Card${idPostfix}">
+                <div class="card border-3 border-${status}">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col text-center"><h5 class="card-title mb-0">${projectName}</h5></div>
+                            <div class="col-auto"><h5>#${runNumber}</h5></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 overview-canvas">
+                                <canvas id="${projectName}Graph${idPostfix}"></canvas>
+                            </div>
+                            <div class="col-3 d-flex align-items-center">
+                                <div>
+                                    <div class="green-text">Passed: ${stats[0]}</div>
+                                    <div class="red-text">Failed: ${stats[1]}</div>
+                                    <div class="yellow-text">Skipped: ${stats[2]}</div>
+                                </div>
+                            </div>
+                            <div class="col-5 d-flex align-items-center" style="overflow:auto;">
+                                <div>
+                                    <div class="${compares}" id="${projectName}RunCardCompares${idPostfix}">
+                                        <span class="clock-icon">
+                                            ${svg}
+                                        </span>
+                                        <i id="${projectName}RunCardComparesValue${idPostfix}" value="${rounded_duration}">
+                                            ${rounded_duration}s
+                                        </i>
+                                    </div>
+                                    <div>Passed Runs: ${passed_runs}%</div>
+                                    <a href="#" onclick="event.stopPropagation(); open_log_from_path('${log_path}'); return false;" target="_blank">${log_name}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
         }
 
         // function to create run statistics graph in the run section
@@ -4748,16 +5041,65 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             suiteMostFailedGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(suiteMostFailedGraph, event)
             });
+        }
 
-            // const vertical = document.getElementById("suiteMostFailedVertical");
-            // const observer = new ResizeObserver(entries => {
-            //     for (let entry of entries) {
-            //         update_height("suiteMostFailedVertical", config.data.labels.length, settings.graphTypes.suiteMostFailedGraphType);
-            //         suiteMostFailedGraph.resize();
-            //     }
-            // });
-
-            // observer.observe(vertical.closest(".grid-stack-item"));
+        // function to create the most time consuming suite graph in the suite section
+        function create_suite_most_time_consuming_graph() {
+            if (suiteMostTimeConsumingGraph) {
+                suiteMostTimeConsumingGraph.destroy();
+            }
+            const onlyLastRun = document.getElementById("onlyLastRunSuite").checked;
+            const data = get_most_time_consuming_data("suite", settings.graphTypes.suiteMostTimeConsumingGraphType, filteredSuites, onlyLastRun);
+            const graphData = data[0]
+            const callbackData = data[1];
+            var config;
+            const limit = inFullscreen && inFullscreenGraph.includes("suiteMostTimeConsuming") ? 50 : 10;
+            if (settings.graphTypes.suiteMostTimeConsumingGraphType == "bar") {
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Suite", "Most Time Consuming");
+                config.options.plugins.legend = { display: false };
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return callbackData[tooltipItem.label];
+                        },
+                    },
+                };
+                delete config.options.onClick
+            } else if (settings.graphTypes.suiteMostTimeConsumingGraphType == "timeline") {
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Suite");
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (context) {
+                            return callbackData[context.raw.x[0]];
+                        },
+                    },
+                };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 45,
+                        maxRotation: 45,
+                        stepSize: 1,
+                        callback: function (value, index, ticks) {
+                            return callbackData[this.getLabelForValue(value)];
+                        },
+                    },
+                    title: {
+                        display: settings.show.axisTitles,
+                        text: "Run",
+                    },
+                };
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData)
+                    }
+                };
+                if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
+            }
+            update_height("suiteMostTimeConsumingVertical", config.data.labels.length, settings.graphTypes.suiteMostTimeConsumingGraphType);
+            suiteMostTimeConsumingGraph = new Chart("suiteMostTimeConsumingGraph", config);
+            suiteMostTimeConsumingGraph.canvas.addEventListener("click", (event) => {
+                open_log_from_label(suiteMostTimeConsumingGraph, event)
+            });
         }
 
         // function to create suite table in the suite section
@@ -5174,6 +5516,65 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
+        // function to create the most time consuming test graph in the test section
+        function create_test_most_time_consuming_graph() {
+            if (testMostTimeConsumingGraph) {
+                testMostTimeConsumingGraph.destroy();
+            }
+            const onlyLastRun = document.getElementById("onlyLastRunTest").checked;
+            const data = get_most_time_consuming_data("test", settings.graphTypes.testMostTimeConsumingGraphType, filteredTests, onlyLastRun);
+            const graphData = data[0]
+            const callbackData = data[1];
+            var config;
+            const limit = inFullscreen && inFullscreenGraph.includes("testMostTimeConsuming") ? 50 : 10;
+            if (settings.graphTypes.testMostTimeConsumingGraphType == "bar") {
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Test", "Most Time Consuming");
+                config.options.plugins.legend = { display: false };
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return callbackData[tooltipItem.label];
+                        },
+                    },
+                };
+                delete config.options.onClick
+            } else if (settings.graphTypes.testMostTimeConsumingGraphType == "timeline") {
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Test");
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (context) {
+                            return callbackData[context.raw.x[0]];
+                        },
+                    },
+                };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 45,
+                        maxRotation: 45,
+                        stepSize: 1,
+                        callback: function (value, index, ticks) {
+                            return callbackData[this.getLabelForValue(value)];
+                        },
+                    },
+                    title: {
+                        display: settings.show.axisTitles,
+                        text: "Run",
+                    },
+                };
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData)
+                    }
+                };
+                if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
+            }
+            update_height("testMostTimeConsumingVertical", config.data.labels.length, settings.graphTypes.testMostTimeConsumingGraphType);
+            testMostTimeConsumingGraph = new Chart("testMostTimeConsumingGraph", config);
+            testMostTimeConsumingGraph.canvas.addEventListener("click", (event) => {
+                open_log_from_label(testMostTimeConsumingGraph, event)
+            });
+        }
+
         // function to create test table in the test section
         function create_test_table() {
             if (testTable) {
@@ -5341,7 +5742,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
-        // function to create test most failed graph in the test section
+        // function to create test most failed graph in the keyword section
         function create_keyword_most_failed_graph() {
             if (keywordMostFailedGraph) {
                 keywordMostFailedGraph.destroy();
@@ -5399,7 +5800,66 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
-        // function to create keyword table in the keyword section
+        // function to create the most time consuming keyword graph in the keyword section
+        function create_keyword_most_time_consuming_graph() {
+            if (keywordMostTimeConsumingGraph) {
+                keywordMostTimeConsumingGraph.destroy();
+            }
+            const onlyLastRun = document.getElementById("onlyLastRunKeyword").checked;
+            const data = get_most_time_consuming_data("keyword", settings.graphTypes.keywordMostTimeConsumingGraphType, filteredKeywords, onlyLastRun);
+            const graphData = data[0]
+            const callbackData = data[1];
+            var config;
+            const limit = inFullscreen && inFullscreenGraph.includes("keywordMostTimeConsuming") ? 50 : 10;
+            if (settings.graphTypes.keywordMostTimeConsumingGraphType == "bar") {
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Keyword", "Most Time Consuming");
+                config.options.plugins.legend = { display: false };
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return callbackData[tooltipItem.label];
+                        },
+                    },
+                };
+                delete config.options.onClick
+            } else if (settings.graphTypes.keywordMostTimeConsumingGraphType == "timeline") {
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Keyword");
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (context) {
+                            return callbackData[context.raw.x[0]];
+                        },
+                    },
+                };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 45,
+                        maxRotation: 45,
+                        stepSize: 1,
+                        callback: function (value, index, ticks) {
+                            return callbackData[this.getLabelForValue(value)];
+                        },
+                    },
+                    title: {
+                        display: settings.show.axisTitles,
+                        text: "Run",
+                    },
+                };
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData)
+                    }
+                };
+                if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
+            }
+            update_height("keywordMostTimeConsumingVertical", config.data.labels.length, settings.graphTypes.keywordMostTimeConsumingGraphType);
+            keywordMostTimeConsumingGraph = new Chart("keywordMostTimeConsumingGraph", config);
+            keywordMostTimeConsumingGraph.canvas.addEventListener("click", (event) => {
+                open_log_from_label(keywordMostTimeConsumingGraph, event)
+            });
+        }
+
+        // function to create keyword table in the tables tab
         function create_keyword_table() {
             if (keywordTable) {
                 keywordTable.destroy();
@@ -6973,6 +7433,140 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
         }
 
+        // function to prepare the most time consuming data for suites/tests/keywords
+        function get_most_time_consuming_data(dataType, graphType, filteredData, onlyLastRun) {
+            const useLibraryNames = settings?.switch?.useLibraryNames === true;
+            function getTestKey(value, dataType) {
+                if (dataType === "keyword" && useLibraryNames && value.owner) {
+                    return `${value.owner}.${value.name}`;
+                }
+                if (dataType === "suite" && settings.switch.suitePathsSuiteSection) {
+                    return value.full_name;
+                } else if (dataType === "test" && settings.switch.suitePathsTestSection) {
+                    return value.full_name;
+                } else {
+                    return value.name;
+                }
+            }
+            const limit = inFullscreen && inFullscreenGraph.includes("MostTimeConsuming") ? 50 : 10;
+            if (onlyLastRun) {
+                const latestRunStart = filteredData[filteredData.length - 1].run_start;
+                filteredData = filteredData.filter(item => item.run_start === latestRunStart);
+                filteredData.sort((a, b) => {
+                    const durA = dataType === "keyword" ? Number(a.total_time_s) : Number(a.elapsed_s);
+                    const durB = dataType === "keyword" ? Number(b.total_time_s) : Number(b.elapsed_s);
+                    return durB - durA;
+                });
+                filteredData = filteredData.slice(0, limit);
+            }
+
+            const slowestPerRun = new Map();
+            for (const value of filteredData) {
+                const duration =
+                    dataType === "keyword"
+                        ? Number(value.total_time_s)
+                        : Number(value.elapsed_s);
+
+                const run = value.run_start;
+                const key = getTestKey(value, dataType);
+
+                if (!onlyLastRun) {
+                    if (!slowestPerRun.has(run)) {
+                        slowestPerRun.set(run, { key, duration, alias: value.run_alias, runStart: run });
+                    } else {
+                        const existing = slowestPerRun.get(run);
+                        if (duration > existing.duration) {
+                            slowestPerRun.set(run, { key, duration, alias: value.run_alias, runStart: run });
+                        }
+                    }
+                } else {
+                    slowestPerRun.set(`${key}_${run}`, { key, duration, alias: value.run_alias, runStart: run });
+                }
+            }
+
+            const hitCount = new Map();
+            const aliases = new Map();
+            const slowestPerRunEntries = Array.from(slowestPerRun.values());
+
+            for (const entry of slowestPerRunEntries) {
+                if (!hitCount.has(entry.key)) {
+                    hitCount.set(entry.key, []);
+                    aliases.set(entry.key, []);
+                }
+                hitCount.get(entry.key).push(entry.runStart);
+                aliases.get(entry.key).push(entry.alias);
+            }
+
+            let sortedData;
+            if (onlyLastRun) {
+                sortedData = [...slowestPerRunEntries]
+                    .sort((a, b) => b.duration - a.duration)
+                    .slice(0, limit)
+                    .map(entry => [entry.key, [entry.runStart]]);
+            } else {
+                sortedData = [...hitCount.entries()].sort((a, b) => b[1].length - a[1].length);
+            }
+
+            if (graphType === "bar") {
+                const labels = [];
+                const datasets = [];
+                for (const [key, durations] of sortedData) {
+                    labels.push(key);
+                    datasets.push(durations.length);
+                }
+                const graphData = {
+                    labels,
+                    datasets: [
+                        {
+                            data: datasets,
+                            ...blueConfig,
+                        },
+                    ],
+                };
+                return [
+                    graphData,
+                    settings.show.aliases
+                        ? Object.fromEntries(sortedData.map(([name]) => [name, aliases.get(name)]))
+                        : Object.fromEntries(
+                            sortedData.map(([name]) => [
+                                name,
+                                slowestPerRunEntries
+                                    .filter(entry => entry.key === name)
+                                    .map(entry => entry.runStart),
+                            ])
+                        ),
+                ];
+            }
+            if (graphType === "timeline") {
+                const labels = [];
+                const runStarts = Array.from(slowestPerRun.values())
+                    .sort((a, b) => new Date(a.runStart) - new Date(b.runStart));
+                const sortedKeys = sortedData.map(([key]) => key);
+                const limitKeys = sortedKeys.slice(0, limit);
+                labels.push(...limitKeys);
+                let datasets = [];
+                let runAxis = 0;
+                for (const s of runStarts) {
+                    if (!limitKeys.includes(s.key)) continue;
+                    datasets.push({
+                        label: s.key,
+                        data: [{ x: [runAxis, runAxis + 1], y: s.key }],
+                        ...blueConfig,
+                    });
+                    if (!onlyLastRun) runAxis++;
+                }
+                datasets = convert_timeline_data(datasets);
+                const runStartOutput = settings.show.aliases
+                    ? runStarts.map(r => r.alias)
+                    : runStarts.map(r => r.runStart);
+
+                return [
+                    { labels, datasets },
+                    runStartOutput,
+                ];
+            }
+        }
+
         // function to prepare the data in the correct format for messages graphs
         function get_messages_data(dataType, graphType, filteredData) {
             const data = new Map();
@@ -7213,7 +7807,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 document.getElementById(id).classList.toggle("active", id === item);
                 document.getElementById("customizeLayout").hidden = item == "menuOverview";
             });
+            if (item === "menuOverview" && !areGroupedProjectsPrepared) prepare_projects_grouped_data();
+            document.getElementById("projectOverview").hidden = item !== "menuOverview";
             setup_data_and_graphs(true);
+        }
+
+        function update_donut_charts(scopeElement) {
+            const donutContainer = document.getElementById(scopeElement);
+            donutContainer.querySelectorAll(".overview-canvas").forEach(canvas => {
+                const chart = canvas.querySelector("canvas").chartInstance;
+                if (chart) chart.update();
+            });
         }
 
         // function to setup the menu eventlisteners
@@ -7325,7 +7929,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 requestAnimationFrame(() => {
                     setup_spinner(true);
                     setup_section_menu_buttons(); // sections have to be visible to update highlighting correctly
-                    setup_dasbhoard_graphs();
+                    setup_dashboard_graphs();
 
                     if (!menuUpdate) {
                         setTimeout(() => {
@@ -7368,7 +7972,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             document.getElementById("compareTitle").innerHTML = `Compare Statistics ${message}`;
             document.getElementById("tablesTitle").innerHTML = `Table Statistics (${runAmount}) ${message}`;
             // update filters based on data
-            setup_names_in_overview_select();
             setup_runs_in_compare_selects();
             setup_suites_in_suite_select();
             setup_suites_in_test_select();
@@ -7378,9 +7981,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         }
 
         // function that updates all graphs based on the new filtered data and hidden choices
-        function setup_dasbhoard_graphs() {
+        function setup_dashboard_graphs() {
             if (settings.menu.overview) {
                 create_overview_statistics_graphs();
+                update_donut_charts("projectOverviewData");
             } else if (settings.menu.dashboard) {
                 create_run_statistics_graph();
                 create_run_donut_graph();
@@ -7393,6 +7997,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_suite_folder_fail_donut_graph();
                 create_suite_duration_graph();
                 create_suite_most_failed_graph();
+                create_suite_most_time_consuming_graph();
                 create_test_statistics_graph();
                 create_test_duration_graph();
                 create_test_duration_deviation_graph();
@@ -7401,6 +8006,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_test_recent_most_flaky_graph();
                 create_test_most_failed_graph();
                 create_test_recent_most_failed_graph();
+                create_test_most_time_consuming_graph();
                 create_keyword_statistics_graph();
                 create_keyword_times_run_graph();
                 create_keyword_total_duration_graph();
@@ -7408,6 +8014,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_keyword_min_duration_graph();
                 create_keyword_max_duration_graph();
                 create_keyword_most_failed_graph();
+                create_keyword_most_time_consuming_graph();
             } else if (settings.menu.compare) {
                 create_compare_statistics_graph();
                 create_compare_suite_duration_graph();
@@ -7692,7 +8299,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             if (storedSettings) {
                 try {
                     const parsedSettings = JSON.parse(storedSettings);
-                    settings = merge_deep(settings, parsedSettings);
+                    settings = merge_deep(parsedSettings, settings);
+                    localStorage.setItem('settings', JSON.stringify(settings));
                 } catch (e) {
                     add_alert(`Failed to parse settings from localStorage: ${e}`, "danger");
                 }
@@ -7757,6 +8365,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         }
 
         main() // trigger on first load
+
+        // DO NOT FORGET TO FIX NEW GRAPHS TO LOCALSTORAGE GOES WRONG!!!
     </script>
 </body>
 

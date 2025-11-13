@@ -16,15 +16,15 @@ usage: robotdashboard [[]-v[]] [[]-h[]] [[]-o [[]OUTPUTPATH ...[]][]] [[]-f OUTP
 options:
   -v, --version         Display application version information.
   -h, --help            Provide additional information.
-  -o [[]OUTPUTPATH ...[]], --outputpath [[]OUTPUTPATH ...[]]
+  -o, --outputpath [[]OUTPUTPATH ...[]]
                         `path` Specifies 1 or more paths to output.xml.
                         Specify every XML separately with -o if you are
                         providing more than one.
-  -f OUTPUTFOLDERPATH, --outputfolderpath OUTPUTFOLDERPATH
+  -f, --outputfolderpath OUTPUTFOLDERPATH
                         `path` Specifies a path to a directory in which it
                         will look in all folders and subfolders for
                         *output*.xml files to be processed into the database
-  -r [[]REMOVERUNS ...[]], --removeruns [[]REMOVERUNS ...[]]
+  -r, --removeruns [[]REMOVERUNS ...[]]
                         `string` Specifies 1 or more indexes, run_starts,
                         aliases or tags to remove from the database. You can
                         add multiple runs to remove in one call as long as you
@@ -36,29 +36,29 @@ options:
                         index=0,index=1:4;9,index=10 or --removeruns
                         'run_start=2024-07-30 15:27:20.184407,index=20' or -r
                         alias=some_cool_alias,tag=prod,tag=dev
-  -d DATABASEPATH, --databasepath DATABASEPATH
+  -d, --databasepath DATABASEPATH
                         `path` Specifies the path to the database you want to
                         store the results in.
-  -n NAMEDASHBOARD, --namedashboard NAMEDASHBOARD
+  -n, --namedashboard NAMEDASHBOARD
                         `path` Specifies a custom HTML dashboard file name.
-  -j JSONCONFIG, --jsonconfig JSONCONFIG
+  -j, --jsonconfig JSONCONFIG
                         `path` Specifies a path to a a dashboard json config
                         that will be used as default on first load if there is
                         none already.
-  -t DASHBOARDTITLE, --dashboardtitle DASHBOARDTITLE
+  -t, --dashboardtitle DASHBOARDTITLE
                         `string` Specifies a custom dashboard html report
                         title.
-  -m MESSAGECONFIG, --messageconfig MESSAGECONFIG
+  -m, --messageconfig MESSAGECONFIG
                         `path` Specifies the path to a config file that
                         contains lines of messages with placeholders to
                         'bundle' test messages. Example lines can be 'The test
                         has failed on date: ${date}' or 'Expected ${x} but
                         received: ${y}'. Placeholders match everything and the
                         content is irrelevant.
-  -q QUANTITY, --quantity QUANTITY
+  -q, --quantity QUANTITY
                         `integer` Specifies the default amount (Amount Filter)
                         of runs that are shown in the dashboard on first load.
-  -u USELOGS, --uselogs USELOGS
+  -u, --uselogs USELOGS
                         `boolean` Whether to enable clicking on graphs will
                         open the logs. Providing this argument makes
                         runs/suites/tests/keywords clickable. The click will
@@ -71,15 +71,15 @@ options:
                         'output-20250313-002134.xml' should have
                         'log-20250313-002134.html' in the same folder,
                         '01-output.xml' expects '01-log.html' etc.
-  -g GENERATEDASHBOARD, --generatedashboard GENERATEDASHBOARD
+  -g, --generatedashboard GENERATEDASHBOARD
                         `boolean` Specifies if you want to generate the HTML
                         dashboard. Default is True, override if you only
                         require the database.
-  -l LISTRUNS, --listruns LISTRUNS
+  -l, --listruns LISTRUNS
                         `boolean` Specifies if the runs should be listed.
                         Default is True, override if you only require the
                         database.
-  -c DATABASECLASS, --databaseclass DATABASECLASS
+  -c, --databaseclass DATABASECLASS
                         `path` Specifies the path to your implementation of
                         the databaseclass. If nothing is provided default
                         Sqlite3 implementation is used. Use this when you want
@@ -88,8 +88,7 @@ options:
                         https://github.com/timdegroot1996/robotframework-
                         dashboard?tab=readme-ov-file#Custom-Database-Class for
                         additional information!
-  -s SERVER, --server SERVER
-                        Provide the server argument like: robotdashboard
+  -s, --server SERVER   Provide the server argument like: robotdashboard
                         --server default[[]:username:password[]], or
                         robotdashboard --server host:port[[]:username:password[]]
                         Examples: robotdashboard --server
