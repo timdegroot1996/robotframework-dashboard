@@ -4222,6 +4222,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                           ${versionSelectHtml}
                                       </select>
                                   </div>
+                                  <div class="btn-group mt-1">
+                                      <input type="text" class="form-control form-control-sm" id="${projectName}VersionFilterSearch" placeholder="Version Subfilter...">
+                                  </div>
                               </div>
                           </div>
                       </div>
@@ -4243,6 +4246,14 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 const selectedVersion = projectVersionFilter.value;
                 const filteredProjectRuns = (selectedVersion !== "All")
                     ? projectRuns.filter(run => run.project_version === selectedVersion)
+                    : projectRuns;
+                create_project_cards_container(projectName, filteredProjectRuns);
+            });
+            const projectVersionFilterSearch = document.getElementById(`${projectName}VersionFilterSearch`); projectVersionFilterSearch.addEventListener('keydown', (event) => {
+                if (event.key !== 'Enter') return;
+                const searchBarInput = projectVersionFilterSearch.value.toLowerCase();
+                const filteredProjectRuns = (searchBarInput !== "")
+                    ? projectRuns.filter(run => run.project_version.toLowerCase().includes(searchBarInput))
                     : projectRuns;
                 create_project_cards_container(projectName, filteredProjectRuns);
             });
