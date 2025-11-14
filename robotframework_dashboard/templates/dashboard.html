@@ -263,13 +263,13 @@
             bottom: 0;
         }
 
-        #checkboxes {
+        .filterCheckBoxes {
             display: none;
             position: absolute;
             z-index: 2;
         }
 
-        #checkboxes label {
+        .filterCheckBoxes label {
             display: block;
         }
 
@@ -839,8 +839,23 @@
                                 </select>
                                 <div class="overSelect"></div>
                             </div>
-                            <div id="checkboxes">
+                            <div id="checkboxes" class="filterCheckBoxes">
                                 <ul class="list-group" id="runTag"></ul>
+                            </div>
+                        </div>
+                        <div class="col-auto mt-1 ps-2 pe-2" id="projectVersionFilter">
+                            <div class="selectBox" id="selectProjectVersion">
+                                <label class="form-label form-label-sm mb-0" for="projectVersionList" id="projectVersionListLabel">
+                                    Project Versions
+                                </label>
+                                <select class="form-select form-select-sm">
+                                    <option>Select Project Versions</option>
+                                </select>
+                                <div class="overSelect"></div>
+                            </div>
+                            <div id="projectVersionCheckboxes" class="filterCheckBoxes">
+                                <ul class="list-group" id="projectVersionList">
+                                </ul>
                             </div>
                         </div>
                         <div class="col-auto mt-1 ps-2 pe-2">
@@ -1256,6 +1271,7 @@
 
         // some global vars for various functionalities
         var showingRunTags = false; // used to keep track if the runtags popup is showing and determine if it should be closed when clicked outside
+        let showingProjectVersionDialogue = false; // used to keep track if the projectVersion popup is showing and determine if it should be closed when clicked outside
         var inFullscreen = false; // used to keep track if fullscreen view is being shown
         var inFullscreenGraph = ""; // used to keep track of the graph being shown in fullscreen
         var heatMapHourAll = true; // used to keep track of the heatmap setting, is it set to an hour or all
@@ -3344,6 +3360,19 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     show_checkboxes()
                 }
             });
+            // eventlistener for the project Version Filter
+            const projectVersionCheckboxes = document.getElementById("projectVersionCheckboxes");
+            const projectVersionSelectElement = document.getElementById("selectProjectVersion");
+            function toggle_project_version_filter_dialogue() {
+                showingProjectVersionDialogue = !showingProjectVersionDialogue;
+                projectVersionCheckboxes.style.display = showingProjectVersionDialogue ? "block" : "none";
+            }
+            projectVersionSelectElement.addEventListener("pointerdown", toggle_project_version_filter_dialogue);
+            document.body.addEventListener("pointerdown", function (event) {
+                if (showingProjectVersionDialogue && !projectVersionCheckboxes.contains(event.target) && !projectVersionSelectElement.contains(event.target)) {
+                    toggle_project_version_filter_dialogue();
+                }
+            });
             // amount filter setup
             filteredAmountDefault = filteredAmount
             document.getElementById("amount").value = filteredAmount
@@ -3356,6 +3385,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             setup_metadata_filter();
             setup_runs_in_select_filter_buttons();
             setup_runtags_in_select_filter_buttons();
+            setup_project_versions_in_select_filter_buttons();
         }
 
         // function to create customized view eventlisteners
@@ -3969,6 +3999,31 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
         }
 
+        // create projectVersions checkboxes in filters
+        function setup_project_versions_in_select_filter_buttons() {
+            const projectVersionList = document.getElementById("projectVersionList");
+            projectVersionList.innerHTML = '';
+            const projectVersionOptionsSet = new Set(
+                runs
+                .map(run => run.project_version)
+                .filter(ver => ver != null)
+            );
+            const projectVersionOptions = [...projectVersionOptionsSet].sort().reverse();
+            projectVersionOptions.unshift("All");
+            const prefix = "projectVersionInputItem";
+            const listItemTemplate = (prefix, value) => `
+                <li class="list-group-item list-group-item-action d-flex small">
+                    <input class="form-check-input me-1" type="checkbox" value="${value}" id="${prefix}${value}">
+                    <label class="form-check-label ms-2" for="${prefix}${value}">${value}</label>
+                </li>
+            `;
+            const projectVersionListHtml = projectVersionOptions
+                                     .map(projectVersion => listItemTemplate(prefix, projectVersion))
+                                     .join('');
+            projectVersionList.innerHTML = projectVersionListHtml;
+            document.getElementById(`${prefix}All`).checked = true;
+        }
+
         // function to update the available runs in the selects
         function setup_runs_in_compare_selects() {
             const selects = compareRunIds.map(id => document.getElementById(id));
@@ -4111,6 +4166,19 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         // create project bar (the collapsables below overview statistic) in overview
         function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate) {
             const projectOverviewData = document.getElementById("projectOverviewData");
+            const projectVersions = new Set(
+                [
+                    "All", 
+                    ...projectRuns
+                    .map(run => run.project_version)
+                    .filter(ver => ver != null)
+                    .sort()
+                ]
+            );
+            const versionSelectHtml = [...projectVersions]
+                .map(val =>
+                    `<option value="${val}" ${val === "All" ? "selected" : ""}>${val}</option>`
+                ).join('');
             const projectCard = `
             <div class="card mb-3" id="${projectName}Card">
                   <div class="card-header">
@@ -4125,7 +4193,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                               <h6>Total Runs: ${totalRunsAmount} | Passed Runs: ${passRate}%</h6>
                           </div>
                           <div class="d-flex flex-wrap align-items-start col align-items-center">
-                              <div class="col-auto">
+                              <div class="col-auto me-2">
                                   <div class="btn-group">
                                       <label class="form-check-label" for="${projectName}DurationPercentage">Percentage</label>
                                   </div>
@@ -4135,6 +4203,19 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                         `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
                                         ).join('')}
                                       </select>
+                                  </div>
+                              </div>
+                              <div class="col-auto">
+                                  <div class="btn-group">
+                                      <label class="form-check-label" for="${projectName}VersionFilter">Version</label>
+                                  </div>
+                                  <div class="btn-group">
+                                      <select class="form-select form-select-sm mt-1" id="${projectName}VersionFilter">
+                                          ${versionSelectHtml}
+                                      </select>
+                                  </div>
+                                  <div class="btn-group mt-1">
+                                      <input type="text" class="form-control form-control-sm" id="${projectName}VersionFilterSearch" placeholder="Version Filter...">
                                   </div>
                               </div>
                           </div>
@@ -4151,6 +4232,28 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             projectPercentageSelector.addEventListener('change', () => {
                 const newPercent = parseInt(projectPercentageSelector.value, 10);
                 update_duration_comparison_for_project(projectName, projectRuns, newPercent);
+            });
+            const projectVersionFilter = document.getElementById(`${projectName}VersionFilter`);
+            const projectVersionFilterSearch = document.getElementById(`${projectName}VersionFilterSearch`); 
+            projectVersionFilter.addEventListener('change', () => {
+                const selectedVersion = projectVersionFilter.value;
+                let filteredProjectRuns;
+                if (selectedVersion !== "All") {
+                    filteredProjectRuns = projectRuns.filter(run => run.project_version === selectedVersion)
+                    projectVersionFilterSearch.hidden = true;
+                } else {
+                    filteredProjectRuns = projectRuns;
+                    projectVersionFilterSearch.hidden = false;
+                }
+                create_project_cards_container(projectName, filteredProjectRuns);
+            });
+            projectVersionFilterSearch.addEventListener('keydown', (event) => {
+                if (event.key !== 'Enter') return;
+                const searchBarInput = projectVersionFilterSearch.value.toLowerCase();
+                const filteredProjectRuns = (searchBarInput !== "")
+                    ? projectRuns.filter(run => run.project_version.toLowerCase().includes(searchBarInput))
+                    : projectRuns;
+                create_project_cards_container(projectName, filteredProjectRuns);
             });
         }
 
@@ -4213,6 +4316,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 logName,
                 svg,
                 runIndex,
+                run.project_version,
+                true
             )
             const existingRunCard = document.getElementById(`${projectName}Card${runIndex}`);
             if (existingRunCard) {
@@ -4373,6 +4478,19 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
+        // filter run data based on the project version filter
+        function filter_project_versions(runs) {
+            const selectedProjectVersions = new Set(
+                Array.from(
+                    document.querySelectorAll('#projectVersionList input[type="checkbox"]:checked')
+                ).map(el => el.value)
+            );
+            if (!selectedProjectVersions.size) return [];
+            if (selectedProjectVersions.has("All")) return runs;
+
+            return runs.filter(run => run.project_version && selectedProjectVersions.has(run.project_version));
+        }
+
         // function to filter the run data based on the selected date range
         function filter_dates(runs) {
             const fromDate = document.getElementById("fromDate").value;
@@ -4519,7 +4637,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     data[project].runs.push({
                         stats: [run.passed, run.failed, run.skipped, run.elapsed_s, run.path],
                         duration: run.elapsed_s,
-                        passed_run: run.failed === 0 ? 1 : 0
+                        passed_run: run.failed === 0 ? 1 : 0,
+                        project_version: run.project_version,
                     });
                 }
             }
@@ -4566,7 +4685,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     log_path,
                     log_name,
                     svg,
-                    idPostfix
+                    idPostfix,
+                    r.project_version,
                 );
                 cardCounter++;
                 if (cardCounter % CARDS_PER_ROW === 0) {
@@ -4595,7 +4715,26 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
-        function generate_overview_card_html(projectName, stats, rounded_duration, status, runNumber, compares, passed_runs, log_path, log_name, svg, idPostfix) {
+        function generate_overview_card_html(
+             projectName,
+             stats,
+             rounded_duration,
+             status,
+             runNumber,
+             compares,
+             passed_runs,
+             log_path,
+             log_name,
+             svg,
+             idPostfix,
+             projectVersion = null,
+             showOnlyVersion = false
+        ) {
+            const versionHTML = projectVersion ?
+                                `<div id="${projectName}RunCardVersion${idPostfix}" data-projectVersion="${projectVersion}">
+                                    Version: ${projectVersion}
+                                </div>`
+                                : '';
             return `
             <div class="col-4 overview-card" id="${projectName}Card${idPostfix}">
                 <div class="card border-3 border-${status}">
@@ -4626,6 +4765,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                         </i>
                                     </div>
                                     <div>Passed Runs: ${passed_runs}%</div>
+                                    ${versionHTML}
                                     <a href="#" onclick="event.stopPropagation(); open_log_from_path('${log_path}'); return false;" target="_blank">${log_name}</a>
                                 </div>
                             </div>
@@ -4779,6 +4919,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     run.skipped,
                     run.elapsed_s,
                     run.start_time,
+                    run.project_version,
                     run.tags,
                     run.run_alias,
                     run.metadata,
@@ -4799,6 +4940,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     { title: "skipped" },
                     { title: "elapsed_s" },
                     { title: "start_time" },
+                    { title: "version" },
                     { title: "tags" },
                     { title: "alias" },
                     { title: "metadata" },
@@ -7958,6 +8100,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             filteredRuns = filter_dates(filteredRuns);
             filteredRuns = filter_amount(filteredRuns);
             filteredRuns = filter_metadata(filteredRuns);
+            filteredRuns = filter_project_versions(filteredRuns);
             // filter suites and tests based on filtered runs
             filteredSuites = filter_data(filteredSuites);
             filteredTests = filter_data(filteredTests);
