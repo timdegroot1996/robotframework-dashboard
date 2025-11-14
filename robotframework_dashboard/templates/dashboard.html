@@ -4021,7 +4021,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function setup_project_versions_in_select_filter_buttons() {
             const projectVersionList = document.getElementById("projectVersionList");
             projectVersionList.innerHTML = '';
-            const projectVersionOptionsSet = new Set(runs.map(run => run.project_version));
+            const projectVersionOptionsSet = new Set(
+                runs
+                .map(run => run.project_version)
+                .filter(ver => ver != null)
+            );
             const projectVersionOptions = [...projectVersionOptionsSet].sort().reverse();
             projectVersionOptions.unshift("All");
             const prefix = "projectVersionInputItem";
@@ -4181,7 +4185,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate) {
             const projectOverviewData = document.getElementById("projectOverviewData");
             const projectVersions = new Set(
-                ["All", ...projectRuns.map(run => run.project_version).sort()]
+                [
+                    "All", 
+                    ...projectRuns
+                    .map(run => run.project_version)
+                    .filter(ver => ver != null)
+                    .sort()
+                ]
             );
             const versionSelectHtml = [...projectVersions]
                 .map(val =>
@@ -4223,7 +4233,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                       </select>
                                   </div>
                                   <div class="btn-group mt-1">
-                                      <input type="text" class="form-control form-control-sm" id="${projectName}VersionFilterSearch" placeholder="Version Subfilter...">
+                                      <input type="text" class="form-control form-control-sm" id="${projectName}VersionFilterSearch" placeholder="Version Filter...">
                                   </div>
                               </div>
                           </div>
@@ -4738,9 +4748,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
              projectVersion = null,
              showOnlyVersion = false
         ) {
-            const cardTitle = projectVersion
-                ? (showOnlyVersion ? projectVersion : `${projectName} ${projectVersion}`)
-                : "";
+            const cardTitle = showOnlyVersion
+                ? (projectVersion || "")
+                : (projectVersion ? `${projectName} ${projectVersion}` : projectName);
             return `
             <div class="col-4 overview-card" id="${projectName}Card${idPostfix}">
                 <div class="card border-3 border-${status}">
