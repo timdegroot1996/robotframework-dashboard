@@ -6178,12 +6178,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     name = event.chart.tooltip.title[0].split(": ").pop()
                 } else if (graphId == "suiteDurationGraph") {
                     name = event.chart.tooltip.body[0].lines[0].split(": ")[0]
-                } else if (graphId == "suiteMostFailedGraph") {
+                } else if (graphId == "suiteMostFailedGraph" || graphId == "suiteMostTimeConsumingGraph") {
                     name = chartElement[0].element.$context.raw.y
                 }
                 id = suites.find(suite => suite.name === name && suite.run_start === runStart)
             } else { // it contains a test
-                if (graphId == "testStatisticsGraph" || graphId == "testMostFlakyGraph" || graphId == "testRecentMostFlakyGraph" || graphId == "testMostFailedGraph" || graphId == "testRecentMostFailedGraph" || graphId == "compareTestsGraph") {
+                if (graphId == "testStatisticsGraph" || graphId == "testMostFlakyGraph" || graphId == "testRecentMostFlakyGraph" || graphId == "testMostFailedGraph" || graphId == "testRecentMostFailedGraph" || graphId == "testMostTimeConsumingGraph" || graphId == "compareTestsGraph") {
                     name = chartElement[0].element.$context.raw.y
                 } else if (graphId == "testDurationGraph") {
                     if (graphType == "bar") {
