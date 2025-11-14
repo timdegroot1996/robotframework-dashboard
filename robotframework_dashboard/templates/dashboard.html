@@ -4748,15 +4748,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
              projectVersion = null,
              showOnlyVersion = false
         ) {
-            const cardTitle = showOnlyVersion
-                ? (projectVersion || "")
-                : (projectVersion ? `${projectName} ${projectVersion}` : projectName);
+            const versionHTML = projectVersion ?
+                                `<div id="${projectName}RunCardVersion${idPostfix}" data-projectVersion="${projectVersion}">
+                                    Version: ${projectVersion}
+                                </div>`
+                                : '';
             return `
             <div class="col-4 overview-card" id="${projectName}Card${idPostfix}">
                 <div class="card border-3 border-${status}">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col text-center"><h5 class="card-title mb-0">${cardTitle}</h5></div>
+                            <div class="col text-center"><h5 class="card-title mb-0">${projectName}</h5></div>
                             <div class="col-auto"><h5>#${runNumber}</h5></div>
                         </div>
                         <div class="row">
@@ -4781,6 +4783,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                         </i>
                                     </div>
                                     <div>Passed Runs: ${passed_runs}%</div>
+                                    ${versionHTML}
                                     <a href="#" onclick="event.stopPropagation(); open_log_from_path('${log_path}'); return false;" target="_blank">${log_name}</a>
                                 </div>
                             </div>
