@@ -4242,14 +4242,20 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 update_duration_comparison_for_project(projectName, projectRuns, newPercent);
             });
             const projectVersionFilter = document.getElementById(`${projectName}VersionFilter`);
+            const projectVersionFilterSearch = document.getElementById(`${projectName}VersionFilterSearch`); 
             projectVersionFilter.addEventListener('change', () => {
                 const selectedVersion = projectVersionFilter.value;
-                const filteredProjectRuns = (selectedVersion !== "All")
-                    ? projectRuns.filter(run => run.project_version === selectedVersion)
-                    : projectRuns;
+                let filteredProjectRuns;
+                if (selectedVersion !== "All") {
+                    filteredProjectRuns = projectRuns.filter(run => run.project_version === selectedVersion)
+                    projectVersionFilterSearch.hidden = true;
+                } else {
+                    filteredProjectRuns = projectRuns;
+                    projectVersionFilterSearch.hidden = false;
+                }
                 create_project_cards_container(projectName, filteredProjectRuns);
             });
-            const projectVersionFilterSearch = document.getElementById(`${projectName}VersionFilterSearch`); projectVersionFilterSearch.addEventListener('keydown', (event) => {
+            projectVersionFilterSearch.addEventListener('keydown', (event) => {
                 if (event.key !== 'Enter') return;
                 const searchBarInput = projectVersionFilterSearch.value.toLowerCase();
                 const filteredProjectRuns = (searchBarInput !== "")
