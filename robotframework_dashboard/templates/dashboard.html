@@ -3705,6 +3705,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_keyword_max_duration_graph();
                 create_keyword_most_failed_graph();
                 create_keyword_most_time_consuming_graph();
+                create_keyword_most_used_graph();
             });
             // compare filters
             compareRunIds.forEach(id => {
@@ -5098,8 +5099,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (tooltipItem) {
-                            return callbackData[tooltipItem.label];
-                        },
+                            const key = tooltipItem.label;
+                            const cb = callbackData;
+                            const runStarts = cb.run_starts[key] || [];
+                            const namesToShow = settings.show.aliases ? cb.aliases[key] : runStarts;
+                            return runStarts.map((runStart, idx) => {
+                                const info = cb.details[key][runStart];
+                                const displayName = namesToShow[idx];
+                                if (!info) return `${displayName}: (no data)`;
+                                return `${displayName}: ${format_duration(info.duration)}`;
+                            });
+                        }
                     },
                 };
                 delete config.options.onClick
@@ -5108,8 +5118,15 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
-                            return callbackData[context.raw.x[0]];
-                        },
+                            const key = context.dataset.label;
+                            const runIndex = context.raw.x[0];
+                            const runStart = callbackData.runs[runIndex];
+                            const info = callbackData.details[key][runStart];
+                            const displayName = settings.show.aliases
+                                ? callbackData.aliases[runIndex]
+                                : runStart;
+                            return `${displayName}: ${format_duration(info.duration)}`;
+                        }
                     },
                 };
                 config.options.scales.x = {
@@ -5128,7 +5145,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 };
                 config.options.onClick = (event, chartElement) => {
                     if (chartElement.length) {
-                        open_log_file(event, chartElement, callbackData)
+                        open_log_file(event, chartElement, callbackData.runs)
                     }
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
@@ -5571,8 +5588,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (tooltipItem) {
-                            return callbackData[tooltipItem.label];
-                        },
+                            const key = tooltipItem.label;
+                            const cb = callbackData;
+                            const runStarts = cb.run_starts[key] || [];
+                            const namesToShow = settings.show.aliases ? cb.aliases[key] : runStarts;
+                            return runStarts.map((runStart, idx) => {
+                                const info = cb.details[key][runStart];
+                                const displayName = namesToShow[idx];
+                                if (!info) return `${displayName}: (no data)`;
+                                return `${displayName}: ${format_duration(info.duration)}`;
+                            });
+                        }
                     },
                 };
                 delete config.options.onClick
@@ -5581,8 +5607,15 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
-                            return callbackData[context.raw.x[0]];
-                        },
+                            const key = context.dataset.label;
+                            const runIndex = context.raw.x[0];
+                            const runStart = callbackData.runs[runIndex];
+                            const info = callbackData.details[key][runStart];
+                            const displayName = settings.show.aliases
+                                ? callbackData.aliases[runIndex]
+                                : runStart;
+                            return `${displayName}: ${format_duration(info.duration)}`;
+                        }
                     },
                 };
                 config.options.scales.x = {
@@ -5601,7 +5634,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 };
                 config.options.onClick = (event, chartElement) => {
                     if (chartElement.length) {
-                        open_log_file(event, chartElement, callbackData)
+                        open_log_file(event, chartElement, callbackData.runs)
                     }
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
@@ -5855,8 +5888,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (tooltipItem) {
-                            return callbackData[tooltipItem.label];
-                        },
+                            const key = tooltipItem.label;
+                            const cb = callbackData;
+                            const runStarts = cb.run_starts[key] || [];
+                            const namesToShow = settings.show.aliases ? cb.aliases[key] : runStarts;
+                            return runStarts.map((runStart, idx) => {
+                                const info = cb.details[key][runStart];
+                                const displayName = namesToShow[idx];
+                                if (!info) return `${displayName}: (no data)`;
+                                return `${displayName}: ${format_duration(info.duration)}`;
+                            });
+                        }
                     },
                 };
                 delete config.options.onClick
@@ -5865,8 +5907,15 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
-                            return callbackData[context.raw.x[0]];
-                        },
+                            const key = context.dataset.label;
+                            const runIndex = context.raw.x[0];
+                            const runStart = callbackData.runs[runIndex];
+                            const info = callbackData.details[key][runStart];
+                            const displayName = settings.show.aliases
+                                ? callbackData.aliases[runIndex]
+                                : runStart;
+                            return `${displayName}: ${format_duration(info.duration)}`;
+                        }
                     },
                 };
                 config.options.scales.x = {
@@ -5885,7 +5934,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 };
                 config.options.onClick = (event, chartElement) => {
                     if (chartElement.length) {
-                        open_log_file(event, chartElement, callbackData)
+                        open_log_file(event, chartElement, callbackData.runs)
                     }
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
@@ -5914,8 +5963,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (tooltipItem) {
-                            return callbackData[tooltipItem.label];
-                        },
+                            const key = tooltipItem.label;
+                            const cb = callbackData;
+                            const runStarts = cb.run_starts[key] || [];
+                            const namesToShow = settings.show.aliases ? cb.aliases[key] : runStarts;
+                            return runStarts.map((runStart, idx) => {
+                                const info = cb.details[key][runStart];
+                                const displayName = namesToShow[idx];
+                                if (!info) return `${displayName}: (no data)`;
+                                return `${displayName}: ran ${info.timesRun} times`;
+                            });
+                        }
                     },
                 };
                 delete config.options.onClick
@@ -5924,8 +5982,15 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
-                            return callbackData[context.raw.x[0]];
-                        },
+                            const key = context.dataset.label;
+                            const runIndex = context.raw.x[0];
+                            const runStart = callbackData.runs[runIndex];
+                            const info = callbackData.details[key][runStart];
+                            const displayName = settings.show.aliases
+                                ? callbackData.aliases[runIndex]
+                                : runStart;
+                            return `${displayName}: ran ${info.timesRun} times`;
+                        }
                     },
                 };
                 config.options.scales.x = {
@@ -5944,7 +6009,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 };
                 config.options.onClick = (event, chartElement) => {
                     if (chartElement.length) {
-                        open_log_file(event, chartElement, callbackData)
+                        open_log_file(event, chartElement, callbackData.runs)
                     }
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
@@ -7582,11 +7647,23 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         : Number(value.elapsed_s);
                 if (!onlyLastRun) {
                     if (!perRunMap.has(run)) {
-                        perRunMap.set(run, { key, metric, alias: value.run_alias, runStart: run });
+                        perRunMap.set(run, {
+                            key,
+                            metric,
+                            alias: value.run_alias,
+                            runStart: run,
+                            timesRun: Number(value.times_run)
+                        });
                     } else {
                         const existing = perRunMap.get(run);
                         if (metric > existing.metric) {
-                            perRunMap.set(run, { key, metric, alias: value.run_alias, runStart: run });
+                            perRunMap.set(run, {
+                                key,
+                                metric,
+                                alias: value.run_alias,
+                                runStart: run,
+                                timesRun: Number(value.times_run)
+                            });
                         }
                     }
                 } else {
@@ -7595,6 +7672,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         metric,
                         alias: value.run_alias,
                         runStart: run,
+                        timesRun: Number(value.times_run)
                     });
                 }
             }
@@ -7602,6 +7680,18 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const hitCount = new Map();
             const aliases = new Map();
             const perRunEntries = Array.from(perRunMap.values());
+            const details = new Map();
+            for (const entry of perRunEntries) {
+                if (!details.has(entry.key)) {
+                    details.set(entry.key, {});
+                }
+
+                details.get(entry.key)[entry.runStart] = {
+                    duration: entry.metric,
+                    timesRun: entry.timesRun || entry.metricRunCount || 0
+                };
+            }
+
             for (const entry of perRunEntries) {
                 if (!hitCount.has(entry.key)) {
                     hitCount.set(entry.key, []);
@@ -7649,18 +7739,19 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 };
                 return [
                     graphData,
-                    settings.show.aliases
-                        ? Object.fromEntries(
-                            sortedData.map(([name]) => [name, aliases.get(name)])
-                        )
-                        : Object.fromEntries(
-                            sortedData.map(([name]) => [
-                                name,
-                                perRunEntries
-                                    .filter((entry) => entry.key === name)
-                                    .map((entry) => entry.runStart),
-                            ])
-                        ),
+                    {
+                        aliases: Object.fromEntries(sortedData.map(([name]) => [
+                            name,
+                            settings.show.aliases
+                                ? perRunEntries.filter((e) => e.key === name).map((e) => e.alias)
+                                : perRunEntries.filter((e) => e.key === name).map((e) => e.runStart)
+                        ])),
+                        run_starts: Object.fromEntries(sortedData.map(([name]) => [
+                            name,
+                            perRunEntries.filter((e) => e.key === name).map((e) => e.runStart)
+                        ])),
+                        details: Object.fromEntries(details)
+                    }
                 ];
             }
             if (graphType === "timeline") {
@@ -7684,10 +7775,16 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     if (!onlyLastRun) runAxis++;
                 }
                 datasets = convert_timeline_data(datasets);
-                const runStartOutput = settings.show.aliases
-                    ? runStarts.map((r) => r.alias)
-                    : runStarts.map((r) => r.runStart);
-                return [{ labels, datasets }, runStartOutput];
+                const runStartOutput = runStarts.map((r) => r.runStart);
+                const aliasOutput = runStarts.map((r) => r.alias);
+                return [
+                    { labels, datasets },
+                    {
+                        runs: runStartOutput,
+                        aliases: aliasOutput,
+                        details: Object.fromEntries(details)
+                    }
+                ];
             }
         }
 
@@ -8424,7 +8521,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             if (storedSettings) {
                 try {
                     const parsedSettings = JSON.parse(storedSettings);
-                    settings = merge_deep(parsedSettings, settings);
+                    settings = merge_deep(settings, parsedSettings);
                     localStorage.setItem('settings', JSON.stringify(settings));
                 } catch (e) {
                     add_alert(`Failed to parse settings from localStorage: ${e}`, "danger");
@@ -8461,9 +8558,14 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function merge_deep(target, source) {
             for (const key in source) {
                 if (source.hasOwnProperty(key)) {
-                    if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key])) {
-                        if (!target[key]) target[key] = {};
-                        merge_deep(target[key], source[key]);
+                    if (typeof source[key] === 'object' && source[key] !== null) {
+                        if (Array.isArray(source[key])) {
+                            if (!Array.isArray(target[key])) target[key] = [];
+                            target[key] = Array.from(new Set([...target[key], ...source[key]]));
+                        } else {
+                            if (!target[key]) target[key] = {};
+                            merge_deep(target[key], source[key]);
+                        }
                     } else {
                         target[key] = source[key];
                     }
