@@ -10,7 +10,7 @@ export default defineConfig({
   title: "RobotDashboard",
   description: "Robot Framework Dashboard and Result Database command line tool",
   head: [
-    ["link", { rel: "icon", type: "image/svg+xml", href: "images/robotframework.svg" }],
+    ["link", { rel: "icon", type: "image/svg+xml", href: "/robotframework-dashboard/robotframework.svg" }],
   ],
   base: '/robotframework-dashboard/',
   themeConfig: {
@@ -30,13 +30,11 @@ export default defineConfig({
       }
     ],
 
-    
-
     socialLinks: [
       { icon: 'github', link: 'https://github.com/timdegroot1996/robotframework-dashboard' },
       { icon: { svg: python_svg }, link: 'https://pypi.org/project/robotframework-dashboard/' },
-      { icon: { svg: slack_svg }, link: 'https://github.com/vuejs/vitepress' },
-      { icon: { svg: robotframework_svg }, link: 'https://robotframework.slack.com/' }
+      { icon: { svg: slack_svg }, link: 'https://robotframework.slack.com/' },
+      { icon: { svg: robotframework_svg }, link: 'https://robotframework.org/' }
     ]
   }
 })
