@@ -17,15 +17,37 @@ export default defineConfig({
     },
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Documentation', link: '/markdown-examples' },
-      { text: 'Example Dashboard', link: '/example/robot_dashboard.html'}
+      { text: 'Documentation', link: '/1-getting-started.md' },
+      { text: 'Example Dashboard', link: '/example/robot_dashboard.html' }
     ],
     sidebar: [
       {
-        text: 'Examples',
+        text: 'Setup',
         items: [
-          { text: 'Get Started', link: '/markdown-examples' },
-          { text: 'Star on GitHub', link: 'https://github.com/timdegroot1996/robotframework-dashboard' }
+          { text: '1. Getting Started', link: '/1-getting-started.md' },
+          { text: '2. Installation & Version Info', link: '/2-installation-version-info.md' },
+        ]
+      },
+      {
+        text: 'Command Line',
+        items: [
+          { text: '3. Basic Command Line Interface (CLI)', link: '/3-basic-command-line-interface-cli.md' },
+          { text: '4. Advanced CLI / Examples', link: '/4-advanced-cli-examples.md' },
+        ]
+      },
+      {
+        text: 'Dashboard',
+        items: [
+          { text: '5. Dashboard Features', link: '/5-dashboard-features.md' },
+          { text: '6. Dashboard Settings', link: '/6-dashboard-settings.md' },
+        ]
+      },
+      {
+        text: 'Advanced',
+        items: [
+          { text: '7. Dashboard Server', link: '/7-dashboard-server.md' },
+          { text: '8. Custom Database Class', link: '/8-custom-database-class.md' },
+          { text: '9. Listener Integration', link: '/9-listener-integration.md' },
         ]
       }
     ],

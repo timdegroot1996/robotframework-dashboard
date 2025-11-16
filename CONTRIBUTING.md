@@ -1,8 +1,8 @@
-# Contributing
+# 🛠️ Contributing
 
 This document contains some usefull tips for contributing.
 
-## Validate changes without installing the package
+## ⚙️ Validate changes without installing the package
 Sometimes it can be quite time consuming to constantly install (pip install .) the entire package to your python version.
 To still run the code you can use the following command to run from the package itself. You can add all cli options you desire.
 ```sh
@@ -15,7 +15,7 @@ pip install .
 robotdashboard -n robot_dashboard.html
 ```
 
-## Tests
+## ✅ Tests
 Before you run the tests be sure to install the test dependencies from requirements.txt. This can also be done from a venv if you prefer.
 ```sh
 pip install -r .\requirements.txt
@@ -27,7 +27,7 @@ There are some acceptance tests (located in ./atest) that can be run like in a p
 Or they can be run through the command line or robotcode plugin.
 
 
-## Docs
+## 📖 Docs
 
 The docs are hosted through the main branch. Only this branch will actually deploy the change you make. To locally test the documentation you can do the following:
 1. Install node.js
