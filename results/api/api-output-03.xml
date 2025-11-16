@@ -1,0 +1,1153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.3.2 (Python 3.13.1 on win32)" generated="2025-11-08T17:40:31.270168" rpa="false" schemaversion="5">
+<suite id="s1" name="00-Project" source="C:\Users\tim-d\Documents\robotframework-dashboard\00-project">
+<suite id="s1-s1" name="Tests" source="C:\Users\tim-d\Documents\robotframework-dashboard\00-project\tests">
+<suite id="s1-s1-s1" name="Api" source="C:\Users\tim-d\Documents\robotframework-dashboard\00-project\tests\api">
+<suite id="s1-s1-s1-s1" name="Builds" source="C:\Users\tim-d\Documents\robotframework-dashboard\00-project\tests\api\builds.robot">
+<test id="s1-s1-s1-s1-t1" name="Verify Get All Builds" line="8">
+<kw name="Get All Builds" owner="api-keywords">
+<kw name="GET" owner="RequestsLibrary">
+<msg time="2025-11-08T17:40:31.827680" level="INFO">GET Request : url=https://test-rpg.vercel.app/api//builds (redirected) 
+ path_url=/api//builds 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2025-11-08T17:40:31.827837" level="INFO">GET Response : url=https://test-rpg.vercel.app/api/builds 
+ status=200, reason=OK 
+ headers={'Age': '0', 'Cache-Control': 'public, max-age=0, must-revalidate', 'Content-Encoding': 'gzip', 'Content-Type': 'application/json', 'Date': 'Sat, 08 Nov 2025 16:40:31 GMT', 'Server': 'Vercel', 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload', 'Vary': 'RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url', 'X-Matched-Path': '/api/builds', 'X-Vercel-Cache': 'MISS', 'X-Vercel-Id': 'fra1::iad1::vjsh4-1762620031554-0b9b8d66d702', 'Transfer-Encoding': 'chunked'} 
+ body={"thief":{"weapon":"knife","upgradedWeapon":"katana","armor":"leather_armor","upgradedArmor":"silver_armor","strength":1,"agility":6,"wisdom":2,"magic":1},"knight":{"weapon":"knife","upgradedWeapon":"longsword","armor":"partial_plate","upgradedArmor":"full_plate","strength":6,"agility":2,"wisdom":1,"magic":1},"mage":{"weapon":"staff","upgradedWeapon":"staff","armor":"cloak","upgradedArmor":"silver_armor","strength":0,"agility":1,"wisdom":3,"magic":6},"brigadier":{"weapon":"bronze_mace","upgradedWeapon":"hammer","armor":"brigadier_armor","upgradedArmor":"silver_armor","strength":3,"agility":1,"wisdom":6,"magic":1}} 
+ </msg>
+<msg time="2025-11-08T17:40:31.827968" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>url=${A_URL}/builds</arg>
+<doc>Sends a GET request.</doc>
+<status status="PASS" start="2025-11-08T17:40:31.352171" elapsed="0.475814"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=thief</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:31.828129" elapsed="0.000458"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=mage</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:31.828648" elapsed="0.000222"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=knight</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:31.828922" elapsed="0.000189"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=brigadier</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:31.829157" elapsed="0.000174"/>
+</kw>
+<doc>Retrieve all builds and validate all builds are present</doc>
+<status status="PASS" start="2025-11-08T17:40:31.351836" elapsed="0.477539"/>
+</kw>
+<tag>api</tag>
+<status status="PASS" start="2025-11-08T17:40:31.351029" elapsed="0.478859"/>
+</test>
+<test id="s1-s1-s1-s1-t2" name="Verify get thief build" line="11">
+<tag>api</tag>
+<tag>robot:skip</tag>
+<status status="SKIP" start="2025-11-08T17:40:31.830712" elapsed="0.000483">Test skipped using 'robot:skip' tag.</status>
+</test>
+<test id="s1-s1-s1-s1-t3" name="Verify get knight build" line="15">
+<kw name="Get Specific Build" owner="api-keywords">
+<variable name="${params}">
+<msg time="2025-11-08T17:40:31.832185" level="INFO">${params} = build=knight</msg>
+<var>build=${build}</var>
+<status status="PASS" start="2025-11-08T17:40:31.832116" elapsed="0.000085"/>
+</variable>
+<kw name="GET" owner="RequestsLibrary">
+<msg time="2025-11-08T17:40:32.236024" level="INFO">GET Request : url=https://test-rpg.vercel.app/api//builds?build=knight (redirected) 
+ path_url=/api//builds?build=knight 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2025-11-08T17:40:32.236183" level="INFO">GET Response : url=https://test-rpg.vercel.app/api/builds?build=knight 
+ status=200, reason=OK 
+ headers={'Age': '0', 'Cache-Control': 'public, max-age=0, must-revalidate', 'Content-Encoding': 'gzip', 'Content-Type': 'application/json', 'Date': 'Sat, 08 Nov 2025 16:40:32 GMT', 'Server': 'Vercel', 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload', 'Vary': 'RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url', 'X-Matched-Path': '/api/builds', 'X-Vercel-Cache': 'MISS', 'X-Vercel-Id': 'fra1::iad1::d8np4-1762620032002-4bb435eeb0b6', 'Transfer-Encoding': 'chunked'} 
+ body={"weapon":"knife","upgradedWeapon":"longsword","armor":"partial_plate","upgradedArmor":"full_plate","strength":6,"agility":2,"wisdom":1,"magic":1} 
+ </msg>
+<msg time="2025-11-08T17:40:32.236375" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>url=${A_URL}/builds</arg>
+<arg>params=${params}</arg>
+<doc>Sends a GET request.</doc>
+<status status="PASS" start="2025-11-08T17:40:31.832264" elapsed="0.404125"/>
+</kw>
+<if>
+<branch type="IF" condition="not ${unknown_build}">
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=weapon</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.236679" elapsed="0.000312"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=upgradedWeapon</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.237039" elapsed="0.000180"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=armor</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.237260" elapsed="0.000169"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=upgradedArmor</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.237467" elapsed="0.000158"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=strength</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.237663" elapsed="0.000149"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=agility</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.237848" elapsed="0.000146"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=wisdom</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.238030" elapsed="0.000150"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=magic</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.238213" elapsed="0.000145"/>
+</kw>
+<status status="PASS" start="2025-11-08T17:40:32.236498" elapsed="0.002060"/>
+</branch>
+<branch type="ELSE">
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}[error]</arg>
+<arg>item=Unknown build '${build}', you may have to purchase the DLC.</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:32.238623" elapsed="0.000008"/>
+</kw>
+<status status="NOT RUN" start="2025-11-08T17:40:32.238579" elapsed="0.000066"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:32.236466" elapsed="0.002189"/>
+</if>
+<arg>build=knight</arg>
+<doc>Retrieve a specific build and validate the result</doc>
+<status status="PASS" start="2025-11-08T17:40:31.831939" elapsed="0.406750"/>
+</kw>
+<tag>api</tag>
+<status status="PASS" start="2025-11-08T17:40:31.831568" elapsed="0.407540"/>
+</test>
+<test id="s1-s1-s1-s1-t4" name="Verify get mage build" line="18">
+<kw name="Get Specific Build" owner="api-keywords">
+<variable name="${params}">
+<msg time="2025-11-08T17:40:32.240157" level="INFO">${params} = build=mage</msg>
+<var>build=${build}</var>
+<status status="PASS" start="2025-11-08T17:40:32.240101" elapsed="0.000071"/>
+</variable>
+<kw name="GET" owner="RequestsLibrary">
+<msg time="2025-11-08T17:40:32.614755" level="INFO">GET Request : url=https://test-rpg.vercel.app/api//builds?build=mage (redirected) 
+ path_url=/api//builds?build=mage 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2025-11-08T17:40:32.614895" level="INFO">GET Response : url=https://test-rpg.vercel.app/api/builds?build=mage 
+ status=200, reason=OK 
+ headers={'Age': '0', 'Cache-Control': 'public, max-age=0, must-revalidate', 'Content-Encoding': 'gzip', 'Content-Type': 'application/json', 'Date': 'Sat, 08 Nov 2025 16:40:32 GMT', 'Server': 'Vercel', 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload', 'Vary': 'RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url', 'X-Matched-Path': '/api/builds', 'X-Vercel-Cache': 'MISS', 'X-Vercel-Id': 'fra1::iad1::t48qt-1762620032381-af2bf2311c0f', 'Transfer-Encoding': 'chunked'} 
+ body={"weapon":"staff","upgradedWeapon":"staff","armor":"cloak","upgradedArmor":"silver_armor","strength":0,"agility":1,"wisdom":3,"magic":6} 
+ </msg>
+<msg time="2025-11-08T17:40:32.616229" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>url=${A_URL}/builds</arg>
+<arg>params=${params}</arg>
+<doc>Sends a GET request.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.240224" elapsed="0.376023"/>
+</kw>
+<if>
+<branch type="IF" condition="not ${unknown_build}">
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=weapon</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.616515" elapsed="0.000302"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=upgradedWeapon</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.616865" elapsed="0.000180"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=armor</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.617086" elapsed="0.000162"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=upgradedArmor</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.617287" elapsed="0.000158"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=strength</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.617481" elapsed="0.000151"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=agility</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.617667" elapsed="0.000149"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=wisdom</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.617850" elapsed="0.000147"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=magic</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.618032" elapsed="0.000145"/>
+</kw>
+<status status="PASS" start="2025-11-08T17:40:32.616342" elapsed="0.001850"/>
+</branch>
+<branch type="ELSE">
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}[error]</arg>
+<arg>item=Unknown build '${build}', you may have to purchase the DLC.</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:32.618246" elapsed="0.000008"/>
+</kw>
+<status status="NOT RUN" start="2025-11-08T17:40:32.618206" elapsed="0.000062"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:32.616318" elapsed="0.001958"/>
+</if>
+<arg>build=mage</arg>
+<doc>Retrieve a specific build and validate the result</doc>
+<status status="PASS" start="2025-11-08T17:40:32.239958" elapsed="0.378349"/>
+</kw>
+<tag>api</tag>
+<status status="PASS" start="2025-11-08T17:40:32.239639" elapsed="0.379085"/>
+</test>
+<test id="s1-s1-s1-s1-t5" name="Verify get brigadier build" line="21">
+<kw name="Get Specific Build" owner="api-keywords">
+<variable name="${params}">
+<msg time="2025-11-08T17:40:32.620245" level="INFO">${params} = build=brigadier</msg>
+<var>build=${build}</var>
+<status status="PASS" start="2025-11-08T17:40:32.620194" elapsed="0.000065"/>
+</variable>
+<kw name="GET" owner="RequestsLibrary">
+<msg time="2025-11-08T17:40:32.993436" level="INFO">GET Request : url=https://test-rpg.vercel.app/api//builds?build=brigadier (redirected) 
+ path_url=/api//builds?build=brigadier 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2025-11-08T17:40:32.993584" level="INFO">GET Response : url=https://test-rpg.vercel.app/api/builds?build=brigadier 
+ status=200, reason=OK 
+ headers={'Age': '0', 'Cache-Control': 'public, max-age=0, must-revalidate', 'Content-Encoding': 'gzip', 'Content-Type': 'application/json', 'Date': 'Sat, 08 Nov 2025 16:40:32 GMT', 'Server': 'Vercel', 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload', 'Vary': 'RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url', 'X-Matched-Path': '/api/builds', 'X-Vercel-Cache': 'MISS', 'X-Vercel-Id': 'fra1::iad1::lhdrq-1762620032763-1d3a87402608', 'Transfer-Encoding': 'chunked'} 
+ body={"weapon":"bronze_mace","upgradedWeapon":"hammer","armor":"brigadier_armor","upgradedArmor":"silver_armor","strength":3,"agility":1,"wisdom":6,"magic":1} 
+ </msg>
+<msg time="2025-11-08T17:40:32.993748" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>url=${A_URL}/builds</arg>
+<arg>params=${params}</arg>
+<doc>Sends a GET request.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.620310" elapsed="0.373452"/>
+</kw>
+<if>
+<branch type="IF" condition="not ${unknown_build}">
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=weapon</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.994021" elapsed="0.000304"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=upgradedWeapon</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.994508" elapsed="0.000184"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=armor</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.994734" elapsed="0.000164"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=upgradedArmor</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.994935" elapsed="0.000153"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=strength</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.995123" elapsed="0.000147"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=agility</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.995306" elapsed="0.000145"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=wisdom</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.995485" elapsed="0.000144"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=magic</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.995663" elapsed="0.000141"/>
+</kw>
+<status status="PASS" start="2025-11-08T17:40:32.993850" elapsed="0.001969"/>
+</branch>
+<branch type="ELSE">
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}[error]</arg>
+<arg>item=Unknown build '${build}', you may have to purchase the DLC.</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:32.995867" elapsed="0.000006"/>
+</kw>
+<status status="NOT RUN" start="2025-11-08T17:40:32.995833" elapsed="0.000054"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:32.993828" elapsed="0.002067"/>
+</if>
+<arg>build=brigadier</arg>
+<doc>Retrieve a specific build and validate the result</doc>
+<status status="PASS" start="2025-11-08T17:40:32.620060" elapsed="0.375863"/>
+</kw>
+<tag>api</tag>
+<status status="PASS" start="2025-11-08T17:40:32.619513" elapsed="0.376826"/>
+</test>
+<test id="s1-s1-s1-s1-t6" name="Verify get warrior build" line="24">
+<kw name="Get Specific Build" owner="api-keywords">
+<variable name="${params}">
+<msg time="2025-11-08T17:40:32.997842" level="INFO">${params} = build=warrior</msg>
+<var>build=${build}</var>
+<status status="PASS" start="2025-11-08T17:40:32.997792" elapsed="0.000063"/>
+</variable>
+<kw name="GET" owner="RequestsLibrary">
+<msg time="2025-11-08T17:40:33.388085" level="INFO">GET Request : url=https://test-rpg.vercel.app/api//builds?build=warrior (redirected) 
+ path_url=/api//builds?build=warrior 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2025-11-08T17:40:33.388181" level="INFO">GET Response : url=https://test-rpg.vercel.app/api/builds?build=warrior 
+ status=200, reason=OK 
+ headers={'Age': '0', 'Cache-Control': 'public, max-age=0, must-revalidate', 'Content-Encoding': 'gzip', 'Content-Type': 'application/json', 'Date': 'Sat, 08 Nov 2025 16:40:33 GMT', 'Server': 'Vercel', 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload', 'Vary': 'RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url', 'X-Matched-Path': '/api/builds', 'X-Vercel-Cache': 'MISS', 'X-Vercel-Id': 'fra1::iad1::fmr76-1762620033142-00115afb8bf2', 'Transfer-Encoding': 'chunked'} 
+ body={"error":"Unknown build 'warrior', you may have to purchase the DLC."} 
+ </msg>
+<msg time="2025-11-08T17:40:33.388286" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>url=${A_URL}/builds</arg>
+<arg>params=${params}</arg>
+<doc>Sends a GET request.</doc>
+<status status="PASS" start="2025-11-08T17:40:32.997912" elapsed="0.390388"/>
+</kw>
+<if>
+<branch type="IF" condition="not ${unknown_build}">
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=weapon</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:33.388566" elapsed="0.000013"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=upgradedWeapon</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:33.388616" elapsed="0.000007"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=armor</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:33.388654" elapsed="0.000007"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=upgradedArmor</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:33.388690" elapsed="0.000006"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=strength</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:33.388727" elapsed="0.000007"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=agility</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:33.388762" elapsed="0.000006"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=wisdom</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:33.388807" elapsed="0.000006"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}</arg>
+<arg>item=magic</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:33.388842" elapsed="0.000005"/>
+</kw>
+<status status="NOT RUN" start="2025-11-08T17:40:33.388395" elapsed="0.000463"/>
+</branch>
+<branch type="ELSE">
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}[error]</arg>
+<arg>item=Unknown build '${build}', you may have to purchase the DLC.</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:33.388901" elapsed="0.000319"/>
+</kw>
+<status status="PASS" start="2025-11-08T17:40:33.388872" elapsed="0.000367"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.388370" elapsed="0.000878"/>
+</if>
+<arg>build=warrior</arg>
+<arg>unknown_build=${True}</arg>
+<doc>Retrieve a specific build and validate the result</doc>
+<status status="PASS" start="2025-11-08T17:40:32.997610" elapsed="0.391670"/>
+</kw>
+<tag>api</tag>
+<status status="PASS" start="2025-11-08T17:40:32.997142" elapsed="0.392555"/>
+</test>
+<test id="s1-s1-s1-s1-t7" name="Verify post random build" line="27">
+<kw name="Post Build" owner="api-keywords">
+<if>
+<branch type="IF" condition="$name == 'random'">
+<variable name="${name}">
+<msg time="2025-11-08T17:40:33.391524" level="INFO">${name} = monk</msg>
+<var>${{random.choice(${A_RANDOM_BUILDS})}}</var>
+<status status="PASS" start="2025-11-08T17:40:33.391314" elapsed="0.000285"/>
+</variable>
+<status status="PASS" start="2025-11-08T17:40:33.391207" elapsed="0.000412"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.391197" elapsed="0.000432"/>
+</if>
+<if>
+<branch type="IF" condition="$name == 'random existing'">
+<variable name="${name}">
+<var>${{random.choice(${A_BUILDS})}}</var>
+<status status="NOT RUN" start="2025-11-08T17:40:33.391704" elapsed="0.000006"/>
+</variable>
+<status status="NOT RUN" start="2025-11-08T17:40:33.391652" elapsed="0.000069"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.391645" elapsed="0.000084"/>
+</if>
+<if>
+<branch type="IF" condition="$strength == 'random'">
+<variable name="${strength}">
+<msg time="2025-11-08T17:40:33.391926" level="INFO">${strength} = 3</msg>
+<var>${{random.randint(1,4)}}</var>
+<status status="PASS" start="2025-11-08T17:40:33.391782" elapsed="0.000156"/>
+</variable>
+<status status="PASS" start="2025-11-08T17:40:33.391746" elapsed="0.000204"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.391742" elapsed="0.000216"/>
+</if>
+<if>
+<branch type="IF" condition="$agility == 'random'">
+<variable name="${agility}">
+<msg time="2025-11-08T17:40:33.392136" level="INFO">${agility} = 3</msg>
+<var>${{random.randint(1,3)}}</var>
+<status status="PASS" start="2025-11-08T17:40:33.392014" elapsed="0.000133"/>
+</variable>
+<status status="PASS" start="2025-11-08T17:40:33.391978" elapsed="0.000181"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.391973" elapsed="0.000194"/>
+</if>
+<if>
+<branch type="IF" condition="$wisdom == 'random'">
+<variable name="${wisdom}">
+<msg time="2025-11-08T17:40:33.392336" level="INFO">${wisdom} = 1</msg>
+<var>${{random.randint(1,2)}}</var>
+<status status="PASS" start="2025-11-08T17:40:33.392221" elapsed="0.000125"/>
+</variable>
+<status status="PASS" start="2025-11-08T17:40:33.392186" elapsed="0.000172"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.392180" elapsed="0.000185"/>
+</if>
+<if>
+<branch type="IF" condition="$magic == 'random'">
+<variable name="${magic}">
+<msg time="2025-11-08T17:40:33.392552" level="INFO">${magic} = 1</msg>
+<var>${{random.randint(1,1)}}</var>
+<status status="PASS" start="2025-11-08T17:40:33.392417" elapsed="0.000146"/>
+</variable>
+<status status="PASS" start="2025-11-08T17:40:33.392383" elapsed="0.000191"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.392378" elapsed="0.000203"/>
+</if>
+<variable name="&amp;{build}">
+<msg time="2025-11-08T17:40:33.393184" level="INFO">&amp;{build} = { name=monk | strength=3 | agility=3 | wisdom=1 | magic=1 }</msg>
+<var>name=${name}</var>
+<var>strength=${{int(${strength})}}</var>
+<var>agility=${{int(${agility})}}</var>
+<var>wisdom=${{int(${wisdom})}}</var>
+<var>magic=${{int(${magic})}}</var>
+<status status="PASS" start="2025-11-08T17:40:33.392593" elapsed="0.000604"/>
+</variable>
+<variable name="&amp;{body}">
+<msg time="2025-11-08T17:40:33.393270" level="INFO">&amp;{body} = { build={'name': 'monk', 'strength': 3, 'agility': 3, 'wisdom': 1, 'magic': 1} }</msg>
+<var>build=${build}</var>
+<status status="PASS" start="2025-11-08T17:40:33.393220" elapsed="0.000060"/>
+</variable>
+<if>
+<branch type="IF" condition="$error != ${None}">
+<kw name="POST" owner="RequestsLibrary">
+<var>${response}</var>
+<arg>url=${A_URL}/builds</arg>
+<arg>json=${body}</arg>
+<arg>expected_status=400</arg>
+<doc>Sends a POST request.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:33.393382" elapsed="0.000008"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>first=${response.json()}[success]</arg>
+<arg>second=${False}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:33.393431" elapsed="0.000007"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}[error][0][message]</arg>
+<arg>item=${error}</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:33.393471" elapsed="0.000007"/>
+</kw>
+<status status="NOT RUN" start="2025-11-08T17:40:33.393303" elapsed="0.000187"/>
+</branch>
+<branch type="ELSE">
+<kw name="POST" owner="RequestsLibrary">
+<msg time="2025-11-08T17:40:33.767334" level="INFO">POST Request : url=https://test-rpg.vercel.app/api//builds (redirected) 
+ path_url=/api//builds 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '81', 'Content-Type': 'application/json'} 
+ body=b'{"build": {"name": "monk", "strength": 3, "agility": 3, "wisdom": 1, "magic": 1}}' 
+ </msg>
+<msg time="2025-11-08T17:40:33.767482" level="INFO">POST Response : url=https://test-rpg.vercel.app/api/builds 
+ status=201, reason=Created 
+ headers={'Cache-Control': 'public, max-age=0, must-revalidate', 'Content-Type': 'application/json', 'Date': 'Sat, 08 Nov 2025 16:40:33 GMT', 'Server': 'Vercel', 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload', 'Vary': 'RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url', 'X-Matched-Path': '/api/builds', 'X-Vercel-Cache': 'MISS', 'X-Vercel-Id': 'fra1::iad1::rjlff-1762620033538-7fce3f11517a', 'Transfer-Encoding': 'chunked'} 
+ body={"success":true,"result":{"build":{"name":"monk","strength":3,"agility":3,"wisdom":1,"magic":1}}} 
+ </msg>
+<msg time="2025-11-08T17:40:33.767679" level="INFO">${response} = &lt;Response [201]&gt;</msg>
+<var>${response}</var>
+<arg>url=${A_URL}/builds</arg>
+<arg>json=${body}</arg>
+<doc>Sends a POST request.</doc>
+<status status="PASS" start="2025-11-08T17:40:33.393527" elapsed="0.374189"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>first=${response.json()}[success]</arg>
+<arg>second=${True}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2025-11-08T17:40:33.767849" elapsed="0.000389"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][name]</arg>
+<arg>second=${name}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2025-11-08T17:40:33.768286" elapsed="0.000214"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][strength]</arg>
+<arg>second=${strength}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2025-11-08T17:40:33.768544" elapsed="0.000201"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][agility]</arg>
+<arg>second=${agility}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2025-11-08T17:40:33.768789" elapsed="0.000190"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][wisdom]</arg>
+<arg>second=${wisdom}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2025-11-08T17:40:33.769015" elapsed="0.000181"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][magic]</arg>
+<arg>second=${magic}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2025-11-08T17:40:33.769231" elapsed="0.000178"/>
+</kw>
+<status status="PASS" start="2025-11-08T17:40:33.393499" elapsed="0.375926"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.393297" elapsed="0.376145"/>
+</if>
+<arg>name=random</arg>
+<doc>Add a specific build and validate the result</doc>
+<status status="PASS" start="2025-11-08T17:40:33.391022" elapsed="0.378457"/>
+</kw>
+<tag>api</tag>
+<status status="PASS" start="2025-11-08T17:40:33.390413" elapsed="0.379489"/>
+</test>
+<test id="s1-s1-s1-s1-t8" name="Verify post existing name" line="30">
+<kw name="Post Build" owner="api-keywords">
+<if>
+<branch type="IF" condition="$name == 'random'">
+<variable name="${name}">
+<var>${{random.choice(${A_RANDOM_BUILDS})}}</var>
+<status status="NOT RUN" start="2025-11-08T17:40:33.771354" elapsed="0.000010"/>
+</variable>
+<status status="NOT RUN" start="2025-11-08T17:40:33.771261" elapsed="0.000122"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.771246" elapsed="0.000147"/>
+</if>
+<if>
+<branch type="IF" condition="$name == 'random existing'">
+<variable name="${name}">
+<msg time="2025-11-08T17:40:33.771647" level="INFO">${name} = thief</msg>
+<var>${{random.choice(${A_BUILDS})}}</var>
+<status status="PASS" start="2025-11-08T17:40:33.771460" elapsed="0.000201"/>
+</variable>
+<status status="PASS" start="2025-11-08T17:40:33.771414" elapsed="0.000261"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.771408" elapsed="0.000275"/>
+</if>
+<if>
+<branch type="IF" condition="$strength == 'random'">
+<variable name="${strength}">
+<msg time="2025-11-08T17:40:33.771881" level="INFO">${strength} = 1</msg>
+<var>${{random.randint(1,4)}}</var>
+<status status="PASS" start="2025-11-08T17:40:33.771744" elapsed="0.000148"/>
+</variable>
+<status status="PASS" start="2025-11-08T17:40:33.771704" elapsed="0.000202"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.771698" elapsed="0.000216"/>
+</if>
+<if>
+<branch type="IF" condition="$agility == 'random'">
+<variable name="${agility}">
+<msg time="2025-11-08T17:40:33.772090" level="INFO">${agility} = 3</msg>
+<var>${{random.randint(1,3)}}</var>
+<status status="PASS" start="2025-11-08T17:40:33.771969" elapsed="0.000130"/>
+</variable>
+<status status="PASS" start="2025-11-08T17:40:33.771933" elapsed="0.000178"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.771928" elapsed="0.000191"/>
+</if>
+<if>
+<branch type="IF" condition="$wisdom == 'random'">
+<variable name="${wisdom}">
+<msg time="2025-11-08T17:40:33.772286" level="INFO">${wisdom} = 1</msg>
+<var>${{random.randint(1,2)}}</var>
+<status status="PASS" start="2025-11-08T17:40:33.772172" elapsed="0.000123"/>
+</variable>
+<status status="PASS" start="2025-11-08T17:40:33.772137" elapsed="0.000169"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.772132" elapsed="0.000182"/>
+</if>
+<if>
+<branch type="IF" condition="$magic == 'random'">
+<variable name="${magic}">
+<msg time="2025-11-08T17:40:33.772476" level="INFO">${magic} = 1</msg>
+<var>${{random.randint(1,1)}}</var>
+<status status="PASS" start="2025-11-08T17:40:33.772365" elapsed="0.000120"/>
+</variable>
+<status status="PASS" start="2025-11-08T17:40:33.772332" elapsed="0.000164"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.772327" elapsed="0.000177"/>
+</if>
+<variable name="&amp;{build}">
+<msg time="2025-11-08T17:40:33.773053" level="INFO">&amp;{build} = { name=thief | strength=1 | agility=3 | wisdom=1 | magic=1 }</msg>
+<var>name=${name}</var>
+<var>strength=${{int(${strength})}}</var>
+<var>agility=${{int(${agility})}}</var>
+<var>wisdom=${{int(${wisdom})}}</var>
+<var>magic=${{int(${magic})}}</var>
+<status status="PASS" start="2025-11-08T17:40:33.772515" elapsed="0.000549"/>
+</variable>
+<variable name="&amp;{body}">
+<msg time="2025-11-08T17:40:33.773132" level="INFO">&amp;{body} = { build={'name': 'thief', 'strength': 1, 'agility': 3, 'wisdom': 1, 'magic': 1} }</msg>
+<var>build=${build}</var>
+<status status="PASS" start="2025-11-08T17:40:33.773084" elapsed="0.000058"/>
+</variable>
+<if>
+<branch type="IF" condition="$error != ${None}">
+<kw name="POST" owner="RequestsLibrary">
+<msg time="2025-11-08T17:40:34.149478" level="INFO">POST Request : url=https://test-rpg.vercel.app/api//builds (redirected) 
+ path_url=/api//builds 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '82', 'Content-Type': 'application/json'} 
+ body=b'{"build": {"name": "thief", "strength": 1, "agility": 3, "wisdom": 1, "magic": 1}}' 
+ </msg>
+<msg time="2025-11-08T17:40:34.149614" level="INFO">POST Response : url=https://test-rpg.vercel.app/api/builds 
+ status=400, reason=Bad Request 
+ headers={'Cache-Control': 'public, max-age=0, must-revalidate', 'Content-Type': 'application/json', 'Date': 'Sat, 08 Nov 2025 16:40:33 GMT', 'Server': 'Vercel', 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload', 'Vary': 'RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url', 'X-Matched-Path': '/api/builds', 'X-Vercel-Cache': 'MISS', 'X-Vercel-Id': 'fra1::iad1::kkq97-1762620033917-f90cdcf79a24', 'Transfer-Encoding': 'chunked'} 
+ body={"success":false,"error":[{"message":"a build with this name already exists","path":"build.name"}]} 
+ </msg>
+<msg time="2025-11-08T17:40:34.149801" level="INFO">${response} = &lt;Response [400]&gt;</msg>
+<var>${response}</var>
+<arg>url=${A_URL}/builds</arg>
+<arg>json=${body}</arg>
+<arg>expected_status=400</arg>
+<doc>Sends a POST request.</doc>
+<status status="PASS" start="2025-11-08T17:40:33.773252" elapsed="0.376582"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>first=${response.json()}[success]</arg>
+<arg>second=${False}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2025-11-08T17:40:34.150018" elapsed="0.000424"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}[error][0][message]</arg>
+<arg>item=${error}</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:34.150492" elapsed="0.000215"/>
+</kw>
+<status status="PASS" start="2025-11-08T17:40:33.773164" elapsed="0.377562"/>
+</branch>
+<branch type="ELSE">
+<kw name="POST" owner="RequestsLibrary">
+<var>${response}</var>
+<arg>url=${A_URL}/builds</arg>
+<arg>json=${body}</arg>
+<doc>Sends a POST request.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.150797" elapsed="0.000008"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>first=${response.json()}[success]</arg>
+<arg>second=${True}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.150841" elapsed="0.003061"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][name]</arg>
+<arg>second=${name}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.153951" elapsed="0.000009"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][strength]</arg>
+<arg>second=${strength}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.153993" elapsed="0.000006"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][agility]</arg>
+<arg>second=${agility}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.154029" elapsed="0.000006"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][wisdom]</arg>
+<arg>second=${wisdom}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.154063" elapsed="0.000006"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][magic]</arg>
+<arg>second=${magic}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.154095" elapsed="0.000006"/>
+</kw>
+<status status="NOT RUN" start="2025-11-08T17:40:34.150746" elapsed="0.003368"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:33.773158" elapsed="0.380965"/>
+</if>
+<arg>name=random existing</arg>
+<arg>error=a build with this name already exists</arg>
+<doc>Add a specific build and validate the result</doc>
+<status status="PASS" start="2025-11-08T17:40:33.771073" elapsed="0.383083"/>
+</kw>
+<tag>api</tag>
+<status status="PASS" start="2025-11-08T17:40:33.770516" elapsed="0.384158"/>
+</test>
+<test id="s1-s1-s1-s1-t9" name="Verify post level too high" line="34">
+<kw name="Post Build" owner="api-keywords">
+<if>
+<branch type="IF" condition="$name == 'random'">
+<variable name="${name}">
+<msg time="2025-11-08T17:40:34.156957" level="INFO">${name} = ranger</msg>
+<var>${{random.choice(${A_RANDOM_BUILDS})}}</var>
+<status status="PASS" start="2025-11-08T17:40:34.156754" elapsed="0.000218"/>
+</variable>
+<status status="PASS" start="2025-11-08T17:40:34.156658" elapsed="0.000332"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.156632" elapsed="0.000367"/>
+</if>
+<if>
+<branch type="IF" condition="$name == 'random existing'">
+<variable name="${name}">
+<var>${{random.choice(${A_BUILDS})}}</var>
+<status status="NOT RUN" start="2025-11-08T17:40:34.157063" elapsed="0.000006"/>
+</variable>
+<status status="NOT RUN" start="2025-11-08T17:40:34.157021" elapsed="0.000059"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.157015" elapsed="0.000073"/>
+</if>
+<if>
+<branch type="IF" condition="$strength == 'random'">
+<variable name="${strength}">
+<var>${{random.randint(1,4)}}</var>
+<status status="NOT RUN" start="2025-11-08T17:40:34.157138" elapsed="0.000005"/>
+</variable>
+<status status="NOT RUN" start="2025-11-08T17:40:34.157105" elapsed="0.000048"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.157100" elapsed="0.000060"/>
+</if>
+<if>
+<branch type="IF" condition="$agility == 'random'">
+<variable name="${agility}">
+<var>${{random.randint(1,3)}}</var>
+<status status="NOT RUN" start="2025-11-08T17:40:34.157207" elapsed="0.000005"/>
+</variable>
+<status status="NOT RUN" start="2025-11-08T17:40:34.157177" elapsed="0.000044"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.157172" elapsed="0.000056"/>
+</if>
+<if>
+<branch type="IF" condition="$wisdom == 'random'">
+<variable name="${wisdom}">
+<var>${{random.randint(1,2)}}</var>
+<status status="NOT RUN" start="2025-11-08T17:40:34.157280" elapsed="0.000006"/>
+</variable>
+<status status="NOT RUN" start="2025-11-08T17:40:34.157251" elapsed="0.000044"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.157247" elapsed="0.000055"/>
+</if>
+<if>
+<branch type="IF" condition="$magic == 'random'">
+<variable name="${magic}">
+<var>${{random.randint(1,1)}}</var>
+<status status="NOT RUN" start="2025-11-08T17:40:34.157347" elapsed="0.000005"/>
+</variable>
+<status status="NOT RUN" start="2025-11-08T17:40:34.157317" elapsed="0.000045"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.157313" elapsed="0.000055"/>
+</if>
+<variable name="&amp;{build}">
+<msg time="2025-11-08T17:40:34.157948" level="INFO">&amp;{build} = { name=ranger | strength=1 | agility=1 | wisdom=1 | magic=20 }</msg>
+<var>name=${name}</var>
+<var>strength=${{int(${strength})}}</var>
+<var>agility=${{int(${agility})}}</var>
+<var>wisdom=${{int(${wisdom})}}</var>
+<var>magic=${{int(${magic})}}</var>
+<status status="PASS" start="2025-11-08T17:40:34.157378" elapsed="0.000583"/>
+</variable>
+<variable name="&amp;{body}">
+<msg time="2025-11-08T17:40:34.158034" level="INFO">&amp;{body} = { build={'name': 'ranger', 'strength': 1, 'agility': 1, 'wisdom': 1, 'magic': 20} }</msg>
+<var>build=${build}</var>
+<status status="PASS" start="2025-11-08T17:40:34.157983" elapsed="0.000060"/>
+</variable>
+<if>
+<branch type="IF" condition="$error != ${None}">
+<kw name="POST" owner="RequestsLibrary">
+<msg time="2025-11-08T17:40:34.530547" level="INFO">POST Request : url=https://test-rpg.vercel.app/api//builds (redirected) 
+ path_url=/api//builds 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '84', 'Content-Type': 'application/json'} 
+ body=b'{"build": {"name": "ranger", "strength": 1, "agility": 1, "wisdom": 1, "magic": 20}}' 
+ </msg>
+<msg time="2025-11-08T17:40:34.530684" level="INFO">POST Response : url=https://test-rpg.vercel.app/api/builds 
+ status=400, reason=Bad Request 
+ headers={'Cache-Control': 'public, max-age=0, must-revalidate', 'Content-Type': 'application/json', 'Date': 'Sat, 08 Nov 2025 16:40:34 GMT', 'Server': 'Vercel', 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload', 'Vary': 'RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url', 'X-Matched-Path': '/api/builds', 'X-Vercel-Cache': 'MISS', 'X-Vercel-Id': 'fra1::iad1::nn57h-1762620034300-4394199ecd43', 'Transfer-Encoding': 'chunked'} 
+ body={"success":false,"error":[{"message":"Magic can't be higher than 10","path":"build.magic"},{"message":"Total value of stats cannot be more than 10","path":"build"}]} 
+ </msg>
+<msg time="2025-11-08T17:40:34.530876" level="INFO">${response} = &lt;Response [400]&gt;</msg>
+<var>${response}</var>
+<arg>url=${A_URL}/builds</arg>
+<arg>json=${body}</arg>
+<arg>expected_status=400</arg>
+<doc>Sends a POST request.</doc>
+<status status="PASS" start="2025-11-08T17:40:34.158142" elapsed="0.372754"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>first=${response.json()}[success]</arg>
+<arg>second=${False}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2025-11-08T17:40:34.531029" elapsed="0.000400"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}[error][0][message]</arg>
+<arg>item=${error}</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:34.531479" elapsed="0.000212"/>
+</kw>
+<status status="PASS" start="2025-11-08T17:40:34.158067" elapsed="0.373642"/>
+</branch>
+<branch type="ELSE">
+<kw name="POST" owner="RequestsLibrary">
+<var>${response}</var>
+<arg>url=${A_URL}/builds</arg>
+<arg>json=${body}</arg>
+<doc>Sends a POST request.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.531782" elapsed="0.000007"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>first=${response.json()}[success]</arg>
+<arg>second=${True}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.531825" elapsed="0.000008"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][name]</arg>
+<arg>second=${name}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.531863" elapsed="0.000006"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][strength]</arg>
+<arg>second=${strength}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.531900" elapsed="0.000006"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][agility]</arg>
+<arg>second=${agility}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.531936" elapsed="0.000006"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][wisdom]</arg>
+<arg>second=${wisdom}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.531970" elapsed="0.000006"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][magic]</arg>
+<arg>second=${magic}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.532003" elapsed="0.000006"/>
+</kw>
+<status status="NOT RUN" start="2025-11-08T17:40:34.531730" elapsed="0.000291"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.158061" elapsed="0.373969"/>
+</if>
+<arg>name=random</arg>
+<arg>strength=1</arg>
+<arg>agility=1</arg>
+<arg>wisdom=1</arg>
+<arg>magic=20</arg>
+<arg>error=Magic can't be higher than 10</arg>
+<doc>Add a specific build and validate the result</doc>
+<status status="PASS" start="2025-11-08T17:40:34.156131" elapsed="0.376088"/>
+</kw>
+<tag>api</tag>
+<status status="PASS" start="2025-11-08T17:40:34.155328" elapsed="0.377322"/>
+</test>
+<test id="s1-s1-s1-s1-t10" name="Verify post over maximum level" line="38">
+<kw name="Post Build" owner="api-keywords">
+<if>
+<branch type="IF" condition="$name == 'random'">
+<variable name="${name}">
+<msg time="2025-11-08T17:40:34.534094" level="INFO">${name} = warlock</msg>
+<var>${{random.choice(${A_RANDOM_BUILDS})}}</var>
+<status status="PASS" start="2025-11-08T17:40:34.533885" elapsed="0.000223"/>
+</variable>
+<status status="PASS" start="2025-11-08T17:40:34.533794" elapsed="0.000333"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.533783" elapsed="0.000354"/>
+</if>
+<if>
+<branch type="IF" condition="$name == 'random existing'">
+<variable name="${name}">
+<var>${{random.choice(${A_BUILDS})}}</var>
+<status status="NOT RUN" start="2025-11-08T17:40:34.534202" elapsed="0.000006"/>
+</variable>
+<status status="NOT RUN" start="2025-11-08T17:40:34.534159" elapsed="0.000060"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.534153" elapsed="0.000074"/>
+</if>
+<if>
+<branch type="IF" condition="$strength == 'random'">
+<variable name="${strength}">
+<var>${{random.randint(1,4)}}</var>
+<status status="NOT RUN" start="2025-11-08T17:40:34.534279" elapsed="0.000005"/>
+</variable>
+<status status="NOT RUN" start="2025-11-08T17:40:34.534245" elapsed="0.000050"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.534240" elapsed="0.000062"/>
+</if>
+<if>
+<branch type="IF" condition="$agility == 'random'">
+<variable name="${agility}">
+<var>${{random.randint(1,3)}}</var>
+<status status="NOT RUN" start="2025-11-08T17:40:34.534349" elapsed="0.000005"/>
+</variable>
+<status status="NOT RUN" start="2025-11-08T17:40:34.534318" elapsed="0.000046"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.534314" elapsed="0.000057"/>
+</if>
+<if>
+<branch type="IF" condition="$wisdom == 'random'">
+<variable name="${wisdom}">
+<var>${{random.randint(1,2)}}</var>
+<status status="NOT RUN" start="2025-11-08T17:40:34.534417" elapsed="0.000005"/>
+</variable>
+<status status="NOT RUN" start="2025-11-08T17:40:34.534387" elapsed="0.000045"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.534383" elapsed="0.000056"/>
+</if>
+<if>
+<branch type="IF" condition="$magic == 'random'">
+<variable name="${magic}">
+<var>${{random.randint(1,1)}}</var>
+<status status="NOT RUN" start="2025-11-08T17:40:34.534484" elapsed="0.000005"/>
+</variable>
+<status status="NOT RUN" start="2025-11-08T17:40:34.534454" elapsed="0.000044"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.534450" elapsed="0.000055"/>
+</if>
+<variable name="&amp;{build}">
+<msg time="2025-11-08T17:40:34.535069" level="INFO">&amp;{build} = { name=warlock | strength=3 | agility=3 | wisdom=3 | magic=3 }</msg>
+<var>name=${name}</var>
+<var>strength=${{int(${strength})}}</var>
+<var>agility=${{int(${agility})}}</var>
+<var>wisdom=${{int(${wisdom})}}</var>
+<var>magic=${{int(${magic})}}</var>
+<status status="PASS" start="2025-11-08T17:40:34.534515" elapsed="0.000567"/>
+</variable>
+<variable name="&amp;{body}">
+<msg time="2025-11-08T17:40:34.535160" level="INFO">&amp;{body} = { build={'name': 'warlock', 'strength': 3, 'agility': 3, 'wisdom': 3, 'magic': 3} }</msg>
+<var>build=${build}</var>
+<status status="PASS" start="2025-11-08T17:40:34.535110" elapsed="0.000061"/>
+</variable>
+<if>
+<branch type="IF" condition="$error != ${None}">
+<kw name="POST" owner="RequestsLibrary">
+<msg time="2025-11-08T17:40:34.911897" level="INFO">POST Request : url=https://test-rpg.vercel.app/api//builds (redirected) 
+ path_url=/api//builds 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '84', 'Content-Type': 'application/json'} 
+ body=b'{"build": {"name": "warlock", "strength": 3, "agility": 3, "wisdom": 3, "magic": 3}}' 
+ </msg>
+<msg time="2025-11-08T17:40:34.912052" level="INFO">POST Response : url=https://test-rpg.vercel.app/api/builds 
+ status=400, reason=Bad Request 
+ headers={'Cache-Control': 'public, max-age=0, must-revalidate', 'Content-Type': 'application/json', 'Date': 'Sat, 08 Nov 2025 16:40:34 GMT', 'Server': 'Vercel', 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload', 'Vary': 'RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url', 'X-Matched-Path': '/api/builds', 'X-Vercel-Cache': 'MISS', 'X-Vercel-Id': 'fra1::iad1::qnvjl-1762620034676-71b02b79201c', 'Transfer-Encoding': 'chunked'} 
+ body={"success":false,"error":[{"message":"Total value of stats cannot be more than 10","path":"build"}]} 
+ </msg>
+<msg time="2025-11-08T17:40:34.912248" level="INFO">${response} = &lt;Response [400]&gt;</msg>
+<var>${response}</var>
+<arg>url=${A_URL}/builds</arg>
+<arg>json=${body}</arg>
+<arg>expected_status=400</arg>
+<doc>Sends a POST request.</doc>
+<status status="PASS" start="2025-11-08T17:40:34.535269" elapsed="0.377010"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>first=${response.json()}[success]</arg>
+<arg>second=${False}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2025-11-08T17:40:34.912498" elapsed="0.000409"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>container=${response.json()}[error][0][message]</arg>
+<arg>item=${error}</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="PASS" start="2025-11-08T17:40:34.912957" elapsed="0.000223"/>
+</kw>
+<status status="PASS" start="2025-11-08T17:40:34.535194" elapsed="0.378005"/>
+</branch>
+<branch type="ELSE">
+<kw name="POST" owner="RequestsLibrary">
+<var>${response}</var>
+<arg>url=${A_URL}/builds</arg>
+<arg>json=${body}</arg>
+<doc>Sends a POST request.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.913275" elapsed="0.000008"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>first=${response.json()}[success]</arg>
+<arg>second=${True}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.913320" elapsed="0.000007"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][name]</arg>
+<arg>second=${name}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.913358" elapsed="0.000007"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][strength]</arg>
+<arg>second=${strength}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.913396" elapsed="0.000006"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][agility]</arg>
+<arg>second=${agility}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.913443" elapsed="0.000005"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][wisdom]</arg>
+<arg>second=${wisdom}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.913476" elapsed="0.000006"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<arg>first=${response.json()}[result][build][magic]</arg>
+<arg>second=${magic}</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" start="2025-11-08T17:40:34.913508" elapsed="0.000005"/>
+</kw>
+<status status="NOT RUN" start="2025-11-08T17:40:34.913224" elapsed="0.000300"/>
+</branch>
+<status status="PASS" start="2025-11-08T17:40:34.535188" elapsed="0.378415"/>
+</if>
+<arg>name=random</arg>
+<arg>strength=3</arg>
+<arg>agility=3</arg>
+<arg>wisdom=3</arg>
+<arg>magic=3</arg>
+<arg>error=Total value of stats cannot be more than 10</arg>
+<doc>Add a specific build and validate the result</doc>
+<status status="PASS" start="2025-11-08T17:40:34.533606" elapsed="0.380033"/>
+</kw>
+<tag>api</tag>
+<status status="PASS" start="2025-11-08T17:40:34.533168" elapsed="0.380910"/>
+</test>
+<status status="PASS" start="2025-11-08T17:40:31.289385" elapsed="3.625492"/>
+</suite>
+<status status="PASS" start="2025-11-08T17:40:31.288732" elapsed="3.626925"/>
+</suite>
+<status status="PASS" start="2025-11-08T17:40:31.288039" elapsed="3.628088"/>
+</suite>
+<status status="PASS" start="2025-11-08T17:40:31.271111" elapsed="3.645313"/>
+</suite>
+<statistics>
+<total>
+<stat pass="9" fail="0" skip="1">All Tests</stat>
+</total>
+<tag>
+<stat pass="9" fail="0" skip="1">api</stat>
+</tag>
+<suite>
+<stat name="00-Project" id="s1" pass="9" fail="0" skip="1">00-Project</stat>
+<stat name="Tests" id="s1-s1" pass="9" fail="0" skip="1">00-Project.Tests</stat>
+<stat name="Api" id="s1-s1-s1" pass="9" fail="0" skip="1">00-Project.Tests.Api</stat>
+<stat name="Builds" id="s1-s1-s1-s1" pass="9" fail="0" skip="1">00-Project.Tests.Api.Builds</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

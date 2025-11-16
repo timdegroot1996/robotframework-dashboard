@@ -1,5 +1,4 @@
 scripts
-results
 logs
 *.pyc
 __pycache__
@@ -12,4 +11,3 @@ index.txt
 .pabotsuitenames
 *.db
 *.vscode
-00*
