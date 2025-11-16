@@ -3,7 +3,6 @@ import { readFileSync } from "fs";
 
 const python_svg = readFileSync("docs/images/python.svg", "utf-8");
 const slack_svg = readFileSync("docs/images/slack.svg", "utf-8");
-const robotframework_svg = readFileSync("docs/images/robotframework.svg", "utf-8");
 
 export default defineConfig({
   title: "RobotDashboard",
