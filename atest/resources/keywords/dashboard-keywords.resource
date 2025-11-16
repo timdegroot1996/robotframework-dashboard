@@ -47,7 +47,7 @@ Validate Screenshot
     [Arguments]    ${screenshot}    ${reference}    ${folder}
     VAR    ${reference}    ${REFERENCE_FOLDER}/${folder}/${reference}.png
     VAR    ${screenshot}    ${SCREENSHOT_FOLDER}/${screenshot}.png
-    Compare Images    reference_image=${reference}    candidate_image=${screenshot}    threshold=0.05   # 95% accuracy
+    Compare Images    reference_image=${reference}    candidate_image=${screenshot}    threshold=0.02   # 98% accuracy
 
 Validate Component
     [Arguments]    ${id}    ${name}    ${folder}
