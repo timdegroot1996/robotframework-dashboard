@@ -2029,6 +2029,35 @@
                 </div>`,
             },
             {
+                key: "keywordMostUsed",
+                label: "Keyword Most Used",
+                defaultType: "timeline",
+                viewOptions: ["Bar", "Timeline"],
+                hasFullscreenButton: true,
+                html: `<div class="graph-header">
+                    <h6>Most Used</h6>
+                    <div class="graph-controls">
+                        <div class="btn-group">
+                            <label class="form-check-label" for="onlyLastRunKeywordMostUsed">Only Last Run</label>
+                        </div>
+                        <div class="btn-group form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="onlyLastRunKeywordMostUsed">
+                        </div>
+                        <a class="bar-graph information" id="keywordMostUsedGraphBar"></a>
+                        <a class="timeline-graph information" id="keywordMostUsedGraphTimeline"></a>
+                        <a class="fullscreen-graph information" id="keywordMostUsedFullscreen"></a>
+                        <a class="close-graph information" id="keywordMostUsedClose" hidden></a>
+                        <a class="shown-graph information" id="keywordMostUsedShown" showGraphHidden></a>
+                        <a class="hidden-graph information" id="keywordMostUsedHidden" hideGraphHidden></a>
+                    </div>
+                </div>
+                <div class="graph-body">
+                    <div id="keywordMostUsedVertical" class="w-100 vertical">
+                        <canvas id="keywordMostUsedGraph"></canvas>
+                    </div
+                </div>`,
+            },
+            {
                 key: "compareStatistics",
                 label: "Compare Statistics",
                 defaultType: "bar",
@@ -2389,6 +2418,12 @@ It helps identify tests with inconsistent execution times, which might be flaky 
             "keywordMostTimeConsumingClose": "Close",
             "keywordMostTimeConsumingShown": "Hide Graph",
             "keywordMostTimeConsumingHidden": "Show Graph",
+            "keywordMostUsedGraphBar": "Bar: Displays keywords ranked by how frequently they were used across all runs. Each bar represents how many times a keyword appeared in total. The regular view shows the Top 10 most used keywords; fullscreen mode expands the list to the Top 50. When 'Only Last Run' is enabled, this graph instead shows the Top 10 (or Top 50 in fullscreen) most used keywords *within the latest run only*, ranked by occurrence count.",
+            "keywordMostUsedGraphTimeline": "Timeline: Displays keyword usage trends over time. For each run, the most frequently used keyword (or keywords) is shown, illustrating how keyword usage changes across runs. The regular view highlights the Top 10 most frequently used keywords overall; fullscreen mode expands the list to the Top 50. When 'Only Last Run' is enabled, the timeline shows only the latest run, highlighting its Top 10 (or Top 50 in fullscreen) most used keywords by frequency.",
+            "keywordMostUsedFullscreen": "Fullscreen",
+            "keywordMostUsedClose": "Close",
+            "keywordMostUsedShown": "Hide Graph",
+            "keywordMostUsedHidden": "Show Graph",
             "compareStatisticsGraphBar": "This graph displays the overall statistics of the selected runs",
             "compareStatisticsFullscreen": "Fullscreen",
             "compareStatisticsClose": "Close",
@@ -3670,6 +3705,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_keyword_max_duration_graph();
                 create_keyword_most_failed_graph();
                 create_keyword_most_time_consuming_graph();
+                create_keyword_most_used_graph();
             });
             // compare filters
             compareRunIds.forEach(id => {
@@ -3804,6 +3840,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
             document.getElementById("onlyLastRunKeyword").addEventListener("change", () => {
                 create_keyword_most_time_consuming_graph();
+            });
+            document.getElementById("onlyLastRunKeywordMostUsed").addEventListener("change", () => {
+                create_keyword_most_used_graph();
             });
             // graph layout changes
             document.querySelectorAll(".shown-graph").forEach(btn => {
@@ -4132,8 +4171,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                   <div class="btn-group">
                                       <select class="form-select form-select-sm mt-1" id="${projectName}DurationPercentage">
                                         ${[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(val =>
-                                        `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
-                                        ).join('')}
+                `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
+            ).join('')}
                                       </select>
                                   </div>
                               </div>
@@ -5049,7 +5088,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 suiteMostTimeConsumingGraph.destroy();
             }
             const onlyLastRun = document.getElementById("onlyLastRunSuite").checked;
-            const data = get_most_time_consuming_data("suite", settings.graphTypes.suiteMostTimeConsumingGraphType, filteredSuites, onlyLastRun);
+            const data = get_most_time_consuming_or_most_used_data("suite", settings.graphTypes.suiteMostTimeConsumingGraphType, filteredSuites, onlyLastRun);
             const graphData = data[0]
             const callbackData = data[1];
             var config;
@@ -5060,8 +5099,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (tooltipItem) {
-                            return callbackData[tooltipItem.label];
-                        },
+                            const key = tooltipItem.label;
+                            const cb = callbackData;
+                            const runStarts = cb.run_starts[key] || [];
+                            const namesToShow = settings.show.aliases ? cb.aliases[key] : runStarts;
+                            return runStarts.map((runStart, idx) => {
+                                const info = cb.details[key][runStart];
+                                const displayName = namesToShow[idx];
+                                if (!info) return `${displayName}: (no data)`;
+                                return `${displayName}: ${format_duration(info.duration)}`;
+                            });
+                        }
                     },
                 };
                 delete config.options.onClick
@@ -5070,8 +5118,16 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
-                            return callbackData[context.raw.x[0]];
-                        },
+                            const key = context.dataset.label;
+                            const runIndex = context.raw.x[0];
+                            const runStart = callbackData.runs[runIndex];
+                            const info = callbackData.details[key][runStart];
+                            const displayName = settings.show.aliases
+                                ? callbackData.aliases[runIndex]
+                                : runStart;
+                            if (!info) return `${displayName}: (no data)`;
+                            return `${displayName}: ${format_duration(info.duration)}`;
+                        }
                     },
                 };
                 config.options.scales.x = {
@@ -5090,7 +5146,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 };
                 config.options.onClick = (event, chartElement) => {
                     if (chartElement.length) {
-                        open_log_file(event, chartElement, callbackData)
+                        open_log_file(event, chartElement, callbackData.runs)
                     }
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
@@ -5522,7 +5578,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 testMostTimeConsumingGraph.destroy();
             }
             const onlyLastRun = document.getElementById("onlyLastRunTest").checked;
-            const data = get_most_time_consuming_data("test", settings.graphTypes.testMostTimeConsumingGraphType, filteredTests, onlyLastRun);
+            const data = get_most_time_consuming_or_most_used_data("test", settings.graphTypes.testMostTimeConsumingGraphType, filteredTests, onlyLastRun);
             const graphData = data[0]
             const callbackData = data[1];
             var config;
@@ -5533,8 +5589,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (tooltipItem) {
-                            return callbackData[tooltipItem.label];
-                        },
+                            const key = tooltipItem.label;
+                            const cb = callbackData;
+                            const runStarts = cb.run_starts[key] || [];
+                            const namesToShow = settings.show.aliases ? cb.aliases[key] : runStarts;
+                            return runStarts.map((runStart, idx) => {
+                                const info = cb.details[key][runStart];
+                                const displayName = namesToShow[idx];
+                                if (!info) return `${displayName}: (no data)`;
+                                return `${displayName}: ${format_duration(info.duration)}`;
+                            });
+                        }
                     },
                 };
                 delete config.options.onClick
@@ -5543,8 +5608,16 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
-                            return callbackData[context.raw.x[0]];
-                        },
+                            const key = context.dataset.label;
+                            const runIndex = context.raw.x[0];
+                            const runStart = callbackData.runs[runIndex];
+                            const info = callbackData.details[key][runStart];
+                            const displayName = settings.show.aliases
+                                ? callbackData.aliases[runIndex]
+                                : runStart;
+                            if (!info) return `${displayName}: (no data)`;
+                            return `${displayName}: ${format_duration(info.duration)}`;
+                        }
                     },
                 };
                 config.options.scales.x = {
@@ -5563,7 +5636,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 };
                 config.options.onClick = (event, chartElement) => {
                     if (chartElement.length) {
-                        open_log_file(event, chartElement, callbackData)
+                        open_log_file(event, chartElement, callbackData.runs)
                     }
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
@@ -5806,7 +5879,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 keywordMostTimeConsumingGraph.destroy();
             }
             const onlyLastRun = document.getElementById("onlyLastRunKeyword").checked;
-            const data = get_most_time_consuming_data("keyword", settings.graphTypes.keywordMostTimeConsumingGraphType, filteredKeywords, onlyLastRun);
+            const data = get_most_time_consuming_or_most_used_data("keyword", settings.graphTypes.keywordMostTimeConsumingGraphType, filteredKeywords, onlyLastRun);
             const graphData = data[0]
             const callbackData = data[1];
             var config;
@@ -5817,8 +5890,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (tooltipItem) {
-                            return callbackData[tooltipItem.label];
-                        },
+                            const key = tooltipItem.label;
+                            const cb = callbackData;
+                            const runStarts = cb.run_starts[key] || [];
+                            const namesToShow = settings.show.aliases ? cb.aliases[key] : runStarts;
+                            return runStarts.map((runStart, idx) => {
+                                const info = cb.details[key][runStart];
+                                const displayName = namesToShow[idx];
+                                if (!info) return `${displayName}: (no data)`;
+                                return `${displayName}: ${format_duration(info.duration)}`;
+                            });
+                        }
                     },
                 };
                 delete config.options.onClick
@@ -5827,8 +5909,16 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 config.options.plugins.tooltip = {
                     callbacks: {
                         label: function (context) {
-                            return callbackData[context.raw.x[0]];
-                        },
+                            const key = context.dataset.label;
+                            const runIndex = context.raw.x[0];
+                            const runStart = callbackData.runs[runIndex];
+                            const info = callbackData.details[key][runStart];
+                            const displayName = settings.show.aliases
+                                ? callbackData.aliases[runIndex]
+                                : runStart;
+                            if (!info) return `${displayName}: (no data)`;
+                            return `${displayName}: ${format_duration(info.duration)}`;
+                        }
                     },
                 };
                 config.options.scales.x = {
@@ -5847,7 +5937,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 };
                 config.options.onClick = (event, chartElement) => {
                     if (chartElement.length) {
-                        open_log_file(event, chartElement, callbackData)
+                        open_log_file(event, chartElement, callbackData.runs)
                     }
                 };
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
@@ -5856,6 +5946,82 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             keywordMostTimeConsumingGraph = new Chart("keywordMostTimeConsumingGraph", config);
             keywordMostTimeConsumingGraph.canvas.addEventListener("click", (event) => {
                 open_log_from_label(keywordMostTimeConsumingGraph, event)
+            });
+        }
+
+        // function to create the most used keyword graph in the keyword section
+        function create_keyword_most_used_graph() {
+            if (keywordMostUsedGraph) {
+                keywordMostUsedGraph.destroy();
+            }
+            const onlyLastRun = document.getElementById("onlyLastRunKeywordMostUsed").checked;
+            const data = get_most_time_consuming_or_most_used_data("keyword", settings.graphTypes.keywordMostUsedGraphType, filteredKeywords, onlyLastRun, true);
+            const graphData = data[0]
+            const callbackData = data[1];
+            var config;
+            const limit = inFullscreen && inFullscreenGraph.includes("keywordMostUsed") ? 50 : 10;
+            if (settings.graphTypes.keywordMostUsedGraphType == "bar") {
+                config = get_graph_config("bar", graphData, `Top ${limit}`, "Keyword", "Most Used");
+                config.options.plugins.legend = { display: false };
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            const key = tooltipItem.label;
+                            const cb = callbackData;
+                            const runStarts = cb.run_starts[key] || [];
+                            const namesToShow = settings.show.aliases ? cb.aliases[key] : runStarts;
+                            return runStarts.map((runStart, idx) => {
+                                const info = cb.details[key][runStart];
+                                const displayName = namesToShow[idx];
+                                if (!info) return `${displayName}: (no data)`;
+                                return `${displayName}: ran ${info.timesRun} times`;
+                            });
+                        }
+                    },
+                };
+                delete config.options.onClick
+            } else if (settings.graphTypes.keywordMostUsedGraphType == "timeline") {
+                config = get_graph_config("timeline", graphData, `Top ${limit}`, "Run", "Keyword");
+                config.options.plugins.tooltip = {
+                    callbacks: {
+                        label: function (context) {
+                            const key = context.dataset.label;
+                            const runIndex = context.raw.x[0];
+                            const runStart = callbackData.runs[runIndex];
+                            const info = callbackData.details[key][runStart];
+                            const displayName = settings.show.aliases
+                                ? callbackData.aliases[runIndex]
+                                : runStart;
+                            if (!info) return `${displayName}: (no data)`;
+                            return `${displayName}: ran ${info.timesRun} times`;
+                        }
+                    },
+                };
+                config.options.scales.x = {
+                    ticks: {
+                        minRotation: 45,
+                        maxRotation: 45,
+                        stepSize: 1,
+                        callback: function (value, index, ticks) {
+                            return callbackData[this.getLabelForValue(value)];
+                        },
+                    },
+                    title: {
+                        display: settings.show.axisTitles,
+                        text: "Run",
+                    },
+                };
+                config.options.onClick = (event, chartElement) => {
+                    if (chartElement.length) {
+                        open_log_file(event, chartElement, callbackData.runs)
+                    }
+                };
+                if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
+            }
+            update_height("keywordMostUsedVertical", config.data.labels.length, settings.graphTypes.keywordMostUsedGraphType);
+            keywordMostUsedGraph = new Chart("keywordMostUsedGraph", config);
+            keywordMostUsedGraph.canvas.addEventListener("click", (event) => {
+                open_log_from_label(keywordMostUsedGraph, event)
             });
         }
 
@@ -6016,12 +6182,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     name = event.chart.tooltip.title[0].split(": ").pop()
                 } else if (graphId == "suiteDurationGraph") {
                     name = event.chart.tooltip.body[0].lines[0].split(": ")[0]
-                } else if (graphId == "suiteMostFailedGraph") {
+                } else if (graphId == "suiteMostFailedGraph" || graphId == "suiteMostTimeConsumingGraph") {
                     name = chartElement[0].element.$context.raw.y
                 }
                 id = suites.find(suite => suite.name === name && suite.run_start === runStart)
             } else { // it contains a test
-                if (graphId == "testStatisticsGraph" || graphId == "testMostFlakyGraph" || graphId == "testRecentMostFlakyGraph" || graphId == "testMostFailedGraph" || graphId == "testRecentMostFailedGraph" || graphId == "compareTestsGraph") {
+                if (graphId == "testStatisticsGraph" || graphId == "testMostFlakyGraph" || graphId == "testRecentMostFlakyGraph" || graphId == "testMostFailedGraph" || graphId == "testRecentMostFailedGraph" || graphId == "testMostTimeConsumingGraph" || graphId == "compareTestsGraph") {
                     name = chartElement[0].element.$context.raw.y
                 } else if (graphId == "testDurationGraph") {
                     if (graphType == "bar") {
@@ -7433,9 +7599,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
         }
 
-        // function to prepare the most time consuming data for suites/tests/keywords
-        function get_most_time_consuming_data(dataType, graphType, filteredData, onlyLastRun) {
+        // function to prepare the most time consuming or most used data for suites/tests/keywords
+        function get_most_time_consuming_or_most_used_data(dataType, graphType, filteredData, onlyLastRun, mostUsed = false) {
             const useLibraryNames = settings?.switch?.useLibraryNames === true;
+
             function getTestKey(value, dataType) {
                 if (dataType === "keyword" && useLibraryNames && value.owner) {
                     return `${value.owner}.${value.name}`;
@@ -7451,44 +7618,85 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const limit = inFullscreen && inFullscreenGraph.includes("MostTimeConsuming") ? 50 : 10;
             if (onlyLastRun) {
                 const latestRunStart = filteredData[filteredData.length - 1].run_start;
-                filteredData = filteredData.filter(item => item.run_start === latestRunStart);
+                filteredData = filteredData.filter(
+                    (item) => item.run_start === latestRunStart
+                );
+
                 filteredData.sort((a, b) => {
-                    const durA = dataType === "keyword" ? Number(a.total_time_s) : Number(a.elapsed_s);
-                    const durB = dataType === "keyword" ? Number(b.total_time_s) : Number(b.elapsed_s);
-                    return durB - durA;
+                    if (mostUsed) {
+                        return Number(b.times_run) - Number(a.times_run);
+                    } else {
+                        const durA =
+                            dataType === "keyword"
+                                ? Number(a.total_time_s)
+                                : Number(a.elapsed_s);
+                        const durB =
+                            dataType === "keyword"
+                                ? Number(b.total_time_s)
+                                : Number(b.elapsed_s);
+                        return durB - durA;
+                    }
                 });
                 filteredData = filteredData.slice(0, limit);
             }
 
-            const slowestPerRun = new Map();
+            const perRunMap = new Map();
             for (const value of filteredData) {
-                const duration =
-                    dataType === "keyword"
-                        ? Number(value.total_time_s)
-                        : Number(value.elapsed_s);
-
                 const run = value.run_start;
                 const key = getTestKey(value, dataType);
-
+                const metric = mostUsed
+                    ? Number(value.times_run)
+                    : dataType === "keyword"
+                        ? Number(value.total_time_s)
+                        : Number(value.elapsed_s);
                 if (!onlyLastRun) {
-                    if (!slowestPerRun.has(run)) {
-                        slowestPerRun.set(run, { key, duration, alias: value.run_alias, runStart: run });
+                    if (!perRunMap.has(run)) {
+                        perRunMap.set(run, {
+                            key,
+                            metric,
+                            alias: value.run_alias,
+                            runStart: run,
+                            timesRun: Number(value.times_run)
+                        });
                     } else {
-                        const existing = slowestPerRun.get(run);
-                        if (duration > existing.duration) {
-                            slowestPerRun.set(run, { key, duration, alias: value.run_alias, runStart: run });
+                        const existing = perRunMap.get(run);
+                        if (metric > existing.metric) {
+                            perRunMap.set(run, {
+                                key,
+                                metric,
+                                alias: value.run_alias,
+                                runStart: run,
+                                timesRun: Number(value.times_run)
+                            });
                         }
                     }
                 } else {
-                    slowestPerRun.set(`${key}_${run}`, { key, duration, alias: value.run_alias, runStart: run });
+                    perRunMap.set(`${key}_${run}`, {
+                        key,
+                        metric,
+                        alias: value.run_alias,
+                        runStart: run,
+                        timesRun: Number(value.times_run)
+                    });
                 }
             }
 
             const hitCount = new Map();
             const aliases = new Map();
-            const slowestPerRunEntries = Array.from(slowestPerRun.values());
+            const perRunEntries = Array.from(perRunMap.values());
+            const details = new Map();
+            for (const entry of perRunEntries) {
+                if (!details.has(entry.key)) {
+                    details.set(entry.key, {});
+                }
 
-            for (const entry of slowestPerRunEntries) {
+                details.get(entry.key)[entry.runStart] = {
+                    duration: entry.metric,
+                    timesRun: entry.timesRun || entry.metricRunCount || 0
+                };
+            }
+
+            for (const entry of perRunEntries) {
                 if (!hitCount.has(entry.key)) {
                     hitCount.set(entry.key, []);
                     aliases.set(entry.key, []);
@@ -7499,21 +7707,31 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
             let sortedData;
             if (onlyLastRun) {
-                sortedData = [...slowestPerRunEntries]
-                    .sort((a, b) => b.duration - a.duration)
+                sortedData = [...perRunEntries]
+                    .sort((a, b) => b.metric - a.metric)
                     .slice(0, limit)
-                    .map(entry => [entry.key, [entry.runStart]]);
+                    .map((entry) => [entry.key, [entry.runStart]]);
             } else {
-                sortedData = [...hitCount.entries()].sort((a, b) => b[1].length - a[1].length);
+                sortedData = [...hitCount.entries()].sort(
+                    (a, b) => b[1].length - a[1].length
+                );
             }
 
             if (graphType === "bar") {
                 const labels = [];
                 const datasets = [];
-                for (const [key, durations] of sortedData) {
+                for (const [key, values] of sortedData) {
                     labels.push(key);
-                    datasets.push(durations.length);
+                    if (mostUsed && onlyLastRun) {
+                        const match = filteredData.find(
+                            (f) => getTestKey(f, dataType) === key
+                        );
+                        datasets.push(match ? Number(match.times_run) : 0);
+                    } else {
+                        datasets.push(values.length);
+                    }
                 }
+
                 const graphData = {
                     labels,
                     datasets: [
@@ -7525,22 +7743,27 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 };
                 return [
                     graphData,
-                    settings.show.aliases
-                        ? Object.fromEntries(sortedData.map(([name]) => [name, aliases.get(name)]))
-                        : Object.fromEntries(
-                            sortedData.map(([name]) => [
-                                name,
-                                slowestPerRunEntries
-                                    .filter(entry => entry.key === name)
-                                    .map(entry => entry.runStart),
-                            ])
-                        ),
+                    {
+                        aliases: Object.fromEntries(sortedData.map(([name]) => [
+                            name,
+                            settings.show.aliases
+                                ? perRunEntries.filter((e) => e.key === name).map((e) => e.alias)
+                                : perRunEntries.filter((e) => e.key === name).map((e) => e.runStart)
+                        ])),
+                        run_starts: Object.fromEntries(sortedData.map(([name]) => [
+                            name,
+                            perRunEntries.filter((e) => e.key === name).map((e) => e.runStart)
+                        ])),
+                        details: Object.fromEntries(details)
+                    }
                 ];
             }
             if (graphType === "timeline") {
                 const labels = [];
-                const runStarts = Array.from(slowestPerRun.values())
-                    .sort((a, b) => new Date(a.runStart) - new Date(b.runStart));
+                const runStarts = Array.from(perRunMap.values()).sort(
+                    (a, b) => new Date(a.runStart) - new Date(b.runStart)
+                );
+
                 const sortedKeys = sortedData.map(([key]) => key);
                 const limitKeys = sortedKeys.slice(0, limit);
                 labels.push(...limitKeys);
@@ -7556,13 +7779,15 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     if (!onlyLastRun) runAxis++;
                 }
                 datasets = convert_timeline_data(datasets);
-                const runStartOutput = settings.show.aliases
-                    ? runStarts.map(r => r.alias)
-                    : runStarts.map(r => r.runStart);
-
+                const runStartOutput = runStarts.map((r) => r.runStart);
+                const aliasOutput = runStarts.map((r) => r.alias);
                 return [
                     { labels, datasets },
-                    runStartOutput,
+                    {
+                        runs: runStartOutput,
+                        aliases: aliasOutput,
+                        details: Object.fromEntries(details)
+                    }
                 ];
             }
         }
@@ -7806,10 +8031,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             ["menuOverview", "menuDashboard", "menuCompare", "menuTables"].forEach(id => {
                 document.getElementById(id).classList.toggle("active", id === item);
                 document.getElementById("customizeLayout").hidden = item == "menuOverview";
+                document.getElementById("projectOverview").hidden = item !== "menuOverview";
             });
-            if (item === "menuOverview" && !areGroupedProjectsPrepared) prepare_projects_grouped_data();
-            document.getElementById("projectOverview").hidden = item !== "menuOverview";
-            setup_data_and_graphs(true);
+            setup_data_and_graphs(true, item === "menuOverview" && !areGroupedProjectsPrepared);
         }
 
         function update_donut_charts(scopeElement) {
@@ -7905,43 +8129,42 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     bestMatchId = id;
                 }
             });
-
             return bestMatchId;
         }
 
         // function to update all graph data, function is called when updating filters and when the page loads
-        function setup_data_and_graphs(menuUpdate = false) {
-            // lastScrollY = window.scrollY;
-            const mostVisibleSectionId = get_most_visible_section();
-            setup_spinner(false);
-
-            // Let the spinner render before starting heavy setup
+        function setup_data_and_graphs(menuUpdate = false, prepareOverviewProjectData = false) {
+            setup_spinner(false); // show spinner immediately
             requestAnimationFrame(() => {
-                setup_filtered_data_and_filters();
-                setup_section_order();
-                setup_graph_order();
-                setup_information_popups();
-                setup_graph_view_buttons();
-                setup_theme();
-
-                // let the page sections and events be setup before removing the spinner
-                // then load the graphs
                 requestAnimationFrame(() => {
-                    setup_spinner(true);
-                    setup_section_menu_buttons(); // sections have to be visible to update highlighting correctly
-                    setup_dashboard_graphs();
+                    if (prepareOverviewProjectData) prepare_projects_grouped_data();
+                    setup_filtered_data_and_filters();
+                    setup_section_order();
+                    setup_graph_order();
+                    setup_information_popups();
+                    setup_graph_view_buttons();
+                    setup_theme();
 
-                    if (!menuUpdate) {
-                        setTimeout(() => {
-                            if (mostVisibleSectionId) {
-                                const offsetTop = document.getElementById(mostVisibleSectionId).getBoundingClientRect().top;
-                                window.scrollTo({
-                                    top: offsetTop - 67, // navbar offset
-                                    behavior: "auto"
-                                });
-                            }
-                        }, 100);
-                    }
+                    // let the page sections and events be setup before removing the spinner
+                    // then load the graphs
+                    requestAnimationFrame(() => {
+                        setup_spinner(true);
+                        setup_section_menu_buttons(); // sections have to be visible to update highlighting correctly
+                        setup_dashboard_graphs();
+
+                        if (!menuUpdate) {
+                            setTimeout(() => {
+                                const mostVisibleSectionId = get_most_visible_section();
+                                if (mostVisibleSectionId) {
+                                    const offsetTop = document.getElementById(mostVisibleSectionId).getBoundingClientRect().top;
+                                    window.scrollTo({
+                                        top: offsetTop - 67,
+                                        behavior: "auto"
+                                    });
+                                }
+                            }, 100);
+                        }
+                    });
                 });
             });
         }
@@ -8015,6 +8238,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 create_keyword_max_duration_graph();
                 create_keyword_most_failed_graph();
                 create_keyword_most_time_consuming_graph();
+                create_keyword_most_used_graph();
             } else if (settings.menu.compare) {
                 create_compare_statistics_graph();
                 create_compare_suite_duration_graph();
@@ -8299,7 +8523,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             if (storedSettings) {
                 try {
                     const parsedSettings = JSON.parse(storedSettings);
-                    settings = merge_deep(parsedSettings, settings);
+                    settings = merge_deep(settings, parsedSettings);
                     localStorage.setItem('settings', JSON.stringify(settings));
                 } catch (e) {
                     add_alert(`Failed to parse settings from localStorage: ${e}`, "danger");
@@ -8336,9 +8560,14 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function merge_deep(target, source) {
             for (const key in source) {
                 if (source.hasOwnProperty(key)) {
-                    if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key])) {
-                        if (!target[key]) target[key] = {};
-                        merge_deep(target[key], source[key]);
+                    if (typeof source[key] === 'object' && source[key] !== null) {
+                        if (Array.isArray(source[key])) {
+                            if (!Array.isArray(target[key])) target[key] = [];
+                            target[key] = Array.from(new Set([...target[key], ...source[key]]));
+                        } else {
+                            if (!target[key]) target[key] = {};
+                            merge_deep(target[key], source[key]);
+                        }
                     } else {
                         target[key] = source[key];
                     }
