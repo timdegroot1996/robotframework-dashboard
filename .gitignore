@@ -12,3 +12,8 @@ index.txt
 .pabotsuitenames
 *.db
 *.vscode
+
+# docs entries
+node_modules
+docs/.vitepress/dist
+docs/.vitepress/cache
