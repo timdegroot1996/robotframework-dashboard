@@ -12,7 +12,7 @@ export default defineConfig({
   head: [
     ["link", { rel: "icon", type: "image/svg+xml", href: "images/robotframework.svg" }],
   ],
-  base: '/repo/',
+  base: '/robotframework-dashboard/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
