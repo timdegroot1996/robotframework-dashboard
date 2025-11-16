@@ -56,7 +56,7 @@ For detailed usage instructions, advanced examples, and full documentation, visi
 - [Dashboard Server & Listener](./docs/server.md)
 - [Contributing](./contributing.md)
 
-## License
+## 📋 License
 This project is licensed under the MIT License.
 
 > **Note:** This project is not officially affiliated with or endorsed by Robot Framework.
