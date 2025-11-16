@@ -5,7 +5,6 @@ const python_svg = readFileSync("docs/images/python.svg", "utf-8");
 const slack_svg = readFileSync("docs/images/slack.svg", "utf-8");
 const robotframework_svg = readFileSync("docs/images/robotframework.svg", "utf-8");
 
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "RobotDashboard",
   description: "Robot Framework Dashboard and Result Database command line tool",
@@ -14,12 +13,10 @@ export default defineConfig({
   ],
   base: '/robotframework-dashboard/',
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Examples', link: '/markdown-examples' }
     ],
-
     sidebar: [
       {
         text: 'Examples',
@@ -29,12 +26,10 @@ export default defineConfig({
         ]
       }
     ],
-
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/timdegroot1996/robotframework-dashboard' },
-      { icon: { svg: python_svg }, link: 'https://pypi.org/project/robotframework-dashboard/' },
-      { icon: { svg: slack_svg }, link: 'https://robotframework.slack.com/' },
-      { icon: { svg: robotframework_svg }, link: 'https://robotframework.org/' }
+      { icon: 'github', link: 'https://github.com/timdegroot1996/robotframework-dashboard', ariaLabel: 'GitHub Repository' },
+      { icon: { svg: python_svg }, link: 'https://pypi.org/project/robotframework-dashboard/', ariaLabel: 'Python Package on PyPI' },
+      { icon: { svg: slack_svg }, link: 'https://robotframework.slack.com/', ariaLabel: 'Robot Framework Slack' },
     ]
   }
 })

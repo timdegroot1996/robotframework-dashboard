@@ -1,0 +1,90 @@
+/* =========================
+   Complete Dark Mode Overrides
+   ========================= */
+
+/* Base dark theme variables */
+html.dark {
+  --vp-c-bg: #0f172a; /* page background */
+  --vp-c-content-bg: rgba(30, 41, 59, 0.9); /* cards, panels, sidebar content */
+  --vp-c-border: rgba(255, 255, 255, 0.05); /* border color */
+  --vp-c-primary: #5f67ee; /* accent color */
+  --vp-c-text: #e0e0e0; /* main text */
+  --vp-c-muted: #a0aec0; /* muted text */
+  --vp-c-link: #5f67ee; /* link color */
+  --vp-c-link-hover: #7c82ff; /* link hover */
+  --vp-c-code-bg: rgba(30, 41, 59, 0.9); /* inline code background */
+}
+
+/* Page and layout backgrounds */
+html.dark .vp-page,
+html.dark .vp-doc {
+  background-color: var(--vp-c-bg);
+}
+
+/* Sidebar background and links */
+html.dark .VPSidebar, html.dark .container {
+  background-color: var(--vp-c-bg);
+}
+
+html.dark .vp-sidebar a {
+  color: var(--vp-c-text);
+}
+
+html.dark .vp-sidebar a.router-link-exact-active {
+  color: var(--vp-c-primary);
+}
+
+/* Cards, tables, and code blocks */
+html.dark .vp-card,
+html.dark .vp-table,
+html.dark .vp-code,
+html.dark pre {
+  background-color: var(--vp-c-content-bg) !important;
+  border-color: var(--vp-c-border);
+  color: var(--vp-c-text);
+}
+
+/* Inline code */
+html.dark code {
+  background-color: var(--vp-c-code-bg);
+  color: var(--vp-c-text);
+}
+
+/* Links */
+html.dark a {
+  color: var(--vp-c-link);
+}
+
+html.dark a:hover {
+  color: var(--vp-c-link-hover);
+}
+
+/* Headings */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6 {
+  color: var(--vp-c-text);
+}
+
+/* Blockquotes */
+html.dark blockquote {
+  background-color: rgba(30, 41, 59, 0.5);
+  border-left-color: var(--vp-c-primary);
+  color: var(--vp-c-text);
+}
+
+/* Lists */
+html.dark ul li,
+html.dark ol li {
+  color: var(--vp-c-text);
+}
+
+/* Tables */
+html.dark table th,
+html.dark table td {
+  border-color: var(--vp-c-border);
+  color: var(--vp-c-text);
+}
