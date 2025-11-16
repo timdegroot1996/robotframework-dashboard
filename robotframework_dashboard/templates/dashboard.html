@@ -1211,10 +1211,12 @@
         }
 
         // prepare input data
-        const runs = decode_and_decompress("placeholder_runs").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-        const suites = decode_and_decompress("placeholder_suites").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-        const tests = decode_and_decompress("placeholder_tests").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
-        const keywords = decode_and_decompress("placeholder_keywords").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
+        const runs = decode_and_decompress("placeholder_runs");
+        const suites = decode_and_decompress("placeholder_suites");
+        const tests = decode_and_decompress("placeholder_tests");
+        const keywords = decode_and_decompress("placeholder_keywords");
+
+        console.log(runs, suites, tests, keywords)
 
         // populated by prepare_projects_grouped_data()
         const projects_by_tag = {};
@@ -1222,11 +1224,13 @@
         let areGroupedProjectsPrepared = false;
 
         function decode_and_decompress(base64Str) {
+            if (base64Str.includes("placeholder")) {
+                return []
+            }
             const compressedData = Uint8Array.from(atob(base64Str), c => c.charCodeAt(0));
             const decompressedData = pako.inflate(compressedData, { to: 'string' });
-            return JSON.parse(decompressedData);
+            return JSON.parse(decompressedData).sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         }
-
         var message_config = '"placeholder_message_config"'
         var json_config = "placeholder_json_config"
         var admin_json_config = "placeholder_admin_json_config"

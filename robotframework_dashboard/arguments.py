@@ -117,6 +117,12 @@ class ArgumentParser:
             default=None,
         )
         parser.add_argument(
+            "-S",
+            "--slim",
+            help="`boolean` Generates a slim/minified version of the dashboard with reduced assets.",
+            default=False,
+        )
+        parser.add_argument(
             "-u",
             "--uselogs",
             help="`boolean` Whether to enable clicking on graphs will open the logs. Providing this argument makes runs/suites/tests/keywords clickable.\
@@ -317,5 +323,6 @@ class ArgumentParser:
             "message_config": message_config,
             "quantity": quantity,
             "use_logs": use_logs,
+            "slim": arguments.slim,
         }
         return dotdict(provided_args)

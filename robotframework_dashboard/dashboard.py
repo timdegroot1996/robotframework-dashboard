@@ -21,6 +21,7 @@ class DashboardGenerator:
         message_config: list,
         quantity: int,
         use_logs: bool,
+        slim: bool,
     ):
         """Function that generates the dashboard"""
         # load template
@@ -36,13 +37,14 @@ class DashboardGenerator:
             dashboard_data = dashboard_data.replace(
                 '"placeholder_suites"', f'"{self.compress_and_encode(data["suites"])}"'
             )
-            dashboard_data = dashboard_data.replace(
-                '"placeholder_tests"', f'"{self.compress_and_encode(data["tests"])}"'
-            )
-            dashboard_data = dashboard_data.replace(
-                '"placeholder_keywords"',
-                f'"{self.compress_and_encode(data["keywords"])}"',
-            )
+            if not slim:
+                dashboard_data = dashboard_data.replace(
+                    '"placeholder_tests"', f'"{self.compress_and_encode(data["tests"])}"'
+                )
+                dashboard_data = dashboard_data.replace(
+                    '"placeholder_keywords"',
+                    f'"{self.compress_and_encode(data["keywords"])}"',
+                )
             dashboard_data = dashboard_data.replace(
                 '"placeholder_amount"', str(quantity)
             )
