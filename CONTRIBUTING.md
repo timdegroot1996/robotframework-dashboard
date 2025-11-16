@@ -25,3 +25,17 @@ There are some acceptance tests (located in ./atest) that can be run like in a p
 .\tests.bat
 ```
 Or they can be run through the command line or robotcode plugin.
+
+
+## Docs
+
+The docs are hosted through the main branch. Only this branch will actually deploy the change you make. To locally test the documentation you can do the following:
+1. Install node.js
+2. Run below to install the vitepress plugin
+```
+npm add -D vitepress@next
+```
+3. Run below to start the dev server on which you can see the docs. This will provide live updates.
+```
+npm run docs:dev
+```

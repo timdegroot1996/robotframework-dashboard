@@ -12,6 +12,9 @@ export default defineConfig({
   ],
   base: '/robotframework-dashboard/',
   themeConfig: {
+    search: {
+      provider: 'local'
+    },
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Examples', link: '/markdown-examples' }

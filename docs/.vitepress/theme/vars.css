@@ -38,10 +38,18 @@ html.dark .vp-sidebar a.router-link-exact-active {
 html.dark .vp-card,
 html.dark .vp-table,
 html.dark .vp-code,
-html.dark pre {
+html.dark pre,
+html.dark .DocSearch {
   background-color: var(--vp-c-content-bg) !important;
-  border-color: var(--vp-c-border);
   color: var(--vp-c-text);
+}
+
+html.dark .DocSearch-Button {
+  border: 1px solid var(--docsearch-subtle-color);
+}
+
+html.dark .DocSearch-Button:hover {
+  border-color: var(--vp-c-brand-1) !important;
 }
 
 /* Inline code */
