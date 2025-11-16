@@ -42,9 +42,8 @@ pip install robotframework-dashboard
 
 …and many more advanced features to help you visualize, analyze, and manage your Robot Framework test results with ease!
 
-
 ## 📖 Read the Docs
-For detailed usage instructions, advanced examples, and full documentation, visit the docs: [Documentation Homepage](https://timdegroot1996.github.io/robotframework-dashboard/)
+For detailed usage instructions, advanced examples, and full documentation, visit the docs: [Homepage](https://timdegroot1996.github.io/robotframework-dashboard/)
 
 ## 🔗 Quick Links
 - [Installation](./docs/installation.md)
@@ -54,7 +53,10 @@ For detailed usage instructions, advanced examples, and full documentation, visi
 - [Advanced Usage & Examples](./docs/usage.md)
 - [Custom Database Class](./docs/custom-database.md)
 - [Dashboard Server & Listener](./docs/server.md)
-- [Contributing](./contributing.md)
+
+## 🛠️ Contributing
+
+Contributions are welcome! If you encounter any issues, have suggestions for improvements, or would like to add new features, feel free to open an issue or submit a pull request. Additional information can be found here in [Contributing](./contributing.md)
 
 ## 📋 License
 This project is licensed under the MIT License.

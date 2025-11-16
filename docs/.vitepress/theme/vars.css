@@ -96,3 +96,8 @@ html.dark table td {
   border-color: var(--vp-c-border);
   color: var(--vp-c-text);
 }
+
+.VPHero .text {
+  font-size: 2.5rem;       /* default is usually ~3rem, adjust smaller */
+  line-height: 1.2;      /* optional: tighten spacing */
+}

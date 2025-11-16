@@ -17,14 +17,15 @@ export default defineConfig({
     },
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' }
+      { text: 'Documentation', link: '/markdown-examples' },
+      { text: 'Example Dashboard', link: '/example/robot_dashboard.html'}
     ],
     sidebar: [
       {
         text: 'Examples',
         items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
+          { text: 'Get Started', link: '/markdown-examples' },
+          { text: 'Star on GitHub', link: 'https://github.com/timdegroot1996/robotframework-dashboard' }
         ]
       }
     ],
