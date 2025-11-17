@@ -4199,6 +4199,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 .map(val =>
                     `<option value="${val}">${val}</option>`
                 ).join('');
+            const percentageSelectHtml = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(val =>
+                `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
+            ).join('');
+
             // added here instead of adding to informationMap, since the IDs are dynamically created
             const projectInformation = `This section shows the runs associated with the project '${projectName}':
 - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle. Version filters do not affect this.
@@ -4225,9 +4229,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                   </div>
                                   <div class="btn-group">
                                       <select class="form-select form-select-sm mt-1" id="${projectName}DurationPercentage">
-                                        ${[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(val =>
-                `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
-            ).join('')}
+                                          ${percentageSelectHtml}
                                       </select>
                                   </div>
                               </div>
