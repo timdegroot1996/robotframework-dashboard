@@ -1,11 +1,14 @@
 ---
-# https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
 hero:
   name: "RobotDashboard"
   text: "Robot Framework Dashboard and Result Database command line tool"
   tagline: Visualize and analyze Robot Framework test results across multiple runs with an interactive dashboard
+  image:
+    light: /robotdashboard-light.svg
+    dark: /robotdashboard-dark.svg
+    alt: "RobotDashboard Logo"
   actions:
     - theme: brand
       text: Get Started
@@ -16,7 +19,7 @@ hero:
     - theme: alt
       text: Star on GitHub
       link: https://github.com/timdegroot1996/robotframework-dashboard
-
+  
 features:
   - title: 1. Getting Started
     details: Quick setup instructions to install Robot Framework and RobotDashboard.
@@ -45,36 +48,3 @@ features:
   - title: 9. Listener Integration
     details: Automatically update the dashboard with every executed test run.
     link: /9-listener-integration.md
-
----
-
-<!-- 1. Getting Started
-Overview (what the tool does, main benefits)
-Example Dashboard Screenshot
-Quick link to fully working dashboard
-2. Installation
-Install Robot Framework
-Install Robot Framework Dashboard
-Basic setup instructions
-3. Command Line Interface (CLI)
-Database initialization
-Adding/removing runs
-Generating dashboard
-Options summary (detailed options can link to CLI reference page)
-4. Dashboard Features
-Pages (Overview, Dashboard, Compare)
-Settings (light/dark mode, graph options, filters)
-Graphs & metrics (Runs, Suites, Tests, Keywords)
-5. Advanced Usage / Examples
-Advanced command-line examples
-Aliases, custom config JSON
-Message config usage
-6. Custom Database Class
-How to implement custom database class
-Required methods
-Examples (abstractdb, sqlite3, mysql)
-7. Dashboard Server
-Starting the server
-Endpoints (/dashboard, /get-outputs, etc.)
-Example scripts
-Listener integration -->
