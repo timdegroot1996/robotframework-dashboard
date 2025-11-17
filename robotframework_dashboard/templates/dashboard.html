@@ -4187,19 +4187,20 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const projectOverviewData = document.getElementById("projectOverviewData");
             const projectVersions = new Set(
                 [
-                    "All", 
                     ...projectRuns
                     .map(run => run.project_version)
                     .filter(ver => ver != null)
                     .sort()
                 ]
             );
-            const versionSelectHtml = [...projectVersions]
+            const versionAmount = versionAmountperProject[projectName];
+            let versionSelectHtml = `<option value="All" "selected">All (${versionAmount})</option>`;
+            versionSelectHtml += [...projectVersions]
                 .map(val =>
-                    `<option value="${val}" ${val === "All" ? "selected" : ""}>${val}</option>`
+                    `<option value="${val}">${val}</option>`
                 ).join('');
             // added here instead of adding to informationMap, since the IDs are dynamically created
-          const projectInformation = `This section shows the runs associated with the project '${projectName}':
+            const projectInformation = `This section shows the runs associated with the project '${projectName}':
 - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle. Version filters do not affect this.
 - Passed runs represent the percentage of runs with zero failures. Version filters do not affect this.
 - The version dropdown menu allows filtering the runs of the current project by the desired version.
