@@ -4205,10 +4205,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
             // added here instead of adding to informationMap, since the IDs are dynamically created
             const projectInformation = `This section shows the runs associated with the project '${projectName}':
-- Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle. Version filters do not affect this.
-- Passed runs represent the percentage of runs with zero failures. Version filters do not affect this.
-- The version dropdown menu allows filtering the runs of the current project by the desired version.
-- If 'All' is selected, the runs can be filtered to only those whose version contains the text entered in the 'Version Filter...' input.`;
+                                        - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle. Version filters do not affect this.
+                                        - Passed runs represent the percentage of runs with zero failures. Version filters do not affect this.
+                                        - The version dropdown menu allows filtering the runs of the current project by the desired version.
+                                        - If 'All' is selected, the runs can be filtered to only those whose version contains the text entered in the 'Version Filter...' input.`;
             const projectCard = `
             <div class="card mb-3" id="${projectName}Card">
                   <div class="card-header">
