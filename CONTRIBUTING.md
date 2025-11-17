@@ -31,9 +31,9 @@ Or they can be run through the command line or robotcode plugin.
 
 The docs are hosted through the main branch. Only this branch will actually deploy the change you make. To locally test the documentation you can do the following:
 1. Install node.js
-2. Run below to install the vitepress plugin
+2. Run below to install the vitepress plugin and all other dependencies
 ```
-npm add -D vitepress@next
+npm install
 ```
 3. Run below to start the dev server on which you can see the docs. This will provide live updates.
 ```
