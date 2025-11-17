@@ -18,7 +18,7 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Documentation', link: '/1-getting-started.md' },
-      { text: 'Example Dashboard', link: '/example/robot_dashboard.html' }
+      { text: 'Example Dashboard', link: '/example/robot_dashboard.html', target: '_self'}
     ],
     sidebar: [
       {
