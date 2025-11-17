@@ -4610,6 +4610,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 input.checked = false;
                 if (input.id == "All") input.checked = true;
             }
+            const versionElements = document.getElementById("projectVersionList").getElementsByTagName("input");
+            for (const input of versionElements) {
+                input.checked = false;
+                if (input.value == "All") input.checked = true;
+            }
             return;
         }
 
