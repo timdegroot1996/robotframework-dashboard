@@ -1213,6 +1213,7 @@
         const projects_by_tag = {};
         const projects_by_name = {};
         let areGroupedProjectsPrepared = false;
+        const versionAmountperProject = {};
 
         function decode_and_decompress(base64Str) {
             const compressedData = Uint8Array.from(atob(base64Str), c => c.charCodeAt(0));
@@ -4621,6 +4622,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             return;
         }
 
+        function prepare_project_overview() {
+            prepare_projects_grouped_data();
+            prepare_version_amount_for_projects({...projects_by_name, ...projects_by_tag});
+            create_project_overview();
+        }
+
         function prepare_projects_grouped_data() {
             for (const run of runs) {
                 const tags = run.tags.split(",");
@@ -4637,7 +4644,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 projects_by_name[run.name].push(run);
             }
             areGroupedProjectsPrepared = true;
-            create_project_overview();
+        }
+
+        function prepare_version_amount_for_projects(projects) {
+            for (const [project, runs] of Object.entries(projects)) {
+                const uniqueVersionsInProject = new Set(
+                    runs
+                    .map(run => run.project_version)
+                    .filter(project_version => project_version != null) //remove null and undefined
+                );
+                versionAmountperProject[project] = uniqueVersionsInProject.size;
+            }
         }
 
         //////////////////////////////////////
@@ -8282,7 +8299,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             setup_spinner(false); // show spinner immediately
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    if (prepareOverviewProjectData) prepare_projects_grouped_data();
+                    if (prepareOverviewProjectData) prepare_project_overview();
                     setup_filtered_data_and_filters();
                     setup_section_order();
                     setup_graph_order();
