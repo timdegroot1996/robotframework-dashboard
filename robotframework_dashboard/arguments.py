@@ -300,11 +300,11 @@ class ArgumentParser:
             ),
         )
         parser.add_argument(
-            "--project-version",
+            "--projectversion",
             help=(
                 "Provide optional project version for run"
                 " | Example:"
-                "   robotdashboard -o output.xml --project-version=1.1"
+                "   robotdashboard -o output.xml --projectversion=1.1"
             ),
             dest="project_version",
             type=str,
