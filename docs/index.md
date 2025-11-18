@@ -17,34 +17,46 @@ hero:
       text: View on PyPi
       link: https://pypi.org/project/robotframework-dashboard/
     - theme: alt
-      text: Star on GitHub
+      text: ⭐ Star on GitHub
       link: https://github.com/timdegroot1996/robotframework-dashboard
+    - theme: alt
+      text: Contributions
+      link: /contributions.md
   
 features:
-  - title: 1. Getting Started
-    details: Quick setup instructions to install Robot Framework and RobotDashboard.
-    link: /1-getting-started.md
-  - title: 2. Installation & Version Info
-    details: Install the dashboard via pip or check requirements and version information.
-    link: /2-installation-version-info.md
-  - title: 3. Basic Command Line Interface (CLI)
-    details: Run, update, and manage your test results directly from the CLI.
-    link: /3-basic-command-line-interface-cli.md
-  - title: 4. Advanced CLI / Examples
-    details: Examples of custom commands, tags, filters, and dashboard generation.
-    link: /4-advanced-cli-examples.md
-  - title: 5. Dashboard Features
-    details: Visualize test results with interactive graphs, tables, and comparisons.
-    link: /5-dashboard-features.md
-  - title: 6. Dashboard Settings
-    details: Configure dashboard preferences, user settings, and display options.
-    link: /6-dashboard-settings.md
-  - title: 7. Dashboard Server
-    details: Host the dashboard for multi-user access and automated updates.
-    link: /7-dashboard-server.md
-  - title: 8. Custom Database Class
-    details: Extend or replace the database backend to suit your storage needs.
-    link: /8-custom-database-class.md
-  - title: 9. Listener Integration
-    details: Automatically update the dashboard with every executed test run.
-    link: /9-listener-integration.md
+  - title: 🚀 Getting Started
+    details: Quick setup instructions to install Robot Framework and RobotFramework Dashboard, and verify it is working.
+    link: /getting-started.md
+  - title: 📦 Installation & Version Info
+    details: Install the dashboard via pip, check Python and Robot Framework requirements, and view version information.
+    link: /installation-version-info.md
+  - title: 💻 Basic Command Line Interface (CLI)
+    details: Manage your test results database, add output XML files, remove runs, and generate dashboards directly from the command line.
+    link: /basic-command-line-interface-cli.md
+  - title: ⚡ Advanced CLI & Examples
+    details: Advanced usage examples including combined commands, tagging strategies, aliases, batch imports, message configuration, and performance tips.
+    link: /advanced-cli-examples.md
+  - title: 🗂️ Tabs / Pages
+    details: Explore the dashboard's interactive pages including Overview, Dashboard, Compare, and detailed suite/test/keyword views.
+    link: /tabs-pages.md
+  - title: 📊 Graphs & Tables
+    details: View detailed statistics for runs, suites, tests, and keywords using charts, tables, and summary visualizations.
+    link: /graphs-tables.md
+  - title: 🔍 Filtering
+    details: Apply filters to analyze trends in your test data and highlight specific tags, amounts or datetime ranges.
+    link: /filtering.md
+  - title: 🎨 Customization
+    details: Customize dashboard sections, graph layouts, and visualizations to suit your workflow.
+    link: /customization.md
+  - title: ⚙️ Settings
+    details: Configure dashboard preferences including themes, default views, graph options, and save your settings for consistent team-wide use.
+    link: /settings.md
+  - title: 🖥️ Dashboard Server
+    details: Host the dashboard for multi-user access, programmatic updates, and remote server integration.
+    link: /dashboard-server.md
+  - title: 🗄️ Custom Database Class
+    details: Extend or replace the default database backend to suit your storage needs, including SQLite, MySQL, or custom implementations.
+    link: /custom-database-class.md
+  - title: 🔔 Listener Integration
+    details: Use a listener to automatically push test results to the dashboard for every executed run, integrating seamlessly into CI/CD pipelines.
+    link: /listener-integration.md

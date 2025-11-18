@@ -93,4 +93,3 @@ After adding your first outputs:
 - Use additional CLI options to manage the database or influence your dashboard
 - Refer to the [Command Line Interface](/3-basic-command-line-interface-cli.md) page for detailed usage examples  
 
-This completes your **Getting Started** guide for RobotFramework Dashboard.

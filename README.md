@@ -43,20 +43,44 @@ pip install robotframework-dashboard
 …and many more advanced features to help you visualize, analyze, and manage your Robot Framework test results with ease!
 
 ## 📖 Read the Docs
-For detailed usage instructions, advanced examples, and full documentation, visit the docs: [Homepage](https://timdegroot1996.github.io/robotframework-dashboard/)
+For detailed usage instructions, advanced examples, and full documentation, visit the [docs](https://timdegroot1996.github.io/robotframework-dashboard/)!
 
-## 🔗 Quick Links
-- [Installation](./docs/installation.md)
-- [Version Compatibility](./docs/compatibility.md)
-- [Command Line Interface](./docs/cli.md)
-- [Dashboard Features](./docs/dashboard.md)
-- [Advanced Usage & Examples](./docs/usage.md)
-- [Custom Database Class](./docs/custom-database.md)
-- [Dashboard Server & Listener](./docs/server.md)
+### Quick Links
+- 🚀 **Getting Started** – Quick setup instructions to install Robot Framework and RobotFramework Dashboard, and verify it is working.  
+  [Learn more](https://timdegroot1996.github.io/robotframework-dashboard/getting-started.html)
+- 📦 **Installation & Version Info** – Install the dashboard via pip, check Python and Robot Framework requirements, and view version information.  
+  [Learn more](https://timdegroot1996.github.io/robotframework-dashboard/installation-version-info.html)
+- 💻 **Basic Command Line Interface (CLI)** – Manage your test results database, add output XML files, remove runs, and generate dashboards directly from the command line.  
+  [Learn more](https://timdegroot1996.github.io/robotframework-dashboard/basic-command-line-interface-cli.html)
+- ⚡ **Advanced CLI & Examples** – Advanced usage examples including combined commands, tagging strategies, aliases, batch imports, message configuration, and performance tips.  
+  [Learn more](https://timdegroot1996.github.io/robotframework-dashboard/advanced-cli-examples.html)
+- 🗂️ **Tabs / Pages** – Explore the dashboard's interactive pages including Overview, Dashboard, Compare, and detailed suite/test/keyword views.  
+  [Learn more](https://timdegroot1996.github.io/robotframework-dashboard/tabs-pages.html)
+- 📊 **Graphs & Tables** – View and filter detailed statistics for runs, suites, tests, and keywords using charts, tables, and summary visualizations.  
+  [Learn more](https://timdegroot1996.github.io/robotframework-dashboard/graphs-tables.html)
+- 🔍 **Filtering** – Apply filters to analyze trends in your test data and highlight specific tags, amounts or datetime ranges.  
+  [Learn more](https://timdegroot1996.github.io/robotframework-dashboard/filtering.html)
+- 🎨 **Customization** – Customize dashboard sections, graph layouts, and visualizations to suit your workflow.  
+  [Learn more](https://timdegroot1996.github.io/robotframework-dashboard/customization.html)
+- ⚙️ **Settings** – Configure dashboard preferences including themes, default views, graph options, and save your settings for consistent team-wide use.  
+  [Learn more](https://timdegroot1996.github.io/robotframework-dashboard/settings.html)  
+- 🖥️ **Dashboard Server** – Host the dashboard for multi-user access, programmatic updates, and remote server integration.  
+  [Learn more](https://timdegroot1996.github.io/robotframework-dashboard/dashboard-server.html)
+- 🗄️ **Custom Database Class** – Extend or replace the default database backend to suit your storage needs, including SQLite, MySQL, or custom implementations.  
+  [Learn more](https://timdegroot1996.github.io/robotframework-dashboard/custom-database-class.html)
+- 🔔 **Listener Integration** – Use a listener to automatically push test results to the dashboard for every executed run, integrating seamlessly into CI/CD pipelines.  
+  [Learn more](https://timdegroot1996.github.io/robotframework-dashboard/listener-integration.html)
 
-## 🛠️ Contributing
+## 🛠️ Contributions
 
 Contributions are welcome! If you encounter any issues, have suggestions for improvements, or would like to add new features, feel free to open an issue or submit a pull request. Additional information can be found here in [Contributing](./contributing.md)
+
+Special thanks to the following companies for sponsoring in one form or another!
+- [TestCoders](https://testcoders.nl/)
+- ?
+
+And many thanks to the following people for contributing to the project with feedback, features or just general guidance!
+- TBD
 
 ## 📋 License
 This project is licensed under the MIT License.

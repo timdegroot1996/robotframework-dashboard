@@ -50,5 +50,3 @@ robot --version
 robotdashboard --help
 ```
 This ensures both Robot Framework and the dashboard are installed correctly and are in your PATH.
-
-This completes the installation and version setup for Robot Framework Dashboard.

@@ -2,7 +2,7 @@
 outline: deep
 ---
 
-# Command Line Interface (CLI)
+# Basic Command Line Interface (CLI)
 
 The **RobotFramework Dashboard CLI** allows you to manage test result databases, process output XML files, and generate interactive dashboards directly from the command line.  
 
@@ -32,7 +32,8 @@ robotdashboard -o output1.xml -o output2.xml -o output3.xml
 ```
 - Optional: Each `-o` or `--outputpath` option specifies a single output XML file.  
 - The tool will read the files, upload the results to the database, and optionally generate a dashboard HTML file.  
-- Tags can be added to group or categorize runs. See [Advanced CLI / Examples](/4-advanced-cli-examples) for more information on Tags!
+- Tags can be added to group or categorize runs. 
+- See [Advanced CLI & Examples](/advanced-cli-examples#advanced-tagging-strategies) for more information on Tags!
 
 ### Add all output XMLs from a folder (including subfolders)
 ```bash
@@ -41,7 +42,8 @@ robotdashboard -f ../../some_folder/sub_folder/logs
 robotdashboard -f C:/nightly_runs:tag1:tag2:tag3  
 ```
 - Optional: `-f` or `--outputfolderpath` specifies a folder; the CLI will process all `*output*.xml` files it finds.  
-- Tags can be added to group or categorize runs. See [Advanced CLI / Examples](/4-advanced-cli-examples) for more information on Tags!
+- Tags can be added to group or categorize runs. 
+- See [Advanced CLI & Examples](/advanced-cli-examples#advanced-tagging-strategies) for more information on Tags!
 
 ## Controlling Database and Dashboard Behavior
 
@@ -52,7 +54,7 @@ robotdashboard -d result_data/robot_result_database.db
 - Optional: `-d` or `--databasepath` specifies a custom database file to store results.
 - Default: database path is the **current folder** with **robot_results.db**.
 
-### Custom dashboard HTML file
+### Custom dashboard HTML file name
 ```bash
 robotdashboard -n results/result_robot_dashboard.html  
 ```
@@ -91,12 +93,13 @@ robotdashboard -t "My Cool Title"
 - Optional: `-t` or `--dashboardtitle` sets a custom HTML title for the dashboard.
 - Default: title is **Robot Framework Dashboard - YYYY-MM-DD HH:MM:SS**.
 
-### Use a JSON dashboard configuration file
+### Use a JSON dashboard configuration file to set default settings
 ```bash
 robotdashboard -j ./path/to/config.json  
 robotdashboard --jsonconfig default_settings.json  
 ```
 - Optional: `-j` or `--jsonconfig` sets a JSON dashboard configuration file used on first load.
+- See [Advanced CLI & Examples](/advanced-cli-examples#message-config-details) for more information on customized loading behaviour!
 
 ### Control number of runs displayed by default
 ```bash
@@ -115,7 +118,7 @@ robotdashboard --uselogs True
 ```
 - Optional: `-u` or `--uselogs` enables clickable graphs in the dashboard that open corresponding log.html files.  
 - Requirements: log files must be in the same folder as their respective output.xml files, with `output` replaced by `log` and `.xml` replaced by `.html`.
-- More details regarding this feature can be found in [Advanced CLI / Examples](/4-advanced-cli-examples).
+- See [Advanced CLI & Examples](/advanced-cli-examples#advanced-uselogs-information) for more details regarding the log linking!
 
 ### Add messages config for bundling test messages
 ```bash
@@ -123,6 +126,7 @@ robotdashboard -m message_config.txt
 robotdashboard --messageconfig path/to/message_config.txt  
 ```
 - Optional: `-m` or `--messageconfig` specifies a file containing custom messages with placeholders like `${x}` or `${y}`.
+- See [Advanced CLI & Examples](/advanced-cli-examples#message-config-details) for more details regarding the message config!
 
 ### Use a custom database class
 ```bash
@@ -130,7 +134,7 @@ robotdashboard -c ./path/to/custom_class.py
 robotdashboard --databaseclass mysql.py  
 ```
 - Optional: `-c` or `--databaseclass` specifies a custom database class implementation.  
-- By default, Sqlite3 is used. See [Custom Database Class](/8-custom-database-class.md) for more information.
+- By default, Sqlite3 is used. See [Custom Database Class](/custom-database-class.md) for more information.
 
 ## Starting the Dashboard Server
 ```bash
@@ -138,7 +142,7 @@ robotdashboard --server default
 robotdashboard -s 0.0.0.0:8543  
 ```
 - Optional: `-s` or `--server` starts the dashboard web server.  
-- See [Dashboard Server](/7-dashboard-server.md) for advanced usage.  
+- See [Dashboard Server](/dashboard-server.md) for advanced usage.  
 - Docker users can bind to a specific host and port as shown.
 
 ### Deprecated options
@@ -147,4 +151,4 @@ robotdashboard -s 0.0.0.0:8543
 - Aliases: `-a True` (moved to dashboard Settings)  
 
 
-This concludes the **RobotFramework Dashboard CLI reference and examples**. For more advanced usage, see [Advanced CLI / Examples](/4-advanced-cli-examples), the [Dashboard Server](/7-dashboard-server.md) and [Custom Database Class](/8-custom-database-class.md) pages.
+For more advanced usage, see [Advanced CLI & Examples](/advanced-cli-examples), the [Dashboard Server](/dashboard-server.md) and [Custom Database Class](/custom-database-class.md) pages.
