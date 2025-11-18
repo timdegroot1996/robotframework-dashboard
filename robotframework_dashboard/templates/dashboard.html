@@ -4788,12 +4788,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     <h5 class="card-title mb-0 fw-semibold">${projectName}</h5>
                 `;
             let smallVersionHtml = `
-                <div id="${projectName}RunCardVersion${idPostfix}" data-projectVersion="${projectVersion}">
-                    Version: ${normalizedVersion}
+                <div id="${projectName}RunCardVersion${idPostfix}" data-projectVersion="${projectVersion}" class="d-flex gap-1">
+                    <div class="text-muted">Version:</div>
+                    <div>${normalizedVersion}</div>
                 </div>`;
             // for project bars
             const projectHasVersions = Boolean(versionAmountperProject[projectName]);
-            const versionClass = projectVersion ? "fw-semibold" : "text-muted";
+            const versionClass = "fw-semibold";
             let versionTitle = '';
             if (projectHasVersions) { // version title
                 versionTitle = `
