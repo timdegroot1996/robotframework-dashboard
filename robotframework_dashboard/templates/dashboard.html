@@ -4211,11 +4211,15 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     .reverse()
             );
             const versionAmount = projectVersions.size;
-            let versionSelectHtml = `<option value="All" "selected">All (${versionAmount} versions)</option>`;
+            const versionPluralPostfix = versionAmount != 1 ? 's' : '';
+            let versionSelectHtml = `<option value="All" "selected">All (${versionAmount} version${versionPluralPostfix})</option>`;
             versionSelectHtml += [...projectVersions]
-                .map(val =>
-                    `<option value="${val}">${val} (${versionsByProject[projectName][val]} runs)</option>`
-                ).join('');
+                .map(version => {
+                    const runAmount = versionsByProject[projectName][version];
+                    const runPluralPostfix = runAmount != 1 ? 's' : '';
+                    return `<option value="${version}">${version} (${runAmount} run${runPluralPostfix})</option>`;
+                })
+                .join('');
             const percentageSelectHtml = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(val =>
                 `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
             ).join('');
