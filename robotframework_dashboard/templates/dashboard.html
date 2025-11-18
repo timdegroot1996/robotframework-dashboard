@@ -4208,12 +4208,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const projectVersions = new Set(
                     Object.keys(versionsByProject[projectName])
                     .sort()
+                    .reverse()
             );
             const versionAmount = projectVersions.size;
-            let versionSelectHtml = `<option value="All" "selected">All (${versionAmount})</option>`;
+            let versionSelectHtml = `<option value="All" "selected">All (${versionAmount} versions)</option>`;
             versionSelectHtml += [...projectVersions]
                 .map(val =>
-                    `<option value="${val}">${val} (${versionsByProject[projectName][val]})</option>`
+                    `<option value="${val}">${val} (${versionsByProject[projectName][val]} runs)</option>`
                 ).join('');
             const percentageSelectHtml = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(val =>
                 `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
