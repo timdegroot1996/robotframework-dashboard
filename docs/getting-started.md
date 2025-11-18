@@ -22,7 +22,7 @@ To install RobotFramework Dashboard, run:
 ```bash
 pip install robotframework-dashboard
 ```
-For full installation details, dependencies, and version requirements, see [Installation & Version Info](/2-installation-version-info.md).
+For full installation details, dependencies, and version requirements, see [Installation & Version Info](/installation-version-info.md).
 
 ## Basic Command Line Usage
 
@@ -91,5 +91,5 @@ After adding your first outputs:
 
 - Explore the generated `robot_dashboard_*.html` file in your browser  
 - Use additional CLI options to manage the database or influence your dashboard
-- Refer to the [Command Line Interface](/3-basic-command-line-interface-cli.md) page for detailed usage examples  
+- Refer to the [Command Line Interface](/basic-command-line-interface-cli.md) page for detailed usage examples  
 
