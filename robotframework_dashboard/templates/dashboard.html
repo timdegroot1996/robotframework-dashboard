@@ -4186,14 +4186,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate) {
             const projectOverviewData = document.getElementById("projectOverviewData");
             const projectVersions = new Set(
-                [
-                    ...projectRuns
-                    .map(run => run.project_version)
-                    .filter(ver => ver != null)
+                    Object.keys(versionsByProject[projectName])
                     .sort()
-                ]
             );
-            const versionAmount = Object.keys(versionsByProject[projectName]).length;
+            const versionAmount = projectVersions.size;
             let versionSelectHtml = `<option value="All" "selected">All (${versionAmount})</option>`;
             versionSelectHtml += [...projectVersions]
                 .map(val =>
