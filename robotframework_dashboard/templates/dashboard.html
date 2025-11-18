@@ -1209,11 +1209,11 @@
         const tests = decode_and_decompress("placeholder_tests").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         const keywords = decode_and_decompress("placeholder_keywords").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
 
-        // populated by prepare_projects_grouped_data()
+        // populated by prepare_project_overview()
         const projects_by_tag = {};
         const projects_by_name = {};
         let areGroupedProjectsPrepared = false;
-        const versionAmountperProject = {};
+        const versionsByProject = {};
 
         function decode_and_decompress(base64Str) {
             const compressedData = Uint8Array.from(atob(base64Str), c => c.charCodeAt(0));
@@ -4193,17 +4193,16 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     .sort()
                 ]
             );
-            const versionAmount = versionAmountperProject[projectName];
+            const versionAmount = Object.keys(versionsByProject[projectName]).length;
             let versionSelectHtml = `<option value="All" "selected">All (${versionAmount})</option>`;
             versionSelectHtml += [...projectVersions]
                 .map(val =>
-                    `<option value="${val}">${val}</option>`
+                    `<option value="${val}">${val} (${versionsByProject[projectName][val]})</option>`
                 ).join('');
             const percentageSelectHtml = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(val =>
                 `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
             ).join('');
-
-            // added here instead of adding to informationMap, since the IDs are dynamically created
+            // added here instead of adding to informationMap, since the dynamic IDs don't work with the map
             const projectInformation = `This section shows the runs associated with the project '${projectName}':
                                         - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle. Version filters do not affect this.
                                         - Passed runs represent the percentage of runs with zero failures. Version filters do not affect this.
@@ -4632,7 +4631,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         function prepare_project_overview() {
             prepare_projects_grouped_data();
-            prepare_version_amount_for_projects({...projects_by_name, ...projects_by_tag});
+            prepare_projects_version_counts_map({...projects_by_name, ...projects_by_tag});
             create_project_overview();
         }
 
@@ -4654,14 +4653,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             areGroupedProjectsPrepared = true;
         }
 
-        function prepare_version_amount_for_projects(projects) {
+        // versionByProject = {projectName:{version:amount}}
+        function prepare_projects_version_counts_map(projects) {
+            const projectVersionCounts = {};
             for (const [project, runs] of Object.entries(projects)) {
-                const uniqueVersionsInProject = new Set(
-                    runs
-                    .map(run => run.project_version)
-                    .filter(project_version => project_version != null) //remove null and undefined
-                );
-                versionAmountperProject[project] = uniqueVersionsInProject.size;
+            const versionCounts = {};
+                for (const run of runs) {
+                    if (run.project_version != null) {
+                        versionCounts[run.project_version] = (versionCounts[run.project_version] || 0) + 1;
+                    }
+                }
+                versionsByProject[project] = versionCounts;
             }
         }
 
@@ -4793,7 +4795,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     <div>${normalizedVersion}</div>
                 </div>`;
             // for project bars
-            const projectHasVersions = Boolean(versionAmountperProject[projectName]);
+            const projectHasVersions = Object.keys(versionsByProject[projectName]).length > 0;
             const versionClass = "fw-semibold";
             let versionTitle = '';
             if (projectHasVersions) { // version title
