@@ -4282,7 +4282,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 if (event.key !== 'Enter') return;
                 const searchBarInput = projectVersionFilterSearch.value.toLowerCase();
                 const filteredProjectRuns = (searchBarInput !== "")
-                    ? projectRuns.filter(run => run.project_version.toLowerCase().includes(searchBarInput))
+                    ? projectRuns.filter(run => run.project_version?.toLowerCase().includes(searchBarInput))
                     : projectRuns;
                 create_project_cards_container(projectName, filteredProjectRuns);
             });
