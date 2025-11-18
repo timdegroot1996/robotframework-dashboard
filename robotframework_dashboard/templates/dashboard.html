@@ -815,7 +815,8 @@
                                 </select>
                                 <div class="overSelect"></div>
                             </div>
-                            <div id="checkboxes" class="filterCheckBoxes">
+                            <div id="runTagCheckBoxes" class="filterCheckBoxes">
+                                <input id="runTagCheckBoxesFilter" class="form-control form-control-sm" type="text" placeholder="Filter...">
                                 <ul class="list-group" id="runTag"></ul>
                             </div>
                         </div>
@@ -829,7 +830,8 @@
                                 </select>
                                 <div class="overSelect"></div>
                             </div>
-                            <div id="projectVersionCheckboxes" class="filterCheckBoxes">
+                            <div id="projectVersionCheckBoxes" class="filterCheckBoxes">
+                                <input id="projectVersionCheckBoxesFilter" class="form-control form-control-sm" type="text" placeholder="Filter...">
                                 <ul class="list-group" id="projectVersionList">
                                 </ul>
                             </div>
@@ -3351,6 +3353,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             // eventlistener to reset the filters
             document.getElementById("resetFilters").addEventListener("click", function () {
                 clear_project_filter();
+                clear_version_filter();
                 document.getElementById("amount").value = filteredAmountDefault;
                 document.getElementById("metadata").value = "All";
                 setup_lowest_highest_dates(runs);
@@ -3362,11 +3365,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
             // eventlistener for the runTags
             function show_checkboxes() {
-                const checkboxes = document.getElementById("checkboxes");
+                const checkboxes = document.getElementById("runTagCheckBoxes");
                 showingRunTags = !showingRunTags;
                 checkboxes.style.display = showingRunTags ? "block" : "none";
             }
-            const checkboxesElement = document.getElementById("checkboxes");
+            const checkboxesElement = document.getElementById("runTagCheckBoxes");
             const runTagsSelectElement = document.getElementById("selectRunTags");
             // eventlistener for click events on body to hide the run checkboxes when clicking outside of the select/checkboxes elements
             document.getElementById("selectRunTags").addEventListener("click", show_checkboxes);
@@ -3375,8 +3378,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     show_checkboxes()
                 }
             });
-            // eventlistener for the project Version Filter
-            const projectVersionCheckboxes = document.getElementById("projectVersionCheckboxes");
+            // eventlistener for the project version filter popup
+            const projectVersionCheckboxes = document.getElementById("projectVersionCheckBoxes");
             const projectVersionSelectElement = document.getElementById("selectProjectVersion");
             function toggle_project_version_filter_dialogue() {
                 showingProjectVersionDialogue = !showingProjectVersionDialogue;
@@ -4001,7 +4004,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             `;
             const listItemTemplate = (value) => `
                 <li class="list-group-item list-group-item-action d-flex small">
-                    <input class="form-check-input me-1" type="checkbox" value="" id="${value}">
+                    <input class="form-check-input me-1" type="checkbox" value="${value}" id="${value}">
                     <label class="form-check-label ms-2" for="${value}">${value}</label>
                 </li>
             `;
@@ -4016,6 +4019,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             } else {
                 document.getElementById("runTagFilter").hidden = true
             }
+            setup_filter_checkbox_subfilter("runTagCheckBoxes");
         }
 
         // create projectVersions checkboxes in filters
@@ -4041,6 +4045,22 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                      .join('');
             projectVersionList.innerHTML = projectVersionListHtml;
             document.getElementById(`${prefix}All`).checked = true;
+            setup_filter_checkbox_subfilter("projectVersionCheckBoxes");
+        }
+
+        function setup_filter_checkbox_subfilter(parentElementId, eventType = "input") {
+            const container = document.getElementById(parentElementId);
+            const searchBar = container.querySelector("input.form-control");
+            const checkBoxRows = container.querySelectorAll("li.list-group-item-action");
+            searchBar.addEventListener(eventType, () => {
+                const filterText = searchBar.value.toLowerCase();
+                checkBoxRows.forEach(row => {
+                    const checkbox = row.querySelector("input.form-check-input");
+                    const rowValue = checkbox.value.toLowerCase();
+                    const shouldHide = !rowValue.includes(filterText);
+                    row.classList.toggle("d-none", shouldHide);
+                });
+            });
         }
 
         // function to update the available runs in the selects
@@ -4355,6 +4375,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 const createdRunCard = document.getElementById(`${projectName}Card${runIndex}`);
                 createdRunCard.addEventListener("click", () => {
                     clear_project_filter();
+                    clear_version_filter();
                     set_filter_show_current_project(projectName);
                     update_menu("menuDashboard");
                 });
@@ -4603,17 +4624,23 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         function clear_project_filter() {
             document.getElementById("runs").value = "All";
+            document.getElementById("runTagCheckBoxesFilter").value = "";
             const tagElements = document.getElementById("runTag").getElementsByTagName("input");
             for (const input of tagElements) {
                 input.checked = false;
+                input.parentElement.classList.remove("d-none"); //show filtered rows
                 if (input.id == "All") input.checked = true;
             }
+        }
+
+        function clear_version_filter() {
+            document.getElementById("projectVersionCheckBoxesFilter").value = "";
             const versionElements = document.getElementById("projectVersionList").getElementsByTagName("input");
             for (const input of versionElements) {
                 input.checked = false;
+                input.parentElement.classList.remove("d-none"); //show filtered rows
                 if (input.value == "All") input.checked = true;
             }
-            return;
         }
 
         function set_filter_show_current_project(projectName) {
@@ -4622,7 +4649,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             } else {
                 selectedRunSetting = projectName;
             }
-            return;
         }
 
         function prepare_project_overview() {
@@ -4758,6 +4784,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     // attach click listener
                     cardEl.addEventListener("click", () => {
                         clear_project_filter();
+                        clear_version_filter();
                         set_filter_show_current_project(key);
                         update_menu("menuDashboard");
                     });
