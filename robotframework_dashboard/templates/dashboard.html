@@ -305,6 +305,16 @@
             border-radius: 1rem
         }
 
+        .project-run-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            column-gap: 24px;
+        }
+
+        .project-run-cards-container .overview-card {
+            flex: 0 1 calc((100% - 48px) / 3); /* 3 per row, subtract total gap */
+        }
+
         .grid-stack-item-content {
             border-radius: 8px;
             display: flex;
@@ -4284,8 +4294,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                       </div>
                   </div>
                   <div class="card-body" id="${projectName}Body" hidden="">
-                      <div id="${projectName}RunCardsContainer">
-                      </div>
+                      <div id="${projectName}RunCardsContainer" class="project-run-cards-container"></div>
                   </div>
               </div>
             `;
@@ -4336,21 +4345,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             container.innerHTML = '';
             const projectRunsToShow = projectRuns.slice().reverse();
             // create cards and charts for each run card
-            let cardCounter = 0;
-            let currentRow;
             projectRunsToShow.forEach((run, idx) => {
                 const runNumber = projectRunsToShow.length - idx;
                 const createdRunCardId = create_project_run_card(run, projectName, idx, runNumber, passRate, percent, durations)
                 const createdRunCard = document.getElementById(createdRunCardId);
-                // group 3 cards into row
-                if (cardCounter % CARDS_PER_ROW === 0) {
-                    currentRow = document.createElement('div');
-                    currentRow.className = 'row';
-                    container.appendChild(currentRow);
-                }
-                currentRow.appendChild(createdRunCard);
+                container.appendChild(createdRunCard);
                 create_overview_run_donut(run, idx, projectName);
-                cardCounter++;
             });
         }
 
