@@ -4309,23 +4309,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const projectVersionFilterSearch = document.getElementById(`${projectName}VersionFilterSearch`);
             projectVersionFilter.addEventListener('change', () => {
                 const selectedVersion = projectVersionFilter.value;
-                let filteredProjectRuns;
-                if (selectedVersion !== "All") {
-                    filteredProjectRuns = projectRuns.filter(run => run.project_version === selectedVersion)
-                    projectVersionFilterSearch.hidden = true;
-                } else {
-                    filteredProjectRuns = projectRuns;
-                    projectVersionFilterSearch.hidden = false;
-                }
-                create_project_cards_container(projectName, filteredProjectRuns);
+                projectVersionFilterSearch.hidden = selectedVersion !== "All"; //hide version filter input
+                update_project_version_select_run_card_visibility(`${projectName}RunCardsContainer`, selectedVersion);
             });
             // version filter input
             const handle_version_filter_input = () => {
                 const searchBarInput = projectVersionFilterSearch.value.toLowerCase();
-                const filteredProjectRuns = (searchBarInput !== "")
-                    ? projectRuns.filter(run => run.project_version?.toLowerCase().includes(searchBarInput))
-                    : projectRuns;
-                create_project_cards_container(projectName, filteredProjectRuns);
+                update_project_version_filter_run_card_visibility(`${projectName}RunCardsContainer`, searchBarInput);
             }
             const maxDelay = 500;
             const delayScaledByRunAmount = Math.min(10 * totalRunsAmount, maxDelay); // 10ms per run, 500ms max
@@ -4465,6 +4455,37 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             };
             toggleVisibility(tagged, settings.switch.runTags);
             toggleVisibility(untagged, settings.switch.runName);
+        }
+
+        function update_project_version_select_run_card_visibility(cardsContainerId, selectedVersion) {
+            const cardsContainerElement = document.getElementById(cardsContainerId);
+            const scrollOffsetBefore = cardsContainerElement.getBoundingClientRect().top;
+            const runCardElements = cardsContainerElement.querySelectorAll("[data-project-version]");
+            runCardElements.forEach( runCardElement => {
+                runCardElement.style.display =
+                    selectedVersion === "All" || runCardElement.dataset.projectVersion === selectedVersion
+                    ? ""
+                    : "none";
+            })
+            const scrollOffsetAfter = cardsContainerElement.getBoundingClientRect().top;
+            window.scrollBy(0, scrollOffsetAfter - scrollOffsetBefore);
+        }
+
+        function update_project_version_filter_run_card_visibility(cardsContainerId, inputString) {
+            const cardsContainerElement = document.getElementById(cardsContainerId);
+            const scrollOffsetBefore = cardsContainerElement.getBoundingClientRect().top;
+            const runCardElementNodeList = cardsContainerElement.querySelectorAll("div.overview-card");
+            const runCardElements = Array.from(runCardElementNodeList);
+            const cardsToShow = runCardElements
+                .filter(runCardElement => runCardElement.dataset.projectVersion.toLowerCase().includes(inputString));
+            runCardElements.forEach( runCardElement => {
+                runCardElement.style.display = "none";
+            });
+            cardsToShow.forEach( card => {
+                card.style.display = "";
+            })
+            const scrollOffsetAfter = cardsContainerElement.getBoundingClientRect().top;
+            window.scrollBy(0, scrollOffsetAfter - scrollOffsetBefore);
         }
 
         // prevents regeneration of run cards, just changes class for duration highlight
@@ -4858,7 +4879,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 smallVersionHtml = '';
             }
             return `
-            <div class="col-4 overview-card" id="${projectName}Card${idPostfix}">
+            <div class="col-4 overview-card" id="${projectName}Card${idPostfix}" data-project-version="${projectVersion}">
                 <div class="card border-3 border-${status}">
                     <div class="card-body">
                         <div class="row">
