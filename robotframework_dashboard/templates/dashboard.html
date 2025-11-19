@@ -4317,8 +4317,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 const searchBarInput = projectVersionFilterSearch.value.toLowerCase();
                 update_project_version_filter_run_card_visibility(`${projectName}RunCardsContainer`, searchBarInput);
             }
-            const maxDelay = 500;
-            const delayScaledByRunAmount = Math.min(10 * totalRunsAmount, maxDelay); // 10ms per run, 500ms max
+            const maxDelay = 50;
+            const delayScaledByRunAmount = Math.min(totalRunsAmount/10, maxDelay); // ~0.1ms per run or 50ms max
             projectVersionFilterSearch.addEventListener('input', debounce(handle_version_filter_input, delayScaledByRunAmount));
         }
 
