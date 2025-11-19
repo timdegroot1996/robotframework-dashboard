@@ -4295,8 +4295,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 const newPercent = parseInt(projectPercentageSelector.value, 10);
                 update_duration_comparison_for_project(projectName, projectRuns, newPercent);
             });
+            // version selector
             const projectVersionFilter = document.getElementById(`${projectName}VersionFilter`);
-            const projectVersionFilterSearch = document.getElementById(`${projectName}VersionFilterSearch`); 
+            const projectVersionFilterSearch = document.getElementById(`${projectName}VersionFilterSearch`);
             projectVersionFilter.addEventListener('change', () => {
                 const selectedVersion = projectVersionFilter.value;
                 let filteredProjectRuns;
@@ -4309,14 +4310,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 }
                 create_project_cards_container(projectName, filteredProjectRuns);
             });
-            projectVersionFilterSearch.addEventListener('keydown', (event) => {
-                if (event.key !== 'Enter') return;
+            // version filter input
+            const handle_version_filter_input = () => {
                 const searchBarInput = projectVersionFilterSearch.value.toLowerCase();
                 const filteredProjectRuns = (searchBarInput !== "")
                     ? projectRuns.filter(run => run.project_version?.toLowerCase().includes(searchBarInput))
                     : projectRuns;
                 create_project_cards_container(projectName, filteredProjectRuns);
-            });
+            }
+            const maxDelay = 500;
+            const delayScaledByRunAmount = Math.min(10 * totalRunsAmount, maxDelay); // 10ms per run, 500ms max
+            projectVersionFilterSearch.addEventListener('input', debounce(handle_version_filter_input, delayScaledByRunAmount));
         }
 
         // holds rows, each containing 3 run cards, for overview project section
