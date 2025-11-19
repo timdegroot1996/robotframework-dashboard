@@ -3331,6 +3331,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 duration > average * (1 + t) ? 'text-failed' : '';
         }
 
+        // delay in milliseconds
+        function debounce(func, delay) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
+        }
+
         //////////////////////////////
         // CUSTOMIZE VIEW FUNCTIONS //
         //////////////////////////////
