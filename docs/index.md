@@ -60,3 +60,21 @@ features:
   - title: 🔔 Listener Integration
     details: Use a listener to automatically push test results to the dashboard for every executed run, integrating seamlessly into CI/CD pipelines.
     link: /listener-integration.md
+
+
+
+---
+
+## Setup and use the RobotDashboard command line interface (CLI)
+
+<video controls autoplay loop muted playsinline style="max-width:100%; height: auto; border-radius:8px;">
+  <source src="/setup.mp4" type="video/mp4">
+  Your browser does not support the video element.
+</video>
+
+## View the dashboard and it's features
+
+<video controls autoplay loop muted playsinline style="max-width:100%; height: auto; border-radius:8px;">
+  <source src="/dashboard.mp4" type="video/mp4">
+  Your browser does not support the video element.
+</video>
