@@ -1,336 +1,71 @@
-# Robot Framework Dashboard
-[![PyPI - Version](https://img.shields.io/pypi/v/robotframework-dashboard.svg)](https://pypi.org/project/robotframework-dashboard)
-[![PyPI Downloads - Total](https://static.pepy.tech/badge/robotframework-dashboard)](https://pepy.tech/projects/robotframework-dashboard)
-[![PyPI Downloads - Monthly](https://static.pepy.tech/badge/robotframework-dashboard/month)](https://pepy.tech/projects/robotframework-dashboard)
-[![License](https://img.shields.io/pypi/l/robotframework-dashboard?cacheSeconds=600)](LICENSE)
+# 📊 Robot Framework Dashboard
 
 Before reading anything else here is a [Fully Functioning Dashboard](https://timdegroot1996.github.io/robotframework-dashboard/example/robot_dashboard.html) you can checkout right away!
 
-### Table of Contents
-- [Overview](#Overview)
-- [Installation](#Installation)
-- [Command Line Features](#Command-Line-Features)
-- [Dashboard HTML Features](#Dashboard-HTML-Features)
-- [Version Details](#Version-Details)
-- [Usage](#Usage)
-- [Examples](#Examples)
-- [Custom Database Class](#Custom-Database-Class)
-- [Dashboard Server](#Dashboard-Server)
-- [Listener](#Listener)
-- [Contributing](#Contributing)
-- [License](#License)
-
-<a name="Overview"></a>
-## Overview
+## 🎯 Overview
 
 Robot Framework Dashboard is a tool for [Robot Framework](https://robotframework.org/) that provides insight of your test results across multiple runs. The tool makes use of the built in Robot Framework [Result Visitor API](https://robot-framework.readthedocs.io/en/stable/_modules/robot/result/visitor.html) to analyse output.xml files, stores these in a simple sqlite3 database and finally creates a HTML dashboard that makes use of [Chart.js](https://www.chartjs.org/docs/latest/) and [Datatables](https://datatables.net/) for the graphs and tables and makes use of [Bootstrap](https://getbootstrap.com/) for styling. Additionally [GridStack](https://gridstackjs.com/) is used for the interactive layout grids.
 
-If you need help, have suggestions or want to discuss anything, feel free to contact through the [Slack Channel](https://robotframework.slack.com/archives/C07SPR6N9AB) or through a [GitHub issue](https://github.com/timdegroot1996/robotframework-dashboard/issues)
-
 ![Example Dashboard Screenshot](./img/dashboard.png)
 
-<a name="Installation"></a>
-## Installation
-
-1. Install Robot Framework 6.0 or higher (if not already installed):
-2. Install Robot Framework Dashboard
-
-```sh
+## 🚀 Getting Started
+Install Robot Framework 6.0 or higher (if not already installed):
+```
+pip install robotframework
+```
+Install Robot Framework Dashboard:
+```
 pip install robotframework-dashboard
 ```
-<a name="Command-Line-Features"></a>
-## Command Line Features
 
-When running the tool the following steps will be executed
+## 🔍 Key Features
 
-1. Database preparation creates robot_results.db or specified database if it does not yet exist and connects to it
-2. Optionally reads test execution result from 1 or more output XML file(s) and uploads to the database
-3. Optionally lists all runs currently available in the database, ordered by the time they were entered
-4. Optionally removes run(s) specified by run_date or index of being added
-5. Optionally generates a dashboard HTML file that can be used to look at the stored results
+- 🏃 **Multi-run Analysis** - Compare and track results across multiple Robot Framework test runs.  
+- 🌐 **Interactive HTML Dashboard** - Fully interactive dashboard using Chart.js, Datatables, and GridStack.  
+- 🗄️ **SQLite Database Storage** - Lightweight database for easy querying and persistent storage.  
+- 📄 **Dashboard Pages** - Overview, Dashboard, and Compare pages for multi-level insights.  
+- 🎛️ **Customizable Layouts** - Drag-and-drop sections with adjustable size and order.  
+- 📊 **Graph Customization** - Toggle legends, axis titles, labels, and control animations.  
+- 🔎 **Global Filters** - Filter runs by name, tags, date, metadata, or quantity.  
+- ⚖️ **Comparison Mode** - Compare up to 4 runs side by side with visual statistics.  
+- 🔗 **Automatic Log Linking** - Open Robot Framework logs directly from the dashboard.  
+- 🛠️ **Custom Database Classes** - Extend or replace the database processor for custom backends.  
+- 🖥️ **Server Mode** - Host your dashboard for multi-user access and automatic updates.  
+- 🎧 **Listener Integration** - Automatically updates dashboard after every test run.  
+- 📝 **Message Config Support** - Group similar test failures using regex-based patterns.  
+- ⚙️ **Configurable Defaults** - Preload dashboard settings via JSON for consistent appearance.  
 
-<a name="Dashboard-HTML-Features"></a>
-## Dashboard HTML Features
-The Dashboard will provide information across your runs across all levels.
+…and many more advanced features to help you visualize, analyze, and manage your Robot Framework test results with ease!
 
-### Pages
-- Overview page in which you can check out the last run of every project
-- Dashboard page in which you can see everything that is listed below 
-- Compare page in which you can compare up to 4 runs directly
+## 📖 Read the Docs
+For detailed usage instructions, advanced examples, and full documentation, visit the [official robotdashboard docs](https://timdegroot1996.github.io/robotframework-dashboard/)!
 
-### Available Settings
-- Fully customizable order and size of sections and graphs
-- Light/Dark mode
-- Show/hide graph legends
-- Show/hide graph axis titles
-- Show/hide graph labels (run_starts or aliases)
-- Show/hide graph alias labels (instead of default run_starts)
-- Show/hide milliseconds in run_start labels
-- Show/hide graph animations
-- Set the duration of the graph animations
-- Set maximum graphs per row to 1, 2, 3 or 4
+### Quick Links
+- 🚀 [**Getting Started**](https://timdegroot1996.github.io/robotframework-dashboard/getting-started.html) - Quick setup instructions to install Robot Framework and RobotFramework Dashboard, and verify it is working.
+- 📦 [**Installation & Version Info**](https://timdegroot1996.github.io/robotframework-dashboard/installation-version-info.html) - Install the dashboard via pip, check Python and Robot Framework requirements, and view version information.
+- 💻 [**Basic Command Line Interface (CLI)**](https://timdegroot1996.github.io/robotframework-dashboard/basic-command-line-interface-cli.html) - Manage your test results database, add output XML files, remove runs, and generate dashboards directly from the command line.
+- ⚡ [**Advanced CLI & Examples**](https://timdegroot1996.github.io/robotframework-dashboard/advanced-cli-examples.html) - Advanced usage examples including combined commands, tagging strategies, aliases, batch imports, message configuration, and performance tips.
+- 🗂️ [**Tabs / Pages**](https://timdegroot1996.github.io/robotframework-dashboard/tabs-pages.html) - Explore the dashboard's interactive pages including Overview, Dashboard, Compare, and detailed suite/test/keyword views.
+- 📊 [**Graphs & Tables**](https://timdegroot1996.github.io/robotframework-dashboard/graphs-tables.html) - View and filter detailed statistics for runs, suites, tests, and keywords using charts, tables, and summary visualizations.
+- 🔍 [**Filtering**](https://timdegroot1996.github.io/robotframework-dashboard/filtering.html) - Apply filters to analyze trends in your test data and highlight specific tags, amounts or datetime ranges.
+- 🎨 [**Customization**](https://timdegroot1996.github.io/robotframework-dashboard/customization.html) - Customize dashboard sections, graph layouts, and visualizations to suit your workflow.
+- ⚙️ [**Settings**](https://timdegroot1996.github.io/robotframework-dashboard/settings.html) - Configure dashboard preferences including themes, default views, graph options, and save your settings for consistent team-wide use.
+- 🖥️ [**Dashboard Server**](https://timdegroot1996.github.io/robotframework-dashboard/dashboard-server.html) - Host the dashboard for multi-user access, programmatic updates, and remote server integration.
+- 🗄️ [**Custom Database Class**](https://timdegroot1996.github.io/robotframework-dashboard/custom-database-class.html) - Extend or replace the default database backend to suit your storage needs, including SQLite, MySQL, or custom implementations.
+- 🔔 [**Listener Integration**](https://timdegroot1996.github.io/robotframework-dashboard/listener-integration.html) - Use a listener to automatically push test results to the dashboard for every executed run, integrating seamlessly into CI/CD pipelines.
 
-### Available Filters/Graphs
-- Global filters: run, run tag, run date, run amount, metadata (run and suite metadata is applied to the entire run!)
-- Runs
-  - Statistics: pass, fail, skip
-  - Donut: pass, fail, skip (total and last run)
-  - Duration: total elapsed time
-  - Overview: table overview of runs
-- Suites
-  - Filter: folder, suite
-  - Donut: run, fail, pass and percentage per folder (total run stats and last run failed stats)
-  - Statistics: pass, fail, skip
-  - Duration: total elapsed time
-  - Most failed: top 10 failing suites (top 50 in fullscreen)
-  - Overview: table overview of suites
-- Tests
-  - Filter: suite, test, test tags
-  - Statistics: pass, fail, skip
-  - Duration: total elapsed time
-  - Duration deviation: boxplot of elapsed time to find outliers
-  - Fail Messages: top 10 fail messages (top 50 in fullscreen)
-  - Most Flaky: top 10 flaky tests (top 50 in fullscreen)
-  - Recent Most Flaky: top 10 most recent most flaky tests (top 50 in fullscreen)
-  - Most Failed: top 10 failing tests (top 50 in fullscreen)
-  - Recent Most Failed: top 10 most recent most failing tests (top 50 in fullscreen)
-  - Overview: table overview of tests
-- Keywords
-  - Filter: keywords
-  - Statistics: pass, fail, skip
-  - Times Run
-  - Total Duration
-  - Average Duration
-  - Min Duration
-  - Max Duration
-  - Most Failed: top 10 failing keywords (top 50 in fullscreen)
-  - Overview: table overview of keywords
-- Compare
-  - Statistics: pass, fail, skip on run level
-  - Test Statistics: all tests and their status
-  - Suite Duration
 
-<a name="Version-Details"></a>
-## Version Details
-  - Tested robot versions: 6.0, 6.0.1, 6.0.2, 6.1, 6.1.1, 7.0, 7.0.1, 7.1, 7.1.1, 7.2, 7.2.1, 7.2.2, 7.3, 7.3.1
-  - When running robotdashboard with robot 6.x installed, output files that are generated by robot 7.x will have no duration fields when processed, this is caused by changes in the Result Visitor model
-  - When running robotdashboard with robot 7.x installed every output generated by any version above should be processed correctly
+## 🛠️ Contributions
 
-<a name="Usage"></a>
-## Usage
+Contributions are welcome! If you encounter any issues, have suggestions for improvements, or would like to add new features, feel free to open an issue or submit a pull request. Additional information can be found here in [Contributing](./contributing.md)
 
-Run robotdashboard through the command line to initialize your database and generate the report:
-```sh
-robotdashboard -o output.xml
-```
-For detailed command line options take a look at:
-```sh
-robotdashboard -h
-robotdashboard --help
-```
-Advanced examples:
-```sh
-# Generate the report without adding new outputs
-robotdashboard
+Special thanks to the following companies for sponsoring in one form or another!
+- TBD
 
-# Add tags to your output.xmls
-robotdashboard -o output1.xml:tag1 -o reports/output2.xml:tag1:tag2
+And many thanks to the following people for contributing to the project with feedback, features or just general guidance!
+- TBD
 
-# Add all \*output\*.xml in an entire folder tree to the database and provide all these runs with tags
-robotdashboard -f ./reports 
-robotdashboard -f ../../some_folder/sub_folder/logs
-robotdashboard -f C:/nightly_runs:tag1:tag2:tag3
-
-# Do not list runs and/or do not create the dashboard HTML
-robotdashboard -l false -g false
-
-# Custom path/file name for your dashboard HTML
-robotdashboard -n results/result_robot_dashboard.html
-
-# Custom database path/file location
-robotdashboard -d result_data/robot_result_database.db
-
-# Remove data from the database, can be based on run_start, index, alias or tag
-robotdashboard -r index=0,index=1:4;9,index=10    # will remove index 0,1,2,3,4,9,10
-robotdashboard --removeruns 'run_start=2024-07-30 15:27:20.184407,index=20'    # use quotes when using spaces!
-robotdashboard -r alias=some_cool_alias,tag=prod,tag=dev -r alias=alias12345
-
-# Add a custom dashboard html title
-robotdashboard -t "My Cool Title"
-
-# Excludemilliseconds [DEPRECATED]
-robotdashboard -e False # this has been deprecated from the command line interface and moved to the "Settings" in the dashboard itself
-
-# Aliases [DEPRECATED]
-robotdashboard -a True # this has been deprecated from the command line interface and moved to the "Settings" in the dashboard itself
-
-# Enable the automatic opening of log.html files from the dashboard graphs (runs/suites/test/keywords) when clicked on specified elements
-robotdashboard -u true
-robotdashboard --uselogs True
-# IMPORTANT PREREQUISITES FOR LOG FILE USAGE:
-# 1. This feature is based on the path to the output.xml file
-# 2. The output.xml name is updated by replacing 'output' into 'log' and '.xml' into '.html'
-# 3. The log file should be in the exact same folder as the output
-# 4. Example: 'output-20250313-002134.xml' should have 'log-20250313-002134.html' in the same folder, '01-output.xml' expects a '01-log.html' etc.
-
-# Create message config file that can be loaded to match similar test error messages as "the same" the ${...} variables will be regex matched like * to match any possible character of any length.
-robotdashboard -m message_config.txt
-robotdashboard --messageconfig path/to/message_config.txt
-# message_config.txt
-Expected ${x} but received: ${y}
-The test Normal Test ${number} has failed for some strange reason
-
-# Set the default amount of runs shown in the amount filter when opening the dashboard. This improves load times with a lot of runs and can help read graphs better. The default value is 20.
-robotdashboard -q 7
-robotdashboard --quantity 50
-
-# Set a default dashboard config that will be used on first load unless there is already a config in place. This config can be found in a dashboard under Settings > Copy Settings. 
-robotdashboard -j ./path/to/config.json
-robotdashboard --jsonconfig default_settings.json
-
-# Make use of a custom DatabaseProcessor class, see also `Custom Database Class` on this page for examples and more details of the requirements.
-robotdashboard -c ./path/to/custom_class.py
-robotdashboard --databaseclass mysql.py
-
-# Start the robotdashboard server, see also `Dashboard Server` on this page for examples and more details of the requirements.
-robotdashboard --server default
-# TIP: when using the server on docker use the following server config:
-robotdashboard -s 0.0.0.0:8543
-```
-
-<a name="Examples"></a>
-## Examples
-Here are some examples of generated files/output:
-- [Full Dashboard](https://timdegroot1996.github.io/robotframework-dashboard/example/robot_dashboard.html) -> View an actual dashboard!
-- [Database](./example/robot_results.db) -> Download and use any tool to check the tables or use it as a base for using the "robotdashboard" command line interface
-- [Message Config](./example/messageconfig.txt) -> Check out an example messageconfig.txt for the --messageconfig feature (see above at Usage)
-- Example Command Line Output (below)
-  
-This is an example after running robotdashboard for the first time. 3 outputs are added, stored and processed in the dashboard HTML.
-
-Input:
-```sh
-robotdashboard -o output1.xml -o output2.xml -o output3.xml
-```
-Results:
-```
-======================================================================================
- ____   ___  ____   ___ _____ ____    _    ____  _   _ ____   ___    _    ____  ____  
-|  _ \ / _ \| __ ) / _ |_   _|  _ \  / \  / ___|| | | | __ ) / _ \  / \  |  _ \|  _ \
-| |_) | | | |  _ \| | | || | | | | |/ _ \ \___ \| |_| |  _ \| | | |/ _ \ | |_) | | | |
-|  _ <| |_| | |_) | |_| || | | |_| / ___ \ ___) |  _  | |_) | |_| / ___ \|  _ <| |_| |
-|_| \_\\___/|____/ \___/ |_| |____/_/   \_|____/|_| |_|____/ \___/_/   \_|_| \_|____/
-
-======================================================================================
- 1. Database preparation
-  created database connection: 'robot_results.db'
-======================================================================================
- 2. Processing output XML(s)
-  Processing output XML 'output1.xml'
-  Processed output XML 'output1.xml' in 0.04 seconds
-  Processing output XML 'output2.xml'
-  Processed output XML 'output2.xml' in 0.05 seconds
-  Processing output XML 'output3.xml'
-  Processed output XML 'output3.xml' in 0.05 seconds
-======================================================================================
- 3. Listing all available runs in the database
-  Run 0   | 2024-10-17 15:05:04.563559 | RobotFramework-Project1
-  Run 1   | 2024-10-18 16:43:12.772757 | Robotframework-Project2
-  Run 2   | 2024-10-21 10:54:25.663094 | Robotframework-Project1
-======================================================================================
- 4. Removing runs from the database
-  skipping step
-======================================================================================
- 5. Creating dashboard HTML
-  created dashboard 'robot_dashboard_20241021-150726.html' in 0.01 seconds
-```
-
-<a name="Custom-Database-Class"></a>
-## Custom Database Class
-See the [Example Folder](./example/database) for some examples of custom database class implementations.
-
-### Available examples
-Currently available database type examples:
-- [abstractdb.py](./example/database/abstractdb.py) (the abstract class that can be extended to help create a custom databaseclass)
-- [sqlite3.py](./example/database/sqlite3.py) (for a sqlite3 database connection, this configuration is used by default in robotdashboard)
-- [mysql.py](./example/database/mysql.py) (for a mysql database connection)
-
-Basic implementation by using the abstract class:
-```
-from robotframework_dashboard.abstractdb import AbstractDatabaseProcessor
-
-class DatabaseProcessor(AbstractDatabaseProcessor):
-    # your implemntation of the abstract methods in AbstractDatabaseProcessor
-```
-
-If you have made an implementation that is not yet an example please feel free to add it through a pull request or submit it in an issue. This way you can help other people implement their own solutions!!
-
-### Custom Class Requirements
-- File: The filename can be anything as long as it is a **python file**
-- Class: You should name the **class DatabaseProcessor**
-- Methods: 
-    - **\_\_init\_\_(self, database_path: Path):**, should handle creation of the database and tables if necessary
-    - **open_database(self):**, should open the database connection and set it like self.connection
-    - **close_database(self):**, should close the database connection
-    - **run_start_exists(self, run_start: str):**, should check if the run_start that is provided is already present in the database and return True if it does, False if it doesn't, for simple implementations you can simply return False and not check this. There will be an error in a later stage but processing will needlessly be completely done.
-    - **insert_output_data(self, output_data: dict, tags: list, run_alias: str, path: Path):**, should be able to handle the output_data dict and the run tags that are provided. Look at the example implementations for the content of output_data, tags, run_alias and path.
-    - **get_data(self):**, should retrieve all data (runs/suites/tests/keywords) from all tables in the form of a dictionary containing the 4 data types. In which each data type is a list of dicts with entries. Example:
-    {'runs': [{"run_start": "2024-10-13 22:33:19", "full_name": "Robotframework-Dashboard", "name": "Robotframework-Dashboard", "total": 6, "passed": 4, "failed": 1, "skipped": 1, "elapsed_s": "6.313", "start_time": "2024-10-13 22:33:19.673821", "tags": ""}, {"run_start"...}]}
-    - **list_runs(self):**, should print out the runs in the database with useful identifiers. This function must be implemented but can be empty if you don't need it. It is purely for the command line overview.
-    - **remove_runs(self, remove_runs: list):**, remove_runs can contain all of the following: index, run_start, alias or tag, in a list where they are provided like so: ['run_start=...', 'index=1', etc.] make sure your remove_runs function handles this correctly.
-    - **OPTIONAL: update_output_path(self, log_path: str):**, this function is optional and only required when running the server and using the uselogs functionality, in which you have to store the log.html's on the server. If you don't need it you can skip this function.
-- Do not use relative imports! This will not work on runtime!
-
-<a name="Dashboard-Server"></a>
-## Dashboard Server
-To be able to run robotdashboard on a separate machine it comes with some builtin server capabilities. If you set this up on an external machine it will then be possible to host the dashboard and add/remove outputs from other machines.
-
-### Usage
-Start the server with the desired options (all command line options can be used, only dashboard name and title will be overwritten by some defaults)
-If you want to deny people rights to the admin page there is a possibility to add a username and password after the default or host:port options like shown below. If this is added the admin page will be locked behind authentication.
-```
-robotdashboard --server default
-robotdashboard -s 127.0.0.1:8543   # this is the default, which can be changed
-robotdashboard -s default:user:password   # this time with a username and password for the admin page
-robotdashboard -s host:port:user:password   # this time with a username and password for the admin page
-```
-After starting the server you can open http://127.0.0.1:8543/ to view the admin page and check out the API Docs and the Dashboard.
-
-### Features
-- Facilitate an admin page to view/add/remove outputs in the database manually (/)
-- Host the dashboard on an endpoint and refresh on every add/remove action (/dashboard)
-- Facilitate an endpoint to get the outputs in the database (/get-outputs)
-- Facilitate an endpoint to add outputs to the database (/add-outputs)
-- Facilitate an endpoint to remove outputs from the database (/remove-outputs)
-- Facilitate an endpoint to add logs to the server (/add-log)
-- Facilitate an endpoint to remove logs from the server (/remove-log)
-- The endpoint get/add/remove can be programmatically called if required, the documentation of the endpoints can be found on /docs
-
-### Example scripts
-In the example/server folder there are some examples of way to interact with the server API
-- [interact.http](./example/server/interact.http) (simple http request formats)
-- [interact.robot](./example/server/interact.robot) (robot implementation)
-- [interact.py](./example/server/interact.py) (python implementation)
-
-<a name="Listener"></a>
-## Listener
-To be able to automatically follow up on the server implementation and not have to create your own scripts to interact with the API I created a **listener** that automatically updates robotdashboard with every run you execute.
-
-### Usage
-1. Download [robotdashboardlistener.py](./example/listener/robotdashboardlistener.py) and place it somewhere in your project
-2. Make sure the robotdashboard server is running see [Dashboard Server](#Dashboard-Server) for detailed instructions
-3. Update your [robot.toml](./example/listener/robot.toml) or manual command line usage with "--listener path/to/robotdashboardlistener.py:tags=tag1,tag2"
-4. Optionally you can also provide ":host=yourhost:port=yourport" if the defaults of robotdashboard server are not to your liking. See the comments in the listener
-5. Optionally you can automatically limit the amount of runs in your database by providing ":limit=100"
-6. Enjoy automatic dashboarding of your manual/pipeline runs! :)
-
-<a name="Contributing"></a>
-## Contributing
-Contributions are welcome! If you encounter any issues, have suggestions for improvements, or would like to add new features, feel free to open an issue or submit a pull request.
-Additional information can be found here in [CONTRIBUTING.md](./CONTRIBUTING.md)
-
-<a name="License"></a>
-## License
+## 📋 License
 This project is licensed under the MIT License.
 
-Note: This project is not officially affiliated with or endorsed by robotframework.
+> **Note:** This project is not officially affiliated with or endorsed by Robot Framework.
