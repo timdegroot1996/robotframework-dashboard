@@ -1,0 +1,132 @@
+/* =========================
+   Complete Dark Mode Overrides
+   ========================= */
+
+/* Base dark theme variables */
+html.dark {
+  --vp-c-bg: #0f172a; /* page background */
+  --vp-c-content-bg: rgba(30, 41, 59, 0.9); /* cards, panels, sidebar content */
+  --vp-c-border: rgba(255, 255, 255, 0.05); /* border color */
+  --vp-c-primary: #5f67ee; /* accent color */
+  --vp-c-text: #e0e0e0; /* main text */
+  --vp-c-muted: #a0aec0; /* muted text */
+  --vp-c-link: #5f67ee; /* link color */
+  --vp-c-link-hover: #7c82ff; /* link hover */
+  --vp-c-code-bg: rgba(30, 41, 59, 0.9); /* inline code background */
+}
+
+/* Page and layout backgrounds */
+html.dark .vp-page,
+html.dark .vp-doc {
+  background-color: var(--vp-c-bg);
+}
+
+/* Sidebar background and links */
+html.dark .VPSidebar, html.dark .container {
+  background-color: var(--vp-c-bg);
+}
+
+html.dark .vp-sidebar a {
+  color: var(--vp-c-text);
+}
+
+html.dark .vp-sidebar a.router-link-exact-active {
+  color: var(--vp-c-primary);
+}
+
+/* Cards, and code blocks */
+html.dark .vp-card,
+html.dark .vp-code,
+html.dark pre,
+html.dark .DocSearch {
+  background-color: var(--vp-c-content-bg) !important;
+  color: var(--vp-c-text);
+}
+
+html.dark .DocSearch-Button {
+  border: 1px solid var(--docsearch-subtle-color);
+}
+
+html.dark .DocSearch-Button:hover {
+  border-color: var(--vp-c-brand-1) !important;
+}
+
+/* Inline code */
+html.dark code {
+  background-color: var(--vp-c-code-bg);
+  color: var(--vp-c-text);
+}
+
+/* Links */
+html.dark a {
+  color: var(--vp-c-link);
+}
+
+html.dark a:hover {
+  color: var(--vp-c-link-hover);
+}
+
+/* Headings */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6 {
+  color: var(--vp-c-text);
+}
+
+/* Blockquotes */
+html.dark blockquote {
+  background-color: rgba(30, 41, 59, 0.5);
+  border-left-color: var(--vp-c-primary);
+  color: var(--vp-c-text);
+}
+
+/* Lists */
+html.dark ul li,
+html.dark ol li {
+  color: var(--vp-c-text);
+}
+
+.VPHero .text {
+  font-size: 2.5rem;       /* default is usually ~3rem, adjust smaller */
+  line-height: 1.2;      /* optional: tighten spacing */
+}
+
+/* Target the hero image container */
+.VPHomeHero .image {
+  margin-left: 14rem; /* Moves the image 2rem to the right */
+}
+
+/* Optional: adjust for small screens */
+@media (max-width: 768px) {
+  .VPHomeHero .image {
+    margin-left: 1rem;
+    max-width: 200px;
+  }
+}
+
+/* Dark mode table styling */
+html.dark table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--vp-c-content-bg);
+}
+
+/* Table header row */
+html.dark table th {
+  background-color: #0d1b3f; /* slightly darker than table rows */
+  color: var(--vp-c-text);
+  border: 1px solid var(--vp-c-border);
+  padding: 0.6em 0.8em;
+  text-align: left;
+}
+
+/* Table cells */
+html.dark table td {
+  background-color: #101f4f; /* uniform dark blue for all rows */
+  border: 1px solid var(--vp-c-border);
+  color: var(--vp-c-text);
+  padding: 0.5em 0.8em;
+}
