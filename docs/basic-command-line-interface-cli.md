@@ -4,9 +4,7 @@ outline: deep
 
 # Basic Command Line Interface (CLI)
 
-The **RobotFramework Dashboard CLI** allows you to manage test result databases, process output XML files, and generate interactive dashboards directly from the command line.  
-
-This page provides examples for each command and explains what happens when you run them.
+This page explains the essential CLI commands used to create databases, process output XML files, and generate the HTML dashboard. It includes clear examples and describes exactly what each command does.
 
 ## Display Version and Help
 

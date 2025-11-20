@@ -4,9 +4,7 @@ outline: deep
 
 # Advanced CLI & Examples
 
-The **Advanced CLI & Examples** page demonstrates combined options and explanations for advanced features and their usage.
-
-This section helps you solve real automation problems such as tagging, customizing dashboard loading behavior, linking log.html files and grouping test error messages.
+Explore advanced CLI features such as combined options, tagging strategies, linking log.html files, customizing dashboard behavior, and grouping error messages. This section provides practical examples and real-world usage patterns.
 
 ## Combining Multiple Options in a Single Command
 

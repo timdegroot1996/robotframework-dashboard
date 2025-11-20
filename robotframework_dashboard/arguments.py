@@ -34,7 +34,11 @@ class ArgumentParser:
 
     def _parse_arguments(self):
         """Parses the actual arguments"""
-        parser = argparse.ArgumentParser(add_help=False)
+        parser = argparse.ArgumentParser(
+            add_help=False,
+            formatter_class=argparse.RawTextHelpFormatter,
+            epilog="For full documentation, visit: https://timdegroot1996.github.io/robotframework-dashboard/",
+        )
         parser.add_argument(
             "-v",
             "--version",
@@ -52,8 +56,10 @@ class ArgumentParser:
         parser.add_argument(
             "-o",
             "--outputpath",
-            help="`path` Specifies  1 or more paths to output.xml. \
-                            Specify every XML separately with -o if you are providing more than one.",
+            help=(
+                "`path`  Specifies one or more paths to output.xml.\n"
+                "        If providing multiple XML files, specify -o for each file."
+            ),
             action="append",
             nargs="*",
             default=None,
@@ -61,19 +67,27 @@ class ArgumentParser:
         parser.add_argument(
             "-f",
             "--outputfolderpath",
-            help="`path` Specifies a path to a directory in which it will \
-                look in all folders and subfolders for *output*.xml files to be processed into the database",
+            help=(
+                "`path`  Specifies a directory path. All folders and subfolders will be\n"
+                "        scanned for *output*.xml files to be processed into the database."
+            ),
             default=None,
         )
         parser.add_argument(
             "-r",
             "--removeruns",
-            help="`string` Specifies 1 or more indexes, run_starts, aliases or tags to remove from the database. \
-                            You can add multiple runs to remove in one call as long as you split with a comma (,). \
-                            Do note that it is required to specify the type of data you are providing (index, run_start, alias or tag). \
-                            Multiple types of data at once is allowed! With indexes you can use : for ranges and ; for singular indexes at once. \
-                            Examples: -r index=0,index=1:4;9,index=10 or --removeruns 'run_start=2024-07-30 15:27:20.184407,index=20' \
-                            or -r alias=some_cool_alias,tag=prod,tag=dev",
+            help=(
+                "`string` Specifies one or more indexes, run_starts, aliases, or tags to remove\n"
+                "         from the database. Multiple runs can be provided when separated by\n"
+                "         commas (,).\n\n"
+                "         You must specify the data type (index, run_start, alias, or tag).\n"
+                "         Multiple types may be combined.\n\n"
+                "         Indexes support ranges using ':' and multiple values using ';'.\n\n"
+                "         Examples:\n"
+                "           -r index=0,index=1:4;9,index=10\n"
+                "           --removeruns 'run_start=2024-07-30 15:27:20.184407,index=20'\n"
+                "           -r alias=some_cool_alias,tag=prod,tag=dev"
+            ),
             action="append",
             nargs="*",
             default=None,
@@ -81,85 +95,108 @@ class ArgumentParser:
         parser.add_argument(
             "-d",
             "--databasepath",
-            help="`path` Specifies the path to the database you want to \
-                            store the results in.",
+            help=(
+                "`path`  Specifies the path to the database in which results are stored."
+            ),
             default="robot_results.db",
         )
         parser.add_argument(
             "-n",
             "--namedashboard",
-            help="`path` Specifies a custom HTML dashboard file name.",
+            help="`path`  Specifies a custom HTML dashboard file name.",
             default="",
         )
         parser.add_argument(
             "-j",
             "--jsonconfig",
-            help="`path` Specifies a path to a a dashboard json config that will be used as default on first load if there is none already.",
+            help=(
+                "`path`  Specifies a path to a dashboard JSON config. It is used as the\n"
+                "        default on first load if no config exists yet."
+            ),
             default=None,
         )
         parser.add_argument(
             "-t",
             "--dashboardtitle",
-            help="`string` Specifies a custom dashboard html report title.",
+            help="`string` Specifies a custom HTML report title for the dashboard.",
             default="",
         )
         parser.add_argument(
             "-m",
             "--messageconfig",
-            help="`path` Specifies the path to a config file that contains lines of messages with placeholders to 'bundle' test messages. \
-                Example lines can be 'The test has failed on date: ${date}' or 'Expected ${x} but received: ${y}'. Placeholders match everything and the content is irrelevant.",
+            help=(
+                "`path`  Specifies a config file containing message lines with placeholders\n"
+                "        used to 'bundle' test messages.\n\n"
+                "        Example message lines:\n"
+                "          'The test has failed on date: ${date}'\n"
+                "          'Expected ${x} but received: ${y}'\n\n"
+                "        Placeholders match any value; actual content does not matter."
+            ),
             default=None,
         )
         parser.add_argument(
             "-q",
             "--quantity",
-            help="`integer` Specifies the default amount (Amount Filter) of runs that are shown in the dashboard on first load.",
+            help=(
+                "`integer` Specifies the default number of runs shown in the dashboard on\n"
+                "          initial load (Amount Filter)."
+            ),
             default=None,
         )
         parser.add_argument(
             "-u",
             "--uselogs",
-            help="`boolean` Whether to enable clicking on graphs will open the logs. Providing this argument makes runs/suites/tests/keywords clickable.\
-                The click will open the respective log file in a new tab. This feature uses the path to the output.xml file as a base to find the log.html files.\
-                The log.html should be in the same folder as the output.xml file and should have a similar name. 'output' is replaced by 'log' and 'xml' is replaced by 'html' \
-                Example: 'output-20250313-002134.xml' should have 'log-20250313-002134.html' in the same folder, '01-output.xml' expects '01-log.html' etc.",
+            help=(
+                "`boolean` Enables clickable graphs that open the corresponding log files.\n\n"
+                "          The log.html file must exist in the same folder as output.xml.\n"
+                "          Naming rules:\n"
+                "            Replace 'output' → 'log'\n"
+                "            Replace 'xml'    → 'html'\n\n"
+                "          Examples:\n"
+                "            output-20250313-002134.xml  → log-20250313-002134.html\n"
+                "            01-output.xml               → 01-log.html"
+            ),
             default=False,
         )
         parser.add_argument(
             "-g",
             "--generatedashboard",
-            help="`boolean` Specifies if you want to generate the HTML \
-                            dashboard. Default is True, override if you only require the database.",
+            help=(
+                "`boolean` Whether to generate the HTML dashboard.\n"
+                "          Default: True. Override if only the database is needed."
+            ),
             default=True,
         )
         parser.add_argument(
             "-l",
             "--listruns",
-            help="`boolean` Specifies if the runs should be listed. \
-                Default is True, override if you only require the database.",
+            help=(
+                "`boolean` Whether runs should be listed.\n"
+                "          Default: True. Override if only the database is needed."
+            ),
             default=True,
         )
         parser.add_argument(
             "-c",
             "--databaseclass",
-            help="`path` Specifies the path to your implementation of the databaseclass. \
-                If nothing is provided default Sqlite3 implementation is used. Use this when you \
-                want to use a custom implementation or you have your own database type.\
-                See https://github.com/timdegroot1996/robotframework-dashboard?tab=readme-ov-file#Custom-Database-Class for additional information!",
+            help=(
+                "`path`  Specifies the path to a custom database class implementation.\n"
+                "        If omitted, the default SQLite3 implementation is used.\n\n"
+                "        Useful for custom or non-SQLite databases.\n\n"
+            ),
             default=None,
         )
         parser.add_argument(
             "-s",
             "--server",
             help=(
-                "Provide the server argument like:"
-                "  robotdashboard --server default[:username:password], or"
-                "  robotdashboard --server host:port[:username:password] "
-                "Examples:"
-                "  robotdashboard --server default:admin:secret, or "
-                "  robotdashboard --server 0.0.0.0:8080:admin:secret"
-                "If no username:password is given, security is disabled."
-                "See http://github.com/timdegroot1996/robotframework-dashboard?tab=readme-ov-file#Dashboard-Server for additional information!"
+                "Provide the server argument in one of the following forms:\n\n"
+                "  robotdashboard --server default[:username:password]\n"
+                "  robotdashboard --server host:port[:username:password]\n\n"
+                "Examples:\n"
+                "  robotdashboard --server default:admin:secret\n"
+                "  robotdashboard --server 0.0.0.0:8080:admin:secret\n\n"
+                "If username:password is omitted, security is disabled."
             ),
             default=None,
         )

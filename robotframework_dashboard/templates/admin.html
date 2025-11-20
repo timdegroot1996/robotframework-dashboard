@@ -380,22 +380,42 @@
                         <h4>Instructions</h4>
                         <div class="row ms-2 mb-3">
                             <ul>
-                                <li>You can copy the "json config" from a dashboard and input it here.</li>
-                                <li>This setting will be applied to every dashboard on other machines IF:
+                                <li>Copy & Paste:
                                     <ul>
-                                        <li>It is the first load of the dashboard on that browser/machine.</li>
-                                        <li>There is no --jsonconfig that is provided through the CLI.</li>
-                                        <li>You don't have any of the above and enforce it in Settings > Reset Settings
-                                            in the dashboard.</li>
+                                        <li>You can copy the "JSON Config" from an existing dashboard and paste it into
+                                            the Admin Page input field.</li>
+                                        <li>If you want to empty the admin JSON Config just put in {} and apply.</li>
                                     </ul>
                                 </li>
-                                <li>If the server is turned off it loses the "admin json config".</li>
-                                <li>If you start the server and open the admin page the browser local storage in the
-                                    admin page should automatically restore the "admin json config" on the server side.
+                                <li>Propagation:
+                                    <ul>
+                                        <li>This setting will automatically apply to dashboards on other machines if all
+                                            of the following conditions are met:
+                                            <ul>
+                                                <li>It is the <strong>first load</strong> of the dashboard on that
+                                                    browser or machine. (Otherwise their previous settings are used)
+                                                </li>
+                                                <li>No <strong>--jsonconfig</strong> option was provided via the CLI when
+                                                    starting the server. (Otherwise that is used)</li>
+                                                <li>You can enforce the admin config to apply by <strong>Settings &gt;
+                                                        JSON &gt; Reset Settings JSON</strong></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
                                 </li>
-                                <li>Above point assumes you are using a machine/browser you have previously used to set
-                                    the settings!</li>
+                                <li>Persistence:
+                                    <ul>
+                                        <li>The "Admin JSON Config" exists <strong>only while the server is
+                                                running</strong>.</li>
+                                        <li>If the server is turned off, the configuration is lost.</li>
+                                        <li>When the server starts and you open the Admin Page, the browser's
+                                            <strong>local storage</strong> will automatically restore the previous
+                                            "Admin JSON Config" on the server, provided you are using the same
+                                            machine/browser where it was previously set.</li>
+                                    </ul>
+                                </li>
                             </ul>
+
                         </div>
                         <div class="row mb-3">
                             <div class="col-auto">

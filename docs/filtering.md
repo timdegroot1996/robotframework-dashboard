@@ -2,9 +2,9 @@
 outline: deep
 ---
 
-# Filtering in RobotFramework Dashboard
+# Filtering
 
-RobotFramework Dashboard provides powerful filtering options to help you analyze your test results efficiently. Filters are available across different pages, and some pages also provide section-specific filters. This guide explains all available filters and options.
+RobotFramework Dashboard provides flexible filtering options across different pages. This guide explains all filter types, how they interact, and how to use them to narrow down test data efficiently.
 
 ## Overview Page
 

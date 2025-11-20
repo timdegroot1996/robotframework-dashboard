@@ -4,7 +4,7 @@ outline: deep
 
 # Getting Started
 
-Welcome to **RobotFramework Dashboard**! This tool helps you **store, manage, and visualize Robot Framework test results** from multiple runs. It is designed to make test result analysis easier, faster, and more interactive by centralizing your outputs in a single database and generating a visual HTML dashboard.
+Welcome to RobotFramework Dashboard! This guide introduces the core purpose of the tool and helps you understand how it collects, stores, and visualizes Robot Framework test results across multiple runs.
 
 ## Why RobotDashboard?
 

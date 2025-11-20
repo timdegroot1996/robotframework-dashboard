@@ -4,7 +4,7 @@ outline: deep
 
 # Installation & Version Info
 
-This page guides you through installing **Robot Framework Dashboard**, and understanding version compatibility.
+Learn how to install RobotFramework Dashboard and check compatibility requirements. This page explains installation steps, supported versions, and important system notes.
 
 ## Installation
 

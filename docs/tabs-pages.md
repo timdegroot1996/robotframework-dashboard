@@ -4,6 +4,8 @@ outline: deep
 
 # Tabs / Pages
 
+An overview of all pages available in the generated dashboard.html. Learn the purpose of each tab, what information it shows, and how it helps you analyze your test results.
+
 ## Overview Page
 The Overview page provides a high-level summary of all test runs, highlighting the latest results for each project. It shows key metrics such as pass/fail/skip counts, recent trends, and overall performance, enabling users to quickly assess the health of their test suites. You can also filter to display all runs for a specific project or custom project tags (see [Advanced CLI & Examples](advanced-cli-examples.md#project-tagging)), which helps visualize historical trends through donut charts, duration data, and pass percentage statistics.
 

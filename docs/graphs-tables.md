@@ -4,6 +4,8 @@ outline: deep
 
 # Graphs & Tables
 
+Discover the graphs and tables included in the Dashboard. This page explains how each visualization works, the data it represents, and the filtering or interaction options available.
+
 ## Overview Tab
 
 | Graph Name          | Views       | Views Description                                                                                                | Notes |
