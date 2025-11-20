@@ -61,8 +61,6 @@ features:
     details: Use a listener to automatically push test results to the dashboard for every executed run, integrating seamlessly into CI/CD pipelines.
     link: /listener-integration.md
 
-
-
 ---
 
 ## Setup and use the RobotDashboard command line interface (CLI)
