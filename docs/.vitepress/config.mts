@@ -1,8 +1,8 @@
 import { defineConfig } from 'vitepress'
 import { readFileSync } from "fs";
 
-const python_svg = readFileSync("docs/images/python.svg", "utf-8");
-const slack_svg = readFileSync("docs/images/slack.svg", "utf-8");
+const python_svg = readFileSync("docs/public/python.svg", "utf-8");
+const slack_svg = readFileSync("docs/public/slack.svg", "utf-8");
 
 export default defineConfig({
   title: "RobotDashboard",
