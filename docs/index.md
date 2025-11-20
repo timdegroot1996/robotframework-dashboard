@@ -92,6 +92,7 @@ The video above demonstrates:
 - How to open the dashboard
 - Which pages are available (dashboard, overview, compare, tables)
 - Which sections are available (run, suite, test, keyword)
+- How to switch graph views (bar/line/timeline etc.)
 - How to apply filters
 - How to customize your view
 
