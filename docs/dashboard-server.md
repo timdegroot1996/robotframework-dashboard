@@ -12,7 +12,7 @@ RobotFramework Dashboard includes a built-in server that lets you host the dashb
 - Enable remote clients to push or delete runs in your database  
 - Provide a web-based admin interface for manual management  
 - Secure access via optional basic authentication (username/password)  
-> Tip: to implement your server into your test runs look at the example [listener](/listener-integration.md) integration!
+> **Tip:** To implement your server into your test runs look at the example [listener](/listener-integration.md) integration!
 
 
 ## Starting the Server
@@ -93,7 +93,7 @@ These scripts demonstrate how to:
 - Upload log files for runs  
 - Remove log files
 
-> Tip: to implement your server into your test runs look at the example [listener](/listener-integration.md) integration!
+> **Tip:** to implement your server into your test runs look at the example [listener](/listener-integration.md) integration!
 
 ## Admin JSON Config
 

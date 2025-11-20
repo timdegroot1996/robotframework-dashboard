@@ -73,7 +73,7 @@ This allows complete control over:
 - Animation settings  
 - Theme and visual preferences  
 
-> Tip: see [Advanced CLI](/advanced-cli-examples.html#using-a-custom-dashboard-config-json) for sharing a default config with team members!
+> **Tip:** See [Advanced CLI](/advanced-cli-examples.html#using-a-custom-dashboard-config-json) for sharing a default config with team members!
 
 ### Details
 

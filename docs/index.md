@@ -70,9 +70,29 @@ features:
   Your browser does not support the video element.
 </video>
 
+The video above demonstrates:
+
+- How to install **robotdashboard**
+- How to check the installed version
+- How to access the robotdashboard help
+- How to run your first command and load output files (with a custom dashboard name, run tags, and using log file linking)
+
+> **Tip:** For detailed command-line instructions, check out [Basic Command Line Interface (CLI)](/basic-command-line-interface-cli.md) and [Advanced CLI & Examples](advanced-cli-examples.md)!
+
+
 ## View the dashboard and it's features
 
 <video controls autoplay loop muted playsinline style="max-width:100%; height: auto; border-radius:8px;">
   <source src="/dashboard.mp4" type="video/mp4">
   Your browser does not support the video element.
 </video>
+
+The video above demonstrates:
+
+- How to open the dashboard
+- Which pages are available (dashboard, overview, compare, tables)
+- Which sections are available (run, suite, test, keyword)
+- How to apply filters
+- How to customize your view
+
+> **Tip:** For details regarding the dashboard checkout the related parts in the [Dashboard Documenation Section](/tabs-pages.md)!
