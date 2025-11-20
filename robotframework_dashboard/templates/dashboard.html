@@ -219,6 +219,20 @@
             border-radius: 0px !important;
         }
 
+        .dropdown-menu {
+          width: max-content;
+        }
+
+        .version-selected-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: #ec5800;
+            border-radius: 50%;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+
         .selectBox {
             position: relative;
         }
@@ -4225,20 +4239,18 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
 
         // create project bar (the collapsables below overview statistic) in overview
         function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate) {
-            const projectOverviewData = document.getElementById("projectOverviewData");
             const projectVersions = new Set(
                     Object.keys(versionsByProject[projectName])
                     .sort()
                     .reverse()
             );
             const versionAmount = projectVersions.size;
-            const versionPluralPostfix = versionAmount != 1 ? 's' : '';
-            let versionSelectHtml = `<option value="All" "selected">All (${versionAmount} version${versionPluralPostfix})</option>`;
-            versionSelectHtml += [...projectVersions]
+            const versionFilterListItemAllHtml = generate_version_filter_list_item_html("All", projectName, "checked", versionAmount, "version");
+            const versionFilterListItemsHtml = versionFilterListItemAllHtml +
+                [...projectVersions]
                 .map(version => {
                     const runAmount = versionsByProject[projectName][version];
-                    const runPluralPostfix = runAmount != 1 ? 's' : '';
-                    return `<option value="${version}">${version} (${runAmount} run${runPluralPostfix})</option>`;
+                    return generate_version_filter_list_item_html(version, projectName, "", runAmount, "run");
                 })
                 .join('');
             const percentageSelectHtml = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(val =>
@@ -4248,8 +4260,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const projectInformation = `This section shows the runs associated with the project '${projectName}':
                                         - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle. Version filters do not affect this.
                                         - Passed runs represent the percentage of runs with zero failures. Version filters do not affect this.
-                                        - The version dropdown menu allows filtering the runs of the current project by the desired version.
-                                        - If 'All' is selected, the runs can be filtered to only those whose version contains the text entered in the 'Version Filter...' input.`;
+                                        - The 'Select Versions' dropdown menu allows filtering the runs of the current project by the desired versions. Click "All" to quickly deselect all other checkboxes.
+                                        - The runs can also be filtered to only those whose version contains the text entered in the 'Version Filter...' input, even when a checkbox filter is already applied.`;
             const projectCard = `
             <div class="card mb-3" id="${projectName}Card">
                   <div class="card-header">
@@ -4276,12 +4288,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                               </div>
                               <div class="col-auto">
                                   <div class="btn-group">
-                                      <label class="form-check-label" for="${projectName}VersionFilter">Version</label>
-                                  </div>
-                                  <div class="btn-group">
-                                      <select class="form-select form-select-sm mt-1" id="${projectName}VersionFilter">
-                                          ${versionSelectHtml}
-                                      </select>
+                                      <div id="${projectName}VersionFilterDropDown" class="dropdown mt-1" >
+                                          <button class="btn btn-sm btn-outline-dark dropdown-toggle"
+                                                  type="button" id="${projectName}VersionFilterBtn"
+                                                  data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                                              Select Versions
+                                          <span id="${projectName}VersionSelectedIndicator" class="version-selected-dot" style="display:none;"></span>
+                                          </button>
+                                          <ul class="dropdown-menu p-3" style="max-height: 50vh; overflow-y: auto;">
+                                              ${versionFilterListItemsHtml}
+                                          </ul>
+                                      </div>
                                   </div>
                                   <div class="btn-group mt-1">
                                       <input type="text" class="form-control form-control-sm" id="${projectName}VersionFilterSearch" placeholder="Version Filter...">
@@ -4299,30 +4316,80 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
               </div>
             `;
             projectOverviewData.appendChild(document.createRange().createContextualFragment(projectCard));
+            // percentage selector
             const projectPercentageSelector = document.getElementById(`${projectName}DurationPercentage`);
             projectPercentageSelector.addEventListener('change', () => {
                 const newPercent = parseInt(projectPercentageSelector.value, 10);
                 update_duration_comparison_for_project(projectName, projectRuns, newPercent);
             });
-            // version selector
-            const projectVersionFilter = document.getElementById(`${projectName}VersionFilter`);
-            const projectVersionFilterSearch = document.getElementById(`${projectName}VersionFilterSearch`);
-            projectVersionFilter.addEventListener('change', () => {
-                const selectedVersion = projectVersionFilter.value;
-                projectVersionFilterSearch.hidden = selectedVersion !== "All"; //hide version filter input
-                update_project_version_select_run_card_visibility(`${projectName}RunCardsContainer`, selectedVersion);
+            // version filters
+            const versionFilterDropDownId = `${projectName}VersionFilterDropDown`;
+            const versionFilterSearchId = `${projectName}VersionFilterSearch`;
+            const versionFilterArgs = {
+                cardsContainerId: `${projectName}RunCardsContainer`,
+                versionDropDownFilterId: versionFilterDropDownId,
+                versionStringFilterId: versionFilterSearchId,
+            };
+            const projectVersionFilterDropDown = document.getElementById(versionFilterDropDownId);
+            const projectVersionFilterCheckBoxes = projectVersionFilterDropDown.querySelectorAll(".version-checkbox");
+            const allVersionsCheckBox = document.getElementById(`${projectName}VersionFilterListItemAllInput`);
+            const specificVersionSelectedIndicator = document.getElementById(`${projectName}VersionSelectedIndicator`);
+            const specificVersionCheckBoxes = Array.from(projectVersionFilterCheckBoxes).filter(checkBox => {
+                return checkBox !== allVersionsCheckBox;
+            });
+            function unselectSpecificVersionCheckBoxes() {
+                specificVersionCheckBoxes.forEach(checkBox => {
+                    checkBox.checked = false;
+                });
+            }
+            function selectAllIfNothingSelected(){
+                const checkedCheckBoxes = specificVersionCheckBoxes.filter(checkBox => checkBox.checked);
+                allVersionsCheckBox.checked = checkedCheckBoxes.length === 0 ? true : false;
+            }
+            projectVersionFilterCheckBoxes.forEach(checkBox => {
+                checkBox.addEventListener("change", () => {
+                    if (checkBox === allVersionsCheckBox && checkBox.checked) {
+                        unselectSpecificVersionCheckBoxes();
+                    } else {
+                        allVersionsCheckBox.checked = false;
+                        selectAllIfNothingSelected();
+                    }
+                    const shouldShowFilterIndicator = specificVersionCheckBoxes.some(specificVersionCheckBox => specificVersionCheckBox.checked);
+                    specificVersionSelectedIndicator.style.display = shouldShowFilterIndicator ? "inline-block" : "none";
+                    update_project_version_filter_run_card_visibility(versionFilterArgs);
+                });
             });
             // version filter input
+            const projectVersionFilterSearch = document.getElementById(versionFilterSearchId);
             const handle_version_filter_input = () => {
-                const searchBarInput = projectVersionFilterSearch.value.toLowerCase();
-                update_project_version_filter_run_card_visibility(`${projectName}RunCardsContainer`, searchBarInput);
+                update_project_version_filter_run_card_visibility(versionFilterArgs);
             }
             const maxDelay = 50;
             const delayScaledByRunAmount = Math.min(totalRunsAmount/100, maxDelay); // ~0.01ms per run or 50ms max
             projectVersionFilterSearch.addEventListener('input', debounce(handle_version_filter_input, delayScaledByRunAmount));
         }
 
-        // holds rows, each containing 3 run cards, for overview project section
+        function generate_version_filter_list_item_html(version, projectName, checked, amount, amountType) {
+            function versionFilterListItemInput(version, id, checked) {
+                return `<input class="form-check-input version-checkbox" type="checkbox" value="${version}" id="${id}" ${checked}>`
+            };
+            function versionFilterListItemLabel(forId, version, amount, amountType, pluralPostfix) {
+                return `<label class="form-check-label" for="${forId}">${version} (${amount} ${amountType}${pluralPostfix})</label>`
+            };
+            const listItemId = `${projectName}VersionFilterListItem`;
+            const listItemInputId = `${listItemId}${version}Input`;
+            const pluralPostfix = amount === 1 ? '' : 's';
+            return `
+                <li>
+                    <div class="form-check">
+                        ${versionFilterListItemInput(version, listItemInputId, checked)}
+                        ${versionFilterListItemLabel(listItemInputId, version, amount, amountType, pluralPostfix)}
+                    </div>
+                </li>
+            `
+        }
+
+        // creates overview project section
         function create_project_cards_container(projectName, projectRuns, percent = 20) {
             const totalRunsAmount = projectRuns.length;
             const passedRunsAmount = projectRuns.filter(run => run.failed === 0).length;
@@ -4457,32 +4524,34 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             toggleVisibility(untagged, settings.switch.runName);
         }
 
-        function update_project_version_select_run_card_visibility(cardsContainerId, selectedVersion) {
+        // apply version select checkbox and version textinput filter
+        function update_project_version_filter_run_card_visibility({cardsContainerId, versionDropDownFilterId, versionStringFilterId}) {
             const cardsContainerElement = document.getElementById(cardsContainerId);
             const scrollOffsetBefore = cardsContainerElement.getBoundingClientRect().top;
-            const runCardElements = cardsContainerElement.querySelectorAll("[data-project-version]");
-            runCardElements.forEach( runCardElement => {
-                runCardElement.style.display =
-                    selectedVersion === "All" || runCardElement.dataset.projectVersion === selectedVersion
-                    ? ""
-                    : "none";
-            })
-            const scrollOffsetAfter = cardsContainerElement.getBoundingClientRect().top;
-            window.scrollBy(0, scrollOffsetAfter - scrollOffsetBefore);
-        }
-
-        function update_project_version_filter_run_card_visibility(cardsContainerId, inputString) {
-            const cardsContainerElement = document.getElementById(cardsContainerId);
-            const scrollOffsetBefore = cardsContainerElement.getBoundingClientRect().top;
-            const runCardElementNodeList = cardsContainerElement.querySelectorAll("div.overview-card");
-            const runCardElements = Array.from(runCardElementNodeList);
-            const cardsToShow = runCardElements
-                .filter(runCardElement => runCardElement.dataset.projectVersion.toLowerCase().includes(inputString));
-            runCardElements.forEach( runCardElement => {
-                runCardElement.style.display = "none";
+            const versionDropDownFilter = document.getElementById(versionDropDownFilterId);
+            const dropDownCheckBoxes = versionDropDownFilter.querySelectorAll(".version-checkbox");
+            const selectedVersions = Array.from(dropDownCheckBoxes)
+                .filter(checkBox => checkBox.checked)
+                .map(checkBox => checkBox.value);
+            const runCardNodeList = cardsContainerElement.querySelectorAll("div.overview-card");
+            const runCardsArray = Array.from(runCardNodeList);
+            let dropDownFilteredRunCards = runCardsArray;
+            if (!selectedVersions.includes("All")) {
+                dropDownFilteredRunCards = runCardsArray.filter(runCard =>
+                    selectedVersions.includes(runCard.dataset.projectVersion)
+                );
+            }
+            const versionStringFilter = document.getElementById(versionStringFilterId);
+            const lowerCaseVersionStringFilterValue = versionStringFilter.value.toLowerCase();
+            const fullyFilteredRunCards = dropDownFilteredRunCards.filter(runCard =>
+                runCard.dataset.projectVersion.toLowerCase()
+                .includes(lowerCaseVersionStringFilterValue)
+            );
+            runCardsArray.forEach(runCard => {
+                runCard.style.display = "none";
             });
-            cardsToShow.forEach( card => {
-                card.style.display = "";
+            fullyFilteredRunCards.forEach(runCard => {
+                runCard.style.display = "";
             })
             const scrollOffsetAfter = cardsContainerElement.getBoundingClientRect().top;
             window.scrollBy(0, scrollOffsetAfter - scrollOffsetBefore);
