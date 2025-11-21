@@ -833,8 +833,10 @@
                         </div>
                         <div class="col-auto mt-1 ps-2 pe-2" id="runTagFilter">
                             <div class="selectBox" id="selectRunTags">
-                                <label class="form-label form-label-sm mb-0" for="runTag" id="runTagLabel">Run
-                                    Tags</label>
+                                <label class="form-label form-label-sm mb-0" for="runTag" id="runTagLabel">
+                                    <span id="filterRunTagSelectedIndicator" class="version-selected-dot" style="display: none;"></span>
+                                    Run Tags
+                                </label>
                                 <select class="form-select form-select-sm">
                                     <option>Select Tags</option>
                                 </select>
@@ -848,6 +850,7 @@
                         <div class="col-auto mt-1 ps-2 pe-2" id="projectVersionFilter">
                             <div class="selectBox" id="selectProjectVersion">
                                 <label class="form-label form-label-sm mb-0" for="projectVersionList" id="projectVersionListLabel">
+                                    <span id="filterVersionSelectedIndicator" class="version-selected-dot" style="display: none;"></span>
                                     Versions
                                 </label>
                                 <select class="form-select form-select-sm">
@@ -4049,7 +4052,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             ).join("");
             const tagsSelect = document.getElementById("runTag");
             tagsSelect.innerHTML = andOrTags + listItems;
-            document.getElementById("All").checked = true;
+            const allRunTagsCheckBox = document.getElementById("All");
+            allRunTagsCheckBox.checked = true;
+            setup_filter_active_indicator(allRunTagsCheckBox, "filterRunTagSelectedIndicator");
             if (tags.size > 0) {
                 document.getElementById("runTagFilter").hidden = false
             } else {
@@ -4081,8 +4086,18 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                      .map(projectVersion => listItemTemplate(prefix, projectVersion))
                                      .join('');
             projectVersionList.innerHTML = projectVersionListHtml;
-            document.getElementById(`${prefix}All`).checked = true;
+            const allVersionsCheckBox = document.getElementById(`${prefix}All`);
+            allVersionsCheckBox.checked = true;
+            setup_filter_active_indicator(allVersionsCheckBox, "filterVersionSelectedIndicator");
             setup_filter_checkbox_subfilter("projectVersionCheckBoxes");
+        }
+
+        // show filter active indicator if checkBoxElement unchecked
+        function setup_filter_active_indicator(checkBoxElement, indicatorId) {
+            const filterActiveIndicator = document.getElementById(indicatorId);
+            checkBoxElement.addEventListener("change", () => {
+                filterActiveIndicator.style.display = checkBoxElement.checked ? "none" : "inline-block";
+            });
         }
 
         function setup_filter_checkbox_subfilter(parentElementId, eventType = "input") {
