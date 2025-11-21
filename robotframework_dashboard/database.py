@@ -59,19 +59,23 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
             # suite/test: id was added in 0.8.4
             # run: metadata was added in 1.0.0
             # keyword: owner was added in 1.2.0
+            # run: project_version was added in TBD
             run_table_length = get_runs_length()
-            if run_table_length == 10:
+            if run_table_length == 10:  # -> column alias not present
                 self.connection.cursor().execute(RUN_TABLE_UPDATE_ALIAS)
                 self.connection.commit()
                 run_table_length = get_runs_length()
-            if run_table_length == 11:
+            if run_table_length == 11:  # -> column path not present
                 self.connection.cursor().execute(RUN_TABLE_UPDATE_PATH)
                 self.connection.commit()
                 run_table_length = get_runs_length()
-            if run_table_length == 12:
+            if run_table_length == 12:  # -> column metadata not present
                 self.connection.cursor().execute(RUN_TABLE_UPDATE_METADATA)
                 self.connection.commit()
                 run_table_length = get_runs_length()
+            if run_table_length == 13:  # -> column project_version not present
+                self.connection.cursor().execute(RUN_TABLE_UPDATE_PROJECT_VERSION)
+                self.connection.commit()
 
             suite_table_length = get_suites_length()
             if suite_table_length == 9:
@@ -138,14 +142,14 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         """Helper function to insert the run data with the run tags"""
         full_runs = []
         for run in runs:
-            *rest, last = run
+            *rest, metadata = run
             new_run = (
                     *rest,
-                    project_version,
                     ",".join(tags),
                     run_alias,
                     str(path),
-                    last
+                    metadata,
+                    project_version
             )
             full_runs.append(new_run)
         self.connection.executemany(INSERT_INTO_RUNS, full_runs)
