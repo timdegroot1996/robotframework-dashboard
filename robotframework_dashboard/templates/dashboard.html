@@ -4789,12 +4789,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function prepare_projects_version_counts_map(projects) {
             const projectVersionCounts = {};
             for (const [project, runs] of Object.entries(projects)) {
-            const versionCounts = {};
+                const versionCounts = {};
                 for (const run of runs) {
-                    if (run.project_version != null) {
-                        versionCounts[run.project_version] = (versionCounts[run.project_version] || 0) + 1;
+                    const projectVersion = run.project_version ?? "None";
+                    versionCounts[projectVersion] = (versionCounts[projectVersion] || 0) + 1;
                     }
-                }
                 versionsByProject[project] = versionCounts;
             }
         }
