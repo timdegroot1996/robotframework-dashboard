@@ -4916,7 +4916,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
              projectVersion = null,
              showOnlyVersion = false,
         ) {
-            const normalizedVersion = projectVersion ?? "None";
+            const normalizedProjectVersion = projectVersion ?? "None";
             // for overview statistics
             let cardTitle = `
                     <h5 class="card-title mb-0 fw-semibold">${projectName}</h5>
@@ -4924,17 +4924,18 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             let smallVersionHtml = `
                 <div id="${projectName}RunCardVersion${idPostfix}" data-projectVersion="${projectVersion}" class="d-flex gap-1">
                     <div class="text-muted">Version:</div>
-                    <div>${normalizedVersion}</div>
+                    <div>${normalizedProjectVersion}</div>
                 </div>`;
             // for project bars
-            const projectHasVersions = Object.keys(versionsByProject[projectName]).length > 0;
+            const versionsForProject = Object.keys(versionsByProject[projectName]);
+            const projectHasVersions = !(versionsForProject.length === 1 && versionsForProject[0] === "None");
             const versionClass = "fw-semibold";
             let versionTitle = '';
             if (projectHasVersions) { // version title
                 versionTitle = `
                     <h5 class="card-title mb-0 d-inline text-muted">Version:</h5>
                     <h5 class="card-title mb-0 d-inline ${versionClass}">
-                        ${normalizedVersion}
+                        ${normalizedProjectVersion}
                     </h5>
                 `;
             } else { // empty title
@@ -4947,7 +4948,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 smallVersionHtml = '';
             }
             return `
-            <div class="col-4 overview-card" id="${projectName}Card${idPostfix}" data-project-version="${projectVersion}">
+            <div class="col-4 overview-card" id="${projectName}Card${idPostfix}" data-project-version="${normalizedProjectVersion}">
                 <div class="card border-3 border-${status}">
                     <div class="card-body">
                         <div class="row">
