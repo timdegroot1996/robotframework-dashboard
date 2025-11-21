@@ -4067,6 +4067,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 .filter(ver => ver != null)
             );
             const projectVersionOptions = [...projectVersionOptionsSet].sort().reverse();
+            projectVersionOptions.unshift("None");
             projectVersionOptions.unshift("All");
             const prefix = "projectVersionInputItem";
             const listItemTemplate = (prefix, value) => `
@@ -4645,7 +4646,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             if (!selectedProjectVersions.size) return [];
             if (selectedProjectVersions.has("All")) return runs;
 
-            return runs.filter(run => run.project_version && selectedProjectVersions.has(run.project_version));
+            return runs.filter(run => {
+              if (run.project_version === null) { // allow filter for runs with no project version
+                  return selectedProjectVersions.has("None");
+              }
+              return selectedProjectVersions.has(run.project_version);
+            });
         }
 
         // function to filter the run data based on the selected date range
