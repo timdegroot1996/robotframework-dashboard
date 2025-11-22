@@ -58,7 +58,9 @@ class ArgumentParser:
             "--outputpath",
             help=(
                 "`path`  Specifies one or more paths to output.xml.\n"
-                "        If providing multiple XML files, specify -o for each file."
+                "        If providing multiple XML files, specify -o for each file.\n\n"
+                "        Example:\n"
+                "          -o output1.xml -o path/to/output2.xml"
             ),
             action="append",
             nargs="*",
@@ -68,9 +70,13 @@ class ArgumentParser:
             "-f",
             "--outputfolderpath",
             help=(
-                "`path`  Specifies a directory path. All folders and subfolders will be\n"
-                "        scanned for *output*.xml files to be processed into the database."
-            ),
+                "`path`  Specifies one or more directory paths. All folders and subfolders will be\n"
+                "        scanned for *output*.xml files to be processed into the database.\n"
+                "        If providing multiple directory paths, specify -f for each path.\n\n"
+                "        Example:\n"
+                "          -f results -f path/to/outputs" ),
+            action="append",
+            nargs="*",
             default=None,
         )
         parser.add_argument(
@@ -189,8 +195,11 @@ class ArgumentParser:
         parser.add_argument(
             "-s",
             "--server",
+            nargs="?",  # Makes the argument optional
+            const="default",  # Value to use if the flag is given without an argument
             help=(
-                "Provide the server argument in one of the following forms:\n\n"
+                "Provide the server argument in one of the following forms:\n"
+                "  robotdashboard --server                # Uses default server\n"
                 "  robotdashboard --server default[:username:password]\n"
                 "  robotdashboard --server host:port[:username:password]\n\n"
                 "Examples:\n"
@@ -223,16 +232,19 @@ class ArgumentParser:
                 outputs.append([path, tags])
 
         # handles possible tags on all provided --outputfolderpath
-        outputfolderpath = None
+        outputfolderpaths = None
         if arguments.outputfolderpath:
-            splitted = split(r":(?!(\/|\\))", arguments.outputfolderpath)
-            while None in splitted:
-                splitted.remove(
-                    None
-                )  # None values are found by re.split because of the 2 conditions
-            path = splitted[0]
-            tags = splitted[1:]
-            outputfolderpath = [path, tags]
+            outputfolderpaths = []
+            print(arguments.outputfolderpath)
+            for folder in arguments.outputfolderpath:
+                splitted = split(r":(?!(\/|\\))", folder[0])
+                while None in splitted:
+                    splitted.remove(
+                        None
+                    )  # None values are found by re.split because of the 2 conditions
+                path = splitted[0]
+                tags = splitted[1:]
+                outputfolderpaths.append([path, tags])
 
         # handles the processing of --removeruns
         remove_runs = None
@@ -336,7 +348,7 @@ class ArgumentParser:
         # return all provided arguments
         provided_args = {
             "outputs": outputs,
-            "output_folder_path": outputfolderpath,
+            "output_folder_paths": outputfolderpaths,
             "database_path": arguments.databasepath,
             "generate_dashboard": generate_dashboard,
             "dashboard_name": dashboard_name,
