@@ -2551,8 +2551,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 duration: 1500,
                 rounding: 6,
             },
-            libraries: {
-            },
             menu: {
                 overview: false,
                 dashboard: true,
@@ -3415,7 +3413,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         .map(item => item.owner)
                         .filter(owner => owner) // remove null, undefined, or empty string
                 )];
-                const keywordPrefs = settings.libraries
+                const keywordPrefs = settings.libraries ?? {};
                 function render_keyword_libraries() {
                     const container = document.getElementById("keywordLibraryList");
                     container.innerHTML = "";
@@ -8575,8 +8573,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             for (const key of new Set([...Object.keys(defaults), ...Object.keys(local)])) {
                 const defaultVal = defaults[key];
                 const localVal = local[key];
-                // Removed key: exists in local but not in defaults — EXCEPT layout and theme (only in localstorage)
-                if (key !== "layouts" && key !== "theme" && defaultVal === undefined && localVal !== undefined) {
+                // Removed key: exists in local but not in defaults — EXCEPT layout, libraries and theme (only in localstorage)
+                if (key !== "layouts" && key !== "libraries" && key !== "theme" && defaultVal === undefined && localVal !== undefined) {
                     continue;
                 }
                 // Added key: exists in defaults but not local: add defaults
