@@ -136,6 +136,7 @@ robotdashboard --databaseclass mysql.py
 
 ## Starting the Dashboard Server
 ```bash
+robotdashboard --server  
 robotdashboard --server default  
 robotdashboard -s 0.0.0.0:8543  
 ```

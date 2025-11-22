@@ -24,6 +24,8 @@ You can start the server using the `robotdashboard` CLI with the `--server` (or 
 **Basic usage**
 
 ```bash 
+robotdashboard --s  
+robotdashboard --server  
 robotdashboard --server default  
 ```
 
