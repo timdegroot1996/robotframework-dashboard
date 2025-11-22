@@ -1,4 +1,4 @@
-from .robotdashboard import RobotDashboard
+from ..robotdashboard import RobotDashboard
 
 from fastapi import FastAPI, Body, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse, FileResponse
@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import List, Optional
 import secrets
 
-from .version import __version__
+from ..version import __version__
 
 response_message_model_config = {
     "json_schema_extra": {
@@ -107,7 +107,7 @@ add_outputs_openapi_examples = {
         "summary": "When using an absolute folder path that contains output.xml's",
         "description": "When using an absolute folder path that contains output.xml's",
         "value": {
-            "output_path": "C:\\users\\docs\\prod-outputs",
+            "output_folder_path": "C:\\users\\docs\\prod-outputs",
             "output_tags": ["production-run"],
         },
     },
@@ -164,6 +164,7 @@ remove_log_model_config = {
 
 class ResponseMessage(BaseModel):
     """The response message model for Adding or Removing runs from the database"""
+
     success: str
     message: str
     console: str
@@ -176,6 +177,7 @@ class AdminJsonConfig(BaseModel):
 
 class GetOutput(BaseModel):
     """The response model that is returned when getting outputs"""
+
     run_start: str
     name: str
     alias: str
@@ -185,6 +187,7 @@ class GetOutput(BaseModel):
 
 class AddOutput(BaseModel):
     """The model that has to be provided when trying to add outputs to the database"""
+
     output_path: Optional[str] = None
     output_data: Optional[str] = None
     output_folder_path: Optional[str] = None
@@ -195,6 +198,7 @@ class AddOutput(BaseModel):
 
 class RemoveOutputs(BaseModel):
     """The model that has to be provided when trying to delete outputs from the database"""
+
     run_starts: Optional[List[str]] = None
     indexes: Optional[List[str]] = None
     aliases: Optional[List[str]] = None
@@ -204,6 +208,7 @@ class RemoveOutputs(BaseModel):
 
 class AddLog(BaseModel):
     """The model to add log files to the server"""
+
     log_data: str
     log_name: str
     model_config = add_log_model_config
@@ -211,6 +216,7 @@ class AddLog(BaseModel):
 
 class RemoveLog(BaseModel):
     """The model to remove log files from the server"""
+
     log_name: str
     model_config = remove_log_model_config
 
@@ -218,7 +224,9 @@ class RemoveLog(BaseModel):
 class ApiServer:
     """Robot Dashboard server implementation, this class handles the admin page and all functions related to the server"""
 
-    def __init__(self, server_host: str, server_port: int, server_user: str, server_pass: str):
+    def __init__(
+        self, server_host: str, server_port: int, server_user: str, server_pass: str
+    ):
         """Init function that starts up the fastapi app and initializes all the vars and endpoints"""
         self.app = FastAPI()
         self.security = HTTPBasic()
@@ -239,8 +247,12 @@ class ApiServer:
             if not self.server_user or not self.server_pass:
                 return "anonymous"
 
-            correct_username = secrets.compare_digest(credentials.username, self.server_user)
-            correct_password = secrets.compare_digest(credentials.password, self.server_pass)
+            correct_username = secrets.compare_digest(
+                credentials.username, self.server_user
+            )
+            correct_password = secrets.compare_digest(
+                credentials.password, self.server_pass
+            )
 
             if not (correct_username and correct_password):
                 raise HTTPException(
@@ -251,18 +263,25 @@ class ApiServer:
             return credentials.username
 
         if not self.server_user or not self.server_pass:
+
             @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
             async def admin_page():
                 """Admin page endpoint function"""
-                admin_file = join(dirname(abspath(__file__)), "templates", "admin.html")
+                admin_file = join(
+                    dirname(abspath(__file__)), "../templates", "admin.html"
+                )
                 admin_html = open(admin_file, "r").read()
                 admin_html = admin_html.replace('"placeholder_version"', __version__)
                 return admin_html
+
         else:
+
             @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
             async def admin_page(username: str = Depends(authenticate)):
                 """Admin page endpoint function"""
-                admin_file = join(dirname(abspath(__file__)), "templates", "admin.html")
+                admin_file = join(
+                    dirname(abspath(__file__)), "../templates", "admin.html"
+                )
                 admin_html = open(admin_file, "r").read()
                 admin_html = admin_html.replace('"placeholder_version"', __version__)
                 return admin_html
@@ -390,12 +409,12 @@ class ApiServer:
                     )
                 if add_output.output_folder_path != None:
                     input = add_output.output_folder_path
-                    output_folder_path = [
+                    output_folder_paths = [[
                         add_output.output_folder_path,
                         output_tags,
-                    ]
+                    ]]
                     console = self.robotdashboard.process_outputs(
-                        output_folder_config=output_folder_path
+                        output_folder_configs=output_folder_paths
                     )
                 if add_output.output_data != None:
                     input = ""
@@ -533,11 +552,12 @@ class ApiServer:
                 "console": console,
             }
             return response
-        
+
     def _setup_catch_all_route(self):
         """Catch-all route for any resource after all other routes
         This will try to resolve based on screenshots that are relative to the log files
         If it doesn't find any matching file nothing will happen"""
+
         @self.app.get("/{full_path:path}", include_in_schema=False)
         async def catch_all(full_path: str):
             if self.latest_log_dir is None:

@@ -1,8 +1,17 @@
 from setuptools import setup, find_packages
 
+extras = {
+    "server": [
+        "fastapi>=0.115.11",
+        "uvicorn>=0.33.0",
+    ],
+}
+
+extras["all"] = sorted({pkg for group in extras.values() for pkg in group})
+
 setup(
     name="robotframework-dashboard",
-    version="1.2.2",
+    version="1.3.0",
     description="Output processor and dashboard generator for Robot Framework output files",
     long_description="""# 📊 Robot Framework Dashboard
 
@@ -83,9 +92,8 @@ This project is licensed under the MIT License.
     zip_safe=False,
     install_requires=[
         "robotframework>=6.0",
-        "fastapi>=0.115.11",
-        "uvicorn>=0.33.0",
     ],
+    extras_require=extras,
     entry_points={
         "console_scripts": [
             "robotdashboard=robotframework_dashboard.main:main",
