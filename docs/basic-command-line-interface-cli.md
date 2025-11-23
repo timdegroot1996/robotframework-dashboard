@@ -37,7 +37,7 @@ robotdashboard -o output1.xml -o output2.xml -o output3.xml
 ```bash
 robotdashboard -f ./reports  
 robotdashboard -f ../../some_folder/sub_folder/logs  
-robotdashboard -f C:/nightly_runs:tag1:tag2:tag3  
+robotdashboard -f C:/nightly_runs:tag1:tag2:tag3 -f some/other/path/results
 ```
 - Optional: `-f` or `--outputfolderpath` specifies a folder; the CLI will process all `*output*.xml` files it finds.  
 - Tags can be added to group or categorize runs. 
@@ -136,6 +136,7 @@ robotdashboard --databaseclass mysql.py
 
 ## Starting the Dashboard Server
 ```bash
+robotdashboard --server  
 robotdashboard --server default  
 robotdashboard -s 0.0.0.0:8543  
 ```

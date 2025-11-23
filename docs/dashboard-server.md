@@ -6,6 +6,8 @@ outline: deep
 
 RobotFramework Dashboard includes a built-in server that lets you host the dashboard on a separate machine. This allows you to centrally serve the HTML dashboard, and remotely add, list, or remove test result outputs from other clients. The server is built using **FastAPI**, and comes with a set of Pydantic models to validate request payloads. 
 
+> **Tip:** The server is not installed by default see [Installation & Version Info](/installation-version-info.md#install-robot-framework-dashboard) for more info!
+
 ## Why Use the Dashboard Server
 
 - Host a centralized, always-available dashboard accessible via HTTP  
@@ -22,6 +24,8 @@ You can start the server using the `robotdashboard` CLI with the `--server` (or 
 **Basic usage**
 
 ```bash 
+robotdashboard --s  
+robotdashboard --server  
 robotdashboard --server default  
 ```
 

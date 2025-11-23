@@ -14,12 +14,17 @@ Robot Framework Dashboard is a tool for [Robot Framework](https://robotframework
 
 ## 🚀 Getting Started
 Install Robot Framework 6.0 or higher (if not already installed):
-```
+```bash
 pip install robotframework
 ```
 Install Robot Framework Dashboard:
-```
+```bash
 pip install robotframework-dashboard
+```
+Install Robot Framework Dashboard with Server:
+```bash
+pip install robotframework-dashboard[server]
+pip install robotframework-dashboard[all]
 ```
 
 ## 🔍 Key Features

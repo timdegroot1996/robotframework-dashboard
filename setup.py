@@ -1,5 +1,14 @@
 from setuptools import setup, find_packages
 
+extras = {
+    "server": [
+        "fastapi>=0.115.11",
+        "uvicorn>=0.33.0",
+    ],
+}
+
+extras["all"] = sorted({pkg for group in extras.values() for pkg in group})
+
 setup(
     name="robotframework-dashboard",
     version="1.2.2",
@@ -14,12 +23,17 @@ Robot Framework Dashboard is a tool for [Robot Framework](https://robotframework
 
 ## 🚀 Getting Started
 Install Robot Framework 6.0 or higher (if not already installed):
-```
+```bash
 pip install robotframework
 ```
 Install Robot Framework Dashboard:
-```
+```bash
 pip install robotframework-dashboard
+```
+Install Robot Framework Dashboard with Server:
+```bash
+pip install robotframework-dashboard[server]
+pip install robotframework-dashboard[all]
 ```
 
 ## 🔍 Key Features
@@ -83,9 +97,8 @@ This project is licensed under the MIT License.
     zip_safe=False,
     install_requires=[
         "robotframework>=6.0",
-        "fastapi>=0.115.11",
-        "uvicorn>=0.33.0",
     ],
+    extras_require=extras,
     entry_points={
         "console_scripts": [
             "robotdashboard=robotframework_dashboard.main:main",
