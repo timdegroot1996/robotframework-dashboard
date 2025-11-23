@@ -28,9 +28,26 @@ class ArgumentParser:
             print(
                 f" ERROR: There was an issue during the parsing of the provided arguments"
             )
-            print(error)
+            print(f"  {error}")
             exit(0)
         return arguments
+
+    def _normalize_bool(self, value, arg_name):
+        """
+        Checks the boolean value and returns the correct boolean or exits with error
+        """
+        v = str(value).lower()
+        if v == "true":
+            return True
+        elif v == "false":
+            return False
+        else:
+            print(
+                f" ERROR: The provided value: '{value}' for --{arg_name} is invalid\n"
+                f"  Please provide True, False, or leave empty for the reverse boolean of the default\n"
+                f"  See the --h / --help for more information and usage examples"
+            )
+            exit(0)
 
     def _parse_arguments(self):
         """Parses the actual arguments"""
@@ -44,12 +61,12 @@ class ArgumentParser:
             "--version",
             action="store_true",
             dest="version",
-            help="Display application version information.",
+            help="Display application version information.\n",
         )
         parser.add_argument(
             "-h",
             "--help",
-            help="Provide additional information.",
+            help="Provide additional information.\n",
             action="help",
             default=argparse.SUPPRESS,
         )
@@ -57,8 +74,14 @@ class ArgumentParser:
             "-o",
             "--outputpath",
             help=(
-                "`path`  Specifies one or more paths to output.xml.\n"
-                "        If providing multiple XML files, specify -o for each file."
+                "`path` Specifies one or more paths to output.xml.\n"
+                "Usage behavior:\n"
+                "  • Multiple XML files: repeat '-o' for each file\n"
+                "  • Accepts files or paths to files\n"
+                "  • Optional tags can be provided by appending ':tag1:tag2' to the path\n"
+                "Examples:\n"
+                "  • '-o path/to/output1.xml' → add one output\n"
+                "  • '-o output2.xml:dev:nightly -o output3.xml:prod' → add two outputs with tags\n"
             ),
             action="append",
             nargs="*",
@@ -68,8 +91,14 @@ class ArgumentParser:
             "-f",
             "--outputfolderpath",
             help=(
-                "`path`  Specifies a directory path. All folders and subfolders will be\n"
-                "        scanned for *output*.xml files to be processed into the database."
+                "`path` Specifies a directory path scanned recursively for *output*.xml files.\n"
+                "Usage behavior:\n"
+                "  • Provide a folder path\n"
+                "  • All matching *output*.xml files in all subfolders will be included\n"
+                "  • Optional tags can be provided by appending ':tag1:tag2' to the path\n"
+                "Examples:\n"
+                "  • '-f results/' → scan folder for output files\n"
+                "  • '-f results/' -f path/to/more_results/:prod:regression → multiple folders with tags\n"
             ),
             default=None,
         )
@@ -77,16 +106,15 @@ class ArgumentParser:
             "-r",
             "--removeruns",
             help=(
-                "`string` Specifies one or more indexes, run_starts, aliases, or tags to remove\n"
-                "         from the database. Multiple runs can be provided when separated by\n"
-                "         commas (,).\n\n"
-                "         You must specify the data type (index, run_start, alias, or tag).\n"
-                "         Multiple types may be combined.\n\n"
-                "         Indexes support ranges using ':' and multiple values using ';'.\n\n"
-                "         Examples:\n"
-                "           -r index=0,index=1:4;9,index=10\n"
-                "           --removeruns 'run_start=2024-07-30 15:27:20.184407,index=20'\n"
-                "           -r alias=some_cool_alias,tag=prod,tag=dev"
+                "`string` Specifies indexes, run_starts, aliases or tags to remove from the database.\n"
+                "Usage behavior:\n"
+                "  • Multiple values separated by commas (,)\n"
+                "  • Must specify data types: index, run_start, alias or tag\n"
+                "  • Ranges supported using ':' and lists using ';'\n"
+                "Examples:\n"
+                "  • '-r index=0,index=1:4;9,index=10' → remove index 0, 1, 2, 3, 9, 10\n"
+                "  • '-r run_start=2024-07-30 15:27:20.184407,index=20' → remove specified run and index 20\n"
+                "  • '-r alias=some_alias,tag=prod,tag=dev' → remove all runs with alias some_alias or tag prod or dev\n"
             ),
             action="append",
             nargs="*",
@@ -96,41 +124,66 @@ class ArgumentParser:
             "-d",
             "--databasepath",
             help=(
-                "`path`  Specifies the path to the database in which results are stored."
+                "`path` Specifies the path to the database file.\n"
+                "Usage behavior:\n"
+                "  • Default value: robot_results.db\n"
+                "  • Provide a custom .db file to use instead of the default\n"
+                "Examples:\n"
+                "  • '-d path/to/myresults.db'\n"
             ),
             default="robot_results.db",
         )
         parser.add_argument(
             "-n",
             "--namedashboard",
-            help="`path`  Specifies a custom HTML dashboard file name.",
+            help=(
+                "`string` Specifies a custom HTML dashboard file name.\n"
+                "Usage behavior:\n"
+                "  • Default value: robot_dashboard_yyyymmdd-hhssmm.html\n"
+                "  • Provide a filename to override\n"
+                "Examples:\n"
+                "  • '-n dashboard.html'\n"
+            ),
             default="",
         )
         parser.add_argument(
             "-j",
             "--jsonconfig",
             help=(
-                "`path`  Specifies a path to a dashboard JSON config. It is used as the\n"
-                "        default on first load if no config exists yet."
+                "`path` Specifies a path to a dashboard JSON configuration.\n"
+                "Usage behavior:\n"
+                "  • Default value: None\n"
+                "  • File is used as the initial configuration if no config exists yet in user localstorage\n"
+                "Examples:\n"
+                "  • '-j settings.json'\n"
             ),
             default=None,
         )
         parser.add_argument(
             "-t",
             "--dashboardtitle",
-            help="`string` Specifies a custom HTML report title for the dashboard.",
+            help=(
+                "`string` Specifies the dashboard HTML title.\n"
+                "Usage behavior:\n"
+                "  • Default value: Robot Framework Dashboard - yyyy-mm-dd hh:mm:ss\n"
+                "  • Provide text to set a custom title\n"
+                "Examples:\n"
+                "  • '-t My_Test_Dashboard'\n"
+            ),
             default="",
         )
         parser.add_argument(
             "-m",
             "--messageconfig",
             help=(
-                "`path`  Specifies a config file containing message lines with placeholders\n"
-                "        used to 'bundle' test messages.\n\n"
-                "        Example message lines:\n"
-                "          'The test has failed on date: ${date}'\n"
-                "          'Expected ${x} but received: ${y}'\n\n"
-                "        Placeholders match any value; actual content does not matter."
+                "`path` Specifies a config file containing message templates.\n"
+                "Usage behavior:\n"
+                "  • Default value: None\n"
+                "  • File should contain lines with placeholders like ${value}\n"
+                "Examples:\n"
+                "  • 'The test has failed on date: ${date}' → example line in messages.txt\n"
+                "  • 'Expected ${x} but received: ${y}' → example line in messages.txt\n"
+                "  • '-m messages.txt'\n"
             ),
             default=None,
         )
@@ -138,8 +191,12 @@ class ArgumentParser:
             "-q",
             "--quantity",
             help=(
-                "`integer` Specifies the default number of runs shown in the dashboard on\n"
-                "          initial load (Amount Filter)."
+                "`integer` Specifies the number of runs shown on initial dashboard load.\n"
+                "Usage behavior:\n"
+                "  • Default value: 20\n"
+                "  • Provide an integer to override, the higher this number the slower initial load\n"
+                "Examples:\n"
+                "  • '-q 25'\n"
             ),
             default=None,
         )
@@ -147,64 +204,95 @@ class ArgumentParser:
             "-u",
             "--uselogs",
             help=(
-                "`boolean` Enables clickable graphs that open the corresponding log files.\n\n"
-                "          The log.html file must exist in the same folder as output.xml.\n"
-                "          Naming rules:\n"
-                "            Replace 'output' → 'log'\n"
-                "            Replace 'xml'    → 'html'\n\n"
-                "          Examples:\n"
-                "            output-20250313-002134.xml  → log-20250313-002134.html\n"
-                "            01-output.xml               → 01-log.html"
+                "`boolean` Enables clickable graphs linking to log.html.\n"
+                "Usage behavior:\n"
+                "  • Default value: False\n"
+                "  • Using '--uselogs' with no value → True (reverse default)\n"
+                "  • Using '--uselogs true'  → True\n"
+                "  • Using '--uselogs false' → False\n"
             ),
+            nargs="?",
+            const=True,
             default=False,
         )
+
         parser.add_argument(
             "-g",
             "--generatedashboard",
             help=(
                 "`boolean` Whether to generate the HTML dashboard.\n"
-                "          Default: True. Override if only the database is needed."
+                "Usage behavior:\n"
+                "  • Default value: True\n"
+                "  • Using '--generatedashboard' with no value → False (reverse default)\n"
+                "  • Using '--generatedashboard true'  → True\n"
+                "  • Using '--generatedashboard false' → False\n"
             ),
+            nargs="?",
+            const=False,
             default=True,
         )
+
         parser.add_argument(
             "-l",
             "--listruns",
             help=(
-                "`boolean` Whether runs should be listed.\n"
-                "          Default: True. Override if only the database is needed."
+                "`boolean` Whether runs should be listed in the dashboard.\n"
+                "Usage behavior:\n"
+                "  • Default value: True\n"
+                "  • Using '--listruns' with no value → False (reverse default)\n"
+                "  • Using '--listruns true'  → True\n"
+                "  • Using '--listruns false' → False\n"
             ),
+            nargs="?",
+            const=False,
             default=True,
         )
+
         parser.add_argument(
             "--offlinedependencies",
             help=(
-                "`boolean` Use locally embedded JS/CSS dependencies instead of CDN URLs.\n"
-                "          Default: False. Enable to generate a dashboard that works completely offline."
+                "`boolean` Use locally embedded JS/CSS instead of CDN.\n"
+                "Usage behavior:\n"
+                "  • Default value: False\n"
+                "  • Using '--offlinedependencies' with no value → True (reverse default)\n"
+                "  • Using '--offlinedependencies true'  → True\n"
+                "  • Using '--offlinedependencies false' → False\n"
             ),
+            nargs="?",
+            const=True,
             default=False,
         )
+
         parser.add_argument(
             "-c",
             "--databaseclass",
             help=(
-                "`path`  Specifies the path to a custom database class implementation.\n"
-                "        If omitted, the default SQLite3 implementation is used.\n\n"
-                "        Useful for custom or non-SQLite databases.\n\n"
+                "`path` Specifies a custom database class to override SQLite.\n"
+                "Usage behavior:\n"
+                "  • Default value: None (built-in SQLite engine)\n"
+                "  • Provide a .py file implementing a compatible database handler\n"
+                "  • Detailed instructions can be found in the docs (url at the bottom of the help)\n"
+                "Examples:\n"
+                "  • '-c customdb.py'\n"
             ),
             default=None,
         )
+
         parser.add_argument(
             "-s",
             "--server",
             help=(
-                "Provide the server argument in one of the following forms:\n\n"
-                "  robotdashboard --server default[:username:password]\n"
-                "  robotdashboard --server host:port[:username:password]\n\n"
+                "Starts the dashboard webserver.\n"
+                "Usage behavior:\n"
+                "  • Default value: None (no webserver)\n"
+                "  • Provide 'default[:username:password]'\n"
+                "  • Or provide 'host:port[:username:password]'\n"
+                "  • Detailed instructions can be found in the docs (url at the bottom of the help)\n"
                 "Examples:\n"
-                "  robotdashboard --server default:admin:secret\n"
-                "  robotdashboard --server 0.0.0.0:8080:admin:secret\n\n"
-                "If username:password is omitted, security is disabled."
+                "  • '--server' → results in default behavior\n"
+                "  • '--server default' → default behaviour\n"
+                "  • '--server 0.0.0.0:8080' → custom host/port\n"
+                "  • '--server 0.0.0.0:8080:admin:secret' → custom host/port and admin username/password\n"
             ),
             default=None,
         )
@@ -251,34 +339,11 @@ class ArgumentParser:
                 for part in parts:
                     remove_runs.append(part)
 
-        # handles the boolean handling of --generatedashboard
-        generate_dashboard = (
-            True
-            if arguments.generatedashboard == True
-            or arguments.generatedashboard.lower() == "true"
-            else False
-        )
-
-        # handles the boolean handling of --listruns
-        list_runs = (
-            True
-            if arguments.listruns == True or arguments.listruns.lower() == "true"
-            else False
-        )
-
-        # handles the boolean handling of --offlinedependencies
-        offline_dependencies = (
-            False
-            if arguments.offlinedependencies == False or arguments.offlinedependencies.lower() == "false"
-            else True
-        )
-
-        # handles the boolean handling of --uselogs
-        use_logs = None
-        if isinstance(arguments.uselogs, str) and arguments.uselogs.lower() == "true":
-            use_logs = True
-        else:
-            use_logs = False
+        # handles the boolean handling of relevant arguments
+        generate_dashboard =  self._normalize_bool(arguments.generatedashboard, "generatedashboard")
+        list_runs = self._normalize_bool(arguments.listruns, "listruns")
+        offline_dependencies = self._normalize_bool(arguments.offlinedependencies, "offlinedependencies")
+        use_logs = self._normalize_bool(arguments.uselogs, "uselogs")
 
         # generates the datetime used in the file dashboard name and the html title
         generation_datetime = datetime.now()
