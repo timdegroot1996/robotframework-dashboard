@@ -6,95 +6,136 @@
 |_| \_\\___/|____/ \___/ |_| |____/_/   \_|____/|_| |_|____/ \___/_/   \_|_| \_|____/ 
 
 ======================================================================================
-usage: robotdashboard [[]-v[]] [[]-h[]] [[]-o [[]OUTPUTPATH ...[]][]] [[]-f OUTPUTFOLDERPATH[]]
-                      [[]-r [[]REMOVERUNS ...[]][]] [[]-d DATABASEPATH[]]
-                      [[]-n NAMEDASHBOARD[]] [[]-j JSONCONFIG[]] [[]-t DASHBOARDTITLE[]]
-                      [[]-m MESSAGECONFIG[]] [[]-q QUANTITY[]] [[]-u USELOGS[]]
-                      [[]-g GENERATEDASHBOARD[]] [[]-l LISTRUNS[]] [[]-c DATABASECLASS[]]
-                      [[]-s SERVER[]]
+usage: robotdashboard [[]-v[]] [[]-h[]] [[]-o [[]OUTPUTPATH ...[]][]]
+                      [[]-f [[]OUTPUTFOLDERPATH ...[]][]] [[]-r [[]REMOVERUNS ...[]][]]
+                      [[]-d DATABASEPATH[]] [[]-n NAMEDASHBOARD[]] [[]-j JSONCONFIG[]]
+                      [[]-t DASHBOARDTITLE[]] [[]-m MESSAGECONFIG[]] [[]-q QUANTITY[]]
+                      [[]-u [[]USELOGS[]][]] [[]-g [[]GENERATEDASHBOARD[]][]] [[]-l [[]LISTRUNS[]][]]
+                      [[]--offlinedependencies [[]OFFLINEDEPENDENCIES[]][]]
+                      [[]-c DATABASECLASS[]] [[]-s [[]SERVER[]][]]
 
 options:
   -v, --version         Display application version information.
   -h, --help            Provide additional information.
   -o, --outputpath [[]OUTPUTPATH ...[]]
-                        `path` Specifies 1 or more paths to output.xml.
-                        Specify every XML separately with -o if you are
-                        providing more than one.
-  -f, --outputfolderpath OUTPUTFOLDERPATH
-                        `path` Specifies a path to a directory in which it
-                        will look in all folders and subfolders for
-                        *output*.xml files to be processed into the database
+                        `path` Specifies one or more paths to output.xml.
+                        Usage behavior:
+                          • Multiple XML files: repeat '-o' for each file
+                          • Accepts files or paths to files
+                          • Optional tags can be provided by appending ':tag1:tag2' to the path
+                        Examples:
+                          • '-o path/to/output1.xml' -> add one output
+                          • '-o output2.xml:dev:nightly -o output3.xml:prod' -> add two outputs with tags
+  -f, --outputfolderpath [[]OUTPUTFOLDERPATH ...[]]
+                        `path` Specifies a directory path scanned recursively for *output*.xml files.
+                        Usage behavior:
+                          • Provide a folder path
+                          • All matching *output*.xml files in all subfolders will be included
+                          • Optional tags can be provided by appending ':tag1:tag2' to the path
+                        Examples:
+                          • '-f results/' -> scan folder for output files
+                          • '-f results/' -f path/to/more_results/:prod:regression -> multiple folders with tags
   -r, --removeruns [[]REMOVERUNS ...[]]
-                        `string` Specifies 1 or more indexes, run_starts,
-                        aliases or tags to remove from the database. You can
-                        add multiple runs to remove in one call as long as you
-                        split with a comma (,). Do note that it is required to
-                        specify the type of data you are providing (index,
-                        run_start, alias or tag). Multiple types of data at
-                        once is allowed! With indexes you can use : for ranges
-                        and ; for singular indexes at once. Examples: -r
-                        index=0,index=1:4;9,index=10 or --removeruns
-                        'run_start=2024-07-30 15:27:20.184407,index=20' or -r
-                        alias=some_cool_alias,tag=prod,tag=dev
+                        `string` Specifies indexes, run_starts, aliases or tags to remove from the database.
+                        Usage behavior:
+                          • Multiple values separated by commas (,)
+                          • Must specify data types: index, run_start, alias or tag
+                          • Ranges supported using ':' and lists using ';'
+                        Examples:
+                          • '-r index=0,index=1:4;9,index=10' -> remove index 0, 1, 2, 3, 9, 10
+                          • '-r run_start=2024-07-30 15:27:20.184407,index=20' -> remove specified run and index 20
+                          • '-r alias=some_alias,tag=prod,tag=dev' -> remove all runs with alias some_alias or tag prod or dev
   -d, --databasepath DATABASEPATH
-                        `path` Specifies the path to the database you want to
-                        store the results in.
+                        `path` Specifies the path to the database file.
+                        Usage behavior:
+                          • Default value: robot_results.db
+                          • Provide a custom .db file to use instead of the default
+                        Examples:
+                          • '-d path/to/myresults.db'
   -n, --namedashboard NAMEDASHBOARD
-                        `path` Specifies a custom HTML dashboard file name.
+                        `string` Specifies a custom HTML dashboard file name.
+                        Usage behavior:
+                          • Default value: robot_dashboard_yyyymmdd-hhssmm.html
+                          • Provide a filename to override
+                        Examples:
+                          • '-n dashboard.html'
   -j, --jsonconfig JSONCONFIG
-                        `path` Specifies a path to a a dashboard json config
-                        that will be used as default on first load if there is
-                        none already.
+                        `path` Specifies a path to a dashboard JSON configuration.
+                        Usage behavior:
+                          • Default value: None
+                          • File is used as the initial configuration if no config exists yet in user localstorage
+                        Examples:
+                          • '-j settings.json'
   -t, --dashboardtitle DASHBOARDTITLE
-                        `string` Specifies a custom dashboard html report
-                        title.
+                        `string` Specifies the dashboard HTML title.
+                        Usage behavior:
+                          • Default value: Robot Framework Dashboard - yyyy-mm-dd hh:mm:ss
+                          • Provide text to set a custom title
+                        Examples:
+                          • '-t My_Test_Dashboard'
   -m, --messageconfig MESSAGECONFIG
-                        `path` Specifies the path to a config file that
-                        contains lines of messages with placeholders to
-                        'bundle' test messages. Example lines can be 'The test
-                        has failed on date: ${date}' or 'Expected ${x} but
-                        received: ${y}'. Placeholders match everything and the
-                        content is irrelevant.
+                        `path` Specifies a config file containing message templates.
+                        Usage behavior:
+                          • Default value: None
+                          • File should contain lines with placeholders like ${value}
+                        Examples:
+                          • 'The test has failed on date: ${date}' -> example line in messages.txt
+                          • 'Expected ${x} but received: ${y}' -> example line in messages.txt
+                          • '-m messages.txt'
   -q, --quantity QUANTITY
-                        `integer` Specifies the default amount (Amount Filter)
-                        of runs that are shown in the dashboard on first load.
-  -u, --uselogs USELOGS
-                        `boolean` Whether to enable clicking on graphs will
-                        open the logs. Providing this argument makes
-                        runs/suites/tests/keywords clickable. The click will
-                        open the respective log file in a new tab. This
-                        feature uses the path to the output.xml file as a base
-                        to find the log.html files. The log.html should be in
-                        the same folder as the output.xml file and should have
-                        a similar name. 'output' is replaced by 'log' and
-                        'xml' is replaced by 'html' Example:
-                        'output-20250313-002134.xml' should have
-                        'log-20250313-002134.html' in the same folder,
-                        '01-output.xml' expects '01-log.html' etc.
-  -g, --generatedashboard GENERATEDASHBOARD
-                        `boolean` Specifies if you want to generate the HTML
-                        dashboard. Default is True, override if you only
-                        require the database.
-  -l, --listruns LISTRUNS
-                        `boolean` Specifies if the runs should be listed.
-                        Default is True, override if you only require the
-                        database.
+                        `integer` Specifies the number of runs shown on initial dashboard load.
+                        Usage behavior:
+                          • Default value: 20
+                          • Provide an integer to override, the higher this number the slower initial load
+                        Examples:
+                          • '-q 25'
+  -u, --uselogs [[]USELOGS[]]
+                        `boolean` Enables clickable graphs linking to log.html.
+                        Usage behavior:
+                          • Default value: False
+                          • Using '--uselogs' with no value -> True (reverse default)
+                          • Using '--uselogs true'  -> True
+                          • Using '--uselogs false' -> False
+  -g, --generatedashboard [[]GENERATEDASHBOARD[]]
+                        `boolean` Whether to generate the HTML dashboard.
+                        Usage behavior:
+                          • Default value: True
+                          • Using '--generatedashboard' with no value -> False (reverse default)
+                          • Using '--generatedashboard true'  -> True
+                          • Using '--generatedashboard false' -> False
+  -l, --listruns [[]LISTRUNS[]]
+                        `boolean` Whether runs should be listed in the dashboard.
+                        Usage behavior:
+                          • Default value: True
+                          • Using '--listruns' with no value -> False (reverse default)
+                          • Using '--listruns true'  -> True
+                          • Using '--listruns false' -> False
+  --offlinedependencies [[]OFFLINEDEPENDENCIES[]]
+                        `boolean` Use locally embedded JS/CSS instead of CDN.
+                        Usage behavior:
+                          • Default value: False
+                          • Using '--offlinedependencies' with no value -> True (reverse default)
+                          • Using '--offlinedependencies true'  -> True
+                          • Using '--offlinedependencies false' -> False
   -c, --databaseclass DATABASECLASS
-                        `path` Specifies the path to your implementation of
-                        the databaseclass. If nothing is provided default
-                        Sqlite3 implementation is used. Use this when you want
-                        to use a custom implementation or you have your own
-                        database type. See
-                        https://github.com/timdegroot1996/robotframework-
-                        dashboard?tab=readme-ov-file#Custom-Database-Class for
-                        additional information!
-  -s, --server SERVER   Provide the server argument like: robotdashboard
-                        --server default[[]:username:password[]], or
-                        robotdashboard --server host:port[[]:username:password[]]
-                        Examples: robotdashboard --server
-                        default:admin:secret, or robotdashboard --server
-                        0.0.0.0:8080:admin:secretIf no username:password is
-                        given, security is disabled.See
-                        http://github.com/timdegroot1996/robotframework-
-                        dashboard?tab=readme-ov-file#Dashboard-Server for
-                        additional information!
+                        `path` Specifies a custom database class to override SQLite.
+                        Usage behavior:
+                          • Default value: None (built-in SQLite engine)
+                          • Provide a .py file implementing a compatible database handler
+                          • Detailed instructions can be found in the docs (url at the bottom of the help)
+                        Examples:
+                          • '-c customdb.py'
+  -s, --server [[]SERVER[]]
+                        Starts the dashboard webserver.
+                        Usage behavior:
+                          • Default value: None (no webserver)
+                          • Provide 'default[[]:username:password[]]'
+                          • Or provide 'host:port[[]:username:password[]]'
+                          • Detailed instructions can be found in the docs (url at the bottom of the help)
+                        Examples:
+                          • '--server' -> results in default behavior
+                          • '--server default' -> default behaviour
+                          • '--server 0.0.0.0:8080' -> custom host/port
+                          • '--server 0.0.0.0:8080:admin:secret' -> custom host/port and admin username/password
+
+For full documentation, visit: https://timdegroot1996.github.io/robotframework-dashboard/

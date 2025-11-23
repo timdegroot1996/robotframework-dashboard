@@ -170,7 +170,7 @@ This object stores various user preferences, including:
 - Customized Layout Configuration (e.g., size and position of graphs and sections)
 
 You can export this configuration from:  
-**Settings → JSON → Copy settings JSON**
+**Settings -> JSON -> Copy settings JSON**
 
 After saving it as a file such as `dashboard_config.json`, you can supply it to the dashboard using the `--jsonconfig` flag.
 
@@ -179,7 +179,7 @@ After saving it as a file such as `dashboard_config.json`, you can supply it to 
 - If a `settings` item already exists in localStorage, **that** configuration is used.
 - If no existing config is found, the provided JSON file becomes the default.
 - This is especially useful for sharing a predefined dashboard layout or consistent UI appearance across teams.
-- **Tip:** If you want to apply a new configuration but localStorage already contains an old one, go to **Settings → JSON** and paste the new JSON manually.
+- **Tip:** If you want to apply a new configuration but localStorage already contains an old one, go to **Settings -> JSON** and paste the new JSON manually.
 
 ### Load a custom config on first dashboard load
 ```bash

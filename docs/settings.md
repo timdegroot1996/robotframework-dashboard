@@ -39,7 +39,7 @@ The **Graphs** tab contains the core configuration options for all charts in the
 
 ### Saving Settings
 
-- Press **Close** or click outside the modal → **settings are saved automatically**
+- Press **Close** or click outside the modal -> **settings are saved automatically**
 - No need to manually apply changes for the **Graphs** tab
 
 ## Keyword Settings (Keywords Tab)

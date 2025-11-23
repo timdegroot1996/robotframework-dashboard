@@ -80,8 +80,8 @@ class ArgumentParser:
                 "  • Accepts files or paths to files\n"
                 "  • Optional tags can be provided by appending ':tag1:tag2' to the path\n"
                 "Examples:\n"
-                "  • '-o path/to/output1.xml' → add one output\n"
-                "  • '-o output2.xml:dev:nightly -o output3.xml:prod' → add two outputs with tags\n"
+                "  • '-o path/to/output1.xml' -> add one output\n"
+                "  • '-o output2.xml:dev:nightly -o output3.xml:prod' -> add two outputs with tags\n"
             ),
             action="append",
             nargs="*",
@@ -97,8 +97,8 @@ class ArgumentParser:
                 "  • All matching *output*.xml files in all subfolders will be included\n"
                 "  • Optional tags can be provided by appending ':tag1:tag2' to the path\n"
                 "Examples:\n"
-                "  • '-f results/' → scan folder for output files\n"
-                "  • '-f results/' -f path/to/more_results/:prod:regression → multiple folders with tags\n"
+                "  • '-f results/' -> scan folder for output files\n"
+                "  • '-f results/' -f path/to/more_results/:prod:regression -> multiple folders with tags\n"
             ),
             action="append",
             nargs="*",
@@ -114,9 +114,9 @@ class ArgumentParser:
                 "  • Must specify data types: index, run_start, alias or tag\n"
                 "  • Ranges supported using ':' and lists using ';'\n"
                 "Examples:\n"
-                "  • '-r index=0,index=1:4;9,index=10' → remove index 0, 1, 2, 3, 9, 10\n"
-                "  • '-r run_start=2024-07-30 15:27:20.184407,index=20' → remove specified run and index 20\n"
-                "  • '-r alias=some_alias,tag=prod,tag=dev' → remove all runs with alias some_alias or tag prod or dev\n"
+                "  • '-r index=0,index=1:4;9,index=10' -> remove index 0, 1, 2, 3, 9, 10\n"
+                "  • '-r run_start=2024-07-30 15:27:20.184407,index=20' -> remove specified run and index 20\n"
+                "  • '-r alias=some_alias,tag=prod,tag=dev' -> remove all runs with alias some_alias or tag prod or dev\n"
             ),
             action="append",
             nargs="*",
@@ -183,8 +183,8 @@ class ArgumentParser:
                 "  • Default value: None\n"
                 "  • File should contain lines with placeholders like ${value}\n"
                 "Examples:\n"
-                "  • 'The test has failed on date: ${date}' → example line in messages.txt\n"
-                "  • 'Expected ${x} but received: ${y}' → example line in messages.txt\n"
+                "  • 'The test has failed on date: ${date}' -> example line in messages.txt\n"
+                "  • 'Expected ${x} but received: ${y}' -> example line in messages.txt\n"
                 "  • '-m messages.txt'\n"
             ),
             default=None,
@@ -209,9 +209,9 @@ class ArgumentParser:
                 "`boolean` Enables clickable graphs linking to log.html.\n"
                 "Usage behavior:\n"
                 "  • Default value: False\n"
-                "  • Using '--uselogs' with no value → True (reverse default)\n"
-                "  • Using '--uselogs true'  → True\n"
-                "  • Using '--uselogs false' → False\n"
+                "  • Using '--uselogs' with no value -> True (reverse default)\n"
+                "  • Using '--uselogs true'  -> True\n"
+                "  • Using '--uselogs false' -> False\n"
             ),
             nargs="?",
             const=True,
@@ -225,9 +225,9 @@ class ArgumentParser:
                 "`boolean` Whether to generate the HTML dashboard.\n"
                 "Usage behavior:\n"
                 "  • Default value: True\n"
-                "  • Using '--generatedashboard' with no value → False (reverse default)\n"
-                "  • Using '--generatedashboard true'  → True\n"
-                "  • Using '--generatedashboard false' → False\n"
+                "  • Using '--generatedashboard' with no value -> False (reverse default)\n"
+                "  • Using '--generatedashboard true'  -> True\n"
+                "  • Using '--generatedashboard false' -> False\n"
             ),
             nargs="?",
             const=False,
@@ -241,9 +241,9 @@ class ArgumentParser:
                 "`boolean` Whether runs should be listed in the dashboard.\n"
                 "Usage behavior:\n"
                 "  • Default value: True\n"
-                "  • Using '--listruns' with no value → False (reverse default)\n"
-                "  • Using '--listruns true'  → True\n"
-                "  • Using '--listruns false' → False\n"
+                "  • Using '--listruns' with no value -> False (reverse default)\n"
+                "  • Using '--listruns true'  -> True\n"
+                "  • Using '--listruns false' -> False\n"
             ),
             nargs="?",
             const=False,
@@ -256,9 +256,9 @@ class ArgumentParser:
                 "`boolean` Use locally embedded JS/CSS instead of CDN.\n"
                 "Usage behavior:\n"
                 "  • Default value: False\n"
-                "  • Using '--offlinedependencies' with no value → True (reverse default)\n"
-                "  • Using '--offlinedependencies true'  → True\n"
-                "  • Using '--offlinedependencies false' → False\n"
+                "  • Using '--offlinedependencies' with no value -> True (reverse default)\n"
+                "  • Using '--offlinedependencies true'  -> True\n"
+                "  • Using '--offlinedependencies false' -> False\n"
             ),
             nargs="?",
             const=True,
@@ -293,10 +293,10 @@ class ArgumentParser:
                 "  • Or provide 'host:port[:username:password]'\n"
                 "  • Detailed instructions can be found in the docs (url at the bottom of the help)\n"
                 "Examples:\n"
-                "  • '--server' → results in default behavior\n"
-                "  • '--server default' → default behaviour\n"
-                "  • '--server 0.0.0.0:8080' → custom host/port\n"
-                "  • '--server 0.0.0.0:8080:admin:secret' → custom host/port and admin username/password\n"
+                "  • '--server' -> results in default behavior\n"
+                "  • '--server default' -> default behaviour\n"
+                "  • '--server 0.0.0.0:8080' -> custom host/port\n"
+                "  • '--server 0.0.0.0:8080:admin:secret' -> custom host/port and admin username/password\n"
             ),
             default=None,
         )
@@ -326,7 +326,6 @@ class ArgumentParser:
         outputfolderpaths = None
         if arguments.outputfolderpath:
             outputfolderpaths = []
-            print(arguments.outputfolderpath)
             for folder in arguments.outputfolderpath:
                 splitted = split(r":(?!(\/|\\))", folder[0])
                 while None in splitted:
