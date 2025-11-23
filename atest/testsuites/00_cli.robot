@@ -62,10 +62,10 @@ Validate RobotDashboard l
     Validate CLI    command=robotdashboard -d l.db -l false   expected=listruns
 
 Validate RobotDashboard listruns
-    Validate CLI    command=robotdashboard -d listruns.db --listruns f    expected=listruns
+    Validate CLI    command=robotdashboard -d listruns.db --listruns False    expected=listruns
 
 Validate RobotDashboard g
-    Validate CLI    command=robotdashboard -d g.db -g f    expected=generatedashboard
+    Validate CLI    command=robotdashboard -d g.db -g    expected=generatedashboard
 
 Validate RobotDashboard generatedashboard
     Validate CLI    command=robotdashboard -d generatedashboard.db --generatedashboard false    expected=generatedashboard
@@ -107,7 +107,10 @@ Validate RobotDashboard quantity
     Validate CLI    command=robotdashboard -d quantity.db --quantity 100    expected=quantity
 
 Validate RobotDashboard u
-    Validate CLI    command=robotdashboard -d u.db -u true    expected=uselogs
+    Validate CLI    command=robotdashboard -d u.db -u    expected=uselogs
 
 Validate RobotDashboard uselogs
     Validate CLI    command=robotdashboard -d uselogs.db --uselogs false    expected=uselogs
+
+Validate RobotDashboard offlinedependencies
+    Validate CLI    command=robotdashboard -d offlinedependencies.db --offlinedependencies    expected=offlinedependencies

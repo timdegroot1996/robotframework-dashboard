@@ -126,6 +126,15 @@ robotdashboard --messageconfig path/to/message_config.txt
 - Optional: `-m` or `--messageconfig` specifies a file containing custom messages with placeholders like `${x}` or `${y}`.
 - See [Advanced CLI & Examples](/advanced-cli-examples#message-config-details) for more details regarding the message config!
 
+### Use local JS and CSS dependencies
+```bash
+robotdashboard --offlinedependencies  
+robotdashboard --offlinedependencies True  
+```
+- Optional: `--offlinedependencies` specifies to use locally downloaded js/css files and embed them directly into the dashboard.  
+- By default, urls to the actual JS and CSS CDN are used. 
+- See [Advanced CLI & Examples](/advanced-cli-examples#offline-dependencies) for more information.
+
 ### Use a custom database class
 ```bash
 robotdashboard -c ./path/to/custom_class.py  
