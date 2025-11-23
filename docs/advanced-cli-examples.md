@@ -187,4 +187,31 @@ robotdashboard -j ./configs/dashboard_config.json
 ```
 This ensures a consistent dashboard experience for all users.
 
+
+## Offline Dependencies
+
+To accommodate environments with no internet access or very strict firewall rules, the dashboard can be generated using prepackaged JavaScript and CSS resources. When enabled, the `--offlinedependencies` option embeds these files directly into the generated `dashboard.html` instead of referencing external CDNs. The size of the dashboard.html will increase by about 1 MB when using this option.
+
+The following dependencies are bundled with the package and will be used offline automatically:
+
+| Name | Type | CDN URL | Used For |
+|------|------|---------|----------|
+| **chartjs** | JS | https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js | Core charting library |
+| **datalabels** | JS | https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0 | Chart.js plugin for data labels |
+| **adapter_date_fns** | JS | https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js | Date handling adapter for time-based charts |
+| **boxplot** | JS | https://unpkg.com/@sgratzl/chartjs-chart-boxplot@3.6.0/build/index.umd.min.js | Boxplot chart support |
+| **matrix** | JS | https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js | Matrix/heatmap charts |
+| **gridstack_css** | CSS | https://cdn.jsdelivr.net/npm/gridstack@12.2.1/dist/gridstack.min.css | Layout grid styling |
+| **gridstack_js** | JS | https://cdn.jsdelivr.net/npm/gridstack@12.2.1/dist/gridstack-all.min.js | Grid-based dashboard layout engine |
+| **bootstrap_css** | CSS | https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css | General UI styling |
+| **datatables_css** | CSS | https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.css | Table component styling |
+| **bootstrap_js** | JS | https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js | Bootstrap interactive components |
+| **datatables_js** | JS | https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.js | DataTables functionality |
+| **pako** | JS | https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js | Compression/decompression used for smaller dashboard file sizes |
+
+### Behaviour
+
+- When **not** using `--offlinedependencies`, the dashboard loads JS/CSS from the CDN URLs above and network access is required.
+- When `--offlinedependencies` **is** enabled, the generator embeds the full content of each dependency directly into the HTML, ensuring zero external network requests.
+
 For basic CLI documentation see [Basic Command Line Interface (CLI)](/basic-command-line-interface-cli.md) and for more advanced usage, the [Dashboard Server](/dashboard-server.md) and [Custom Database Class](/custom-database-class.md) pages
