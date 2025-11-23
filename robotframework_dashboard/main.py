@@ -32,6 +32,7 @@ def main():
         arguments.message_config,
         arguments.quantity,
         arguments.use_logs,
+        arguments.offline_dependencies,
     )
     # If arguments.start_server is provided override some required args
     if arguments.start_server:
