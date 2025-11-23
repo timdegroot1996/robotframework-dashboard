@@ -12,7 +12,7 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /markdown-examples
+      link: /getting-started.md
     - theme: alt
       text: View on PyPi
       link: https://pypi.org/project/robotframework-dashboard/

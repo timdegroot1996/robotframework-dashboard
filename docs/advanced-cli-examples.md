@@ -127,6 +127,13 @@ robotdashboard -u true -o some_test_output_file.xml
 ```
 Log file that should exist: some_test_log_file.html
 
+#### Reports
+Robotframework report .htmls can be accessed through the log html:  
+- Name the report html the same as the log html, following the logic explained above
+    - Ensure the log and report are in the same directory
+    - Make sure the filenames match, except `log` being `report`
+- Then, the link to the report inside the log html at the top right corner should work
+
 ## Message Config Details
 
 Message configuration allows grouping similar test error messages.
