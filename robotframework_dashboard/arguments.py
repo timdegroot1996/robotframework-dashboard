@@ -100,6 +100,8 @@ class ArgumentParser:
                 "  • '-f results/' → scan folder for output files\n"
                 "  • '-f results/' -f path/to/more_results/:prod:regression → multiple folders with tags\n"
             ),
+            action="append",
+            nargs="*",
             default=None,
         )
         parser.add_argument(
@@ -281,6 +283,8 @@ class ArgumentParser:
         parser.add_argument(
             "-s",
             "--server",
+            nargs="?",  # Makes the argument optional
+            const="default",  # Value to use if the flag is given without an argument
             help=(
                 "Starts the dashboard webserver.\n"
                 "Usage behavior:\n"
@@ -319,16 +323,19 @@ class ArgumentParser:
                 outputs.append([path, tags])
 
         # handles possible tags on all provided --outputfolderpath
-        outputfolderpath = None
+        outputfolderpaths = None
         if arguments.outputfolderpath:
-            splitted = split(r":(?!(\/|\\))", arguments.outputfolderpath)
-            while None in splitted:
-                splitted.remove(
-                    None
-                )  # None values are found by re.split because of the 2 conditions
-            path = splitted[0]
-            tags = splitted[1:]
-            outputfolderpath = [path, tags]
+            outputfolderpaths = []
+            print(arguments.outputfolderpath)
+            for folder in arguments.outputfolderpath:
+                splitted = split(r":(?!(\/|\\))", folder[0])
+                while None in splitted:
+                    splitted.remove(
+                        None
+                    )  # None values are found by re.split because of the 2 conditions
+                path = splitted[0]
+                tags = splitted[1:]
+                outputfolderpaths.append([path, tags])
 
         # handles the processing of --removeruns
         remove_runs = None
@@ -416,7 +423,7 @@ class ArgumentParser:
         # return all provided arguments
         provided_args = {
             "outputs": outputs,
-            "output_folder_path": outputfolderpath,
+            "output_folder_paths": outputfolderpaths,
             "database_path": arguments.databasepath,
             "generate_dashboard": generate_dashboard,
             "dashboard_name": dashboard_name,

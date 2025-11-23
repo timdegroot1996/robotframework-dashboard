@@ -76,7 +76,7 @@ class RobotDashboard:
             )
         return console
 
-    def process_outputs(self, output_file_info_list=None, output_folder_config=None):
+    def process_outputs(self, output_file_info_list=None, output_folder_configs=None):
         """Function that processes output XML files and inserts the data into the database.
 
         Parameters:
@@ -86,7 +86,7 @@ class RobotDashboard:
         self.database.open_database()
         console = self._print_console(" 2. Processing output XML(s)")
 
-        if not output_file_info_list and not output_folder_config:
+        if not output_file_info_list and not output_folder_configs:
             console += self._print_console("  skipping step")
             console += self._print_console("=" * 86)
             self.database.close_database()
@@ -105,29 +105,30 @@ class RobotDashboard:
                         f"  ERROR: Could not process output XML '{file_path}', error: {e}"
                     )
 
-        if output_folder_config:
-            folder_path, tags = output_folder_config
-            if not exists(folder_path):
-                console += self._print_console(
-                    f"  ERROR: Could not process output folder '{folder_path}', path does not exist!"
-                )
-            else:
-                for subdir, _, files in walk(folder_path):
-                    files.sort()
-                    for file in files:
-                        if "output" in file and file.endswith(".xml"):
-                            try:
-                                full_path = join(getcwd(), subdir, file)
-                                run_alias = file.replace("output_", "").replace(
-                                    ".xml", ""
-                                )
-                                console += self._process_single_output(
-                                    full_path, tags, run_alias
-                                )
-                            except Exception as e:
-                                console += self._print_console(
-                                    f"  ERROR: Could not process found output file '{file}', error: {e}"
-                                )
+        if output_folder_configs:
+            for output_folder_config in output_folder_configs:
+                folder_path, tags = output_folder_config
+                if not exists(folder_path):
+                    console += self._print_console(
+                        f"  ERROR: Could not process output folder '{folder_path}', path does not exist!"
+                    )
+                else:
+                    for subdir, _, files in walk(folder_path):
+                        files.sort()
+                        for file in files:
+                            if "output" in file and file.endswith(".xml"):
+                                try:
+                                    full_path = join(getcwd(), subdir, file)
+                                    run_alias = file.replace("output_", "").replace(
+                                        ".xml", ""
+                                    )
+                                    console += self._process_single_output(
+                                        full_path, tags, run_alias
+                                    )
+                                except Exception as e:
+                                    console += self._print_console(
+                                        f"  ERROR: Could not process found output file '{file}', error: {e}"
+                                    )
 
         console += self._print_console("=" * 86)
         self.database.close_database()

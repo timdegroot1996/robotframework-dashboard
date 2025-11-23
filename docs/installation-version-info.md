@@ -24,6 +24,17 @@ Install the dashboard using pip:
 pip install robotframework-dashboard
 ```
 
+### Install Robot Framework Dashboard Server
+
+The server can be installed separately and is not installed by default.
+This has ben done to reduce dependencies that are required only for the server like `fastapi` and `uvicorn`.
+
+Install Robot Framework Dashboard with Server:
+```bash
+pip install robotframework-dashboard[server]
+pip install robotframework-dashboard[all]
+```
+
 ### Dependencies
 This will automatically install the required dependencies:
 - robotframework>=6.0 – the core testing framework
