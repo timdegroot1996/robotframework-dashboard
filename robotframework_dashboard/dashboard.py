@@ -152,13 +152,16 @@ class DashboardGenerator:
         path = Path(name_dashboard)
         path.parent.mkdir(exist_ok=True, parents=True)
 
+        # minify html
+        dashboard_data = self.minify_text(dashboard_data)
+
         # write template
         with open(name_dashboard, "w", encoding="utf-8") as file:
             file.write(dashboard_data)
 
         # warn in case of empty database
         if len(data["runs"]) == 0:
-            print(f"  WARNING: There are no runs so the dashboard will be empty!")
+            print("  WARNING: There are no runs so the dashboard will be empty!")
 
     def compress_and_encode(self, obj):
         json_data = dumps(obj).encode("utf-8")
@@ -185,3 +188,11 @@ class DashboardGenerator:
                     html_parts.append(f"<style>\n{contents}\n</style>")
 
         return "\n".join(html_parts)
+
+    def minify_text(self, text):
+        cleaned_lines = []
+        for line in text.splitlines():
+            stripped = line.strip()
+            if stripped:  # keep only non-empty lines
+                cleaned_lines.append(stripped)
+        return "\n".join(cleaned_lines)
