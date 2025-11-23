@@ -26,6 +26,7 @@ class RobotDashboard:
         message_config: list,
         quantity: int,
         use_logs: bool,
+        offline_dependencies: bool,
     ):
         """Sets the parameters provided in the command line"""
         self.database_path = database_path
@@ -39,6 +40,7 @@ class RobotDashboard:
         self.message_config = message_config
         self.quantity = quantity
         self.use_logs = use_logs
+        self.offline_dependencies = offline_dependencies
         self.server = False
         self.database = None
 
@@ -216,6 +218,7 @@ class RobotDashboard:
                 self.message_config,
                 self.quantity,
                 self.use_logs,
+                self.offline_dependencies,
             )
             end = time()
             console += self._print_console(

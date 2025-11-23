@@ -177,6 +177,14 @@ class ArgumentParser:
             default=True,
         )
         parser.add_argument(
+            "--offlinedependencies",
+            help=(
+                "`boolean` Use locally embedded JS/CSS dependencies instead of CDN URLs.\n"
+                "          Default: False. Enable to generate a dashboard that works completely offline."
+            ),
+            default=False,
+        )
+        parser.add_argument(
             "-c",
             "--databaseclass",
             help=(
@@ -256,6 +264,13 @@ class ArgumentParser:
             True
             if arguments.listruns == True or arguments.listruns.lower() == "true"
             else False
+        )
+
+        # handles the boolean handling of --offlinedependencies
+        offline_dependencies = (
+            False
+            if arguments.offlinedependencies == False or arguments.offlinedependencies.lower() == "false"
+            else True
         )
 
         # handles the boolean handling of --uselogs
@@ -354,5 +369,6 @@ class ArgumentParser:
             "message_config": message_config,
             "quantity": quantity,
             "use_logs": use_logs,
+            "offline_dependencies": offline_dependencies,
         }
         return dotdict(provided_args)

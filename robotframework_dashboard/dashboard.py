@@ -6,6 +6,69 @@ from .version import __version__
 from zlib import compress
 from base64 import b64encode
 
+DEPENDENCIES = {
+    "chartjs": {
+        "type": "js",
+        "cdn": "https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js",
+        "local": "dependencies/chart.js",
+    },
+    "datalabels": {
+        "type": "js",
+        "cdn": "https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0",
+        "local": "dependencies/chartjs-plugin-datalabels.js",
+    },
+    "adapter_date_fns": {
+        "type": "js",
+        "cdn": "https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js",
+        "local": "dependencies/chartjs-adapter-date-fns.js",
+    },
+    "boxplot": {
+        "type": "js",
+        "cdn": "https://unpkg.com/@sgratzl/chartjs-chart-boxplot@3.6.0/build/index.umd.min.js",
+        "local": "dependencies/chartjs-chart-boxplot.js",
+    },
+    "matrix": {
+        "type": "js",
+        "cdn": "https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js",
+        "local": "dependencies/chartjs-chart-matrix.js",
+    },
+    "gridstack_css": {
+        "type": "css",
+        "cdn": "https://cdn.jsdelivr.net/npm/gridstack@12.2.1/dist/gridstack.min.css",
+        "local": "dependencies/gridstack.css",
+    },
+    "gridstack_js": {
+        "type": "js",
+        "cdn": "https://cdn.jsdelivr.net/npm/gridstack@12.2.1/dist/gridstack-all.min.js",
+        "local": "dependencies/gridstack.js",
+    },
+    "bootstrap_css": {
+        "type": "css",
+        "cdn": "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css",
+        "local": "dependencies/bootstrap.css",
+    },
+    "datatables_css": {
+        "type": "css",
+        "cdn": "https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.css",
+        "local": "dependencies/datatables.css",
+    },
+    "bootstrap_js": {
+        "type": "js",
+        "cdn": "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js",
+        "local": "dependencies/bootstrap.js",
+    },
+    "datatables_js": {
+        "type": "js",
+        "cdn": "https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.js",
+        "local": "dependencies/datatables.js",
+    },
+    "pako": {
+        "type": "js",
+        "cdn": "https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js",
+        "local": "dependencies/pako.js",
+    },
+}
+
 
 class DashboardGenerator:
     """Class that handles the generation of the dashboard HTML"""
@@ -21,12 +84,19 @@ class DashboardGenerator:
         message_config: list,
         quantity: int,
         use_logs: bool,
+        offline: bool,
     ):
         """Function that generates the dashboard"""
+        # load dependencies
+        dependencies_block = self.build_dependencies_block(offline)
+
         # load template
         index_html = join(dirname(abspath(__file__)), "templates", "dashboard.html")
-        with open(index_html, "r") as file:
+        with open(index_html, "r", encoding="utf-8") as file:
             dashboard_data = file.read()
+            dashboard_data = dashboard_data.replace(
+                "<!-- placeholder_dependencies -->", dependencies_block
+            )
             dashboard_data = dashboard_data.replace(
                 '"placeholder_version"', __version__
             )
@@ -83,7 +153,7 @@ class DashboardGenerator:
         path.parent.mkdir(exist_ok=True, parents=True)
 
         # write template
-        with open(name_dashboard, "w") as file:
+        with open(name_dashboard, "w", encoding="utf-8") as file:
             file.write(dashboard_data)
 
         # warn in case of empty database
@@ -94,3 +164,24 @@ class DashboardGenerator:
         json_data = dumps(obj).encode("utf-8")
         compressed = compress(json_data)
         return b64encode(compressed).decode("utf-8")
+
+    def build_dependencies_block(self, offline: bool) -> str:
+        """Builds either CDN links or inline js/css for offline mode."""
+        html_parts = []
+
+        for dep_name, dep in DEPENDENCIES.items():
+            if not offline:
+                if dep["type"] == "js":
+                    html_parts.append(f'<script src="{dep["cdn"]}"></script>')
+                else:
+                    html_parts.append(f'<link rel="stylesheet" href="{dep["cdn"]}" />')
+            else:
+                local_path = Path(dirname(abspath(__file__))) / dep["local"]
+                contents = local_path.read_text(encoding="utf-8")
+                html_parts.append(f"<!-- {dep_name} -->")
+                if dep["type"] == "js":
+                    html_parts.append(f"<script>\n{contents}\n</script>")
+                else:
+                    html_parts.append(f"<style>\n{contents}\n</style>")
+
+        return "\n".join(html_parts)
