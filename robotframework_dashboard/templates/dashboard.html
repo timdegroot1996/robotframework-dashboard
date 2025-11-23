@@ -5070,6 +5070,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const data = get_most_time_consuming_or_most_used_data("suite", settings.graphTypes.suiteMostTimeConsumingGraphType, filteredSuites, onlyLastRun);
             const graphData = data[0]
             const callbackData = data[1];
+            console.log(data, graphData, callbackData)
             var config;
             const limit = inFullscreen && inFullscreenGraph.includes("suiteMostTimeConsuming") ? 50 : 10;
             if (settings.graphTypes.suiteMostTimeConsumingGraphType == "bar") {
@@ -5115,7 +5116,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         maxRotation: 45,
                         stepSize: 1,
                         callback: function (value, index, ticks) {
-                            return callbackData[this.getLabelForValue(value)];
+                            const displayName = settings.show.aliases
+                                ? callbackData.aliases[this.getLabelForValue(value)]
+                                : callbackData.runs[this.getLabelForValue(value)];
+                            return displayName;
                         },
                     },
                     title: {
@@ -5128,6 +5132,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         open_log_file(event, chartElement, callbackData.runs)
                     }
                 };
+                console.log(settings.show.axisTitles, "axisTitles")
+                console.log(settings.show.dateLabels, "datalabels")
                 if (!settings.show.dateLabels) { config.options.scales.x.ticks.display = false }
             }
             update_height("suiteMostTimeConsumingVertical", config.data.labels.length, settings.graphTypes.suiteMostTimeConsumingGraphType);
@@ -5605,7 +5611,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         maxRotation: 45,
                         stepSize: 1,
                         callback: function (value, index, ticks) {
-                            return callbackData[this.getLabelForValue(value)];
+                            const displayName = settings.show.aliases
+                                ? callbackData.aliases[this.getLabelForValue(value)]
+                                : callbackData.runs[this.getLabelForValue(value)];
+                            return displayName;
                         },
                     },
                     title: {
@@ -5906,7 +5915,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         maxRotation: 45,
                         stepSize: 1,
                         callback: function (value, index, ticks) {
-                            return callbackData[this.getLabelForValue(value)];
+                            const displayName = settings.show.aliases
+                                ? callbackData.aliases[this.getLabelForValue(value)]
+                                : callbackData.runs[this.getLabelForValue(value)];
+                            return displayName;
                         },
                     },
                     title: {
@@ -5982,7 +5994,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         maxRotation: 45,
                         stepSize: 1,
                         callback: function (value, index, ticks) {
-                            return callbackData[this.getLabelForValue(value)];
+                            const displayName = settings.show.aliases
+                                ? callbackData.aliases[this.getLabelForValue(value)]
+                                : callbackData.runs[this.getLabelForValue(value)];
+                            return displayName;
                         },
                     },
                     title: {
