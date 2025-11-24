@@ -4768,6 +4768,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 input.parentElement.classList.remove("d-none"); //show filtered rows
                 if (input.id == "All") input.checked = true;
             }
+            update_filter_active_indicator("All", "filterRunTagSelectedIndicator");
         }
 
         function clear_version_filter() {
@@ -4778,6 +4779,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 input.parentElement.classList.remove("d-none"); //show filtered rows
                 if (input.value == "All") input.checked = true;
             }
+            update_filter_active_indicator("projectVersionInputItemAll", "filterVersionSelectedIndicator");
         }
 
         function set_filter_show_current_project(projectName) {
