@@ -4063,6 +4063,34 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             setup_filter_checkbox_subfilter("runTagCheckBoxes");
         }
 
+        function setup_filter_checkbox_handler_listeners(checkBoxContainerElement, allCheckBox, filterActiveIndicatorId = null) {
+            const nonAllCheckBoxes = Array
+                .from(
+                    checkBoxContainerElement
+                    .querySelectorAll("input.form-check-input:not([role='switch'])") //not and/or switch
+                ).filter(checkBox => checkBox !== allCheckBox);
+            allCheckBox.addEventListener('change', () => {
+                allCheckBox.checked && unselect_checkboxes(nonAllCheckBoxes);
+            });
+            for (const checkBox of nonAllCheckBoxes) {
+                checkBox.addEventListener('change', () => {
+                    if (checkBox.checked) {
+                      allCheckBox.checked = false; //uncheck All if other checkbox checked
+                      filterActiveIndicatorId && update_filter_active_indicator(allCheckBox.id, filterActiveIndicatorId);
+                    } else if (!nonAllCheckBoxes.some(checkBox => checkBox.checked)) {
+                        allCheckBox.checked = true;
+                        filterActiveIndicatorId && update_filter_active_indicator(allCheckBox.id, filterActiveIndicatorId);
+                    }
+                });
+            }
+        }
+
+        function unselect_checkboxes(checkBoxesToUnselect) {
+            for (const checkBox of checkBoxesToUnselect) {
+                checkBox.checked = false;
+            }
+        }
+
         // create projectVersions checkboxes in filters
         function setup_project_versions_in_select_filter_buttons() {
             const projectVersionList = document.getElementById("projectVersionList");
