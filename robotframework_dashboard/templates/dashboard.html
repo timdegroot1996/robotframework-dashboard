@@ -4110,9 +4110,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     .querySelectorAll(inputItemQueryString)
                 ).filter(checkBox => checkBox !== allCheckBox);
             allCheckBox.addEventListener('change', () => {
-                allCheckBox.checked && unselect_checkboxes(nonAllCheckBoxes);
+                if (allCheckBox.checked) {
+                    unselect_checkboxes(nonAllCheckBoxes);
+                    additionalCheckBoxFunc && additionalCheckBoxFunc();
+                } else {
+                    allCheckBox.checked = true; //prevent unselecting All if no other checkboxes checked
+                }
                 filterActiveIndicatorId && update_filter_active_indicator(allCheckBox.id, filterActiveIndicatorId);
-                additionalCheckBoxFunc && additionalCheckBoxFunc();
             });
             for (const checkBox of nonAllCheckBoxes) {
                 checkBox.addEventListener('change', () => {
