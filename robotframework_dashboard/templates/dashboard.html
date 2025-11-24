@@ -4065,6 +4065,38 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             setup_filter_checkbox_handler_listeners(tagsSelect, allRunTagsCheckBox, filterActiveIndicatorId);
         }
 
+        // create projectVersions checkboxes in filters
+        function setup_project_versions_in_select_filter_buttons() {
+            const projectVersionList = document.getElementById("projectVersionList");
+            projectVersionList.innerHTML = '';
+            const projectVersionOptionsSet = new Set(
+                runs
+                .map(run => run.project_version)
+                .filter(ver => ver != null)
+            );
+            const projectVersionOptions = [...projectVersionOptionsSet].sort().reverse();
+            projectVersionOptions.unshift("None");
+            projectVersionOptions.unshift("All");
+            const prefix = "projectVersionInputItem";
+            const listItemTemplate = (prefix, value) => `
+                <li class="list-group-item list-group-item-action d-flex small">
+                    <input class="form-check-input me-1" type="checkbox" value="${value}" id="${prefix}${value}">
+                    <label class="form-check-label ms-2" for="${prefix}${value}">${value}</label>
+                </li>
+            `;
+            const projectVersionListHtml = projectVersionOptions
+                                     .map(projectVersion => listItemTemplate(prefix, projectVersion))
+                                     .join('');
+            projectVersionList.innerHTML = projectVersionListHtml;
+            const allVersionsCheckBox = document.getElementById(`${prefix}All`);
+            allVersionsCheckBox.checked = true;
+            const filterVersionSelectedIndicatorId = "filterVersionSelectedIndicator";
+            setup_filter_active_indicator(allVersionsCheckBox, filterVersionSelectedIndicatorId);
+            setup_filter_checkbox_subfilter("projectVersionCheckBoxes");
+            setup_filter_checkbox_handler_listeners(projectVersionList, allVersionsCheckBox, filterVersionSelectedIndicatorId);
+        }
+
+        // for runTag/version filter popup and overview
         function setup_filter_checkbox_handler_listeners(checkBoxContainerElement, allCheckBox, filterActiveIndicatorId = null) {
             const nonAllCheckBoxes = Array
                 .from(
@@ -4093,40 +4125,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
         }
 
-        // create projectVersions checkboxes in filters
-        function setup_project_versions_in_select_filter_buttons() {
-            const projectVersionList = document.getElementById("projectVersionList");
-            projectVersionList.innerHTML = '';
-            const projectVersionOptionsSet = new Set(
-                runs
-                .map(run => run.project_version)
-                .filter(ver => ver != null)
-            );
-            const projectVersionOptions = [...projectVersionOptionsSet].sort().reverse();
-            projectVersionOptions.unshift("None");
-            projectVersionOptions.unshift("All");
-            const prefix = "projectVersionInputItem";
-            const listItemTemplate = (prefix, value) => `
-                <li class="list-group-item list-group-item-action d-flex small">
-                    <input class="form-check-input me-1" type="checkbox" value="${value}" id="${prefix}${value}">
-                    <label class="form-check-label ms-2" for="${prefix}${value}">${value}</label>
-                </li>
-            `;
-            const projectVersionListHtml = projectVersionOptions
-                                     .map(projectVersion => listItemTemplate(prefix, projectVersion))
-                                     .join('');
-            projectVersionList.innerHTML = projectVersionListHtml;
-            const allVersionsCheckBox = document.getElementById(`${prefix}All`);
-            allVersionsCheckBox.checked = true;
-            setup_filter_active_indicator(allVersionsCheckBox, "filterVersionSelectedIndicator");
-            setup_filter_checkbox_subfilter("projectVersionCheckBoxes");
-        }
-
         // show filter active indicator if checkBoxElement unchecked
         function setup_filter_active_indicator(checkBoxElement, filterActiveIndicatorId) {
             checkBoxElement.addEventListener("change", () => {
                 update_filter_active_indicator(checkBoxElement.id, filterActiveIndicatorId);
             });
+        }
+
+        function update_filter_active_indicator(allCheckBoxId, filterActiveIndicatorId) {
+            const filterActiveIndicator = document.getElementById(filterActiveIndicatorId);
+            const allCheckBox = document.getElementById(allCheckBoxId);
+            filterActiveIndicator.style.display = allCheckBox.checked ? "none" : "inline-block";
         }
 
         function setup_filter_checkbox_subfilter(parentElementId, eventType = "input") {
@@ -4142,12 +4151,6 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     row.classList.toggle("d-none", shouldHide);
                 });
             });
-        }
-
-        function update_filter_active_indicator(allCheckBoxId, filterActiveIndicatorId) {
-            const filterActiveIndicator = document.getElementById(filterActiveIndicatorId);
-            const allCheckBox = document.getElementById(allCheckBoxId);
-            filterActiveIndicator.style.display = allCheckBox.checked ? "none" : "inline-block";
         }
 
         // function to update the available runs in the selects
