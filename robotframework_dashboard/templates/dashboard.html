@@ -4097,14 +4097,21 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         }
 
         // for runTag/version filter popup and overview
-        function setup_filter_checkbox_handler_listeners(checkBoxContainerElement, allCheckBox, filterActiveIndicatorId = null) {
+        function setup_filter_checkbox_handler_listeners(
+            checkBoxContainerElement,
+            allCheckBox,
+            filterActiveIndicatorId = null,
+            additionalCheckBoxFunc = null //for overview version selector
+        ) {
+            const inputItemQueryString = "input.form-check-input:not([role='switch'])"; //not and/or switch
             const nonAllCheckBoxes = Array
                 .from(
                     checkBoxContainerElement
-                    .querySelectorAll("input.form-check-input:not([role='switch'])") //not and/or switch
+                    .querySelectorAll(inputItemQueryString)
                 ).filter(checkBox => checkBox !== allCheckBox);
             allCheckBox.addEventListener('change', () => {
                 allCheckBox.checked && unselect_checkboxes(nonAllCheckBoxes);
+                additionalCheckBoxFunc && additionalCheckBoxFunc();
             });
             for (const checkBox of nonAllCheckBoxes) {
                 checkBox.addEventListener('change', () => {
@@ -4115,6 +4122,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         allCheckBox.checked = true;
                         filterActiveIndicatorId && update_filter_active_indicator(allCheckBox.id, filterActiveIndicatorId);
                     }
+                    additionalCheckBoxFunc && additionalCheckBoxFunc();
                 });
             }
         }
