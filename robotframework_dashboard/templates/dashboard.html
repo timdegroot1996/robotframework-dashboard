@@ -4115,6 +4115,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
+        function update_filter_active_indicator(allCheckBoxId, filterActiveIndicatorId) {
+            const filterActiveIndicator = document.getElementById(filterActiveIndicatorId);
+            const allCheckBox = document.getElementById(allCheckBoxId);
+            filterActiveIndicator.style.display = allCheckBox.checked ? "none" : "inline-block";
+        }
+
         // function to update the available runs in the selects
         function setup_runs_in_compare_selects() {
             const selects = compareRunIds.map(id => document.getElementById(id));
