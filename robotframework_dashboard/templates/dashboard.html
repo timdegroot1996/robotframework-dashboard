@@ -4093,10 +4093,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         }
 
         // show filter active indicator if checkBoxElement unchecked
-        function setup_filter_active_indicator(checkBoxElement, indicatorId) {
-            const filterActiveIndicator = document.getElementById(indicatorId);
+        function setup_filter_active_indicator(checkBoxElement, filterActiveIndicatorId) {
             checkBoxElement.addEventListener("change", () => {
-                filterActiveIndicator.style.display = checkBoxElement.checked ? "none" : "inline-block";
+                update_filter_active_indicator(checkBoxElement.id, filterActiveIndicatorId);
             });
         }
 
