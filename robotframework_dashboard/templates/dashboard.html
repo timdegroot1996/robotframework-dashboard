@@ -4394,34 +4394,15 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 versionStringFilterId: versionFilterSearchId,
             };
             const projectVersionFilterDropDown = document.getElementById(versionFilterDropDownId);
-            const projectVersionFilterCheckBoxes = projectVersionFilterDropDown.querySelectorAll(".version-checkbox");
             const allVersionsCheckBox = document.getElementById(`${projectName}VersionFilterListItemAllInput`);
-            const specificVersionSelectedIndicator = document.getElementById(`${projectName}VersionSelectedIndicator`);
-            const specificVersionCheckBoxes = Array.from(projectVersionFilterCheckBoxes).filter(checkBox => {
-                return checkBox !== allVersionsCheckBox;
-            });
-            function unselectSpecificVersionCheckBoxes() {
-                specificVersionCheckBoxes.forEach(checkBox => {
-                    checkBox.checked = false;
-                });
-            }
-            function selectAllIfNothingSelected(){
-                const checkedCheckBoxes = specificVersionCheckBoxes.filter(checkBox => checkBox.checked);
-                allVersionsCheckBox.checked = checkedCheckBoxes.length === 0 ? true : false;
-            }
-            projectVersionFilterCheckBoxes.forEach(checkBox => {
-                checkBox.addEventListener("change", () => {
-                    if (checkBox === allVersionsCheckBox && checkBox.checked) {
-                        unselectSpecificVersionCheckBoxes();
-                    } else {
-                        allVersionsCheckBox.checked = false;
-                        selectAllIfNothingSelected();
-                    }
-                    const shouldShowFilterIndicator = specificVersionCheckBoxes.some(specificVersionCheckBox => specificVersionCheckBox.checked);
-                    specificVersionSelectedIndicator.style.display = shouldShowFilterIndicator ? "inline-block" : "none";
-                    update_project_version_filter_run_card_visibility(versionFilterArgs);
-                });
-            });
+            const specificVersionSelectedIndicatorId = `${projectName}VersionSelectedIndicator`;
+            setup_filter_checkbox_handler_listeners(
+                projectVersionFilterDropDown,
+                allVersionsCheckBox,
+                specificVersionSelectedIndicatorId,
+                () => {update_project_version_filter_run_card_visibility(versionFilterArgs)}
+            );
+
             // version filter input
             const projectVersionFilterSearch = document.getElementById(versionFilterSearchId);
             const handle_version_filter_input = () => {
