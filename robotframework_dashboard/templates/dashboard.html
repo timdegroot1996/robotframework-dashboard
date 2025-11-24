@@ -4052,15 +4052,17 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             ).join("");
             const tagsSelect = document.getElementById("runTag");
             tagsSelect.innerHTML = andOrTags + listItems;
-            const allRunTagsCheckBox = document.getElementById("All");
-            allRunTagsCheckBox.checked = true;
-            setup_filter_active_indicator(allRunTagsCheckBox, "filterRunTagSelectedIndicator");
             if (tags.size > 0) {
                 document.getElementById("runTagFilter").hidden = false
             } else {
                 document.getElementById("runTagFilter").hidden = true
             }
+            const allRunTagsCheckBox = document.getElementById("All");
+            allRunTagsCheckBox.checked = true;
+            const filterActiveIndicatorId = "filterRunTagSelectedIndicator";
+            setup_filter_active_indicator(allRunTagsCheckBox, filterActiveIndicatorId);
             setup_filter_checkbox_subfilter("runTagCheckBoxes");
+            setup_filter_checkbox_handler_listeners(tagsSelect, allRunTagsCheckBox, filterActiveIndicatorId);
         }
 
         function setup_filter_checkbox_handler_listeners(checkBoxContainerElement, allCheckBox, filterActiveIndicatorId = null) {
