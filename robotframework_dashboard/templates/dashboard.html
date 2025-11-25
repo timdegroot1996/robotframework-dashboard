@@ -515,7 +515,7 @@
                                 <div class="btn-group">
                                     <label class="form-check-label ms-2" for="switchRunName">Display by Name</label>
                                 </div>
-                                <div class="btn-group form-switch ms-1">
+                                <div class="btn-group form-switch ms-1 mb-1">
                                     <input class="form-check-input" type="checkbox" role="switch" id="switchRunName" />
                                 </div>
                             </div>
@@ -523,7 +523,7 @@
                                 <div class="btn-group">
                                     <label class="form-check-label ms-2" for="switchRunTags">Display by Tag</label>
                                 </div>
-                                <div class="btn-group form-switch ms-1">
+                                <div class="btn-group form-switch ms-1 mb-1">
                                     <input class="form-check-input" type="checkbox" role="switch" id="switchRunTags" />
                                 </div>
                             </div>
@@ -532,7 +532,7 @@
                                     <label class="form-check-label" for="overviewDurationPercentage">Percentage</label>
                                 </div>
                                 <div class="btn-group">
-                                    <select class="form-select form-select-sm mt-1" id="overviewDurationPercentage">
+                                    <select class="form-select form-select-sm" id="overviewDurationPercentage">
                                         <option value="10">10</option>
                                         <option value="20" selected>20</option>
                                         <option value="30">30</option>
@@ -4349,14 +4349,14 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                       <label class="form-check-label" for="${projectName}DurationPercentage">Percentage</label>
                                   </div>
                                   <div class="btn-group">
-                                      <select class="form-select form-select-sm mt-1" id="${projectName}DurationPercentage">
+                                      <select class="form-select form-select-sm" id="${projectName}DurationPercentage">
                                           ${percentageSelectHtml}
                                       </select>
                                   </div>
                               </div>
                               <div class="col-auto">
                                   <div class="btn-group">
-                                      <div id="${projectName}VersionFilterDropDown" class="dropdown mt-1" >
+                                      <div id="${projectName}VersionFilterDropDown" class="dropdown" >
                                           <button class="btn btn-sm btn-outline-dark dropdown-toggle"
                                                   type="button" id="${projectName}VersionFilterBtn"
                                                   data-bs-toggle="dropdown" data-bs-auto-close="outside">
@@ -4368,7 +4368,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                                           </ul>
                                       </div>
                                   </div>
-                                  <div class="btn-group mt-1">
+                                  <div class="btn-group">
                                       <input type="text" class="form-control form-control-sm" id="${projectName}VersionFilterSearch" placeholder="Version Filter...">
                                   </div>
                               </div>
