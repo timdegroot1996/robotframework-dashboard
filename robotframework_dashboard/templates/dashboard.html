@@ -330,6 +330,12 @@
             flex: 0 1 calc((100% - 48px) / 3); /* 3 per row, subtract total gap */
         }
 
+        .run-card-small-version {
+          display: flex;
+          gap: 0.25rem;
+          width: fit-content;
+        }
+
         .grid-stack-item-content {
             border-radius: 8px;
             display: flex;
@@ -5013,7 +5019,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     <h5 class="card-title mb-0 fw-semibold">${projectName}</h5>
                 `;
             let smallVersionHtml = `
-                <div id="${projectName}RunCardVersion${idPostfix}" data-projectVersion="${projectVersion}" class="d-flex gap-1">
+                <div id="${projectName}RunCardVersion${idPostfix}"
+                class="run-card-small-version"
+                data-projectVersion="${projectVersion}"
+                data-js-target="apply-version-filter">
                     <div class="text-muted">Version:</div>
                     <div>${normalizedProjectVersion}</div>
                 </div>`;
