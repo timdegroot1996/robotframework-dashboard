@@ -138,7 +138,7 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         except Exception as error:
             print(f"   ERROR: something went wrong with the database: {error}")
 
-    def _insert_runs(self, runs: list, tags: list, run_alias: str, path: Path, project_version: str | None = None):
+    def _insert_runs(self, runs: list, tags: list, run_alias: str, path: Path, project_version = None):
         """Helper function to insert the run data with the run tags"""
         full_runs = []
         for run in runs:

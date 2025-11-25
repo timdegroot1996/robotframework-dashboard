@@ -237,7 +237,7 @@ class ApiServer:
         self.server_pass = server_pass
         self.admin_json_config = "{}"
         self.log_dir = "robot_logs"
-        self.latest_log_dir: Path | None = None
+        self.latest_log_dir = None
 
         self._setup_routes()
         self._setup_catch_all_route()
