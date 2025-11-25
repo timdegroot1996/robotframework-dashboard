@@ -3391,11 +3391,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
             // eventlistener to reset the filters
             document.getElementById("resetFilters").addEventListener("click", function () {
-                clear_project_filter();
-                clear_version_filter();
-                document.getElementById("amount").value = filteredAmountDefault;
-                document.getElementById("metadata").value = "All";
-                setup_lowest_highest_dates(runs);
+                clear_all_filters();
                 add_alert("Filters have been set to default values!", "success")
             });
             // eventlistener for all runs button
@@ -4500,8 +4496,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 cardsContainer.appendChild(document.createRange().createContextualFragment(projectRunCardHTML));
                 const createdRunCard = document.getElementById(`${projectName}Card${runIndex}`);
                 createdRunCard.addEventListener("click", () => {
-                    clear_project_filter();
-                    clear_version_filter();
+                    clear_all_filters();
                     set_filter_show_current_project(projectName);
                     update_menu("menuDashboard");
                 });
@@ -4956,8 +4951,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     create_overview_run_donut(r, "_OverviewStatistics", key);
                     // attach click listener
                     cardEl.addEventListener("click", () => {
-                        clear_project_filter();
-                        clear_version_filter();
+                        clear_all_filters();
                         set_filter_show_current_project(key);
                         update_menu("menuDashboard");
                     });
