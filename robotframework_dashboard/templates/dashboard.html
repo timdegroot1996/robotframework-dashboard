@@ -5033,10 +5033,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             let versionTitle = '';
             if (projectHasVersions) { // version title
                 versionTitle = `
-                    <h5 class="card-title mb-0 d-inline text-muted">Version:</h5>
-                    <h5 class="card-title mb-0 d-inline ${versionClass}">
-                        ${normalizedProjectVersion}
-                    </h5>
+                    <div class="mx-auto" style="width: fit-content;" data-js-target="apply-version-filter">
+                        <h5 class="card-title mb-0 d-inline text-muted">Version:</h5>
+                        <h5 class="card-title mb-0 d-inline ${versionClass}">
+                            ${normalizedProjectVersion}
+                        </h5>
+                    </div>
                 `;
             } else { // empty title
                 versionTitle = `
