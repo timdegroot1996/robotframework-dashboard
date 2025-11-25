@@ -4786,6 +4786,14 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             return filteredData;
         }
 
+        function clear_all_filters() {
+              clear_project_filter();
+              clear_version_filter();
+              document.getElementById("amount").value = filteredAmountDefault;
+              document.getElementById("metadata").value = "All";
+              setup_lowest_highest_dates();
+        }
+
         function clear_project_filter() {
             document.getElementById("runs").value = "All";
             document.getElementById("runTagCheckBoxesFilter").value = "";
