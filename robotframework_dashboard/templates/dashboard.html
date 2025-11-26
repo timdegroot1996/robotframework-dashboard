@@ -4212,6 +4212,16 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             });
         }
 
+        function attach_run_card_version_listener(versionElement, projectName, projectVersion) {
+            versionElement.addEventListener("click", (event) => {
+                    clear_all_filters();
+                    set_filter_show_current_project(projectName);
+                    set_filter_show_current_version(projectVersion);
+                    event.stopPropagation();
+                    update_menu("menuDashboard");
+            });
+        }
+
         function update_filter_active_indicator(allCheckBoxId, filterActiveIndicatorId) {
             const filterActiveIndicator = document.getElementById(filterActiveIndicatorId);
             const allCheckBox = document.getElementById(allCheckBoxId);
