@@ -2278,7 +2278,9 @@
 - If runs don't include custom 'project_' tags, they will be grouped by their run name by default.
 - Choose which project types to show by toggling their respective "Display by" switch.
 - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
-- Passed runs represent the percentage of runs with zero failures.`,
+- Passed runs represent the percentage of runs with zero failures.
+- Clicking on the run card applies a filter for that project and switches to dashboard
+- Clicking on the version element within the run card additionally applies a filter for that version`,
             "runStatisticsGraphPercentages": "Percentages: Displays the distribution of passed, failed, skipped tests per run, where 100% equals all tests combined",
             "runStatisticsGraphAmount": "Amount: Displays the actual number of passed, failed, skipped tests per run",
             "runStatisticsGraphLine": "Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times",
@@ -4412,8 +4414,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const projectInformation = `This section shows the runs associated with the project '${projectName}':
                                         - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle. Version filters do not affect this.
                                         - Passed runs represent the percentage of runs with zero failures. Version filters do not affect this.
-                                        - The 'Select Versions' dropdown menu allows filtering the runs of the current project by the desired versions. Click "All" to quickly deselect all other checkboxes.
-                                        - The runs can also be filtered to only those whose version contains the text entered in the 'Version Filter...' input, even when a checkbox filter is already applied.`;
+                                        - The 'Select Versions' dropdown menu allows filtering the runs of the current project by the desired versions. Click 'All' to quickly deselect all other checkboxes.
+                                        - The runs can also be filtered to only those whose version contains the text entered in the 'Version Filter...' input, even when a checkbox filter is already applied.
+                                        - Clicking on the run card applies a filter for that project and switches to dashboard
+                                        - Clicking on the version element within the run card additionally applies a filter for that version`;
             const projectCard = `
             <div class="card mb-3" id="${projectName}Card">
                   <div class="card-header">
