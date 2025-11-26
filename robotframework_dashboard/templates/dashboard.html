@@ -4893,6 +4893,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             }
         }
 
+        function set_filter_show_current_version(version) {
+            const projectVersionList = document.getElementById("projectVersionList");
+            document.getElementById("projectVersionInputItemAll").checked = false;
+            projectVersionList.querySelector(`input[value="${version}"]`).checked = true;
+            update_filter_active_indicator("projectVersionInputItemAll", "filterVersionSelectedIndicator");
+        }
+
         function update_overview_statistics_heading() {
             const overviewCardsContainer = document.getElementById("overviewRunCardsContainer");
             const amountOfProjectsShown = overviewCardsContainer.querySelectorAll(".overview-card").length;
