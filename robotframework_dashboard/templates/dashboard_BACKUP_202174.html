@@ -4541,7 +4541,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const isDark = document.documentElement.classList.contains("dark-mode");
             const svg = isDark ? clockDarkSVG : clockLightSVG;
             const compares = compare_to_average(duration, average, percent);
+<<<<<<< HEAD
             const projectNameForId = isForOverview ? `overview${projectName}` : projectName;
+=======
+            const normalizedProjectVersion = run.project_version ?? "None";
+>>>>>>> 3e6b2bb (impute project version run card attributes)
 
             const projectRunCardHTML = generate_overview_card_html(
                 projectName,
@@ -4555,8 +4559,13 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 logName,
                 svg,
                 runIndex,
+<<<<<<< HEAD
                 run.project_version,
                 isForOverview,
+=======
+                normalizedProjectVersion,
+                true,  //show only version in card title
+>>>>>>> 3e6b2bb (impute project version run card attributes)
             )
             const existingRunCard = document.getElementById(`${projectNameForId}Card${runIndex}`);
             if (existingRunCard) {
@@ -4967,6 +4976,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         //////////////////////////////////////
 
         // function to create overview statistics blocks in the overview section
+<<<<<<< HEAD
         function create_overview_statistics_graphs(preFilteredRuns = null) {
             const overviewCardsContainer = document.getElementById("overviewRunCardsContainer");
             overviewCardsContainer.innerHTML = '';
@@ -4975,6 +4985,31 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             for (const [projectName, projectRuns] of Object.entries(allProjects)) {
                 const durations = projectRuns.map(r => r.elapsed_s);
                 durationsByProject[projectName] = durations;
+=======
+        function create_overview_statistics_graphs() {
+            const data = {};
+            for (const run of runs) {
+                const projects = new Set();
+                if (settings.switch.runTags) {
+                    const projectTags = run.tags.split(",").filter(t => t.startsWith("project_"));
+                    projectTags?.forEach(tag => projects.add(tag));
+                }
+                if (settings.switch.runName) {
+                    projects.add(run.name);
+                }
+
+                for (const project of projects) {
+                    if (!data[project]) {
+                        data[project] = { runs: [] };
+                    }
+                    data[project].runs.push({
+                        stats: [run.passed, run.failed, run.skipped, run.elapsed_s, run.path],
+                        duration: run.elapsed_s,
+                        passed_run: run.failed === 0 ? 1 : 0,
+                        project_version: run.project_version ?? "None",
+                    });
+                }
+>>>>>>> 3e6b2bb (impute project version run card attributes)
             }
             const latestRunByProject = {};
             if (!preFilteredRuns) {
