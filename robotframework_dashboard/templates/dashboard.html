@@ -5051,6 +5051,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             let smallVersionHtml = `
                 <div id="${projectName}RunCardVersion${idPostfix}"
                 class="run-card-small-version"
+                title="Click to filter for project and version"
                 data-projectVersion="${normalizedProjectVersion}"
                 data-js-target="apply-version-filter">
                     <div class="text-muted">Version:</div>
@@ -5063,7 +5064,10 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             let versionTitle = '';
             if (projectHasVersions) { // version title
                 versionTitle = `
-                    <div class="mx-auto" style="width: fit-content;" data-js-target="apply-version-filter">
+                    <div class="mx-auto"
+                    style="width: fit-content;"
+                    title="Click to filter for project and version"
+                    data-js-target="apply-version-filter">
                         <h5 class="card-title mb-0 d-inline text-muted">Version:</h5>
                         <h5 class="card-title mb-0 d-inline ${versionClass}">
                             ${normalizedProjectVersion}
