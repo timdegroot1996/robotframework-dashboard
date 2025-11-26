@@ -330,6 +330,18 @@
             flex: 0 1 calc((100% - 48px) / 3); /* 3 per row, subtract total gap */
         }
 
+        .run-card-version-title {
+            gap: 0.25rem;
+            width: fit-content;
+            border-bottom: 2px solid #007bff;
+            line-height: 1.2;
+        }
+
+        .run-card-version-title:hover {
+            color: #ec5800;
+            border-bottom: 2px solid #ec5800;
+        }
+
         .run-card-small-version {
             display: flex;
             gap: 0.25rem;
@@ -5068,8 +5080,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             let versionTitle = '';
             if (projectHasVersions) { // version title
                 versionTitle = `
-                    <div class="mx-auto"
-                    style="width: fit-content;"
+                    <div class="mx-auto run-card-version-title"
                     title="Click to filter for project and version"
                     data-js-target="apply-version-filter">
                         <h5 class="card-title mb-0 d-inline text-muted">Version:</h5>
