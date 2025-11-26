@@ -532,7 +532,7 @@
                                     <label class="form-check-label" for="overviewDurationPercentage">Percentage</label>
                                 </div>
                                 <div class="btn-group">
-                                    <select class="form-select form-select-sm" id="overviewDurationPercentage">
+                                    <select class="form-select form-select-sm me-2" id="overviewDurationPercentage">
                                         <option value="10">10</option>
                                         <option value="20" selected>20</option>
                                         <option value="30">30</option>
@@ -544,6 +544,21 @@
                                         <option value="90">90</option>
                                         <option value="100">100</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="btn-group">
+                                    <div id="overviewVersionFilterDropDown" class="dropdown" >
+                                        <button class="btn btn-sm btn-outline-dark dropdown-toggle"
+                                                type="button" id="overviewVersionFilterBtn"
+                                                data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                                            Select Versions
+                                        <span id="overviewVersionSelectedIndicator" class="version-selected-dot" style="display:none;"></span>
+                                        </button>
+                                        <ul id="overviewVersionSelectorList" class="dropdown-menu p-3" style="max-height: 50vh; overflow-y: auto;">
+                                            <!-- placeholder for overview version listitems -->
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-auto">
