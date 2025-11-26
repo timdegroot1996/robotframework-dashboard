@@ -4583,6 +4583,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                      update_menu("menuDashboard");
                  });
                 create_overview_run_donut(run, 0, projectNameForId);
+                const versionElement = createdRunCard.querySelector('[data-js-target="apply-version-filter"]');
+                versionElement && attach_run_card_version_listener(versionElement, projectName, normalizedProjectVersion);
             }
             return `${projectNameForId}Card${runIndex}`;
         }
