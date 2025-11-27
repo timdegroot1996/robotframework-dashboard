@@ -12,7 +12,7 @@ import {
     skippedConfig
 } from "../constants/config.js";
 import { settings } from "../constants/settings.js";
-import { convert_timeline_data, exclude_from_suite_data } from "./generic.js";
+import { convert_timeline_data, exclude_from_suite_data } from "./helpers.js";
 import { compareRunIds } from "../constants/graphs.js";
 
 // function to prepare the data in the correct format for statistics graphs
@@ -189,7 +189,31 @@ function get_test_statistics_data(filteredTests) {
     return [graphData, runStarts];
 }
 
+// function to get the compare statistics data
+function get_compare_statistics_graph_data(filteredData) {
+    const selectedRuns = [...new Set(
+        compareRunIds
+            .map(id => document.getElementById(id).value)
+            .filter(val => val !== "None")
+    )];
+    const datasets = selectedRuns.map(runId => {
+        const match = filteredData.find(d =>
+            d.run_start === runId || d.run_alias === runId
+        );
+        return match ? {
+            label: settings.show.aliases ? match.run_alias : match.run_start,
+            data: [match.passed, match.failed, match.skipped],
+            ...barConfig
+        } : null;
+    }).filter(Boolean);
+    return {
+        labels: ['Passed', 'Failed', 'Skipped'],
+        datasets
+    };
+}
+
 export {
     get_statistics_graph_data,
-    get_test_statistics_data
+    get_test_statistics_data,
+    get_compare_statistics_graph_data
 };

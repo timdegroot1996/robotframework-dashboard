@@ -6,7 +6,7 @@ import { get_most_flaky_data } from "../data/flaky.js";
 import { get_most_failed_data } from "../data/failed.js";
 import { get_most_time_consuming_or_most_used_data } from "../data/time_consuming.js";
 import { get_graph_config } from "../data/graph_config.js";
-import { update_height } from "../data/generic.js";
+import { update_height } from "../data/helpers.js";
 import { open_log_file, open_log_from_label } from "../log.js";
 import { format_duration } from "../common.js";
 import { inFullscreen, inFullscreenGraph, ignoreSkips, ignoreSkipsRecent, filteredTests } from "../constants/globals.js";

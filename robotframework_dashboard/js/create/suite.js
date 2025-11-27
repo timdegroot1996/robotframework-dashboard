@@ -6,7 +6,7 @@ import { get_most_time_consuming_or_most_used_data } from '../data/time_consumin
 import { get_graph_config } from '../data/graph_config.js';
 import { open_log_from_label, open_log_file } from '../log.js';
 import { format_duration } from '../common.js';
-import { update_height } from '../data/generic.js';
+import { update_height } from '../data/helpers.js';
 import { setup_suites_in_suite_select } from '../filter.js';
 import { dataLabelConfig } from '../constants/config.js';
 import { settings } from '../constants/settings.js';

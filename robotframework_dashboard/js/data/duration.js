@@ -1,7 +1,8 @@
 import { settings } from "../constants/settings.js";
 import { inFullscreen, inFullscreenGraph } from "../constants/globals.js";
 import { barConfig, lineConfig } from "../constants/config.js";
-import { exclude_from_suite_data } from "./generic.js";
+import { compareRunIds } from "../constants/graphs.js";
+import { exclude_from_suite_data } from "./helpers.js";
 
 // function to prepare the data in the correct format for duration graphs
 function get_duration_graph_data(dataType, graphType, objectDataAttribute, filteredData) {
@@ -145,6 +146,43 @@ function get_duration_graph_data(dataType, graphType, objectDataAttribute, filte
     }
 }
 
+function get_compare_suite_duration_data(filteredData) {
+    const labelSet = new Set();
+    const dataMap = new Map();
+    const datasets = [];
+    const selectedRuns = [...new Set(
+        compareRunIds
+            .map(id => document.getElementById(id)?.value)
+            .filter(val => val && val !== "None")
+    )];
+
+    for (const value of filteredData) {
+        for (const run of selectedRuns) {
+            if (value.run_start === run || value.run_alias === run) {
+                if (settings.switch.suitePathsCompareSection) {
+                    labelSet.add(value.full_name)
+                } else {
+                    labelSet.add(value.name);
+                }
+                if (!dataMap.has(run)) dataMap.set(run, []);
+                dataMap.get(run).push(value.elapsed_s);
+            }
+        }
+    }
+    for (const run of selectedRuns) {
+        datasets.push({
+            label: run,
+            data: dataMap.get(run) || [],
+            fill: true
+        });
+    }
+    return {
+        labels: [...labelSet],
+        datasets
+    };
+}
+
 export {
-    get_duration_graph_data
+    get_duration_graph_data,
+    get_compare_suite_duration_data
 };

@@ -3,7 +3,7 @@ import { prepare_projects_grouped_data } from "./create/overview.js";
 import { areGroupedProjectsPrepared } from "./constants/globals.js";
 import { space_to_camelcase } from "./common.js";
 import { set_local_storage_item } from "./localstorage.js";
-import { setup_dashboard_graphs } from "./create/generic.js";
+import { setup_dashboard_graphs } from "./create/all.js";
 import { settings } from "./constants/settings.js";
 import { setup_theme } from "./theme.js";
 import { setup_graph_view_buttons } from "./eventlisteners.js";

@@ -1,7 +1,7 @@
 import { settings } from "../constants/settings.js";
 import { inFullscreen, inFullscreenGraph } from "../constants/globals.js";
 import { passedConfig, failedConfig, skippedConfig } from "../constants/config.js";
-import { convert_timeline_data } from "./generic.js";
+import { convert_timeline_data } from "./helpers.js";
 
 // function to prepare the data in the correct format for (recent) most flaky test graph
 function get_most_flaky_data(dataType, graphType, filteredData, ignore, recent) {

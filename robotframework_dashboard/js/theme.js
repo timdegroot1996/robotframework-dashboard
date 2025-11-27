@@ -1,5 +1,5 @@
 import { set_local_storage_item } from "./localstorage.js";
-import { setup_dashboard_graphs } from "./create/generic.js";
+import { setup_dashboard_graphs } from "./create/all.js";
 import { settings } from "./constants/settings.js";
 import { graphFontSize } from "./constants/config.js";
 import {

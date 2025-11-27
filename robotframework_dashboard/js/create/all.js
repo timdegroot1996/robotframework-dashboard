@@ -3,7 +3,7 @@ import { settings } from "../constants/settings.js";
 import { 
     create_overview_statistics_graphs,
     update_donut_charts
-} from "../create/overview.js";
+} from "./overview.js";
 import {
     create_run_statistics_graph,
     create_run_donut_graph,
@@ -11,7 +11,7 @@ import {
     create_run_stats_graph,
     create_run_duration_graph,
     create_run_heatmap_graph
-} from "../create/run.js";
+} from "./run.js";
 import {
     create_suite_statistics_graph,
     create_suite_folder_donut_graph,
@@ -19,7 +19,7 @@ import {
     create_suite_duration_graph,
     create_suite_most_failed_graph,
     create_suite_most_time_consuming_graph
-} from "../create/suite.js";
+} from "./suite.js";
 import {
     create_test_statistics_graph,
     create_test_duration_graph,
@@ -30,7 +30,7 @@ import {
     create_test_most_failed_graph,
     create_test_recent_most_failed_graph,
     create_test_most_time_consuming_graph
-} from "../create/test.js";
+} from "./test.js";
 import {
     create_keyword_statistics_graph,
     create_keyword_times_run_graph,
@@ -41,18 +41,18 @@ import {
     create_keyword_most_failed_graph,
     create_keyword_most_time_consuming_graph,
     create_keyword_most_used_graph
-} from "../create/keyword.js";
+} from "./keyword.js";
 import {
     create_compare_statistics_graph,
     create_compare_suite_duration_graph,
     create_compare_tests_graph
-} from "../create/compare.js";
+} from "./compare.js";
 import {
     create_run_table,
     create_suite_table,
     create_test_table,
     create_keyword_table
-} from "../create/tables.js";
+} from "./tables.js";
 
 // function that updates all graphs based on the new filtered data and hidden choices
 function setup_dashboard_graphs() {

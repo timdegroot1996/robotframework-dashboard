@@ -119,5 +119,4 @@ export {
     open_log_file,
     open_log_from_path,
     open_log_from_label,
-    update_log_path_with_id
 };
