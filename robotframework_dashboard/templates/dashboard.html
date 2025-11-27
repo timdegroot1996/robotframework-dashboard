@@ -4100,6 +4100,22 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             setup_filter_checkbox_handler_listeners(projectVersionList, allVersionsCheckBox, filterVersionSelectedIndicatorId);
         }
 
+        function handle_overview_version_selection(overviewVersionSelectorList, latestRunByProject) {
+            const selectedOptions = Array.from(
+                  overviewVersionSelectorList.querySelectorAll("input:checked")
+                  ).map(inputElement => inputElement.value);
+            if (selectedOptions.includes("All")) {
+                create_overview_statistics_graphs(latestRunByProject);
+            } else {
+                const filteredLatestRunByProject = Object.fromEntries(
+                    Object.entries(latestRunByProject)
+                    .filter(([projectName, run]) => selectedOptions.includes(run.project_version ?? "None"))
+                );
+                create_overview_statistics_graphs(filteredLatestRunByProject);
+            }
+            update_overview_statistics_heading();
+        }
+
         // for runTag/version filter popup and overview
         function setup_filter_checkbox_handler_listeners(
             checkBoxContainerElement,
