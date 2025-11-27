@@ -4116,6 +4116,43 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             update_overview_statistics_heading();
         }
 
+        function update_overview_version_select_list() {
+            const overviewVersionSelectorList = document.getElementById("overviewVersionSelectorList");
+            overviewVersionSelectorList.innerHTML = '';
+            if (!settings.switch.runName && !settings.switch.runTags) return;
+            const filteredLatestRunByProject = {};
+            settings.switch.runName && Object.assign(filteredLatestRunByProject, latestRunByProjectName);
+            settings.switch.runTags && Object.assign(filteredLatestRunByProject, latestRunByProjectTag);
+            const runAmountByVersion = {};
+            for (const run of Object.values(filteredLatestRunByProject)) {
+                const projectVersion = run.project_version ?? "None";
+                runAmountByVersion[projectVersion] ??= 0;
+                runAmountByVersion[projectVersion]++;
+            }
+            const allVersionAmountInFilter = Object.keys(runAmountByVersion).length;
+            const versionFilterListItemAllHtml = generate_version_filter_list_item_html("All", "overview", "checked", allVersionAmountInFilter, "version");
+            const specificVersionFilterListItemHtml = Object.keys(runAmountByVersion)
+                .sort()
+                .reverse()
+                .map(version => {
+                    return generate_version_filter_list_item_html(
+                        version,
+                        "overview",
+                        "", //not checked
+                        runAmountByVersion[version],
+                        "run"
+                    )
+                }).join('');
+            overviewVersionSelectorList.innerHTML = versionFilterListItemAllHtml + specificVersionFilterListItemHtml;
+            const allCheckBox = document.getElementById("overviewVersionFilterListItemAllInput");
+            setup_filter_checkbox_handler_listeners(
+                overviewVersionSelectorList,
+                allCheckBox,
+                "overviewVersionSelectedIndicator",
+                () => {handle_overview_version_selection(overviewVersionSelectorList, filteredLatestRunByProject)}
+            );
+        }
+
         // for runTag/version filter popup and overview
         function setup_filter_checkbox_handler_listeners(
             checkBoxContainerElement,
