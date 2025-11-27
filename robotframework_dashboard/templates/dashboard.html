@@ -1251,6 +1251,8 @@
         // populated by prepare_project_overview()
         const projects_by_tag = {};
         const projects_by_name = {};
+        const latestRunByProjectTag = {};
+        const latestRunByProjectName = {};
         let areGroupedProjectsPrepared = false;
         const versionsByProject = {};
 
@@ -4829,6 +4831,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function prepare_project_overview() {
             prepare_projects_grouped_data();
             prepare_projects_version_counts_map({...projects_by_name, ...projects_by_tag});
+            prepare_latest_run_by_project();
             create_project_overview();
         }
 
@@ -4861,6 +4864,18 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     }
                 versionsByProject[project] = versionCounts;
             }
+        }
+
+        function prepare_latest_run_by_project() {
+            function map_latest_run_by_project(runsByProject) {
+                latestRunByProject = Object.entries(runsByProject)
+                    .map(([projectName, projectRuns]) => {
+                        return [projectName, projectRuns.at(-1)];
+                    });
+                return Object.fromEntries(latestRunByProject);
+            }
+            Object.assign(latestRunByProjectName, map_latest_run_by_project(projects_by_name));
+            Object.assign(latestRunByProjectTag, map_latest_run_by_project(projects_by_tag));
         }
 
         //////////////////////////////////////
