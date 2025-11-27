@@ -4465,9 +4465,8 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         }
 
         // create a run card that will be displayed within each project section in overview
-        function create_project_run_card(run, projectName, runIndex, runNumber, passRate, percent, durations) {
+        function create_project_run_card(run, projectName, runIndex, runNumber, passRate, percent, durations, isForOverview = false) {
             const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
-
             const stats = [run.passed, run.failed, run.skipped, run.elapsed_s, run.path];
             const duration = run.elapsed_s;
             const duration_rounded = Math.round(duration);
@@ -4479,6 +4478,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             const isDark = document.documentElement.classList.contains("dark-mode");
             const svg = isDark ? clockDarkSVG : clockLightSVG;
             const compares = compare_to_average(duration, average, percent);
+            const projectNameForId = isForOverview ? `overview${projectName}` : projectName;
 
             const projectRunCardHTML = generate_overview_card_html(
                 projectName,
@@ -4493,23 +4493,25 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                 svg,
                 runIndex,
                 run.project_version,
-                true,  //show only version in card title
+                isForOverview,
             )
-            const existingRunCard = document.getElementById(`${projectName}Card${runIndex}`);
+            const existingRunCard = document.getElementById(`${projectNameForId}Card${runIndex}`);
             if (existingRunCard) {
                 // preserves listeners of element
                 existingRunCard.replaceWith(document.createRange().createContextualFragment(projectRunCardHTML));
             } else {
-                const cardsContainer = document.getElementById(`${projectName}RunCardsContainer`);
+                const cardsContainerIdPrefix = isForOverview ? "overview" : projectName;
+                const cardsContainer = document.getElementById(`${cardsContainerIdPrefix}RunCardsContainer`);
                 cardsContainer.appendChild(document.createRange().createContextualFragment(projectRunCardHTML));
-                const createdRunCard = document.getElementById(`${projectName}Card${runIndex}`);
+                const createdRunCard = document.getElementById(`${projectNameForId}Card${runIndex}`);
                 createdRunCard.addEventListener("click", () => {
-                    clear_all_filters();
-                    set_filter_show_current_project(projectName);
-                    update_menu("menuDashboard");
-                });
+                     clear_all_filters();
+                     set_filter_show_current_project(projectName);
+                     update_menu("menuDashboard");
+                 });
+                create_overview_run_donut(run, 0, projectNameForId);
             }
-            return `${projectName}Card${runIndex}`;
+            return `${projectNameForId}Card${runIndex}`;
         }
 
         function create_overview_run_donut(run, chartElementPostfix, projectName) {
