@@ -4938,101 +4938,40 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         //////////////////////////////////////
 
         // function to create overview statistics blocks in the overview section
-        function create_overview_statistics_graphs() {
-            const data = {};
-            for (const run of runs) {
-                const projects = new Set();
-                if (settings.switch.runTags) {
-                    const projectTags = run.tags.split(",").filter(t => t.startsWith("project_"));
-                    projectTags?.forEach(tag => projects.add(tag));
-                }
-                if (settings.switch.runName) {
-                    projects.add(run.name);
-                }
-
-                for (const project of projects) {
-                    if (!data[project]) {
-                        data[project] = { runs: [] };
-                    }
-                    data[project].runs.push({
-                        stats: [run.passed, run.failed, run.skipped, run.elapsed_s, run.path],
-                        duration: run.elapsed_s,
-                        passed_run: run.failed === 0 ? 1 : 0,
-                        project_version: run.project_version,
-                    });
-                }
+        function create_overview_statistics_graphs(preFilteredRuns = null) {
+            const overviewCardsContainer = document.getElementById("overviewRunCardsContainer");
+            overviewCardsContainer.innerHTML = '';
+            const allProjects = {...projects_by_name, ...projects_by_tag};
+            const durationsByProject = {};
+            for (const [projectName, projectRuns] of Object.entries(allProjects)) {
+                const durations = projectRuns.map(r => r.elapsed_s);
+                durationsByProject[projectName] = durations;
             }
-
-            const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
-
-            let overviewHTML = '';
-            const overviewDurationPercentage = document.getElementById('overviewDurationPercentage').value;
-            const keys = Object.keys(data).sort();
-            const svg = document.getElementsByTagName("html")[0].getAttribute("data-bs-theme") == "dark" ? clockDarkSVG : clockLightSVG;
-            document.getElementById("overviewTitle").innerHTML = `Overview Statistics <h6>showing ${Object.keys(runs).length} runs in ${keys.length} projects</h6`;
-
-            let cardCounter = 0;
-            const idPostfix = "_OverviewStatistics"; // can be a set postfix because it is always unique with the name in this code
-
-            keys.forEach(key => {
-                const runList = [...data[key].runs].reverse(); // newest first
-                const r = runList[0];
-                const [passed, failed, skipped, duration, rawPath] = r.stats;
-                const path = transform_file_path(rawPath).replaceAll('\\', '\\\\');
-                const runNumber = runList.length;
-                const durationsForAvg = runList
-                    .map(x => x.duration)
-                    .filter(item => item !== duration);
-                const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
-                const compares = compare_to_average(duration, average, overviewDurationPercentage);
-                const rounded_duration = Math.round(duration);
-                const passedRuns = (runList.reduce((a, b) => a + b.passed_run, 0) / runList.length * 100).toFixed(2);
-                const status = failed > 0 ? 'failed' : skipped > 0 ? 'skipped' : 'passed';
-                const log_path = use_logs ? path : '';
-                const log_name = use_logs ? 'log.html' : '';
-
-                if (cardCounter % CARDS_PER_ROW === 0) {
-                    overviewHTML += '<div class="row">';
-                }
-                overviewHTML += generate_overview_card_html(
-                    key,
-                    r.stats,
-                    rounded_duration,
-                    status,
-                    runNumber,
-                    compares,
-                    passedRuns,
-                    log_path,
-                    log_name,
-                    svg,
-                    idPostfix,
-                    r.project_version,
+            const latestRunByProject = {};
+            if (!preFilteredRuns) {
+                settings.switch.runName && Object.assign(latestRunByProject, latestRunByProjectName);
+                settings.switch.runTags && Object.assign(latestRunByProject, latestRunByProjectTag);
+            } else { // if called by version filter listener
+                Object.assign(latestRunByProject, preFilteredRuns);
+            }
+            for (const [projectName, latestRun] of Object.entries(latestRunByProject)) {
+                const projectRuns = allProjects[projectName];
+                const totalRunsAmount = projectRuns.length;
+                const passedRunsAmount = projectRuns.filter(run => run.failed === 0).length;
+                const passRate = ((passedRunsAmount / totalRunsAmount) * 100).toFixed(2);
+                const percent = document.getElementById("overviewDurationPercentage").value;
+                const projectRunDurations = projectRuns.map(run => run.elapsed_s);
+                create_project_run_card(
+                    latestRun,
+                    projectName,
+                    0, // cardIndex, 0 since only 1 run per project in overview
+                    totalRunsAmount, //run Number
+                    passRate,
+                    percent,
+                    projectRunDurations,
+                    true // isForOverviewStats
                 );
-                cardCounter++;
-                if (cardCounter % CARDS_PER_ROW === 0) {
-                    overviewHTML += '</div>';
-                }
-            });
-
-            if (cardCounter % CARDS_PER_ROW !== 0) {
-                overviewHTML += '</div>';
             }
-            document.getElementById("gridOverview").innerHTML = overviewHTML;
-            keys.forEach(key => {
-                const runList = data[key].runs.slice().reverse();
-                const r = runList[0];
-                const cardEl = document.getElementById(`${key}Card${idPostfix}`);
-                if (cardEl) {
-                    // build charts
-                    create_overview_run_donut(r, "_OverviewStatistics", key);
-                    // attach click listener
-                    cardEl.addEventListener("click", () => {
-                        clear_all_filters();
-                        set_filter_show_current_project(key);
-                        update_menu("menuDashboard");
-                    });
-                }
-            });
         }
 
         function generate_overview_card_html(
