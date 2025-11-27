@@ -4993,9 +4993,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
              svg,
              idPostfix,
              projectVersion = null,
-             showOnlyVersion = false,
+             isForOverview = false,
         ) {
             const normalizedProjectVersion = projectVersion ?? "None";
+            // ensure overview stats and project bar card ids unique
+            const projectNameForElementId = isForOverview ? `overview${projectName}` : projectName;
             // for overview statistics
             let cardTitle = `
                     <h5 class="card-title mb-0 fw-semibold">${projectName}</h5>
@@ -5022,12 +5024,12 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                     <h5 class="card-title mb-0 ${versionClass}"></h5>
                 `;
             }
-            if (showOnlyVersion) {
+            if (!isForOverview) {
                 cardTitle = versionTitle;
                 smallVersionHtml = '';
             }
             return `
-            <div class="col-4 overview-card" id="${projectName}Card${idPostfix}" data-project-version="${normalizedProjectVersion}">
+            <div class="col-4 overview-card" id="${projectNameForElementId}Card${idPostfix}" data-project-version="${normalizedProjectVersion}">
                 <div class="card border-3 border-${status}">
                     <div class="card-body">
                         <div class="row">
@@ -5038,7 +5040,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                         </div>
                         <div class="row">
                             <div class="col-4 overview-canvas">
-                                <canvas id="${projectName}Graph${idPostfix}"></canvas>
+                                <canvas id="${projectNameForElementId}Graph${idPostfix}"></canvas>
                             </div>
                             <div class="col-3 d-flex align-items-center">
                                 <div>
@@ -5049,11 +5051,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
                             </div>
                             <div class="col-5 d-flex align-items-center" style="overflow:auto;">
                                 <div>
-                                    <div class="${compares}" id="${projectName}RunCardCompares${idPostfix}">
+                                    <div class="${compares}" id="${projectNameForElementId}RunCardCompares${idPostfix}">
                                         <span class="clock-icon">
                                             ${svg}
                                         </span>
-                                        <i id="${projectName}RunCardComparesValue${idPostfix}" value="${rounded_duration}">
+                                        <i id="${projectNameForElementId}RunCardComparesValue${idPostfix}" value="${rounded_duration}">
                                             ${rounded_duration}s
                                         </i>
                                     </div>
