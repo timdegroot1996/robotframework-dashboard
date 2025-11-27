@@ -4457,7 +4457,7 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             // create cards and charts for each run card
             projectRunsToShow.forEach((run, idx) => {
                 const runNumber = projectRunsToShow.length - idx;
-                const createdRunCardId = create_project_run_card(run, projectName, idx, runNumber, passRate, percent, durations)
+                const createdRunCardId = create_project_run_card(run, projectName, idx, runNumber, passRate, percent, durations, false);
                 const createdRunCard = document.getElementById(createdRunCardId);
                 container.appendChild(createdRunCard);
                 create_overview_run_donut(run, idx, projectName);
