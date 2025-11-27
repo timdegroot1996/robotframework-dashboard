@@ -1,3 +1,5 @@
+import { settings } from "../constants/settings.js";
+
 // function to prepare the data in the correct format for the duration deviation graph
 function get_duration_deviation_data(dataType, graphType, filteredData) {
     const suiteSelectTests = document.getElementById("suiteSelectTests").value;

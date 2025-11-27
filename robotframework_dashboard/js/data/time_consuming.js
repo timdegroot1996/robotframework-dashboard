@@ -1,3 +1,7 @@
+import { settings } from "../constants/settings.js";
+import { inFullscreen, inFullscreenGraph } from "../constants/globals.js";
+import { blueConfig } from "../constants/config.js";
+import { convert_timeline_data } from "./generic.js";
 
 // function to prepare the most time consuming or most used data for suites/tests/keywords
 function get_most_time_consuming_or_most_used_data(dataType, graphType, filteredData, onlyLastRun, mostUsed = false) {

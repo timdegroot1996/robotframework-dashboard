@@ -212,7 +212,6 @@ function update_graph_type(graph, type) {
     set_local_storage_item('graphTypes', settings.graphTypes);
 }
 
-
 export {
     setup_local_storage,
     set_local_storage_item,

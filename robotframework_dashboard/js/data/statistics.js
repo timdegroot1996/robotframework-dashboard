@@ -1,3 +1,20 @@
+import {
+    failedBackgroundColor,
+    failedBackgroundBorderColor,
+    skippedBackgroundColor,
+    skippedBackgroundBorderColor,
+    passedBackgroundColor,
+    passedBackgroundBorderColor,
+    barConfig,
+    lineConfig,
+    passedConfig,
+    failedConfig,
+    skippedConfig
+} from "../constants/config.js";
+import { settings } from "../constants/settings.js";
+import { convert_timeline_data, exclude_from_suite_data } from "./generic.js";
+import { compareRunIds } from "../constants/graphs.js";
+
 // function to prepare the data in the correct format for statistics graphs
 function get_statistics_graph_data(dataType, graphType, filteredData) {
     const suiteSelectSuitesCombined = document.getElementById("suiteSelectSuites").value === "All Suites Combined";

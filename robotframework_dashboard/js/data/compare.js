@@ -1,3 +1,7 @@
+import { settings } from '../constants/settings.js';
+import { compareRunIds } from '../constants/graphs.js';
+import { barConfig } from '../constants/config.js';
+
 // function to get the compare statistics data
 function get_compare_statistics_graph_data(filteredData) {
     const selectedRuns = [...new Set(

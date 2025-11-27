@@ -1,3 +1,15 @@
+import { setup_filtered_data_and_filters } from "./filter.js";
+import { prepare_projects_grouped_data } from "./create/overview.js";
+import { areGroupedProjectsPrepared } from "./constants/globals.js";
+import { space_to_camelcase } from "./common.js";
+import { set_local_storage_item } from "./localstorage.js";
+import { setup_dashboard_graphs } from "./create/generic.js";
+import { settings } from "./constants/settings.js";
+import { setup_theme } from "./theme.js";
+import { setup_graph_view_buttons } from "./eventlisteners.js";
+import { setup_section_order, setup_graph_order } from "./layout.js";
+import { setup_information_popups } from "./information.js";
+
 // function to update the section (menu) buttons with the correct eventlisteners
 // also sets up the automatic highlighting of the section that is most visible in the top
 // 20-50% percent of the screen
@@ -232,5 +244,6 @@ function setup_spinner(hide) {
 export {
     setup_menu,
     setup_data_and_graphs,
-    setup_spinner
+    setup_spinner,
+    update_menu
 };

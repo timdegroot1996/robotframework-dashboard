@@ -1,3 +1,9 @@
+import { settings } from "../constants/settings.js";
+import { inFullscreen, inFullscreenGraph } from "../constants/globals.js";
+import { failedConfig } from "../constants/config.js";
+import { message_config } from "../constants/data.js";
+import { convert_timeline_data } from "./generic.js";
+
 // function to prepare the data in the correct format for messages graphs
 function get_messages_data(dataType, graphType, filteredData) {
     const data = new Map();

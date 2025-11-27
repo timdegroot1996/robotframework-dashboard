@@ -1,3 +1,4 @@
+import { filteredRuns, filteredSuites, filteredTests, filteredKeywords } from "../constants/globals.js";
 
 // function to create run table in the run section
 function create_run_table() {

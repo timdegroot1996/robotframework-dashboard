@@ -1,16 +1,11 @@
-// data functions
 import { get_graph_config } from '../data/graph_config.js';
 import { get_statistics_graph_data } from '../data/statistics.js';
 import { get_donut_graph_data, get_donut_total_graph_data } from '../data/donut.js';
 import { get_duration_graph_data } from '../data/duration.js';
 import { get_heatmap_graph_data } from '../data/heatmap.js';
 import { get_stats_data } from '../data/stats.js';
-
-// generic functions
 import { format_duration } from '../common.js';
 import { open_log_file, open_log_from_label } from '../log.js';
-
-// variables
 import { settings } from '../constants/settings.js';
 import {
     inFullscreen,

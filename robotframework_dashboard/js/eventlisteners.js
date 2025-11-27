@@ -1,16 +1,64 @@
-import {
-    setup_data_and_graphs,
-    setup_run_amount_filter
-} from "./datasetup.js";
-import {
-    runs,
-    keywords,
-    filteredAmount,
-    filteredAmountDefault,
-} from './constants/data.js';
+import { runs, keywords, filteredAmount, filteredAmountDefault, server } from './constants/data.js';
 import {
     showingRunTags,
-} from './constants/globals.js';
+    ignoreSkips,
+    ignoreSkipsRecent,
+    onlyFailedFolders,
+    heatMapHourAll,
+    inFullscreen,
+    inFullscreenGraph,
+    lastScrollY,
+    previousFolder,
+} from "./constants/globals.js";
+import { arrowDown, arrowRight } from "./constants/svg.js";
+import { fullscreenButtons, graphChangeButtons, compareRunIds } from "./constants/graphs.js";
+import { add_alert } from "./common.js";
+import { toggle_theme } from "./theme.js";
+import { setup_data_and_graphs } from "./menu.js";
+import { setup_run_amount_filter, setup_lowest_highest_dates } from "./filter.js"
+import { camelcase_to_underscore, underscore_to_camelcase } from "./common.js";
+import {
+    update_switch_local_storage,
+    set_local_storage_item,
+    update_graph_type,
+} from "./localstorage.js";
+import { create_overview_statistics_graphs, clear_project_filter } from "./create/overview.js";
+import { create_run_donut_total_graph, create_run_heatmap_graph } from "./create/run.js";
+import {
+    create_suite_duration_graph,
+    create_suite_statistics_graph,
+    create_suite_most_failed_graph,
+    create_suite_most_time_consuming_graph,
+    create_suite_folder_donut_graph,
+    create_suite_folder_fail_donut_graph,
+} from "./create/suite.js";
+import {
+    create_test_statistics_graph,
+    create_test_duration_graph,
+    create_test_duration_deviation_graph,
+    create_test_messages_graph,
+    create_test_most_flaky_graph,
+    create_test_recent_most_flaky_graph,
+    create_test_most_failed_graph,
+    create_test_recent_most_failed_graph,
+    create_test_most_time_consuming_graph,
+} from "./create/test.js";
+import {
+    create_keyword_statistics_graph,
+    create_keyword_times_run_graph,
+    create_keyword_total_duration_graph,
+    create_keyword_average_duration_graph,
+    create_keyword_min_duration_graph,
+    create_keyword_max_duration_graph,
+    create_keyword_most_failed_graph,
+    create_keyword_most_time_consuming_graph,
+    create_keyword_most_used_graph,
+} from "./create/keyword.js";
+import {
+    create_compare_statistics_graph,
+    create_compare_suite_duration_graph,
+    create_compare_tests_graph,
+} from "./create/compare.js";
 
 // function to setup filter modal eventlisteners
 function setup_filter_modal() {

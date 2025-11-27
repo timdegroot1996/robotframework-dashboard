@@ -314,7 +314,6 @@ function setup_keywords_in_select() {
     }
 }
 
-
 // function to setup run amount filter maximum
 function setup_run_amount_filter() {
     document.getElementById("amount").setAttribute("max", runs.length)
@@ -426,5 +425,10 @@ export {
     setup_lowest_highest_dates,
     setup_metadata_filter,
     setup_runs_in_select_filter_buttons,
-    setup_runtags_in_select_filter_buttons
+    setup_runtags_in_select_filter_buttons,
+    setup_suites_in_suite_select,
+    setup_suites_in_test_select,
+    setup_tests_in_select,
+    setup_testtags_in_select,
+    setup_keywords_in_select
 };

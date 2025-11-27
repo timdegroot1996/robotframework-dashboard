@@ -4,7 +4,7 @@ from datetime import datetime
 from json import dumps
 from zlib import compress
 from base64 import b64encode
-from re import sub, compile, MULTILINE
+from re import sub, compile, MULTILINE, DOTALL
 from .version import __version__
 
 DEPENDENCIES = {
@@ -226,7 +226,7 @@ class DashboardGenerator:
             modules[str(abs_path)] = abs_path.read_text(encoding="utf-8")
 
         # Step 2 — Build dependency graph
-        import_pattern = compile(r'import\s+.*?from\s+[\'"](.*?)[\'"];?')
+        import_pattern = compile(r'import\s+.*?from\s+[\'"](.*?)[\'"];?',DOTALL)
         dependencies = {path: [] for path in modules.keys()}
         for abs_path, code in modules.items():
             current_dir = dirname(abs_path)

@@ -1,3 +1,16 @@
+import { get_test_statistics_data } from "../data/statistics.js";
+import { get_duration_graph_data } from "../data/duration.js";
+import { get_messages_data } from "../data/messages.js";
+import { get_duration_deviation_data } from "../data/duration_deviation.js";
+import { get_most_flaky_data } from "../data/flaky.js";
+import { get_most_failed_data } from "../data/failed.js";
+import { get_most_time_consuming_or_most_used_data } from "../data/time_consuming.js";
+import { get_graph_config } from "../data/graph_config.js";
+import { update_height } from "../data/generic.js";
+import { open_log_file, open_log_from_label } from "../log.js";
+import { format_duration } from "../common.js";
+import { inFullscreen, inFullscreenGraph, ignoreSkips, ignoreSkipsRecent, filteredTests } from "../constants/globals.js";
+import { settings } from "../constants/settings.js";
 
 // function to create test statistics graph in the test section
 function create_test_statistics_graph() {

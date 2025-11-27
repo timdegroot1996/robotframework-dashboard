@@ -51,7 +51,6 @@ const tableGraphs = graphMetadata
     .filter(graph => graph.label.startsWith("Table"))
     .map(graph => graph.label)
 
-
 export {
     tables,
     hideGraphs,

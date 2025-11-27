@@ -1,3 +1,10 @@
+import { get_compare_statistics_graph_data, get_compare_suite_duration_data } from "../data/compare.js";
+import { get_test_statistics_data } from "../data/statistics.js";
+import { get_graph_config } from "../data/graph_config.js";
+import { update_height } from "../data/generic.js";
+import { open_log_file, open_log_from_label } from "../log.js";
+import { filteredRuns, filteredSuites, filteredTests } from "../constants/globals.js";
+import { settings } from "../constants/settings.js";
 
 // function to create the compare statistics in the compare section
 function create_compare_statistics_graph() {

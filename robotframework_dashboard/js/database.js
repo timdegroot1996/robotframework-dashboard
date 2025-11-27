@@ -1,3 +1,4 @@
+import { settings } from './constants/settings.js';
 import { runs, suites, tests, keywords } from './constants/data.js';
 
 // set default values

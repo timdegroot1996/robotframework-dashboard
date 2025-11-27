@@ -1,3 +1,8 @@
+import { runs, suites, tests, server, use_logs } from './constants/data.js';
+import { format_date_to_string, transform_file_path, combine_paths } from './common.js';
+import { settings } from './constants/settings.js';
+import { filteredRuns } from './constants/globals.js';
+
 // function to open the log files through the graphs
 function open_log_file(event, chartElement, callbackData = undefined) {
     if (!use_logs) { return }

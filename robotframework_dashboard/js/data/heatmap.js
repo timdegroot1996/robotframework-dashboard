@@ -1,3 +1,5 @@
+import { barConfig } from "../constants/config.js";
+import { heatMapHourAll } from "../constants/globals.js";
 
 function get_heatmap_graph_data(filteredData) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

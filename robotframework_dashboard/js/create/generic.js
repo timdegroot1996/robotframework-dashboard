@@ -1,7 +1,8 @@
 import { settings } from "../constants/settings.js";
 
-import { create_overview_statistics_graphs 
-    
+import { 
+    create_overview_statistics_graphs,
+    update_donut_charts
 } from "../create/overview.js";
 import {
     create_run_statistics_graph,
@@ -52,7 +53,6 @@ import {
     create_test_table,
     create_keyword_table
 } from "../create/tables.js";
-
 
 // function that updates all graphs based on the new filtered data and hidden choices
 function setup_dashboard_graphs() {

@@ -1,3 +1,8 @@
+import { settings } from "../constants/settings.js";
+import { inFullscreen, inFullscreenGraph } from "../constants/globals.js";
+import { convert_timeline_data } from "./generic.js";
+import { failedConfig } from "../constants/config.js";
+
 // function to prepare the data in the correct format for most failed graphs
 function get_most_failed_data(dataType, graphType, filteredData, recent) {
     const useLibraryNames = settings?.switch?.useLibraryNames === true;

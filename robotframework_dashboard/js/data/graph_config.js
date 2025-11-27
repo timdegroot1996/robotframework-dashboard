@@ -1,4 +1,7 @@
 import { settings } from "../constants/settings.js";
+import { heatMapHourAll } from "../constants/globals.js";
+import { open_log_file } from "../log.js";
+import { format_duration } from "../common.js";
 
 // function to retrieve the required graph config for chartjs, based on the different type of graphs
 // Generate a Chart.js config object based on the graph type and data

@@ -1,3 +1,5 @@
+import { settings } from "./settings.js";
+
 // colors
 const passedBackgroundBorderColor = "#97bd61";
 const passedBackgroundColor = "rgba(151, 189, 97, 0.7)";

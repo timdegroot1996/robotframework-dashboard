@@ -1,3 +1,8 @@
+import { settings } from "../constants/settings.js";
+import { inFullscreen, inFullscreenGraph } from "../constants/globals.js";
+import { barConfig, lineConfig } from "../constants/config.js";
+import { exclude_from_suite_data } from "./generic.js";
+
 // function to prepare the data in the correct format for duration graphs
 function get_duration_graph_data(dataType, graphType, objectDataAttribute, filteredData) {
     const suiteSelectSuitesCombined = document.getElementById("suiteSelectSuites").value === "All Suites Combined";
