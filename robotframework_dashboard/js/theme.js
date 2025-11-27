@@ -1,7 +1,7 @@
 import { set_local_storage_item } from "./localstorage.js";
-import { setup_dashboard_graphs } from "./create/all.js";
-import { settings } from "./constants/settings.js";
-import { graphFontSize } from "./constants/config.js";
+import { setup_dashboard_graphs } from "./graph_creation/all.js";
+import { settings } from "./variables/settings.js";
+import { graphFontSize } from "./variables/chartconfig.js";
 import {
     githubLightSVG, githubDarkSVG,
     docsLightSVG, docsDarkSVG,
@@ -30,7 +30,7 @@ import {
     moveUpLightSVG, moveUpDarkSVG,
     moveDownLightSVG, moveDownDarkSVG,
     clockLightSVG, clockDarkSVG,
-} from "./constants/svg.js";
+} from "./variables/svg.js";
 
 // function to update the theme when the button is clicked
 function toggle_theme() {

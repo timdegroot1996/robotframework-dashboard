@@ -1,6 +1,6 @@
-import { settings } from "../constants/settings.js";
-import { inFullscreen, inFullscreenGraph } from "../constants/globals.js";
-import { blueConfig } from "../constants/config.js";
+import { settings } from "../variables/settings.js";
+import { inFullscreen, inFullscreenGraph } from "../variables/globals.js";
+import { blueConfig } from "../variables/chartconfig.js";
 import { convert_timeline_data } from "./helpers.js";
 
 // function to prepare the most time consuming or most used data for suites/tests/keywords

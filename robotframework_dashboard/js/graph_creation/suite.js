@@ -1,16 +1,16 @@
-import { get_donut_folder_graph_data, get_donut_folder_fail_graph_data } from '../data/donut.js';
-import { get_statistics_graph_data } from '../data/statistics.js';
-import { get_duration_graph_data } from '../data/duration.js';
-import { get_most_failed_data } from '../data/failed.js';
-import { get_most_time_consuming_or_most_used_data } from '../data/time_consuming.js';
-import { get_graph_config } from '../data/graph_config.js';
+import { get_donut_folder_graph_data, get_donut_folder_fail_graph_data } from '../graph_data/donut.js';
+import { get_statistics_graph_data } from '../graph_data/statistics.js';
+import { get_duration_graph_data } from '../graph_data/duration.js';
+import { get_most_failed_data } from '../graph_data/failed.js';
+import { get_most_time_consuming_or_most_used_data } from '../graph_data/time_consuming.js';
+import { get_graph_config } from '../graph_data/graph_config.js';
 import { open_log_from_label, open_log_file } from '../log.js';
 import { format_duration } from '../common.js';
-import { update_height } from '../data/helpers.js';
+import { update_height } from '../graph_data/helpers.js';
 import { setup_suites_in_suite_select } from '../filter.js';
-import { dataLabelConfig } from '../constants/config.js';
-import { settings } from '../constants/settings.js';
-import { inFullscreen, inFullscreenGraph, filteredSuites } from '../constants/globals.js';
+import { dataLabelConfig } from '../variables/chartconfig.js';
+import { settings } from '../variables/settings.js';
+import { inFullscreen, inFullscreenGraph, filteredSuites } from '../variables/globals.js';
 
 // function to create suite folder donut
 function create_suite_folder_donut_graph(folder) {

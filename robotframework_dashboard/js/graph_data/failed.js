@@ -1,7 +1,7 @@
-import { settings } from "../constants/settings.js";
-import { inFullscreen, inFullscreenGraph } from "../constants/globals.js";
+import { settings } from "../variables/settings.js";
+import { inFullscreen, inFullscreenGraph } from "../variables/globals.js";
 import { convert_timeline_data } from "./helpers.js";
-import { failedConfig } from "../constants/config.js";
+import { failedConfig } from "../variables/chartconfig.js";
 
 // function to prepare the data in the correct format for most failed graphs
 function get_most_failed_data(dataType, graphType, filteredData, recent) {

@@ -1,7 +1,7 @@
-import { settings } from "../constants/settings.js";
-import { inFullscreen, inFullscreenGraph } from "../constants/globals.js";
-import { barConfig, lineConfig } from "../constants/config.js";
-import { compareRunIds } from "../constants/graphs.js";
+import { settings } from "../variables/settings.js";
+import { inFullscreen, inFullscreenGraph } from "../variables/globals.js";
+import { barConfig, lineConfig } from "../variables/chartconfig.js";
+import { compareRunIds } from "../variables/graphs.js";
 import { exclude_from_suite_data } from "./helpers.js";
 
 // function to prepare the data in the correct format for duration graphs

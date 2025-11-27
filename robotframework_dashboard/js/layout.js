@@ -1,15 +1,15 @@
-import { settings } from "./constants/settings.js";
+import { settings } from "./variables/settings.js";
 import { set_local_storage_item } from "./localstorage.js";
-import { graphMetadata } from "./constants/graphmetadata.js";
+import { graphMetadata } from "./variables/graphmetadata.js";
 import { space_to_camelcase, add_alert } from "./common.js";
-import { gridEditMode } from "./constants/globals.js";
+import { gridEditMode } from "./variables/globals.js";
 import {
     gridrun,
     gridSuite,
     gridTest,
     gridKeyword,
     gridCompare
-} from "./constants/globals.js"; // they are used in the window[grid] references
+} from "./variables/globals.js"; // they are used in the window[grid] references
 import { setup_data_and_graphs } from "./menu.js";
 
 // function to order the sections according to the config

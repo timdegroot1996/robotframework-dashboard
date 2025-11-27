@@ -1,10 +1,10 @@
 import { setup_filtered_data_and_filters } from "./filter.js";
-import { prepare_projects_grouped_data } from "./create/overview.js";
-import { areGroupedProjectsPrepared } from "./constants/globals.js";
+import { prepare_projects_grouped_data } from "./graph_creation/overview.js";
+import { areGroupedProjectsPrepared } from "./variables/globals.js";
 import { space_to_camelcase } from "./common.js";
 import { set_local_storage_item } from "./localstorage.js";
-import { setup_dashboard_graphs } from "./create/all.js";
-import { settings } from "./constants/settings.js";
+import { setup_dashboard_graphs } from "./graph_creation/all.js";
+import { settings } from "./variables/settings.js";
 import { setup_theme } from "./theme.js";
 import { setup_graph_view_buttons } from "./eventlisteners.js";
 import { setup_section_order, setup_graph_order } from "./layout.js";

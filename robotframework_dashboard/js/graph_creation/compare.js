@@ -1,10 +1,10 @@
-import { get_test_statistics_data, get_compare_statistics_graph_data } from "../data/statistics.js";
-import { get_compare_suite_duration_data } from "../data/duration.js";
-import { get_graph_config } from "../data/graph_config.js";
-import { update_height } from "../data/helpers.js";
+import { get_test_statistics_data, get_compare_statistics_graph_data } from "../graph_data/statistics.js";
+import { get_compare_suite_duration_data } from "../graph_data/duration.js";
+import { get_graph_config } from "../graph_data/graph_config.js";
+import { update_height } from "../graph_data/helpers.js";
 import { open_log_file, open_log_from_label } from "../log.js";
-import { filteredRuns, filteredSuites, filteredTests } from "../constants/globals.js";
-import { settings } from "../constants/settings.js";
+import { filteredRuns, filteredSuites, filteredTests } from "../variables/globals.js";
+import { settings } from "../variables/settings.js";
 
 // function to create the compare statistics in the compare section
 function create_compare_statistics_graph() {

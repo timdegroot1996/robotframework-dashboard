@@ -1,6 +1,6 @@
-import { settings } from "../constants/settings.js";
-import { barConfig } from "../constants/config.js";
-import { inFullscreen}  from "../constants/globals.js";
+import { settings } from "../variables/settings.js";
+import { barConfig } from "../variables/chartconfig.js";
+import { inFullscreen}  from "../variables/globals.js";
 
 // helper function to more easily use the logic of filtering suite graph data based on the selected filters
 // returns true if the value should be excluded, false if it should be included

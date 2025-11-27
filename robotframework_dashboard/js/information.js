@@ -1,4 +1,4 @@
-import { informationMap } from "./constants/information.js";
+import { informationMap } from "./variables/information.js";
 
 // function to fill the information icons with the correct data
 function setup_information_popups() {

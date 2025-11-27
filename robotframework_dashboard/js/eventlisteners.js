@@ -1,4 +1,4 @@
-import { runs, keywords, filteredAmount, filteredAmountDefault, server } from './constants/data.js';
+import { runs, keywords, filteredAmount, filteredAmountDefault, server } from './variables/data.js';
 import {
     showingRunTags,
     ignoreSkips,
@@ -9,9 +9,9 @@ import {
     inFullscreenGraph,
     lastScrollY,
     previousFolder,
-} from "./constants/globals.js";
-import { arrowDown, arrowRight } from "./constants/svg.js";
-import { fullscreenButtons, graphChangeButtons, compareRunIds } from "./constants/graphs.js";
+} from "./variables/globals.js";
+import { arrowDown, arrowRight } from "./variables/svg.js";
+import { fullscreenButtons, graphChangeButtons, compareRunIds } from "./variables/graphs.js";
 import { add_alert } from "./common.js";
 import { toggle_theme } from "./theme.js";
 import { setup_data_and_graphs } from "./menu.js";
@@ -22,8 +22,8 @@ import {
     set_local_storage_item,
     update_graph_type,
 } from "./localstorage.js";
-import { create_overview_statistics_graphs, clear_project_filter } from "./create/overview.js";
-import { create_run_donut_total_graph, create_run_heatmap_graph } from "./create/run.js";
+import { create_overview_statistics_graphs, clear_project_filter } from "./graph_creation/overview.js";
+import { create_run_donut_total_graph, create_run_heatmap_graph } from "./graph_creation/run.js";
 import {
     create_suite_duration_graph,
     create_suite_statistics_graph,
@@ -31,7 +31,7 @@ import {
     create_suite_most_time_consuming_graph,
     create_suite_folder_donut_graph,
     create_suite_folder_fail_donut_graph,
-} from "./create/suite.js";
+} from "./graph_creation/suite.js";
 import {
     create_test_statistics_graph,
     create_test_duration_graph,
@@ -42,7 +42,7 @@ import {
     create_test_most_failed_graph,
     create_test_recent_most_failed_graph,
     create_test_most_time_consuming_graph,
-} from "./create/test.js";
+} from "./graph_creation/test.js";
 import {
     create_keyword_statistics_graph,
     create_keyword_times_run_graph,
@@ -53,12 +53,12 @@ import {
     create_keyword_most_failed_graph,
     create_keyword_most_time_consuming_graph,
     create_keyword_most_used_graph,
-} from "./create/keyword.js";
+} from "./graph_creation/keyword.js";
 import {
     create_compare_statistics_graph,
     create_compare_suite_duration_graph,
     create_compare_tests_graph,
-} from "./create/compare.js";
+} from "./graph_creation/compare.js";
 
 // function to setup filter modal eventlisteners
 function setup_filter_modal() {

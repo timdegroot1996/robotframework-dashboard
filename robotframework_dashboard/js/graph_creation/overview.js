@@ -1,8 +1,8 @@
-import { get_graph_config } from '../data/graph_config.js';
+import { get_graph_config } from '../graph_data/graph_config.js';
 import { compare_to_average, transform_file_path } from '../common.js';
 import { update_menu } from '../menu.js';
 import { setup_collapsables } from '../eventlisteners.js';
-import { clockDarkSVG, clockLightSVG, arrowRight } from '../constants/svg.js';
+import { clockDarkSVG, clockLightSVG, arrowRight } from '../variables/svg.js';
 import {
     passedBackgroundColor,
     passedBackgroundBorderColor,
@@ -10,16 +10,16 @@ import {
     failedBackgroundBorderColor,
     skippedBackgroundColor,
     skippedBackgroundBorderColor
-} from '../constants/config.js';
-import { settings } from '../constants/settings.js';
+} from '../variables/chartconfig.js';
+import { settings } from '../variables/settings.js';
 import {
     CARDS_PER_ROW,
     DEFAULT_DURATION_PERCENTAGE,
     projects_by_tag, projects_by_name,
     selectedRunSetting,
     selectedTagSetting
-} from '../constants/globals.js';
-import { runs, use_logs } from '../constants/data.js';
+} from '../variables/globals.js';
+import { runs, use_logs } from '../variables/data.js';
 
 // function to create overview statistics blocks in the overview section
 function create_overview_statistics_graphs() {

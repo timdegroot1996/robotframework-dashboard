@@ -1,7 +1,7 @@
-import { settings } from "../constants/settings.js";
-import { inFullscreen, inFullscreenGraph } from "../constants/globals.js";
-import { failedConfig } from "../constants/config.js";
-import { message_config } from "../constants/data.js";
+import { settings } from "../variables/settings.js";
+import { inFullscreen, inFullscreenGraph } from "../variables/globals.js";
+import { failedConfig } from "../variables/chartconfig.js";
+import { message_config } from "../variables/data.js";
 import { convert_timeline_data } from "./helpers.js";
 
 // function to prepare the data in the correct format for messages graphs

@@ -1,6 +1,6 @@
-import { settings } from "../constants/settings.js";
-import { inFullscreen, inFullscreenGraph } from "../constants/globals.js";
-import { passedConfig, failedConfig, skippedConfig } from "../constants/config.js";
+import { settings } from "../variables/settings.js";
+import { inFullscreen, inFullscreenGraph } from "../variables/globals.js";
+import { passedConfig, failedConfig, skippedConfig } from "../variables/chartconfig.js";
 import { convert_timeline_data } from "./helpers.js";
 
 // function to prepare the data in the correct format for (recent) most flaky test graph

@@ -1,6 +1,6 @@
 import { add_alert } from "./common.js";
-import { settings } from "./constants/settings.js";
-import { json_config, admin_json_config } from "./constants/globals.js";
+import { settings } from "./variables/settings.js";
+import { json_config, admin_json_config } from "./variables/globals.js";
 
 // function to setup localstorage on first load
 function setup_local_storage() {

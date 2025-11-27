@@ -1,5 +1,5 @@
-import { settings } from './constants/settings.js';
-import { runs, suites, tests, keywords } from './constants/data.js';
+import { settings } from './variables/settings.js';
+import { runs, suites, tests, keywords } from './variables/data.js';
 
 // set default values
 function setup_database_stats() {

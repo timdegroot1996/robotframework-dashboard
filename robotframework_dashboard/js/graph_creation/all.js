@@ -1,4 +1,4 @@
-import { settings } from "../constants/settings.js";
+import { settings } from "../variables/settings.js";
 
 import { 
     create_overview_statistics_graphs,

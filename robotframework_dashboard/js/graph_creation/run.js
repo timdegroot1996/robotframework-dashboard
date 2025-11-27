@@ -1,12 +1,12 @@
-import { get_graph_config } from '../data/graph_config.js';
-import { get_statistics_graph_data } from '../data/statistics.js';
-import { get_donut_graph_data, get_donut_total_graph_data } from '../data/donut.js';
-import { get_duration_graph_data } from '../data/duration.js';
-import { get_heatmap_graph_data } from '../data/heatmap.js';
-import { get_stats_data } from '../data/stats.js';
+import { get_graph_config } from '../graph_data/graph_config.js';
+import { get_statistics_graph_data } from '../graph_data/statistics.js';
+import { get_donut_graph_data, get_donut_total_graph_data } from '../graph_data/donut.js';
+import { get_duration_graph_data } from '../graph_data/duration.js';
+import { get_heatmap_graph_data } from '../graph_data/heatmap.js';
+import { get_stats_data } from '../graph_data/stats.js';
 import { format_duration } from '../common.js';
 import { open_log_file, open_log_from_label } from '../log.js';
-import { settings } from '../constants/settings.js';
+import { settings } from '../variables/settings.js';
 import {
     inFullscreen,
     inFullscreenGraph,
@@ -15,7 +15,7 @@ import {
     filteredRuns,
     filteredSuites,
     filteredTests
-} from '../constants/globals.js';
+} from '../variables/globals.js';
 
 // function to create run statistics graph in the run section
 function create_run_statistics_graph() {

@@ -1,5 +1,5 @@
-import { settings } from "../constants/settings.js";
-import { heatMapHourAll } from "../constants/globals.js";
+import { settings } from "../variables/settings.js";
+import { heatMapHourAll } from "../variables/globals.js";
 import { open_log_file } from "../log.js";
 import { format_duration } from "../common.js";
 

@@ -1,6 +1,6 @@
-import { settings } from "../constants/settings.js";
+import { settings } from "../variables/settings.js";
 import { get_next_folder_level } from "../common.js";
-import { onlyFailedFolders } from "../constants/globals.js";
+import { onlyFailedFolders } from "../variables/globals.js";
 import {
     passedBackgroundColor,
     passedBackgroundBorderColor,
@@ -8,7 +8,7 @@ import {
     failedBackgroundBorderColor,
     skippedBackgroundColor,
     skippedBackgroundBorderColor
-} from "../constants/config.js";
+} from "../variables/chartconfig.js";
 
 // function to prepare the data in the correct format for last run donut graphs
 function get_donut_graph_data(dataType, filteredData) {

@@ -1,6 +1,6 @@
-import { settings } from './constants/settings.js';
-import { compareRunIds } from './constants/graphs.js';
-import { runs, suites, tests, keywords } from './constants/data.js';
+import { settings } from './variables/settings.js';
+import { compareRunIds } from './variables/graphs.js';
+import { runs, suites, tests, keywords } from './variables/data.js';
 import {
     filteredAmount,
     filteredRuns,
@@ -9,7 +9,7 @@ import {
     filteredKeywords,
     selectedRunSetting,
     selectedTagSetting
-} from './constants/globals.js';
+} from './variables/globals.js';
 
 // function updates the data in the graphs whenever filters are updated
 function setup_filtered_data_and_filters() {
