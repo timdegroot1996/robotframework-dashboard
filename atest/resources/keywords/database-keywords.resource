@@ -20,11 +20,12 @@ Validate Database
     VAR    @{new_result}    @{EMPTY}
     IF    $table == 'runs'
         FOR    ${row}    IN    @{result}
+            Log    ${row}
             ${contains_backslash}    Run Keyword And Return Status    Should Contain    container=${row}[-2]    item=\\
             IF    ${contains_backslash}
-                ${path}    Split String From Right    string=${row}[-2]    separator=\\    max_split=1
+                ${path}    Split String From Right    string=${row}[-3]    separator=\\    max_split=1
             ELSE
-                ${path}    Split String From Right    string=${row}[-2]    separator=/    max_split=1
+                ${path}    Split String From Right    string=${row}[-3]    separator=/    max_split=1
             END
             Set List Value    ${row}    index=-2    value=${path}[1]
             Append To List    ${new_result}    ${row}
