@@ -105,6 +105,20 @@ class ArgumentParser:
             default=None,
         )
         parser.add_argument(
+            "--projectversion",
+            help=(
+                "`string` specifies project version associated with runs\n"
+                "Usage behaviour:\n"
+                "  • Provide text to set a project version for the supplied runs\n"
+                "Examples:\n"
+                "  . '--projectversion=1.1'\n"
+                "  . '--projectversion=1.1'\n"
+            ),
+            dest="project_version",
+            type=str,
+            default=None,
+        )
+        parser.add_argument(
             "-r",
             "--removeruns",
             help=(
@@ -298,7 +312,6 @@ class ArgumentParser:
                 "  • '--server 0.0.0.0:8080' -> custom host/port\n"
                 "  • '--server 0.0.0.0:8080:admin:secret' -> custom host/port and admin username/password\n"
             ),
-            default=None,
         )
         return parser.parse_args()
 
@@ -441,5 +454,6 @@ class ArgumentParser:
             "quantity": quantity,
             "use_logs": use_logs,
             "offline_dependencies": offline_dependencies,
+            "project_version": arguments.project_version,
         }
         return dotdict(provided_args)
