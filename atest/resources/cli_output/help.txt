@@ -7,7 +7,8 @@
 
 ======================================================================================
 usage: robotdashboard [[]-v[]] [[]-h[]] [[]-o [[]OUTPUTPATH ...[]][]]
-                      [[]-f [[]OUTPUTFOLDERPATH ...[]][]] [[]-r [[]REMOVERUNS ...[]][]]
+                      [[]-f [[]OUTPUTFOLDERPATH ...[]][]]
+                      [[]--projectversion PROJECT_VERSION[]] [[]-r [[]REMOVERUNS ...[]][]]
                       [[]-d DATABASEPATH[]] [[]-n NAMEDASHBOARD[]] [[]-j JSONCONFIG[]]
                       [[]-t DASHBOARDTITLE[]] [[]-m MESSAGECONFIG[]] [[]-q QUANTITY[]]
                       [[]-u [[]USELOGS[]][]] [[]-g [[]GENERATEDASHBOARD[]][]] [[]-l [[]LISTRUNS[]][]]
@@ -35,6 +36,13 @@ options:
                         Examples:
                           • '-f results/' -> scan folder for output files
                           • '-f results/' -f path/to/more_results/:prod:regression -> multiple folders with tags
+  --projectversion PROJECT_VERSION
+                        `string` specifies project version associated with runs
+                        Usage behaviour:
+                          • Provide text to set a project version for the supplied runs
+                        Examples:
+                          . '--projectversion=1.1'
+                          . '--projectversion=1.1'
   -r, --removeruns [[]REMOVERUNS ...[]]
                         `string` Specifies indexes, run_starts, aliases or tags to remove from the database.
                         Usage behavior:
