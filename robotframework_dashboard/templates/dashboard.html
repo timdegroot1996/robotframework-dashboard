@@ -1268,7 +1268,7 @@
         const tests = decode_and_decompress("placeholder_tests").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
         const keywords = decode_and_decompress("placeholder_keywords").sort((a, b) => new Date(a.run_start).getTime() - new Date(b.run_start).getTime());
 
-        // populated by prepare_project_overview()
+        // populated by prepare_overview()
         const projects_by_tag = {};
         const projects_by_name = {};
         const latestRunByProjectTag = {};
