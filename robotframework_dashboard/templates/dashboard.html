@@ -4917,9 +4917,9 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
         function set_filter_show_current_project(projectName) {
             if (projectName.startsWith("project_")) {
                 selectedTagSetting = projectName;
-                setTimeout(() => { // hack due to requestAnimationFrame in setup_data_and_graphs
+                setTimeout(() => { // hack to prevent update_menu calls from hinderance
                     update_filter_active_indicator("All", "filterRunTagSelectedIndicator");
-                }, 0);
+                }, 500);
 
             } else {
                 selectedRunSetting = projectName;
