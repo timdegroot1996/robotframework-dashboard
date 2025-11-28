@@ -127,7 +127,7 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         tags: list,
         run_alias: str,
         path: Path,
-        project_version: str | None = None
+        project_version: str
     ):
         """This function inserts the data of an output file into the database"""
         try:
