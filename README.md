@@ -69,10 +69,14 @@ For detailed usage instructions, advanced examples, and full documentation, visi
 Contributions are welcome! If you encounter any issues, have suggestions for improvements, or would like to add new features, feel free to open an issue or submit a pull request. Additional information can be found here in [Contributing](./contributing.md)
 
 Special thanks to the following companies for sponsoring in one form or another!
-- TBD
+- [TestCoders](https://testcoders.nl)
+- [TDT](https://tdt.de/)
 
 And many thanks to the following people for contributing to the project with feedback, features or just general guidance!
-- TBD
+- [Mark Moberts](https://github.com/MobyNL) maintainer of the [robotframework-mitmlibrary](https://github.com/MobyNL/robotframework-mitmlibrary) and [Awesome Robot Framework](https://github.com/MarketSquare/awesome-robotframework)
+- [Elias Haberl](https://github.com/HuntTheSun)
+- [Pekka Klarck](https://github.com/pekkaklarck) maintainer of [Robot Framework](https://github.com/robotframework/robotframework)
+- [Daniel Biehl](https://github.com/d-biehl) maintainer of the [RobotCode Plugin](https://github.com/robotcodedev/robotcode)
 
 ## 📋 License
 This project is licensed under the MIT License.
