@@ -4244,11 +4244,11 @@ Only Changes: Displays only tests that have changed statuses at some point in ti
             filterActiveIndicator.style.display = allCheckBox.checked ? "none" : "inline-block";
         }
 
-        function setup_filter_checkbox_subfilter(parentElementId, eventType = "input") {
+        function setup_filter_checkbox_subfilter(parentElementId) {
             const container = document.getElementById(parentElementId);
             const searchBar = container.querySelector("input.form-control");
             const checkBoxRows = container.querySelectorAll("li.list-group-item-action");
-            searchBar.addEventListener(eventType, () => {
+            searchBar.addEventListener("input", () => {
                 const filterText = searchBar.value.toLowerCase();
                 checkBoxRows.forEach(row => {
                     const checkbox = row.querySelector("input.form-check-input");
