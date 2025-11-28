@@ -7,9 +7,11 @@ outline: deep
 An overview of all pages available in the generated dashboard.html. Learn the purpose of each tab, what information it shows, and how it helps you analyze your test results.
 
 ## Overview Page
-The Overview page provides a high-level summary of all test runs, highlighting the latest results for each project. It shows key metrics such as pass/fail/skip counts, recent trends, and overall performance, enabling users to quickly assess the health of their test suites.   
+The Overview page provides a high-level summary of all test runs, highlighting the latest results for each project.  
+It shows key metrics such as pass/fail/skip counts, recent trends, and overall performance, enabling users to quickly assess the health of their test suites.   
 The Overview Statistics section shows the latest run for each project, the sections below it show all runs for each project.  
-You can toggle if you want to show or hide runs for projects or custom project tags (see [Advanced CLI & Examples](advanced-cli-examples.md#project-tagging)).  
+You can toggle if you want to show or hide runs for projects or custom project tags.  
+See [Advanced CLI & Examples](advanced-cli-examples.md#project-tagging) for more information on Tags!  
 For a more in depth explanation, hover over the "i" icons in the Overview Statistics and the sections below it in the [Example Dashboard](https://timdegroot1996.github.io/robotframework-dashboard/example/robot_dashboard.html)
 
 ## Dashboard Page
