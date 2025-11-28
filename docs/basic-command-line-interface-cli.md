@@ -68,6 +68,15 @@ robotdashboard -l false -g false
 - Optional: `-g` or `--generatedashboard` disables generating the HTML dashboard.
 - Default: true, valid values are True, TRUE, T (similar for False).
 
+### Project Version
+You can pass version associated with a test run.  
+For example, if you ran tests for your software/product version 1.2.1  
+```bash
+robotdashboard -o output.xml --projectversion=1.2.1
+robotdashboard -f ./results --projectversion=1.2.1
+```
+> Added in RobotDashboard v1.3.0
+
 ## Removing Runs from the Database
 
 ### Remove runs by index, run start, alias, or tag
