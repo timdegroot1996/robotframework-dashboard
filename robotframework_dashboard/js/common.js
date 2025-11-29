@@ -1,11 +1,3 @@
-// function to convert camelcose to underscores
-function camelcase_to_underscore(str) {
-    return str
-        .replace(/([A-Z]+)/g, "_$1")     // Prefix all capital groups with _
-        .replace(/^_/, "")               // Remove leading underscore if it appears
-        .toLowerCase();                  // Convert everything to lowercase
-}
-
 // function to get a higher folder path based on the full_path or partial full_path provided
 function get_next_folder_level(currentPath, fullPath) {
     const fullParts = fullPath.split(".");
@@ -57,6 +49,14 @@ function space_to_camelcase(string) {
 // function to convert to camelcase from underscores
 function underscore_to_camelcase(str) {
     return str.replace(/_(.)/g, (match, group) => group.toUpperCase());
+}
+
+// function to convert camelcose to underscores
+function camelcase_to_underscore(str) {
+    return str
+        .replace(/([A-Z]+)/g, "_$1")     // Prefix all capital groups with _
+        .replace(/^_/, "")               // Remove leading underscore if it appears
+        .toLowerCase();                  // Convert everything to lowercase
 }
 
 // function to convert a date object to the desired string format
@@ -142,6 +142,17 @@ function close_alert() {
     document.getElementById("alertContainer").innerHTML = ""
 }
 
+// delay in milliseconds
+function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    };
+}
+
 export {
     camelcase_to_underscore,
     get_next_folder_level,
@@ -153,5 +164,6 @@ export {
     transform_file_path,
     combine_paths,
     add_alert,
-    close_alert
+    close_alert,
+    debounce
 };

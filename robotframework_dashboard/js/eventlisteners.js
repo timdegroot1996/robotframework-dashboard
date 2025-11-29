@@ -9,20 +9,32 @@ import {
     inFullscreenGraph,
     lastScrollY,
     previousFolder,
+    showingProjectVersionDialogue,
 } from "./variables/globals.js";
 import { arrowDown, arrowRight } from "./variables/svg.js";
 import { fullscreenButtons, graphChangeButtons, compareRunIds } from "./variables/graphs.js";
 import { add_alert } from "./common.js";
 import { toggle_theme } from "./theme.js";
-import { setup_data_and_graphs } from "./menu.js";
-import { setup_run_amount_filter, setup_lowest_highest_dates } from "./filter.js"
+import { setup_data_and_graphs, update_menu } from "./menu.js";
+import {
+    setup_run_amount_filter,
+    setup_lowest_highest_dates,
+    clear_all_filters,
+    setup_project_versions_in_select_filter_buttons,
+    update_overview_version_select_list
+} from "./filter.js"
 import { camelcase_to_underscore, underscore_to_camelcase } from "./common.js";
 import {
     update_switch_local_storage,
     set_local_storage_item,
     update_graph_type,
 } from "./localstorage.js";
-import { create_overview_statistics_graphs, clear_project_filter } from "./graph_creation/overview.js";
+import {
+    create_overview_statistics_graphs,
+    update_overview_statistics_heading,
+    set_filter_show_current_project,
+    set_filter_show_current_version,
+} from "./graph_creation/overview.js";
 import { create_run_donut_total_graph, create_run_heatmap_graph } from "./graph_creation/run.js";
 import {
     create_suite_duration_graph,
@@ -68,10 +80,7 @@ function setup_filter_modal() {
     });
     // eventlistener to reset the filters
     document.getElementById("resetFilters").addEventListener("click", function () {
-        clear_project_filter();
-        document.getElementById("amount").value = filteredAmountDefault;
-        document.getElementById("metadata").value = "All";
-        setup_lowest_highest_dates(runs);
+        clear_all_filters();
         add_alert("Filters have been set to default values!", "success")
     });
     // eventlistener for all runs button
@@ -80,17 +89,30 @@ function setup_filter_modal() {
     });
     // eventlistener for the runTags
     function show_checkboxes() {
-        const checkboxes = document.getElementById("checkboxes");
+        const checkboxes = document.getElementById("runTagCheckBoxes");
         showingRunTags = !showingRunTags;
         checkboxes.style.display = showingRunTags ? "block" : "none";
     }
-    const checkboxesElement = document.getElementById("checkboxes");
+    const checkboxesElement = document.getElementById("runTagCheckBoxes");
     const runTagsSelectElement = document.getElementById("selectRunTags");
     // eventlistener for click events on body to hide the run checkboxes when clicking outside of the select/checkboxes elements
     document.getElementById("selectRunTags").addEventListener("click", show_checkboxes);
     document.body.addEventListener("click", function (event) {
         if (showingRunTags == true && !checkboxesElement.contains(event.target) && !runTagsSelectElement.contains(event.target)) {
             show_checkboxes()
+        }
+    });
+    // eventlistener for the project version filter popup
+    const projectVersionCheckboxes = document.getElementById("projectVersionCheckBoxes");
+    const projectVersionSelectElement = document.getElementById("selectProjectVersion");
+    function toggle_project_version_filter_dialogue() {
+        showingProjectVersionDialogue = !showingProjectVersionDialogue;
+        projectVersionCheckboxes.style.display = showingProjectVersionDialogue ? "block" : "none";
+    }
+    projectVersionSelectElement.addEventListener("pointerdown", toggle_project_version_filter_dialogue);
+    document.body.addEventListener("pointerdown", function (event) {
+        if (showingProjectVersionDialogue && !projectVersionCheckboxes.contains(event.target) && !projectVersionSelectElement.contains(event.target)) {
+            toggle_project_version_filter_dialogue();
         }
     });
     // amount filter setup
@@ -105,6 +127,7 @@ function setup_filter_modal() {
     setup_metadata_filter();
     setup_runs_in_select_filter_buttons();
     setup_runtags_in_select_filter_buttons();
+    setup_project_versions_in_select_filter_buttons();
 }
 
 // function to create customized view eventlisteners
@@ -129,12 +152,12 @@ function setup_settings_modal() {
                 const item = document.createElement("div");
                 item.className = "list-group-item d-flex justify-content-between align-items-center";
                 item.innerHTML = `
-                            <span>${lib}</span>
-                            <div class="form-check form-switch mb-0">
-                                <input class="form-check-input" type="checkbox" id="keyword-${lib}"
-                                    ${isChecked ? "checked" : ""}>
-                            </div>
-                        `;
+                    <span>${lib}</span>
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" id="keyword-${lib}"
+                            ${isChecked ? "checked" : ""}>
+                    </div>
+                `;
                 container.appendChild(item);
                 document.getElementById(`keyword-${lib}`).addEventListener("change", e => {
                     keywordPrefs[lib] = e.target.checked;
@@ -334,16 +357,17 @@ function setup_sections_filters() {
         settings.switch.runTags = !settings.switch.runTags
         update_switch_local_storage("switch.runTags", settings.switch.runTags);
         create_overview_statistics_graphs();
+        update_overview_statistics_heading();
+        update_overview_version_select_list();
         update_projectbar_visibility();
     });
     document.getElementById("switchRunName").addEventListener("click", function () {
         settings.switch.runName = !settings.switch.runName
         update_switch_local_storage("switch.runName", settings.switch.runName);
         create_overview_statistics_graphs();
+        update_overview_statistics_heading();
+        update_overview_version_select_list();
         update_projectbar_visibility();
-    });
-    document.getElementById("overviewSelectName").addEventListener("change", function () {
-        create_overview_statistics_graphs();
     });
     document.getElementById("overviewDurationPercentage").addEventListener("change", function () {
         create_overview_statistics_graphs();
@@ -631,10 +655,21 @@ function setup_collapsables(elementToSearch = document) {
     });
 }
 
+function attach_run_card_version_listener(versionElement, projectName, projectVersion) {
+    versionElement.addEventListener("click", (event) => {
+        clear_all_filters();
+        set_filter_show_current_project(projectName);
+        set_filter_show_current_version(projectVersion);
+        event.stopPropagation();
+        update_menu("menuDashboard");
+    });
+}
+
 export {
     setup_filter_modal,
     setup_settings_modal,
     setup_sections_filters,
     setup_graph_view_buttons,
-    setup_collapsables
+    setup_collapsables,
+    attach_run_card_version_listener
 };

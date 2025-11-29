@@ -207,6 +207,21 @@ body.lock-scroll {
     border-radius: 0px !important;
 }
 
+.dropdown-menu {
+    width: max-content;
+}
+
+.version-selected-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: #ec5800;
+    border-radius: 50%;
+    margin-left: 5px;
+    margin-bottom: 2px;
+    vertical-align: middle;
+}
+
 .selectBox {
     position: relative;
 }
@@ -223,13 +238,13 @@ body.lock-scroll {
     bottom: 0;
 }
 
-#checkboxes {
+.filterCheckBoxes {
     display: none;
     position: absolute;
     z-index: 2;
 }
 
-#checkboxes label {
+.filterCheckBoxes label {
     display: block;
 }
 
@@ -291,6 +306,35 @@ body.lock-scroll {
 
 .overview-card .card {
     border-radius: 1rem
+}
+
+.project-run-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 24px;
+}
+
+.project-run-cards-container .overview-card {
+    flex: 0 1 calc((100% - 48px) / 3); /* 3 per row, subtract total gap */
+}
+
+.run-card-version-title {
+    gap: 0.25rem;
+    width: fit-content;
+}
+
+.run-card-version-title:hover h5 {
+    color: #ec5800 !important;
+}
+
+.run-card-small-version {
+    display: flex;
+    gap: 0.25rem;
+    width: fit-content;
+}
+
+.run-card-small-version:hover div{
+    color: #ec5800 !important;
 }
 
 .grid-stack-item-content {

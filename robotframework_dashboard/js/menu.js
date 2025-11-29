@@ -1,5 +1,4 @@
-import { setup_filtered_data_and_filters } from "./filter.js";
-import { prepare_projects_grouped_data } from "./graph_creation/overview.js";
+import { setup_filtered_data_and_filters, update_overview_version_select_list } from "./filter.js";
 import { areGroupedProjectsPrepared } from "./variables/globals.js";
 import { space_to_camelcase } from "./common.js";
 import { set_local_storage_item } from "./localstorage.js";
@@ -9,6 +8,7 @@ import { setup_theme } from "./theme.js";
 import { setup_graph_view_buttons } from "./eventlisteners.js";
 import { setup_section_order, setup_graph_order } from "./layout.js";
 import { setup_information_popups } from "./information.js";
+import { update_overview_statistics_heading, prepare_overview } from "./graph_creation/overview.js";
 
 // function to update the section (menu) buttons with the correct eventlisteners
 // also sets up the automatic highlighting of the section that is most visible in the top
@@ -81,7 +81,6 @@ function setup_section_menu_buttons() {
         });
     });
 }
-
 
 function get_most_visible_section() {
     const SECTION_IDS = [
@@ -188,7 +187,11 @@ function setup_data_and_graphs(menuUpdate = false, prepareOverviewProjectData = 
     setup_spinner(false); // show spinner immediately
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            if (prepareOverviewProjectData) prepare_projects_grouped_data();
+            if (prepareOverviewProjectData) {
+                prepare_overview();
+                update_overview_version_select_list();
+                update_overview_statistics_heading();
+            }
             setup_filtered_data_and_filters();
             setup_section_order();
             setup_graph_order();

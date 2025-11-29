@@ -20,7 +20,9 @@ const informationMap = {
 - If runs don't include custom 'project_' tags, they will be grouped by their run name by default.
 - Choose which project types to show by toggling their respective "Display by" switch.
 - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
-- Passed runs represent the percentage of runs with zero failures.`,
+- Passed runs represent the percentage of runs with zero failures.
+- Clicking on the run card applies a filter for that project and switches to dashboard
+- Clicking on the version element within the run card additionally applies a filter for that version`,
     "runStatisticsGraphPercentages": "Percentages: Displays the distribution of passed, failed, skipped tests per run, where 100% equals all tests combined",
     "runStatisticsGraphAmount": "Amount: Displays the actual number of passed, failed, skipped tests per run",
     "runStatisticsGraphLine": "Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times",

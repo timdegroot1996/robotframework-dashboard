@@ -23,6 +23,7 @@ function setup_filtered_data_and_filters() {
     filteredRuns = filter_dates(filteredRuns);
     filteredRuns = filter_amount(filteredRuns);
     filteredRuns = filter_metadata(filteredRuns);
+    filteredRuns = filter_project_versions(filteredRuns);
     // filter suites and tests based on filtered runs
     filteredSuites = filter_data(filteredSuites);
     filteredTests = filter_data(filteredTests);
@@ -102,6 +103,24 @@ function filter_runtags(runs) {
         }
         // Use OR logic: the run must contain at least one selected tag
         return selectedTags.some(selectedTag => runTags.includes(selectedTag));
+    });
+}
+
+// filter run data based on the project version filter
+function filter_project_versions(runs) {
+    const selectedProjectVersions = new Set(
+        Array.from(
+            document.querySelectorAll('#projectVersionList input[type="checkbox"]:checked')
+        ).map(el => el.value)
+    );
+    if (!selectedProjectVersions.size) return [];
+    if (selectedProjectVersions.has("All")) return runs;
+
+    return runs.filter(run => {
+        if (run.project_version === null) { // allow filter for runs with no project version
+            return selectedProjectVersions.has("None");
+        }
+        return selectedProjectVersions.has(run.project_version);
     });
 }
 
@@ -322,7 +341,7 @@ function setup_run_amount_filter() {
 // function that initializes the from date/time and to date/time selection boxes in the filters
 function setup_lowest_highest_dates() {
     var dates = [];
-    for (const run of runs) {
+    for (run of runs) {
         dates.push(new Date(run.run_start));
     }
     if (dates.length == 0) {
@@ -390,34 +409,238 @@ function setup_runtags_in_select_filter_buttons() {
         });
     });
     const andOrTags = `
-                <li class="list-group-item d-flex small">
-                    <div class="btn-group form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="useOrTags" />
-                    </div>
-                    <div class="btn-group">
-                        <label class="form-check-label" for="useOrTags">Use OR (default AND)</label>
-                    </div>
-                </li>
-            `;
+        <li class="list-group-item d-flex small">
+            <div class="btn-group form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="useOrTags" />
+            </div>
+            <div class="btn-group">
+                <label class="form-check-label" for="useOrTags">Use OR (default AND)</label>
+            </div>
+        </li>
+    `;
     const listItemTemplate = (value) => `
-                <li class="list-group-item list-group-item-action d-flex small">
-                    <input class="form-check-input me-1" type="checkbox" value="" id="${value}">
-                    <label class="form-check-label ms-2" for="${value}">${value}</label>
-                </li>
-            `;
+        <li class="list-group-item list-group-item-action d-flex small">
+            <input class="form-check-input me-1" type="checkbox" value="${value}" id="${value}">
+            <label class="form-check-label ms-2" for="${value}">${value}</label>
+        </li>
+    `;
     const listItems = [listItemTemplate("All")].concat(
         Array.from(tags).map(tag => listItemTemplate(tag))
     ).join("");
     const tagsSelect = document.getElementById("runTag");
     tagsSelect.innerHTML = andOrTags + listItems;
-    document.getElementById("All").checked = true;
     if (tags.size > 0) {
         document.getElementById("runTagFilter").hidden = false
     } else {
         document.getElementById("runTagFilter").hidden = true
     }
+    const allRunTagsCheckBox = document.getElementById("All");
+    allRunTagsCheckBox.checked = true;
+    const filterActiveIndicatorId = "filterRunTagSelectedIndicator";
+    setup_filter_active_indicator(allRunTagsCheckBox, filterActiveIndicatorId);
+    setup_filter_checkbox_subfilter("runTagCheckBoxes");
+    setup_filter_checkbox_handler_listeners(tagsSelect, allRunTagsCheckBox, filterActiveIndicatorId);
 }
 
+// create projectVersions checkboxes in filters
+function setup_project_versions_in_select_filter_buttons() {
+    const projectVersionList = document.getElementById("projectVersionList");
+    projectVersionList.innerHTML = '';
+    const projectVersionOptionsSet = new Set(
+        runs
+        .map(run => run.project_version)
+        .filter(ver => ver != null)
+    );
+    const projectVersionOptions = [...projectVersionOptionsSet].sort().reverse();
+    projectVersionOptions.unshift("None");
+    projectVersionOptions.unshift("All");
+    const prefix = "projectVersionInputItem";
+    const listItemTemplate = (prefix, value) => `
+        <li class="list-group-item list-group-item-action d-flex small">
+            <input class="form-check-input me-1" type="checkbox" value="${value}" id="${prefix}${value}">
+            <label class="form-check-label ms-2" for="${prefix}${value}">${value}</label>
+        </li>
+    `;
+    const projectVersionListHtml = projectVersionOptions
+                                .map(projectVersion => listItemTemplate(prefix, projectVersion))
+                                .join('');
+    projectVersionList.innerHTML = projectVersionListHtml;
+    const allVersionsCheckBox = document.getElementById(`${prefix}All`);
+    allVersionsCheckBox.checked = true;
+    const filterVersionSelectedIndicatorId = "filterVersionSelectedIndicator";
+    setup_filter_active_indicator(allVersionsCheckBox, filterVersionSelectedIndicatorId);
+    setup_filter_checkbox_subfilter("projectVersionCheckBoxes");
+    setup_filter_checkbox_handler_listeners(projectVersionList, allVersionsCheckBox, filterVersionSelectedIndicatorId);
+}
+
+// show filter active indicator if checkBoxElement unchecked
+function setup_filter_active_indicator(checkBoxElement, filterActiveIndicatorId) {
+    checkBoxElement.addEventListener("change", () => {
+        update_filter_active_indicator(checkBoxElement.id, filterActiveIndicatorId);
+    });
+}
+
+function update_filter_active_indicator(allCheckBoxId, filterActiveIndicatorId) {
+    const filterActiveIndicator = document.getElementById(filterActiveIndicatorId);
+    const allCheckBox = document.getElementById(allCheckBoxId);
+    filterActiveIndicator.style.display = allCheckBox.checked ? "none" : "inline-block";
+}
+
+function unselect_checkboxes(checkBoxesToUnselect) {
+    for (const checkBox of checkBoxesToUnselect) {
+        checkBox.checked = false;
+    }
+}
+
+function handle_overview_version_selection(overviewVersionSelectorList, latestRunByProject) {
+    const selectedOptions = Array.from(
+            overviewVersionSelectorList.querySelectorAll("input:checked")
+            ).map(inputElement => inputElement.value);
+    if (selectedOptions.includes("All")) {
+        create_overview_statistics_graphs(latestRunByProject);
+    } else {
+        const filteredLatestRunByProject = Object.fromEntries(
+            Object.entries(latestRunByProject)
+            .filter(([projectName, run]) => selectedOptions.includes(run.project_version ?? "None"))
+        );
+        create_overview_statistics_graphs(filteredLatestRunByProject);
+    }
+    update_overview_statistics_heading();
+}
+
+function update_overview_version_select_list() {
+    const overviewVersionSelectorList = document.getElementById("overviewVersionSelectorList");
+    overviewVersionSelectorList.innerHTML = '';
+    if (!settings.switch.runName && !settings.switch.runTags) return;
+    const filteredLatestRunByProject = {};
+    settings.switch.runName && Object.assign(filteredLatestRunByProject, latestRunByProjectName);
+    settings.switch.runTags && Object.assign(filteredLatestRunByProject, latestRunByProjectTag);
+    const runAmountByVersion = {};
+    for (const run of Object.values(filteredLatestRunByProject)) {
+        const projectVersion = run.project_version ?? "None";
+        runAmountByVersion[projectVersion] ??= 0;
+        runAmountByVersion[projectVersion]++;
+    }
+    const allVersionAmountInFilter = Object.keys(runAmountByVersion).length;
+    const versionFilterListItemAllHtml = generate_version_filter_list_item_html("All", "overview", "checked", allVersionAmountInFilter, "version");
+    const specificVersionFilterListItemHtml = Object.keys(runAmountByVersion)
+        .sort()
+        .reverse()
+        .map(version => {
+            return generate_version_filter_list_item_html(
+                version,
+                "overview",
+                "", //not checked
+                runAmountByVersion[version],
+                "run"
+            )
+        }).join('');
+    overviewVersionSelectorList.innerHTML = versionFilterListItemAllHtml + specificVersionFilterListItemHtml;
+    const allCheckBox = document.getElementById("overviewVersionFilterListItemAllInput");
+    setup_filter_checkbox_handler_listeners(
+        overviewVersionSelectorList,
+        allCheckBox,
+        "overviewVersionSelectedIndicator",
+        () => {handle_overview_version_selection(overviewVersionSelectorList, filteredLatestRunByProject)}
+    );
+}
+
+// for runTag/version filter popup and overview
+function setup_filter_checkbox_handler_listeners(
+    checkBoxContainerElement,
+    allCheckBox,
+    filterActiveIndicatorId = null,
+    additionalCheckBoxFunc = null //for overview version selector
+) {
+    const inputItemQueryString = "input.form-check-input:not([role='switch'])"; //not and/or switch
+    const nonAllCheckBoxes = Array
+        .from(
+            checkBoxContainerElement
+            .querySelectorAll(inputItemQueryString)
+        ).filter(checkBox => checkBox !== allCheckBox);
+    allCheckBox.addEventListener('change', () => {
+        if (allCheckBox.checked) {
+            unselect_checkboxes(nonAllCheckBoxes);
+            additionalCheckBoxFunc && additionalCheckBoxFunc();
+        } else {
+            allCheckBox.checked = true; //prevent unselecting All if no other checkboxes checked
+        }
+        filterActiveIndicatorId && update_filter_active_indicator(allCheckBox.id, filterActiveIndicatorId);
+    });
+    for (const checkBox of nonAllCheckBoxes) {
+        checkBox.addEventListener('change', () => {
+            if (checkBox.checked) {
+                allCheckBox.checked = false; //uncheck All if other checkbox checked
+                filterActiveIndicatorId && update_filter_active_indicator(allCheckBox.id, filterActiveIndicatorId);
+            } else if (!nonAllCheckBoxes.some(checkBox => checkBox.checked)) {
+                allCheckBox.checked = true;
+                filterActiveIndicatorId && update_filter_active_indicator(allCheckBox.id, filterActiveIndicatorId);
+            }
+            additionalCheckBoxFunc && additionalCheckBoxFunc();
+        });
+    }
+}
+
+function setup_filter_checkbox_subfilter(parentElementId) {
+    const container = document.getElementById(parentElementId);
+    const searchBar = container.querySelector("input.form-control");
+    const checkBoxRows = container.querySelectorAll("li.list-group-item-action");
+    searchBar.addEventListener("input", () => {
+        const filterText = searchBar.value.toLowerCase();
+        checkBoxRows.forEach(row => {
+            const checkbox = row.querySelector("input.form-check-input");
+            const rowValue = checkbox.value.toLowerCase();
+            const shouldHide = !rowValue.includes(filterText);
+            row.classList.toggle("d-none", shouldHide);
+        });
+    });
+}
+
+function generate_version_filter_list_item_html(version, projectName, checked, amount, amountType) {
+    function versionFilterListItemInput(version, id, checked) {
+        return `<input class="form-check-input version-checkbox" type="checkbox" value="${version}" id="${id}" ${checked}>`
+    };
+    function versionFilterListItemLabel(forId, version, amount, amountType, pluralPostfix) {
+        return `<label class="form-check-label" for="${forId}">${version} (${amount} ${amountType}${pluralPostfix})</label>`
+    };
+    const listItemId = `${projectName}VersionFilterListItem`;
+    const listItemInputId = `${listItemId}${version}Input`;
+    const pluralPostfix = amount === 1 ? '' : 's';
+    return `
+        <li>
+            <div class="form-check">
+                ${versionFilterListItemInput(version, listItemInputId, checked)}
+                ${versionFilterListItemLabel(listItemInputId, version, amount, amountType, pluralPostfix)}
+            </div>
+        </li>
+    `
+}
+
+function clear_all_filters() {
+        clear_project_filter();
+        clear_version_filter();
+        document.getElementById("amount").value = filteredAmountDefault;
+        document.getElementById("metadata").value = "All";
+        setup_lowest_highest_dates();
+}
+
+function clear_version_filter() {
+    document.getElementById("projectVersionCheckBoxesFilter").value = "";
+    const versionElements = document.getElementById("projectVersionList").getElementsByTagName("input");
+    for (const input of versionElements) {
+        input.checked = false;
+        input.parentElement.classList.remove("d-none"); //show filtered rows
+        if (input.value == "All") input.checked = true;
+    }
+    update_filter_active_indicator("projectVersionInputItemAll", "filterVersionSelectedIndicator");
+}
+
+function set_filter_show_current_version(version) {
+    const projectVersionList = document.getElementById("projectVersionList");
+    document.getElementById("projectVersionInputItemAll").checked = false;
+    projectVersionList.querySelector(`input[value="${version}"]`).checked = true;
+    update_filter_active_indicator("projectVersionInputItemAll", "filterVersionSelectedIndicator");
+}
 
 export {
     setup_filtered_data_and_filters,
@@ -430,5 +653,10 @@ export {
     setup_suites_in_test_select,
     setup_tests_in_select,
     setup_testtags_in_select,
-    setup_keywords_in_select
+    setup_keywords_in_select,
+    setup_project_versions_in_select_filter_buttons,
+    setup_filter_checkbox_handler_listeners,
+    update_overview_version_select_list,
+    clear_all_filters,
+    set_filter_show_current_version
 };
