@@ -10,9 +10,10 @@ RobotFramework Dashboard provides flexible filtering options across different pa
 
 The **Overview** page does not have global filters. However, it offers a few **display settings**:
 
-- **Show Project Names** – Toggle whether to display the names of projects in the statistics.
-- **Show Project Tags** – Toggle whether to use custom project tags if defined in your test run metadata.
+- **Display By Name** – Toggle whether to display the names of projects in the statistics.
+- **Display By Tag** – Toggle whether to use custom project tags if defined in your test run metadata. (See [Advanced CLI & Examples](advanced-cli-examples.md#project-tagging) for more information on Tags!)
 - **Duration Percentage Threshold** – Adjust the percentage threshold used to color-code durations (faster/slower runs).
+- **Select Versions** - Filter the displayed runs by their associated versions
 
 > These settings affect only the way the statistics are presented on the Overview page.
 

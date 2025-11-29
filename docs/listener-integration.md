@@ -8,7 +8,7 @@ Robot Framework Dashboard provides a built-in listener integration that enables 
 
 ## Overview
 
-The dashboard listener is a a python script that hooks into Robot Framework's [Listener Interface](https://docs.robotframework.org/docs/extending_robot_framework/listeners_prerun_api/listeners). There are also details in the [User Guide](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#listener-interface) regarding the usage of listeners.
+The dashboard listener is a python script that hooks into Robot Framework's [Listener Interface](https://docs.robotframework.org/docs/extending_robot_framework/listeners_prerun_api/listeners). There are also details in the [User Guide](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#listener-interface) regarding the usage of listeners.
 
 Its responsibilities include:
 

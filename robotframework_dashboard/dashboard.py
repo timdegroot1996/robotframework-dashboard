@@ -70,6 +70,69 @@ DEPENDENCIES = {
     },
 }
 
+DEPENDENCIES = {
+    "chartjs": {
+        "type": "js",
+        "cdn": "https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js",
+        "local": "dependencies/chart.js",
+    },
+    "datalabels": {
+        "type": "js",
+        "cdn": "https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0",
+        "local": "dependencies/chartjs-plugin-datalabels.js",
+    },
+    "adapter_date_fns": {
+        "type": "js",
+        "cdn": "https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js",
+        "local": "dependencies/chartjs-adapter-date-fns.js",
+    },
+    "boxplot": {
+        "type": "js",
+        "cdn": "https://unpkg.com/@sgratzl/chartjs-chart-boxplot@3.6.0/build/index.umd.min.js",
+        "local": "dependencies/chartjs-chart-boxplot.js",
+    },
+    "matrix": {
+        "type": "js",
+        "cdn": "https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js",
+        "local": "dependencies/chartjs-chart-matrix.js",
+    },
+    "gridstack_css": {
+        "type": "css",
+        "cdn": "https://cdn.jsdelivr.net/npm/gridstack@12.2.1/dist/gridstack.min.css",
+        "local": "dependencies/gridstack.css",
+    },
+    "gridstack_js": {
+        "type": "js",
+        "cdn": "https://cdn.jsdelivr.net/npm/gridstack@12.2.1/dist/gridstack-all.min.js",
+        "local": "dependencies/gridstack.js",
+    },
+    "bootstrap_css": {
+        "type": "css",
+        "cdn": "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css",
+        "local": "dependencies/bootstrap.css",
+    },
+    "datatables_css": {
+        "type": "css",
+        "cdn": "https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.css",
+        "local": "dependencies/datatables.css",
+    },
+    "bootstrap_js": {
+        "type": "js",
+        "cdn": "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js",
+        "local": "dependencies/bootstrap.js",
+    },
+    "datatables_js": {
+        "type": "js",
+        "cdn": "https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.js",
+        "local": "dependencies/datatables.js",
+    },
+    "pako": {
+        "type": "js",
+        "cdn": "https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js",
+        "local": "dependencies/pako.js",
+    },
+}
+
 
 class DashboardGenerator:
     """

@@ -27,7 +27,7 @@ pip install robotframework-dashboard
 ### Install Robot Framework Dashboard Server
 
 The server can be installed separately and is not installed by default.
-This has ben done to reduce dependencies that are required only for the server like `fastapi` and `uvicorn`.
+This has been done to reduce dependencies that are required only for the server like `fastapi` and `uvicorn`.
 
 Install Robot Framework Dashboard with Server:
 ```bash
