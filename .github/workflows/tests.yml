@@ -1,0 +1,54 @@
+name: Robot Tests
+
+on:
+  pull_request:
+
+jobs:
+  robot-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install Python 3.13
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      # Install Node.js (needed for Browser library + rfbrowser init)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      # Install Python dependencies
+      - name: Install Robot Framework and libraries
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+
+      # Build your app if tests target the local package
+      # (optional — depends on your project)
+      - name: Install/Build project
+        run: |
+          bash scripts/install.sh
+
+      # Initialize Robot Framework Browser (downloads Playwright browsers)
+      - name: Initialize Browser library
+        run: |
+          rfbrowser init
+
+      # Run robot tests (pabot or robot)
+      - name: Run Robot tests
+        run: |
+          bash scripts/run_tests.sh
+
+      # Upload test results to workflow artifacts
+      - name: Upload Robot logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: robot-results
+          path: results/
