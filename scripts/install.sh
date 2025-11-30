@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-pip install ".[all]"
+pip3 install ".[all]"
 rm -rf dist/ build/ robotframework_dashboard.egg-info/
