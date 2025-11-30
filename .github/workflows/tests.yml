@@ -29,8 +29,8 @@ jobs:
           apt-get install -y \
             libgtk-4-1 \
             libgraphene-1.0-0 \
-            libwoff2-1 \
-            libvpx9 \
+            libwoff2dec0 \
+            libvpx6 \
             libevent-2.1-7 \
             libopus0 \
             gstreamer1.0-plugins-base \
@@ -40,7 +40,7 @@ jobs:
             gstreamer1.0-libav \
             gstreamer1.0-gl \
             libflite1 \
-            libavif16 \
+            libavif0 \
             libharfbuzz-icu0 \
             libsecret-1-0 \
             libhyphen0 \
