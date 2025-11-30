@@ -27,8 +27,8 @@ jobs:
 
       - name: Ensure pip is installed
         run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
+          apt-get update
+          apt-get install -y python3-pip
 
       - name: Install Robot Framework and Python dependencies
         run: |
