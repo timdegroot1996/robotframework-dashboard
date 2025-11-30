@@ -25,8 +25,8 @@ jobs:
 
       - name: Install system dependencies for Robot Framework Browser
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
+          apt-get update
+          apt-get install -y \
             libgtk-4-1 \
             libgraphene-1.0-0 \
             libwoff2-1 \
