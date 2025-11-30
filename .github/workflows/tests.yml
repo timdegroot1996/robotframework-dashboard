@@ -44,7 +44,7 @@ jobs:
       # Run robot tests (pabot or robot)
       - name: Run Robot tests
         run: |
-          bash scripts/run_tests.sh
+          bash scripts/tests.sh
 
       # Upload test results to workflow artifacts
       - name: Upload Robot logs
