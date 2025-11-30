@@ -8,47 +8,64 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
     
-      # Install Python 3.13
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
       
-      # Install Node.js (needed for Browser library + rfbrowser init)
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-      
-      # Install Python dependencies
+
+      - name: Install system dependencies for Robot Framework Browser
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libgtk-4-1 \
+            libgraphene-1.0-0 \
+            libwoff2-1 \
+            libvpx9 \
+            libevent-2.1-7 \
+            libopus0 \
+            gstreamer1.0-plugins-base \
+            gstreamer1.0-plugins-good \
+            gstreamer1.0-plugins-bad \
+            gstreamer1.0-plugins-ugly \
+            gstreamer1.0-libav \
+            gstreamer1.0-gl \
+            libflite1 \
+            libavif16 \
+            libharfbuzz-icu0 \
+            libsecret-1-0 \
+            libhyphen0 \
+            libmanette-0.2-0 \
+            libgles2-mesa \
+            libx264-163 \
+            wget curl unzip
+
       - name: Install Robot Framework and libraries
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-test.txt
       
-      # Build your app if tests target the local package
-      # (optional — depends on your project)
       - name: Install/Build project
         run: |
           bash scripts/install.sh
       
-      # Initialize Robot Framework Browser (downloads Playwright browsers)
       - name: Initialize Browser library
         run: |
           rfbrowser init
 
-      # Run Robot Framework tests with pabot
       - name: Run Robot tests
         id: robot
         run: |
           bash scripts/tests.sh
         continue-on-error: true
 
-      # Upload test results even if tests fail
       - name: Upload Robot logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -56,7 +73,6 @@ jobs:
           name: robot-results
           path: results/
 
-      # Fail workflow if tests failed
       - name: Fail workflow if robot tests failed
         if: steps.robot.outcome == 'failure'
         run: |
