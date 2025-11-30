@@ -6,6 +6,8 @@ on:
 jobs:
   robot-tests:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.40.0-focal
 
     steps:
       # Checkout code
@@ -23,33 +25,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-
-      # Install needed packages to be able to run browser tests in the linux pipeline
-      - name: Install system dependencies for browsers
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libgtk-4-1 \
-            libgraphene-1.0-0 \
-            libwoff2dec1 \
-            libvpx9 \
-            libevent-2.1-7 \
-            libopus0 \
-            gstreamer1.0-plugins-base \
-            gstreamer1.0-plugins-good \
-            gstreamer1.0-plugins-bad \
-            gstreamer1.0-plugins-ugly \
-            gstreamer1.0-libav \
-            gstreamer1.0-gl \
-            libflite1 \
-            libavif16 \
-            libharfbuzz-icu0 \
-            libsecret-1-0 \
-            libhyphen0 \
-            libmanette-0.2-0 \
-            libgles2-mesa \
-            libx264-163 \
-            wget curl unzip
 
       # Install Python dependencies
       - name: Install Robot Framework and libraries
