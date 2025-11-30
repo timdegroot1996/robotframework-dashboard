@@ -6,44 +6,36 @@ on:
 jobs:
   robot-tests:
     runs-on: ubuntu-latest
-    container:
-      # Python 3.13 base (GLIBC compatible) for Linux
-      image: python:3.13-bullseye
 
     steps:
-      # Checkout repository
+      # Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      # Install system dependencies needed for Robot Framework Browser (Playwright)
-      - name: Install system dependencies for browsers
-        run: |
-          apt-get update
-          apt-get install -y \
-            curl wget unzip git libgtk-4-1 libgraphene-1.0-0 libwoff2dec1 \
-            libvpx9 libevent-2.1-7 libopus0 gstreamer1.0-plugins-base \
-            gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
-            gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-gl \
-            libflite1 libavif16 libharfbuzz-icu0 libsecret-1-0 \
-            libhyphen0 libmanette-0.2-0 libgles2-mesa libx264-163
-
-      # Install Node.js 24
+    
+      # Install Python 3.13
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      
+      # Install Node.js (needed for Browser library + rfbrowser init)
       - name: Set up Node.js
-        run: |
-          curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
-          apt-get install -y nodejs
-
-      # Upgrade pip and install Robot Framework + libraries
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      
+      # Install Python dependencies
       - name: Install Robot Framework and libraries
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-test.txt
-
-      # Build your project / install local package
+      
+      # Build your app if tests target the local package
+      # (optional — depends on your project)
       - name: Install/Build project
         run: |
           bash scripts/install.sh
-
+      
       # Initialize Robot Framework Browser (downloads Playwright browsers)
       - name: Initialize Browser library
         run: |
@@ -53,8 +45,7 @@ jobs:
       - name: Run Robot tests
         id: robot
         run: |
-          pabot --pabotlib --testlevelsplit --artifacts png,jpg \
-                --artifactsinsubfolders --processes 4 -d results ./atest/testsuites/*.robot
+          bash scripts/tests.sh
         continue-on-error: true
 
       # Upload test results even if tests fail
