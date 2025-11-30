@@ -7,18 +7,11 @@ jobs:
   robot-tests:
     runs-on: ubuntu-latest
     container:
-      # Official Playwright container, includes all system libraries needed for browsers
-      image: mcr.microsoft.com/playwright:v1.40.0-jammy
+      image: mcr.microsoft.com/playwright:v1.56.0-jammy
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      # - name: Set up Python 3.13
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.13'
-      # using image python 3.10
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
