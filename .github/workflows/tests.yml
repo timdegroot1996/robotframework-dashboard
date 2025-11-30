@@ -18,6 +18,12 @@ jobs:
         with:
           node-version: '24'
 
+      - name: Ensure pip cache directory exists
+        run: mkdir -p ~/.cache/pip
+
+      - name: Ensure Playwright cache directory exists
+        run: mkdir -p ~/.cache/ms-playwright
+
       - name: Cache pip packages
         uses: actions/cache@v3
         with:
