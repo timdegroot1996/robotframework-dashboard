@@ -11,47 +11,44 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.40.0-jammy
 
     steps:
-      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # # 2. Set up Python 3.13
       # - name: Set up Python 3.13
       #   uses: actions/setup-python@v5
       #   with:
       #     python-version: '3.13'
       # using image python 3.10
 
-      # 3. Set up Node.js 24 (needed for Browser library)
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
 
-      # 4. Upgrade pip and install Robot Framework libraries
+      - name: Ensure pip is installed
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+
       - name: Install Robot Framework and Python dependencies
         run: |
           python3 -m pip install --upgrade pip
           pip3 install -r requirements-test.txt
 
-      # 5. Build / install your local package
       - name: Install/Build project
         run: |
           bash scripts/install.sh
 
-      # 6. Initialize Robot Framework Browser (downloads Playwright browsers)
       - name: Initialize Browser library
         run: |
           rfbrowser init
 
-      # 7. Run Robot Framework tests using your bash script
       - name: Run Robot tests
         id: robot
         run: |
           bash scripts/tests.sh
         continue-on-error: true  # allows workflow to continue even if some tests fail
 
-      # 8. Upload test results (always runs)
       - name: Upload Robot logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -59,7 +56,6 @@ jobs:
           name: robot-results
           path: results/
 
-      # 9. Fail workflow if Robot tests failed
       - name: Fail workflow if robot tests failed
         if: steps.robot.outcome == 'failure'
         run: |
