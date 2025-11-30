@@ -15,11 +15,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Set up Python 3.13
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
+      # # 2. Set up Python 3.13
+      # - name: Set up Python 3.13
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.13'
+      # using image python 3.10
 
       # 3. Set up Node.js 24 (needed for Browser library)
       - name: Set up Node.js
