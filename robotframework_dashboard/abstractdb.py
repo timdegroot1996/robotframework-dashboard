@@ -8,7 +8,7 @@ class AbstractDatabaseProcessor(ABC):
         super().__init_subclass__(**kwargs)
         if cls.__name__ != "DatabaseProcessor":
             raise TypeError(f"The custom databaseclass classname must be 'DatabaseProcessor', not '{cls.__name__}'")
-    
+
     @abstractmethod
     def __init__(self, database_path: Path) -> None:
         """Mandatory: This function should handle the creation of the tables if required
@@ -35,7 +35,7 @@ class AbstractDatabaseProcessor(ABC):
 
     @abstractmethod
     def insert_output_data(
-        self, output_data: dict, tags: list, run_alias: str, path: Path
+        self, output_data: dict, tags: list, run_alias: str, path: Path, project_version: str
     ) -> None:
         """Mandatory: This function inserts the data of an output file into the database"""
         pass
