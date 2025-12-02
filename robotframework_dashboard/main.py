@@ -40,12 +40,22 @@ def main():
         try:
             from robotframework_dashboard.server.server import ApiServer
         except ModuleNotFoundError:
-            print("  ERROR: The packages 'fastapi' and 'uvicorn' are required to run the server!")
-            print("         Please install them using  'pip install robotframework-dashboard[server]'")
-            print("         Or                         'pip install robotframework-dashboard[all]'")
+            print(
+                "  ERROR: The packages 'fastapi' and 'uvicorn' are required to run the server!"
+            )
+            print(
+                "         Please install them using  'pip install robotframework-dashboard[server]'"
+            )
+            print(
+                "         Or                         'pip install robotframework-dashboard[all]'"
+            )
             exit(0)
         robotdashboard.dashboard_name = "robot_dashboard.html"
-        robotdashboard.dashboard_title = "Robot Framework Dashboard"
+        robotdashboard.dashboard_title = (
+            "Robot Framework Dashboard"
+            if arguments.dashboard_title == ""
+            else arguments.dashboard_title
+        )
         robotdashboard.generate_dashboard = True
         robotdashboard.server = True
     # 1. Database preparation
