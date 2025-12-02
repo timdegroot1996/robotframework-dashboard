@@ -10,7 +10,7 @@ Before reading anything else here is a [Fully Functioning Dashboard](https://tim
 
 Robot Framework Dashboard is a tool for [Robot Framework](https://robotframework.org/) that provides insight of your test results across multiple runs. The tool makes use of the built in Robot Framework [Result Visitor API](https://robot-framework.readthedocs.io/en/stable/_modules/robot/result/visitor.html) to analyse output.xml files, stores these in a simple sqlite3 database and finally creates a HTML dashboard that makes use of [Chart.js](https://www.chartjs.org/docs/latest/) and [Datatables](https://datatables.net/) for the graphs and tables and makes use of [Bootstrap](https://getbootstrap.com/) for styling. Additionally [GridStack](https://gridstackjs.com/) is used for the interactive layout grids.
 
-![Example Dashboard Screenshot](./img/dashboard.png)
+![Example Dashboard Screenshot](https://raw.githubusercontent.com/timdegroot1996/robotframework-dashboard/main/img/dashboard.png)
 
 ## 🚀 Getting Started
 Install Robot Framework 6.0 or higher (if not already installed):
@@ -66,7 +66,7 @@ For detailed usage instructions, advanced examples, and full documentation, visi
 
 ## 🛠️ Contributions
 
-Contributions are welcome! If you encounter any issues, have suggestions for improvements, or would like to add new features, feel free to open an issue or submit a pull request. Additional information can be found here in [Contributing](./contributing.md)
+Contributions are welcome! If you encounter any issues, have suggestions for improvements, or would like to add new features, feel free to open an issue or submit a pull request. Additional information can be found here in [Contributing](https://github.com/timdegroot1996/robotframework-dashboard/blob/main/CONTRIBUTING.md)
 
 Special thanks to the following companies for sponsoring in one form or another!
 - [TestCoders](https://testcoders.nl)

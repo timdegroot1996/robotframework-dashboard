@@ -1,4 +1,6 @@
+include README.md
+include LICENSE
+
 recursive-include robotframework_dashboard/templates *
 recursive-include robotframework_dashboard/licenses *
 recursive-include robotframework_dashboard/dependencies *
-include MANIFEST.in

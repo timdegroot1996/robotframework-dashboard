@@ -1,18 +1,31 @@
+# robot result folders/files
 results
 logs
+
+# python cache
 *.pyc
 __pycache__
+
+# installation/distribution cache
 dist
 robotframework_dashboard.egg-info
+
+# robotdashboard output
 robot_results.db
 robotdashboard*.html
 robot_dashboard*.html
 index.txt
 .pabotsuitenames
 *.db
-*.vscode
 
 # docs entries
 node_modules
 docs/.vitepress/dist
 docs/.vitepress/cache
+
+# uv entries
+.venv/
+uv.lock
+
+# vscode
+*.vscode
