@@ -8,6 +8,7 @@ Suite Teardown    Run Teardown Only Once    keyword=Remove Database And Dashboar
 
 *** Variables ***
 ${OUTPUTS_FOLDER}    ${CURDIR}/../resources/outputs
+${OS}   ${None}    # set on runtime
 
 
 *** Test Cases ***
@@ -78,10 +79,12 @@ Validate RobotDashboard dashboardtitle
 
 Validate RobotDashboard c
     [Documentation]    This test will probably fail if you don't have a custom mysql database running
+    IF    '${OS}' != 'Windows'    Skip    msg=Skipping this test in the pipeline as it only runs on local machines where mysql is installed
     Validate CLI    command=robotdashboard -d c.db -c example/database/mysql.py    expected=databaseclass
 
 Validate RobotDashboard databaseclass
     [Documentation]    This test will probably fail if you don't have a custom mysql database running
+    IF    '${OS}' != 'Windows'    Skip    msg=Skipping this test in the pipeline as it only runs on local machines where mysql is installed
     Validate CLI    command=robotdashboard -d databaseclass.db --databaseclass ./example/database/mysql.py    expected=databaseclass
 
 Validate RobotDashboard s
