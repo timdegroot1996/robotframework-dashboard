@@ -1,11 +1,16 @@
 *** Settings ***
 Library    OperatingSystem
 Library    pabot.pabotlib
+Suite Setup    Set Environment
 Suite Teardown    Run Teardown Only Once    keyword=Teardown
 Test Timeout    60s
 
 
 *** Keywords ***
+Set Environment
+    ${OS}    Evaluate    platform.system()    modules=platform
+    VAR    ${OS}    ${OS}    scope=GLOBAL 
+
 Teardown
     Remove Index
     Move All Screenshots

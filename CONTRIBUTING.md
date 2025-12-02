@@ -16,15 +16,20 @@ robotdashboard -n robot_dashboard.html
 ```
 
 ## ✅ Tests
-Before you run the tests be sure to install the test dependencies from requirements.txt. This can also be done from a venv if you prefer.
-```sh
-pip install -r .\requirements.txt
-```
-There are some acceptance tests (located in ./atest) that can be run like in a powershell or similar terminal.
-```sh
-.\tests.bat
-```
-Or they can be run through the command line or robotcode plugin.
+Tests are located in `atest`. There are different tests for the different parts of the tool.
+
+- CLI
+- Database
+- Dashboard
+
+Tests will run automatically in GitHub actions. They are triggered through the `.github/workflows/tests.yml` yml script. In this script details regarding the test pipeline can be found. The tests will run when:
+
+- Creating a PR
+- Pushing a commit to a PR
+- Manually rerunning a workflow run in GitHub actions
+
+Results can be found at the `PR > checks > Upload robot logs`.
+The check will have a failed status if any tests has failed.
 
 
 ## 📖 Docs
