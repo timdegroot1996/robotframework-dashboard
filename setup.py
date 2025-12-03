@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 extras = {
     "server": [
-        "fastapi>=0.115.11",
+        "fastapi_offline>=1.7.5",
         "uvicorn>=0.33.0",
     ],
 }
@@ -11,7 +11,7 @@ extras["all"] = sorted({pkg for group in extras.values() for pkg in group})
 
 setup(
     name="robotframework-dashboard",
-    version="1.3.0",
+    version="1.3.1",
     description="Output processor and dashboard generator for Robot Framework output files",
     long_description="""# 📊 Robot Framework Dashboard
 

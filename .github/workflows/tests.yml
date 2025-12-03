@@ -1,0 +1,78 @@
+name: Robot Tests
+
+on:
+  pull_request:
+
+jobs:
+  robot-tests:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.0-jammy
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Ensure pip cache directory exists
+        run: mkdir -p ~/.cache/pip
+
+      - name: Ensure Playwright cache directory exists
+        run: mkdir -p ~/.cache/ms-playwright
+
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements-test.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('requirements-test.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Ensure pip is installed
+        run: |
+          apt-get update
+          apt-get install -y python3-pip
+
+      - name: Install Robot Framework and Python dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install -r requirements-test.txt
+
+      - name: Install/Build project
+        run: |
+          bash scripts/install.sh
+
+      - name: Initialize Browser library
+        run: |
+          rfbrowser init
+
+      - name: Run Robot tests
+        id: robot
+        run: |
+          bash scripts/tests.sh
+        continue-on-error: true  # allows workflow to continue even if some tests fail
+
+      - name: Upload Robot logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: robot-results
+          path: results/
+
+      - name: Fail workflow if robot tests failed
+        if: steps.robot.outcome == 'failure'
+        run: |
+          echo "Robot tests failed."
+          exit 1

@@ -4,7 +4,7 @@ outline: deep
 
 # Dashboard Server
 
-RobotFramework Dashboard includes a built-in server that lets you host the dashboard on a separate machine. This allows you to centrally serve the HTML dashboard, and remotely add, list, or remove test result outputs from other clients. The server is built using **FastAPI**, and comes with a set of Pydantic models to validate request payloads. 
+RobotFramework Dashboard includes a built-in server that lets you host the dashboard on a separate machine. This allows you to centrally serve the HTML dashboard, and remotely add, list, or remove test result outputs from other clients. The server is built using [**FastAPI**](https://pypi.org/project/fastapi/), [**FastAPI-offline**](https://pypi.org/project/fastapi-offline/) and [**Uvicorn**](https://pypi.org/project/uvicorn/), and comes with a set of Pydantic models to validate request payloads. 
 
 > **Tip:** The server is not installed by default see [Installation & Version Info](/installation-version-info.md#install-robot-framework-dashboard) for more info!
 
@@ -14,6 +14,7 @@ RobotFramework Dashboard includes a built-in server that lets you host the dashb
 - Enable remote clients to push or delete runs in your database  
 - Provide a web-based admin interface for manual management  
 - Secure access via optional basic authentication (username/password)  
+- The server automatically uses offline CDN (js/css) because `FastAPI-offline` is used, making it compatible with [`--offlinedependencies`](http://localhost:5173/robotframework-dashboard/advanced-cli-examples.html#offline-dependencies) for full offline usage!
 > **Tip:** To implement your server into your test runs look at the example [listener](/listener-integration.md) integration!
 
 
@@ -50,11 +51,13 @@ robotdashboard -s host:port:user:password
 Once the server is running, open your browser at the configured address (for example, `http://127.0.0.1:8543/`) to access:
 
 - The **admin page** (for manual control), this page lives on the default url: `http://127.0.0.1:8543/`
-    - On the admin page a menu option `API Docs` is available to open the fastapi openapi documentation
+    - On the admin page a menu option [`Swagger API Docs`](https://swagger.io/docs/) is available to open the swagger openapi documentation
+    - On the admin page a menu option [`Redoc API Docs`](https://redocly.com/docs/redoc) is available to open the redoc openapi documentation
     - On the admin page a menu option `Dashboard` is available to open the dashboard
 - The **dashboard HTML** , this page lives on `/dashboard`: `http://127.0.0.1:8543/dashboard`
     - On the dashboard page a menu option `Admin` is available to open the admin page
-- The **API documentation**, this page lives on `/docs`: `http://127.0.0.1:8543/docs`
+- The **Swagger API documentation**, this page lives on `/docs`: `http://127.0.0.1:8543/docs`
+- The **Redoc API documentation**, this page lives on `/redoc`: `http://127.0.0.1:8543/redoc`
 
 ## Server Features & Endpoints
 
