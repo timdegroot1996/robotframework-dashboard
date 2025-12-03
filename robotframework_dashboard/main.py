@@ -38,10 +38,10 @@ def main():
     # If arguments.start_server is provided override some required args
     if arguments.start_server:
         try:
-            from robotframework_dashboard.server.server import ApiServer
+            from robotframework_dashboard.server import ApiServer
         except ModuleNotFoundError:
             print(
-                "  ERROR: The packages 'fastapi' and 'uvicorn' are required to run the server!"
+                "  ERROR: The packages 'fastapi-offline' and 'uvicorn' are required to run the server!"
             )
             print(
                 "         Please install them using  'pip install robotframework-dashboard[server]'"
@@ -78,6 +78,7 @@ def main():
             arguments.server_port,
             arguments.server_user,
             arguments.server_pass,
+            arguments.offline_dependencies
         )
         server.set_robotdashboard(robotdashboard)
         server.run()

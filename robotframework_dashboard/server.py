@@ -1,6 +1,5 @@
-from ..robotdashboard import RobotDashboard
-
-from fastapi import FastAPI, Body, Depends, HTTPException, status
+from fastapi_offline import FastAPIOffline
+from fastapi import Body, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
@@ -10,9 +9,11 @@ from os.path import join, abspath, dirname, exists
 from os import remove, mkdir, listdir
 from pathlib import Path
 from typing import List, Optional
-import secrets
+from secrets import compare_digest
 
-from ..version import __version__
+from .robotdashboard import RobotDashboard
+from .dependencies import DependencyProcessor
+from .version import __version__
 
 response_message_model_config = {
     "json_schema_extra": {
@@ -225,16 +226,22 @@ class ApiServer:
     """Robot Dashboard server implementation, this class handles the admin page and all functions related to the server"""
 
     def __init__(
-        self, server_host: str, server_port: int, server_user: str, server_pass: str
+        self,
+        server_host: str,
+        server_port: int,
+        server_user: str,
+        server_pass: str,
+        offline_dependencies: bool,
     ):
         """Init function that starts up the fastapi app and initializes all the vars and endpoints"""
-        self.app = FastAPI()
+        self.app = FastAPIOffline(title="Robot Framework Dashboard Server", version=__version__)
         self.security = HTTPBasic()
         self.robotdashboard: RobotDashboard
         self.server_host = server_host
         self.server_port = server_port
         self.server_user = server_user
         self.server_pass = server_pass
+        self.offline = offline_dependencies
         self.admin_json_config = "{}"
         self.log_dir = "robot_logs"
         self.latest_log_dir = None
@@ -242,18 +249,31 @@ class ApiServer:
         self._setup_routes()
         self._setup_catch_all_route()
 
+    def _get_admin_page(self):
+        admin_file = join(dirname(abspath(__file__)), "./templates", "admin.html")
+        admin_html = open(admin_file, "r").read()
+        admin_html = admin_html.replace('"placeholder_version"', __version__)
+
+        dependency_processor = DependencyProcessor(admin_page=True)
+        admin_html = admin_html.replace(
+            "<!-- placeholder_javascript -->", dependency_processor.get_js_block()
+        )
+        admin_html = admin_html.replace(
+            "<!-- placeholder_css -->", dependency_processor.get_css_block()
+        )
+        admin_html = admin_html.replace(
+            "<!-- placeholder_dependencies -->",
+            dependency_processor.get_dependencies_block(self.offline),
+        )
+        admin_html = admin_html.replace('"placeholder_version"', __version__)
+        return admin_html
+
     def _setup_routes(self):
         def authenticate(credentials: HTTPBasicCredentials = Depends(self.security)):
             if not self.server_user or not self.server_pass:
                 return "anonymous"
-
-            correct_username = secrets.compare_digest(
-                credentials.username, self.server_user
-            )
-            correct_password = secrets.compare_digest(
-                credentials.password, self.server_pass
-            )
-
+            correct_username = compare_digest(credentials.username, self.server_user)
+            correct_password = compare_digest(credentials.password, self.server_pass)
             if not (correct_username and correct_password):
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -267,24 +287,14 @@ class ApiServer:
             @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
             async def admin_page():
                 """Admin page endpoint function"""
-                admin_file = join(
-                    dirname(abspath(__file__)), "../templates", "admin.html"
-                )
-                admin_html = open(admin_file, "r").read()
-                admin_html = admin_html.replace('"placeholder_version"', __version__)
-                return admin_html
+                return self._get_admin_page()
 
         else:
 
             @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
             async def admin_page(username: str = Depends(authenticate)):
                 """Admin page endpoint function"""
-                admin_file = join(
-                    dirname(abspath(__file__)), "../templates", "admin.html"
-                )
-                admin_html = open(admin_file, "r").read()
-                admin_html = admin_html.replace('"placeholder_version"', __version__)
-                return admin_html
+                return self._get_admin_page()
 
         @self.app.get(
             "/dashboard", response_class=HTMLResponse, include_in_schema=False
@@ -409,10 +419,12 @@ class ApiServer:
                     )
                 if add_output.output_folder_path != None:
                     input = add_output.output_folder_path
-                    output_folder_paths = [[
-                        add_output.output_folder_path,
-                        output_tags,
-                    ]]
+                    output_folder_paths = [
+                        [
+                            add_output.output_folder_path,
+                            output_tags,
+                        ]
+                    ]
                     console = self.robotdashboard.process_outputs(
                         output_folder_configs=output_folder_paths
                     )

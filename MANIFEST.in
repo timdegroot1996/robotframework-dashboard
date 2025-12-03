@@ -1,4 +1,6 @@
 recursive-include robotframework_dashboard/templates *
 recursive-include robotframework_dashboard/licenses *
 recursive-include robotframework_dashboard/dependencies *
+recursive-include robotframework_dashboard/js *
+recursive-include robotframework_dashboard/css *
 include MANIFEST.in
