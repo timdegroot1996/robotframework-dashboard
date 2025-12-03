@@ -14,7 +14,7 @@ RobotFramework Dashboard includes a built-in server that lets you host the dashb
 - Enable remote clients to push or delete runs in your database  
 - Provide a web-based admin interface for manual management  
 - Secure access via optional basic authentication (username/password)  
-- The server automatically uses offline CDN (js/css) because `FastAPI-offline` is used, making it compatible with [`--offlinedependencies`](http://localhost:5173/robotframework-dashboard/advanced-cli-examples.html#offline-dependencies) for full offline usage!
+- The server automatically uses offline CDN (js/css) because `FastAPI-offline` is used, making it compatible with [`--offlinedependencies`](https://timdegroot1996.github.io/robotframework-dashboard/advanced-cli-examples) for full offline usage!
 > **Tip:** To implement your server into your test runs look at the example [listener](/listener-integration.md) integration!
 
 
