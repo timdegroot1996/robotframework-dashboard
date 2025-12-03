@@ -234,7 +234,7 @@ class ApiServer:
         offline_dependencies: bool,
     ):
         """Init function that starts up the fastapi app and initializes all the vars and endpoints"""
-        self.app = FastAPIOffline(title="Robot Framework Dashboard Server", version=__version__, favicon_url="https://robotframework.org/favicon.ico")
+        self.app = FastAPIOffline(title="Robot Framework Dashboard Server", version=__version__)
         self.security = HTTPBasic()
         self.robotdashboard: RobotDashboard
         self.server_host = server_host

@@ -3,6 +3,7 @@ logs
 *.pyc
 __pycache__
 dist
+build
 robotframework_dashboard.egg-info
 robot_results.db
 robotdashboard*.html

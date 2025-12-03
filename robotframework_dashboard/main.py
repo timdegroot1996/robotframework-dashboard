@@ -41,7 +41,7 @@ def main():
             from robotframework_dashboard.server import ApiServer
         except ModuleNotFoundError:
             print(
-                "  ERROR: The packages 'fastapi' and 'uvicorn' are required to run the server!"
+                "  ERROR: The packages 'fastapi-offline' and 'uvicorn' are required to run the server!"
             )
             print(
                 "         Please install them using  'pip install robotframework-dashboard[server]'"
