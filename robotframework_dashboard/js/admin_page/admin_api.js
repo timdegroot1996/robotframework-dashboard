@@ -1,4 +1,4 @@
-import { add_alert } from "./common.js";
+import { add_alert } from "./admin_common.js";
 
 var adminSettings = {}
 

@@ -170,7 +170,7 @@ class DependencyProcessor():
             merged += f"\n// === {file_name} ===\n"
             merged += code + "\n"
 
-        # Step 5 — Wrap in a single module script tag
+        # Step 5 — Wrap in a single script tag
         return f"<script>{merged}</script>"
 
     def _inline_css_files(self, css_files):

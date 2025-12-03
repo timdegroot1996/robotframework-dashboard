@@ -7,6 +7,7 @@ robotframework_dashboard.egg-info
 robot_results.db
 robotdashboard*.html
 robot_dashboard*.html
+robot_logs
 index.txt
 .pabotsuitenames
 *.db

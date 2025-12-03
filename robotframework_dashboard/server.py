@@ -286,8 +286,6 @@ class ApiServer:
             @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
             async def admin_page():
                 """Admin page endpoint function"""
-                with open("admin.html", "w", encoding="utf-8") as file:
-                    file.write(self._get_admin_page())
                 return self._get_admin_page()
 
         else:
@@ -295,8 +293,6 @@ class ApiServer:
             @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
             async def admin_page(username: str = Depends(authenticate)):
                 """Admin page endpoint function"""
-                with open("admin.html", "w", encoding="utf-8") as file:
-                    file.write(self._get_admin_page())
                 return self._get_admin_page()
 
         @self.app.get(

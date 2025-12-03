@@ -1,4 +1,4 @@
-import { toggle_theme } from './theme.js';
+import { toggle_theme } from './admin_theme.js';
 import {
     add_output_path,
     add_output_data,
@@ -6,7 +6,7 @@ import {
     remove_outputs,
     add_log,
     remove_log
-} from './api.js';
+} from './admin_api.js';
 
 function setup_output_button_eventlisteners() {
     // add eventlisteners to all buttons
