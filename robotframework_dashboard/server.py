@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Body, Depends, HTTPException, status
+from fastapi_offline import FastAPIOffline
+from fastapi import Body, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
@@ -233,7 +234,7 @@ class ApiServer:
         offline_dependencies: bool,
     ):
         """Init function that starts up the fastapi app and initializes all the vars and endpoints"""
-        self.app = FastAPI(title="Robot Framework Dashboard Server", version=__version__)
+        self.app = FastAPIOffline(title="Robot Framework Dashboard Server", version=__version__, favicon_url="https://robotframework.org/favicon.ico")
         self.security = HTTPBasic()
         self.robotdashboard: RobotDashboard
         self.server_host = server_host

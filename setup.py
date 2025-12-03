@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 extras = {
     "server": [
-        "fastapi>=0.115.11",
+        "fastapi_offline>=1.7.5",
         "uvicorn>=0.33.0",
     ],
 }
