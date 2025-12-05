@@ -364,6 +364,17 @@ const graphMetadata = [
                     <h6>Statistics</h6>
                     <div class="graph-controls">
                         <div class="btn-group">
+                            <label class="form-check-label" for="testNoChanges">Status</label>
+                        </div>
+                        <div class="btn-group">
+                            <select class="form-select form-select-sm" id="testNoChanges">
+                                <option value="All">All</option>
+                                <option value="Passed">Passed</option>
+                                <option value="Failed">Failed</option>
+                                <option value="Skipped">Skipped</option>
+                            </select>
+                        </div>
+                        <div class="btn-group">
                             <label class="form-check-label" for="testOnlyChanges">Only Changes</label>
                         </div>
                         <div class="btn-group form-switch">
@@ -836,6 +847,17 @@ const graphMetadata = [
         html: `<div class="graph-header">
                     <h6>Tests</h6>
                     <div class="graph-controls">
+                        <div class="btn-group">
+                            <label class="form-check-label" for="compareNoChanges">Status</label>
+                        </div>
+                        <div class="btn-group">
+                            <select class="form-select form-select-sm" id="compareNoChanges">
+                                <option value="All">All</option>
+                                <option value="Passed">Passed</option>
+                                <option value="Failed">Failed</option>
+                                <option value="Skipped">Skipped</option>
+                            </select>
+                        </div>
                         <div class="btn-group">
                             <label class="form-check-label" for="compareOnlyChanges">Only Changes</label>
                         </div>

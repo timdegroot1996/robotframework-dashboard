@@ -113,7 +113,9 @@ function get_test_statistics_data(filteredTests) {
     const testSelect = document.getElementById("testSelect").value;
     const testTagsSelect = document.getElementById("testTagsSelect").value;
     const testOnlyChanges = document.getElementById("testOnlyChanges").checked;
+    const testNoChanges = document.getElementById("testNoChanges").value;
     const compareOnlyChanges = document.getElementById("compareOnlyChanges").checked;
+    const compareNoChanges = document.getElementById("compareNoChanges").value;
     const selectedRuns = [...new Set(
         compareRunIds
             .map(id => document.getElementById(id).value)
@@ -131,7 +133,6 @@ function get_test_statistics_data(filteredTests) {
     }
     for (const test of filteredTests) {
         if (settings.menu.dashboard) {
-            const testLabel = getTestLabel(test);
             const testBaseName = test.name;
             if (suiteSelectTests !== "All") {
                 const expectedFull = `${suiteSelectTests}.${testBaseName}`;
@@ -172,13 +173,45 @@ function get_test_statistics_data(filteredTests) {
         }
     }
     let finalDatasets = convert_timeline_data(datasets);
-    if (testOnlyChanges || compareOnlyChanges) {
+    if ((testOnlyChanges && testNoChanges !== "All") || (compareOnlyChanges && compareNoChanges !== "All")) {
+        // If both filters are set, return empty data, as nothing can match this
+        return [{ labels: [], datasets: [] }, []];
+    }
+    if (testOnlyChanges || compareOnlyChanges || testNoChanges !== "All" || compareNoChanges !== "All") {
         const countMap = {};
         for (const ds of finalDatasets) {
             countMap[ds.label] = (countMap[ds.label] || 0) + 1;
         }
-        const labelsToKeep = new Set(Object.keys(countMap).filter(label => countMap[label] > 1));
-
+        let labelsToKeep = new Set();
+        if (testOnlyChanges || compareOnlyChanges) {
+            // Only keep the tests that have more than 1 status change
+            labelsToKeep = new Set(Object.keys(countMap).filter(label => countMap[label] > 1));
+        } else if (testNoChanges !== "All" || compareNoChanges !== "All") {
+            const countMap = {};
+            for (const ds of finalDatasets) {
+                countMap[ds.label] = (countMap[ds.label] || 0) + 1;
+            }
+            labelsToKeep = new Set(Object.keys(countMap).filter(label => {
+                // Only keep tests that appear once (no status changes)
+                if (countMap[label] !== 1) return false;
+                // Find the dataset for this label to check its status
+                const dataset = finalDatasets.find(ds => ds.label === label);
+                if (!dataset) return false;
+                // Check if the dataset's status matches testNoChanges
+                // Assuming the dataset has a property or can be determined from config
+                const isPassedTest = dataset.backgroundColor === passedBackgroundColor;
+                const isFailedTest = dataset.backgroundColor === failedBackgroundColor;
+                const isSkippedTest = dataset.backgroundColor === skippedBackgroundColor;
+                return (
+                    (testNoChanges === "Passed" && isPassedTest) ||
+                    (testNoChanges === "Failed" && isFailedTest) ||
+                    (testNoChanges === "Skipped" && isSkippedTest) ||
+                    (compareNoChanges === "Passed" && isPassedTest) ||
+                    (compareNoChanges === "Failed" && isFailedTest) ||
+                    (compareNoChanges === "Skipped" && isSkippedTest)
+                );
+            }));
+        }
         finalDatasets = finalDatasets.filter(ds => labelsToKeep.has(ds.label));
         labels = labels.filter(label => labelsToKeep.has(label));
     }
