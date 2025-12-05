@@ -318,7 +318,7 @@ function create_project_run_card(run, projectName, runIndex, runNumber, passRate
                 set_filter_show_current_project(projectName);
                 update_menu("menuDashboard");
             });
-        create_overview_run_donut(run, 0, projectNameForId);
+        create_overview_run_donut(run, runIndex, projectNameForId);
         const versionElement = createdRunCard.querySelector('[data-js-target="apply-version-filter"]');
         versionElement && attach_run_card_version_listener(versionElement, projectName, run.project_version ?? "None");
     }
