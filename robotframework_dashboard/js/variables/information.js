@@ -98,7 +98,9 @@ const informationMap = {
     "suiteMostTimeConsumingShown": "Hide Graph",
     "suiteMostTimeConsumingHidden": "Show Graph",
     "testStatisticsGraphTimeline": `This graph displays the statistics of the tests in a timeline format
-Only Changes: Displays only tests that have changed statuses at some point in time`,
+Status: Displays only tests don't have any status changes and have the selected status
+Only Changes: Displays only tests that have changed statuses at some point in time
+Tip: Don't use Status and Only Changes at the same time as it will result in an empty graph`,
     "testStatisticsFullscreen": "Fullscreen",
     "testStatisticsClose": "Close",
     "testStatisticsShown": "Hide Graph",
@@ -229,7 +231,9 @@ It helps identify tests with inconsistent execution times, which might be flaky 
     "compareSuiteDurationShown": "Hide Graph",
     "compareSuiteDurationHidden": "Show Graph",
     "compareTestsGraphTimeline": `This graph displays the statistics of the tests in a timeline format
-Only Changes: Displays only tests that have changed statuses at some point in time`,
+Status: Displays only tests don't have any status changes and have the selected status
+Only Changes: Displays only tests that have changed statuses at some point in time
+Tip: Don't use Status and Only Changes at the same time as it will result in an empty graph`,
     "compareTestsFullscreen": "Fullscreen",
     "compareTestsClose": "Close",
     "compareTestsShown": "Hide Graph",

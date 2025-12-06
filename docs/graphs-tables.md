@@ -38,7 +38,7 @@ Discover the graphs and tables included in the Dashboard. This page explains how
 
 | Graph Name               | Views                    | Views Description                                                                                                                  | Notes                                                                         |
 | ------------------------ | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Test Statistics          | Timeline | Timeline: Displays statistics of tests in timeline format.<br>Only Changes: Displays only tests that changed status at some point.                 | Only Display Tests With Status Changes                                        |
+| Test Statistics          | Timeline | Timeline: Displays statistics of tests in timeline format.  | Status: Displays only tests don't have any status changes and have the selected status<br>Only Changes: Displays only tests that changed status at some point.<br>Tip: Don't use Status and Only Changes at the same time as it will result in an empty graph                                        |
 | Test Duration            | Bar<br>Line              | Bar: Displays test durations represented as vertical bars.<br>Line: Displays test durations over a time axis.                      | -                                                                             |
 | Test Duration Deviation  | Boxplot                  | Shows deviations of test durations from average, highlighting flaky tests.                                                         | -                                                                             |
 | Test Messages            | Bar<br>Timeline          | Bar: Displays messages ranked by frequency.<br>Timeline: Displays when messages occurred to reveal spikes.                         | Top 10 default, Top 50 fullscreen                                             |
@@ -68,7 +68,7 @@ Discover the graphs and tables included in the Dashboard. This page explains how
 | ---------------------- | ------------------------ | ----------------------------------------------------------------------| -------------------------------------- |
 | Compare Statistics     | Bar                      | Displays overall statistics of the selected runs.                     | -                                      |
 | Compare Suite Duration | Radar                    | Shows suite durations in radar format for multiple runs.              | -                                      |
-| Compare Tests          | Timeline                 | Timeline: Displays test statistics over time.                         | Only Display Tests With Status Changes |
+| Compare Tests          | Timeline                 | Timeline: Displays test statistics over time.                         | Status: Displays only tests don't have any status changes and have the selected status<br>Only Changes: Displays only tests that changed status at some point.<br>Tip: Don't use Status and Only Changes at the same time as it will result in an empty graph |
 
 
 ## Tables Tab
