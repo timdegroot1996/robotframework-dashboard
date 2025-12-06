@@ -566,7 +566,13 @@ function setup_graph_view_buttons() {
     document.getElementById("testOnlyChanges").addEventListener("change", () => {
         create_test_statistics_graph();
     });
+    document.getElementById("testNoChanges").addEventListener("change", () => {
+        create_test_statistics_graph();
+    });
     document.getElementById("compareOnlyChanges").addEventListener("change", () => {
+        create_compare_tests_graph();
+    });
+    document.getElementById("compareNoChanges").addEventListener("change", () => {
         create_compare_tests_graph();
     });
     // most time consuming only latest run switch event listeners
