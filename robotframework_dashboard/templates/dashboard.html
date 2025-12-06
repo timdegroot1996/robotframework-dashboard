@@ -75,9 +75,17 @@
     </nav>
 
     <div class="container-fluid">
-        <div class="text-center mt-5" id="loading">
-            <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
-                <span class="sr-only"></span>
+        <div class="loader-wrapper" id="loading">
+            <div class="ball-grid-beat">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
             </div>
         </div>
 
@@ -161,6 +169,24 @@
         <div id="projectOverview" hidden>
             <!-- Placeholder to add the project overview-->
             <div id="projectOverviewData">
+            </div>
+        </div>
+
+        <div id="unified" hidden>
+            <div class="card" id="unifiedStatisticsSection">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-auto align-self-center">
+                            <div class="btn btn-sm collapse-icon" id="collapsegridUnified"></div>
+                        </div>
+                        <div class="col">
+                            <h4 id="unifiedTitle"></h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card unifiedData -->
+                <div id="unifiedDataHidden" hidden></div>
+                <div class="card-body grid-stack" id="gridUnified"></div>
             </div>
         </div>
 
@@ -562,6 +588,16 @@
                             <div class="tab-pane fade show active" id="general" role="tabpanel"
                                 aria-labelledby="general-tab">
                                 <p><i>Press "Close" or click next to the modal to save the graph settings</i></p>
+                                <div class="row">
+                                    <div class="col-8 btn-group ms-1">
+                                        <label class="form-check-label mt-1" for="toggleUnified">Unified Dashboard
+                                            Sections</label>
+                                    </div>
+                                    <div class="col btn-group form-switch ms-2">
+                                        <input class="form-check-input mt-2" type="checkbox" role="switch"
+                                            id="toggleUnified" />
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-8 btn-group ms-1">
                                         <label class="form-check-label mt-1" for="toggleLegends">Display

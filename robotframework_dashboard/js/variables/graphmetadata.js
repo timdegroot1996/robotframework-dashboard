@@ -6,7 +6,7 @@ const graphMetadata = [
         viewOptions: ["Percentages", "Line", "Amount"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Statistics</h6>
+                    <h6 id="runStatisticsTitle">Statistics</h6>
                     <div class="graph-controls">
                         <a class="percentage-graph information" id="runStatisticsGraphPercentages"></a>
                         <a class="bar-graph information" id="runStatisticsGraphAmount"></a>
@@ -28,7 +28,7 @@ const graphMetadata = [
         viewOptions: ["Donut"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Donut</h6>
+                    <h6 id="runDonutTitle">Donut</h6>
                     <div class="graph-controls">
                         <a class="pie-graph information" id="runDonutGraphDonut"></a>
                         <a class="fullscreen-graph information" id="runDonutFullscreen"></a>
@@ -63,7 +63,7 @@ const graphMetadata = [
         viewOptions: ["Stats"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Stats</h6>
+                    <h6 id="runStatsTitle">Stats</h6>
                     <div class="graph-controls">
                         <a class="stats-graph information" id="runStatsGraphStats"></a>
                         <a class="fullscreen-graph information" id="runStatsFullscreen"></a>
@@ -140,7 +140,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Line"],
         hasFullscreenButton: true,
         html: ` <div class="graph-header">
-                    <h6>Duration</h6>
+                    <h6 id="runDurationTitle">Duration</h6>
                     <div class="graph-controls">
                         <a class="bar-graph information" id="runDurationGraphBar"></a>
                         <a class="line-graph information" id="runDurationGraphLine"></a>
@@ -161,7 +161,7 @@ const graphMetadata = [
         viewOptions: ["Heatmap"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Heatmap</h6>
+                    <h6 id="runHeatmapTitle">Heatmap</h6>
                     <div class="graph-controls">
                         <div class="btn-group">
                             <label class="form-check-label" for="heatMapTestType">Status</label>
@@ -224,7 +224,7 @@ const graphMetadata = [
         viewOptions: ["Donut"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Folders</h6>
+                    <h6 id="suiteFolderDonutTitle">Folders</h6>
                     <div class="graph-controls">
                         <div class="btn-group">
                             <label class="form-check-label" for="onlyFailedFolders">Only Failed</label>
@@ -266,7 +266,7 @@ const graphMetadata = [
         viewOptions: ["Percentages", "Line", "Amount"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Statistics</h6>
+                    <h6 id="suiteStatisticsTitle">Statistics</h6>
                     <div class="graph-controls">
                         <a class="percentage-graph information" id="suiteStatisticsGraphPercentages"></a>
                         <a class="bar-graph information" id="suiteStatisticsGraphAmount"></a>
@@ -288,7 +288,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Line"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Duration</h6>
+                    <h6 id="suiteDurationTitle">Duration</h6>
                     <div class="graph-controls">
                         <a class="bar-graph information" id="suiteDurationGraphBar"></a>
                         <a class="line-graph information" id="suiteDurationGraphLine"></a>
@@ -309,7 +309,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Timeline"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Most Failed</h6>
+                    <h6 id="suiteMostFailedTitle">Most Failed</h6>
                     <div class="graph-controls">
                         <a class="bar-graph information" id="suiteMostFailedGraphBar"></a>
                         <a class="timeline-graph information" id="suiteMostFailedGraphTimeline"></a>
@@ -332,7 +332,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Timeline"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Most Time Consuming</h6>
+                    <h6 id="suiteMostTimeConsumingTitle">Most Time Consuming</h6>
                     <div class="graph-controls">
                         <div class="btn-group">
                             <label class="form-check-label" for="onlyLastRunSuite">Only Last Run</label>
@@ -361,7 +361,7 @@ const graphMetadata = [
         viewOptions: ["Timeline"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Statistics</h6>
+                    <h6 id="testStatisticsTitle">Statistics</h6>
                     <div class="graph-controls">
                         <div class="btn-group">
                             <label class="form-check-label" for="testNoChanges">Status</label>
@@ -400,7 +400,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Line"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Duration</h6>
+                    <h6 id="testDurationTitle">Duration</h6>
                     <div class="graph-controls">
                         <a class="bar-graph information" id="testDurationGraphBar"></a>
                         <a class="line-graph information" id="testDurationGraphLine"></a>
@@ -421,7 +421,7 @@ const graphMetadata = [
         viewOptions: ["Bar"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Duration Deviation</h6>
+                    <h6 id="testDurationDeviationTitle">Duration Deviation</h6>
                     <div class="graph-controls">
                         <a class="boxplot-graph information" id="testDurationDeviationGraphBar"></a>
                         <a class="fullscreen-graph information" id="testDurationDeviationFullscreen"></a>
@@ -441,7 +441,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Timeline"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Messages</h6>
+                    <h6 id="testMessagesTitle">Messages</h6>
                     <div class="graph-controls">
                         <a class="bar-graph information" id="testMessagesGraphBar"></a>
                         <a class="timeline-graph information" id="testMessagesGraphTimeline"></a>
@@ -464,7 +464,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Timeline"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Most Flaky</h6>
+                    <h6 id="testMostFlakyTitle">Most Flaky</h6>
                     <div class="graph-controls">
                         <div class="btn-group">
                             <label class="form-check-label" for="ignoreSkips">Ignore Skips</label>
@@ -493,7 +493,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Timeline"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Recent Most Flaky</h6>
+                    <h6 id="testRecentMostFlakyTitle">Recent Most Flaky</h6>
                     <div class="graph-controls">
                         <div class="btn-group">
                             <label class="form-check-label" for="ignoreSkipsRecent">Ignore Skips</label>
@@ -522,7 +522,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Timeline"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Most Failed</h6>
+                    <h6 id="testMostFailedTitle">Most Failed</h6>
                     <div class="graph-controls">
                         <a class="bar-graph information" id="testMostFailedGraphBar"></a>
                         <a class="timeline-graph information" id="testMostFailedGraphTimeline"></a>
@@ -545,7 +545,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Timeline"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Recent Most Failed</h6>
+                    <h6 id="testRecentMostFailedTitle">Recent Most Failed</h6>
                     <div class="graph-controls">
                         <a class="bar-graph information" id="testRecentMostFailedGraphBar"></a>
                         <a class="timeline-graph information" id="testRecentMostFailedGraphTimeline"></a>
@@ -568,7 +568,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Timeline"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Most Time Consuming</h6>
+                    <h6 id="testMostTimeConsumingTitle">Most Time Consuming</h6>
                     <div class="graph-controls">
                         <div class="btn-group">
                             <label class="form-check-label" for="onlyLastRunTest">Only Last Run</label>
@@ -597,7 +597,7 @@ const graphMetadata = [
         viewOptions: ["Percentages", "Line", "Amount"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Statistics</h6>
+                    <h6 id="keywordStatisticsTitle">Statistics</h6>
                     <div class="graph-controls">
                         <a class="percentage-graph information" id="keywordStatisticsGraphPercentages"></a>
                         <a class="bar-graph information" id="keywordStatisticsGraphAmount"></a>
@@ -619,7 +619,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Line"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Times Run</h6>
+                    <h6 id="keywordTimesRunTitle">Times Run</h6>
                     <div class="graph-controls">
                         <a class="bar-graph information" id="keywordTimesRunGraphBar"></a>
                         <a class="line-graph information" id="keywordTimesRunGraphLine"></a>
@@ -640,7 +640,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Line"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Total Duration</h6>
+                    <h6 id="keywordTotalDurationTitle">Total Duration</h6>
                     <div class="graph-controls">
                         <a class="bar-graph information" id="keywordTotalDurationGraphBar"></a>
                         <a class="line-graph information" id="keywordTotalDurationGraphLine"></a>
@@ -661,7 +661,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Line"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Average Duration</h6>
+                    <h6 id="keywordAverageDurationTitle">Average Duration</h6>
                     <div class="graph-controls">
                         <a class="bar-graph information" id="keywordAverageDurationGraphBar"></a>
                         <a class="line-graph information" id="keywordAverageDurationGraphLine"></a>
@@ -682,7 +682,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Line"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Min Duration</h6>
+                    <h6 id="keywordMinDurationTitle">Min Duration</h6>
                     <div class="graph-controls">
                         <a class="bar-graph information" id="keywordMinDurationGraphBar"></a>
                         <a class="line-graph information" id="keywordMinDurationGraphLine"></a>
@@ -703,7 +703,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Line"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Max Duration</h6>
+                    <h6 id="keywordMaxDurationTitle">Max Duration</h6>
                     <div class="graph-controls">
                         <a class="bar-graph information" id="keywordMaxDurationGraphBar"></a>
                         <a class="line-graph information" id="keywordMaxDurationGraphLine"></a>
@@ -724,7 +724,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Timeline"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Most Failed</h6>
+                    <h6 id="keywordMostFailedTitle">Most Failed</h6>
                     <div class="graph-controls">
                         <a class="bar-graph information" id="keywordMostFailedGraphBar"></a>
                         <a class="timeline-graph information" id="keywordMostFailedGraphTimeline"></a>
@@ -747,7 +747,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Timeline"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Most Time Consuming</h6>
+                    <h6 id="keywordMostTimeConsumingTitle">Most Time Consuming</h6>
                     <div class="graph-controls">
                         <div class="btn-group">
                             <label class="form-check-label" for="onlyLastRunKeyword">Only Last Run</label>
@@ -776,7 +776,7 @@ const graphMetadata = [
         viewOptions: ["Bar", "Timeline"],
         hasFullscreenButton: true,
         html: `<div class="graph-header">
-                    <h6>Most Used</h6>
+                    <h6 id="keywordMostUsedTitle">Most Used</h6>
                     <div class="graph-controls">
                         <div class="btn-group">
                             <label class="form-check-label" for="onlyLastRunKeywordMostUsed">Only Last Run</label>

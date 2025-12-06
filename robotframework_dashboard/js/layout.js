@@ -4,7 +4,8 @@ import { graphMetadata } from "./variables/graphmetadata.js";
 import { space_to_camelcase, add_alert } from "./common.js";
 import { gridEditMode } from "./variables/globals.js";
 import {
-    gridrun,
+    gridUnified,
+    gridRun,
     gridSuite,
     gridTest,
     gridKeyword,
@@ -14,8 +15,10 @@ import { setup_data_and_graphs } from "./menu.js";
 
 // function to order the sections according to the config
 function setup_section_order() {
+    // Show unified when dashboard menu is active AND unified mode is on
+    document.getElementById("unified").hidden = !(settings.menu.dashboard && settings.show.unified);
     document.getElementById("overview").hidden = !settings.menu.overview;
-    document.getElementById("dashboard").hidden = !settings.menu.dashboard;
+    document.getElementById("dashboard").hidden = !(settings.menu.dashboard && !settings.show.unified);
     document.getElementById("compare").hidden = !settings.menu.compare;
     document.getElementById("tables").hidden = !settings.menu.tables;
     let prevId = "#topSection";
@@ -68,6 +71,7 @@ function setup_section_order() {
 
 // function to order the grphs according to the localstorage config
 function setup_graph_order() {
+    setup_grid_graphs("Unified")
     setup_grid_graphs("Run")
     setup_grid_graphs("Suite")
     setup_grid_graphs("Test")
@@ -77,123 +81,100 @@ function setup_graph_order() {
 }
 
 function setup_grid_graphs(section) {
-    const grid = `grid${section}`
+    const grid = `grid${section}`;
+    const gridConfig = {
+        cellHeight: 100,
+        float: false,
+        resizable: { handles: 'all' }
+    };
+
+    const initialize_grid = () => {
+        const gridElement = document.getElementById(grid);
+        return GridStack.init(gridConfig, gridElement);
+    };
+
     if (!window[grid] || typeof window[grid].destroy !== 'function') {
-        const gridElement = document.getElementById(grid)
-        window[grid] = GridStack.init({
-            cellHeight: 100,
-            float: false,
-            resizable: { handles: 'all' }
-        }, gridElement);
+        window[grid] = initialize_grid();
     } else {
         window[grid].destroy();
         const parentElement = document.getElementById(`${section.toLowerCase()}StatisticsSection`);
-        const htmlToInsert = `<div class="card-body grid-stack" id="grid${section}"></div>`;
-        parentElement.insertAdjacentHTML('beforeend', htmlToInsert);
-        const gridElement = document.getElementById(grid)
-        window[grid] = GridStack.init({
-            cellHeight: 100,
-            float: false,
-            resizable: { handles: 'all' }
-        }, gridElement);
+        parentElement.insertAdjacentHTML('beforeend', `<div class="card-body grid-stack" id="${grid}"></div>`);
+        window[grid] = initialize_grid();
     }
-    if (!gridEditMode) window[grid].disable();
 
-    const lowerCaseSection = section.toLowerCase();
-    const sectionDataHidden = document.getElementById(lowerCaseSection + "DataHidden");
-    if (sectionDataHidden.children.length > 0) {
+    // Disable grid if not in edit mode
+    if (!gridEditMode) {
+        window[grid].disable();
+    }
+
+    // Clear hidden section data
+    const sectionDataHidden = document.getElementById(`${section.toLowerCase()}DataHidden`);
+    if (sectionDataHidden?.children.length > 0) {
         sectionDataHidden.innerHTML = "";
     }
 
-    const graphShow = [...settings.view.dashboard.graphs.show, ...settings.view.compare.graphs.show]
-    const graphHide = [...settings.view.dashboard.graphs.hide, ...settings.view.compare.graphs.hide]
-
-    if (settings.layouts && settings.layouts[`${grid}`]) {
-        const savedLayout = JSON.parse(settings.layouts[`${grid}`]);
-        if (gridEditMode) {
-            for (const graph of graphShow) {
-                if (graph.startsWith(section)) {
-                    const layout = savedLayout.find(g => g.id === graph);
-                    if (layout) {
-                        add_graph(layout.id, layout.x, layout.y, layout.w, layout.h, true);
-                    } else {
-                        add_graph(graph, undefined, undefined, 4, 4, true);
-                    }
-                }
-            }
-            for (const graph of graphHide) {
-                if (graph.startsWith(section)) {
-                    const layout = savedLayout.find(g => g.id === graph);
-                    if (layout) {
-                        add_graph(layout.id, layout.x, layout.y, layout.w, layout.h, false);
-                    } else {
-                        add_graph(graph, undefined, undefined, 4, 4, false);
-                    }
-                }
-            }
-        } else {
-            for (const graph of graphShow) {
-                if (graph.startsWith(section)) {
-                    const layout = savedLayout.find(g => g.id === graph);
-                    if (layout) {
-                        add_graph(layout.id, layout.x, layout.y, layout.w, layout.h);
-                    } else {
-                        add_graph(graph, undefined, undefined, 4, 4);
-                    }
-                }
-            }
-
-            for (const graph of graphHide) {
-                if (graph.startsWith(section)) {
-                    add_hidden_graph(graph);
-                }
-            }
-        }
+    // Determine which graphs to show/hide based on mode and section
+    const is_unified = settings.show.unified;
+    let graph_show = [];
+    let graph_hide = [];
+    if (section === "Compare") {
+        // Compare graphs always render in their own grid
+        graph_show = [...settings.view.compare.graphs.show];
+        graph_hide = [...settings.view.compare.graphs.hide];
+    } else if (is_unified && section === "Unified") {
+        // Unified mode: show all dashboard graphs in the unified grid
+        graph_show = [...settings.view.unified.graphs.show];
+        graph_hide = [...settings.view.unified.graphs.hide];
+    } else if (!is_unified && section !== "Unified") {
+        // Dashboard mode: show only section-specific graphs in their respective grids
+        graph_show = [...settings.view.dashboard.graphs.show];
+        graph_hide = [...settings.view.dashboard.graphs.hide];
     } else {
-        const defaultWidth = 4;
-        const defaultHeight = 4;
-        const maxColumns = 12;
-        let currentX = 0;
-        let currentY = 0;
+        // Skip processing if unified mode but not unified section, or vice versa
+        return;
+    }
 
-        if (gridEditMode) {
-            for (const graph of graphShow) {
-                if (graph.startsWith(section)) {
-                    add_graph(graph, currentX, currentY, defaultWidth, defaultHeight, true);
-                    currentX += defaultWidth;
-                    if (currentX >= maxColumns) {
-                        currentX = 0;
-                        currentY += defaultHeight;
-                    }
-                }
-            }
-            for (const graph of graphHide) {
-                if (graph.startsWith(section)) {
-                    add_graph(graph, currentX, currentY, defaultWidth, defaultHeight, false);
-                    currentX += defaultWidth;
-                    if (currentX >= maxColumns) {
-                        currentX = 0;
-                        currentY += defaultHeight;
-                    }
-                }
-            }
-        } else {
-            for (let graph of graphShow) {
-                if (graph.startsWith(section)) {
-                    add_graph(graph, currentX, currentY, defaultWidth, defaultHeight);
-                    currentX += defaultWidth;
-                    if (currentX >= maxColumns) {
-                        currentX = 0;
-                        currentY += defaultHeight;
-                    }
-                }
-            }
-            for (let graph of graphHide) {
-                if (graph.startsWith(section) || graph.endsWith(section)) {
-                    add_hidden_graph(graph);
-                }
-            }
+    const saved_layout = settings.layouts?.[grid] ? JSON.parse(settings.layouts[grid]) : null;
+    const default_size = { width: 4, height: 4 };
+    const max_columns = 12;
+    let current_x = 0;
+    let current_y = 0;
+
+    // Helper function to get next position for default layout
+    const get_next_position = () => {
+        const pos = { x: current_x, y: current_y };
+        current_x += default_size.width;
+        if (current_x >= max_columns) {
+            current_x = 0;
+            current_y += default_size.height;
         }
+        return pos;
+    };
+
+    // Helper function to process graphs with layout
+    const process_graphs_with_layout = (graphs, is_visible) => {
+        graphs
+            .filter(graph => graph.startsWith(section === "Unified" ? "" : section)) // Simple filter: all graphs for unified, section-specific otherwise
+            .forEach(graph => {
+                const layout = saved_layout?.find(g => g.id === graph);
+                if (saved_layout && layout) {
+                    add_graph(layout.id, layout.x, layout.y, layout.w, layout.h, is_visible);
+                } else {
+                    const pos = get_next_position();
+                    add_graph(graph, pos.x, pos.y, default_size.width, default_size.height, is_visible);
+                }
+            });
+    };
+
+    // Process graphs based on mode
+    if (gridEditMode) {
+        process_graphs_with_layout(graph_show, true);
+        process_graphs_with_layout(graph_hide, false);
+    } else {
+        process_graphs_with_layout(graph_show, true);
+        graph_hide
+            .filter(graph => graph.startsWith(section === "Unified" ? "" : section)) // Same simple filter
+            .forEach(graph => add_hidden_graph(graph));
     }
 
     function add_graph(id, x, y, w, h, shown = true) {
@@ -226,6 +207,9 @@ function setup_grid_graphs(section) {
         }
         item.innerHTML = html
         window[grid].makeWidget(item);
+        if (settings.show.unified && section === "Unified") {
+            document.getElementById(`${graphConfig.key}Title`).innerText = graphConfig.label;
+        }
     }
 
     function add_hidden_graph(id) {
@@ -284,9 +268,11 @@ function save_layout() {
     document.getElementById("saveLayout").hidden = true;
     const shownDashboardItems = [];
     const hiddenDashboardItems = [];
+    const shownUnifiedItems = [];
+    const hiddenUnifiedItems = [];
     const shownCompareItems = [];
     const hiddenCompareItems = [];
-    // save dashboard/compare graph layout
+    // save dashboard/unified/compare graph layout
     const grids = document.querySelectorAll(".grid-stack");
     grids.forEach(grid => {
         const layout = window[`${grid.id}`].engine.nodes.map(w => {
@@ -307,6 +293,8 @@ function save_layout() {
         shown.forEach(btn => {
             if (grid.id.includes("Compare")) {
                 shownCompareItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Shown", "")).label)
+            } else if (grid.id.includes("Unified")) {
+                shownUnifiedItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Shown", "")).label)
             } else {
                 shownDashboardItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Shown", "")).label)
             }
@@ -314,6 +302,8 @@ function save_layout() {
         hidden.forEach(btn => {
             if (grid.id.includes("Compare")) {
                 hiddenCompareItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Hidden", "")).label)
+            } else if (grid.id.includes("Unified")) {
+                hiddenUnifiedItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Hidden", "")).label)
             } else {
                 hiddenDashboardItems.push(graphMetadata.find(graph => graph.key == btn.id.replace("Hidden", "")).label)
             }
@@ -321,6 +311,10 @@ function save_layout() {
         if (shownDashboardItems.length + hiddenDashboardItems.length > 0) {
             set_local_storage_item("view.dashboard.graphs.show", shownDashboardItems)
             set_local_storage_item("view.dashboard.graphs.hide", hiddenDashboardItems)
+        }
+        if (shownUnifiedItems.length + hiddenUnifiedItems.length > 0) {
+            set_local_storage_item("view.unified.graphs.show", shownUnifiedItems)
+            set_local_storage_item("view.unified.graphs.hide", hiddenUnifiedItems)
         }
         if (shownCompareItems.length + hiddenCompareItems.length > 0) {
             set_local_storage_item("view.compare.graphs.show", shownCompareItems)

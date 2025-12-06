@@ -196,6 +196,11 @@ function setup_settings_modal() {
         };
     }
 
+    const toggle_unified = create_toggle_handler({
+        key: "show.unified",
+        elementId: "toggleUnified"
+    });
+
     const toggle_labels = create_toggle_handler({
         key: "show.dateLabels",
         elementId: "toggleLabels"
@@ -239,6 +244,7 @@ function setup_settings_modal() {
     });
 
     // Initial load
+    toggle_unified(true);
     toggle_labels(true);
     toggle_legends(true);
     toggle_aliases(true);
@@ -249,6 +255,7 @@ function setup_settings_modal() {
     toggle_bar_rounding(true);
 
     // Add event listeners
+    document.getElementById("toggleUnified").addEventListener("click", () => toggle_unified());
     document.getElementById("toggleLabels").addEventListener("click", () => toggle_labels());
     document.getElementById("toggleLegends").addEventListener("click", () => toggle_legends());
     document.getElementById("toggleAliases").addEventListener("click", () => toggle_aliases());
@@ -623,7 +630,6 @@ function setup_graph_view_buttons() {
     function update_active_graph_type_buttons(graphChangeButton, activeGraphType) {
         const camelButtonName = underscore_to_camelcase(graphChangeButton);
         const buttonTypes = graphChangeButtons[graphChangeButton].split(",");
-        console.log(buttonTypes)
         buttonTypes.forEach((graphType) => {
             const buttonId = `${camelButtonName}Graph${graphType}`;
             const buttonElement = document.getElementById(buttonId);
@@ -657,7 +663,6 @@ function setup_graph_view_buttons() {
     });
     // Initialize active states for all graph types on first load
     Object.entries(graphChangeButtons).forEach(([graphChangeButton, buttonTypes]) => {
-        console.log(graphChangeButton, buttonTypes)
         if (graphChangeButton.includes("table")) { return; }
         const camelButtonName = underscore_to_camelcase(graphChangeButton);
         const storedGraphType = settings?.graphTypes?.[`${camelButtonName}GraphType`];

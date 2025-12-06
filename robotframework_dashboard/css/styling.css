@@ -14,7 +14,7 @@ body {
 }
 
 .grid-stack {
-  max-height: 2400px;
+  max-height: 10000px;
 }
 
 .grid-stack-item-content {
@@ -580,8 +580,8 @@ canvas {
 }
 
 .btn.collapse-icon:active {
-    border: none;
-    background-color: none;
+  border: none;
+  background-color: none;
 }
 
 @media print {
@@ -601,5 +601,85 @@ canvas {
   canvas {
     height: auto !important;
     max-width: 100% !important;
+  }
+}
+
+/* spinner styling */
+/* Fullscreen center wrapper */
+.loader-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 55px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: transparent; /* or any backdrop you prefer */
+}
+
+/* Make the grid larger */
+.ball-grid-beat {
+  width: 120px; /* previously 60px → 2× size */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 12px; /* doubled from 6px */
+}
+
+.ball-grid-beat div {
+  width: 32px; /* doubled from 16px */
+  height: 32px;
+  border-radius: 50%;
+  background-color: #3451b2; /* change color to match your theme */
+  animation: ball-grid-beat 0.7s infinite linear;
+}
+
+.dark-mode .ball-grid-beat div {
+  background-color: #a8b1ff; /* change color to match dark mode theme */
+}
+
+/* Animation timing (same pattern, reused) */
+.ball-grid-beat div:nth-child(1) {
+  animation-delay: 0.15s;
+}
+.ball-grid-beat div:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.ball-grid-beat div:nth-child(3) {
+  animation-delay: 0.05s;
+}
+.ball-grid-beat div:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.ball-grid-beat div:nth-child(5) {
+  animation-delay: 0.15s;
+}
+.ball-grid-beat div:nth-child(6) {
+  animation-delay: 0.1s;
+}
+.ball-grid-beat div:nth-child(7) {
+  animation-delay: 0.25s;
+}
+.ball-grid-beat div:nth-child(8) {
+  animation-delay: 0.2s;
+}
+.ball-grid-beat div:nth-child(9) {
+  animation-delay: 0.15s;
+}
+
+@keyframes ball-grid-beat {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.7);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }

@@ -1,6 +1,6 @@
 import { settings } from './variables/settings.js';
 import { compareRunIds } from './variables/graphs.js';
-import { runs, suites, tests, keywords } from './variables/data.js';
+import { runs, suites, tests, keywords, unified_dashboard_title } from './variables/data.js';
 import {
     filteredAmount,
     filteredRuns,
@@ -31,6 +31,9 @@ function setup_filtered_data_and_filters() {
     // set titles with amount of filtered items
     const runAmount = Object.keys(filteredRuns).length
     const message = `<h6>showing ${runAmount} of ${filteredAmount} runs</h6>`
+    document.getElementById("unifiedTitle").innerHTML = `${(unified_dashboard_title && !unified_dashboard_title.includes("placeholder")) 
+        ? unified_dashboard_title 
+        : "Dashboard Statistics"} (${runAmount}) ${message}`;
     document.getElementById("runTitle").innerHTML = `Run Statistics (${runAmount}) ${message}`;
     document.getElementById("suiteTitle").innerHTML = `Suite Statistics (${Object.keys(filteredSuites).length}) ${message}`;
     document.getElementById("testTitle").innerHTML = `Test Statistics (${Object.keys(filteredTests).length}) ${message}`;
@@ -448,8 +451,8 @@ function setup_project_versions_in_select_filter_buttons() {
     projectVersionList.innerHTML = '';
     const projectVersionOptionsSet = new Set(
         runs
-        .map(run => run.project_version)
-        .filter(ver => ver != null)
+            .map(run => run.project_version)
+            .filter(ver => ver != null)
     );
     const projectVersionOptions = [...projectVersionOptionsSet].sort().reverse();
     projectVersionOptions.unshift("None");
@@ -462,8 +465,8 @@ function setup_project_versions_in_select_filter_buttons() {
         </li>
     `;
     const projectVersionListHtml = projectVersionOptions
-                                .map(projectVersion => listItemTemplate(prefix, projectVersion))
-                                .join('');
+        .map(projectVersion => listItemTemplate(prefix, projectVersion))
+        .join('');
     projectVersionList.innerHTML = projectVersionListHtml;
     const allVersionsCheckBox = document.getElementById(`${prefix}All`);
     allVersionsCheckBox.checked = true;
@@ -494,14 +497,14 @@ function unselect_checkboxes(checkBoxesToUnselect) {
 
 function handle_overview_version_selection(overviewVersionSelectorList, latestRunByProject) {
     const selectedOptions = Array.from(
-            overviewVersionSelectorList.querySelectorAll("input:checked")
-            ).map(inputElement => inputElement.value);
+        overviewVersionSelectorList.querySelectorAll("input:checked")
+    ).map(inputElement => inputElement.value);
     if (selectedOptions.includes("All")) {
         create_overview_statistics_graphs(latestRunByProject);
     } else {
         const filteredLatestRunByProject = Object.fromEntries(
             Object.entries(latestRunByProject)
-            .filter(([projectName, run]) => selectedOptions.includes(run.project_version ?? "None"))
+                .filter(([projectName, run]) => selectedOptions.includes(run.project_version ?? "None"))
         );
         create_overview_statistics_graphs(filteredLatestRunByProject);
     }
@@ -541,7 +544,7 @@ function update_overview_version_select_list() {
         overviewVersionSelectorList,
         allCheckBox,
         "overviewVersionSelectedIndicator",
-        () => {handle_overview_version_selection(overviewVersionSelectorList, filteredLatestRunByProject)}
+        () => { handle_overview_version_selection(overviewVersionSelectorList, filteredLatestRunByProject) }
     );
 }
 
@@ -556,7 +559,7 @@ function setup_filter_checkbox_handler_listeners(
     const nonAllCheckBoxes = Array
         .from(
             checkBoxContainerElement
-            .querySelectorAll(inputItemQueryString)
+                .querySelectorAll(inputItemQueryString)
         ).filter(checkBox => checkBox !== allCheckBox);
     allCheckBox.addEventListener('change', () => {
         if (allCheckBox.checked) {
@@ -617,11 +620,11 @@ function generate_version_filter_list_item_html(version, projectName, checked, a
 }
 
 function clear_all_filters() {
-        clear_project_filter();
-        clear_version_filter();
-        document.getElementById("amount").value = filteredAmountDefault;
-        document.getElementById("metadata").value = "All";
-        setup_lowest_highest_dates();
+    clear_project_filter();
+    clear_version_filter();
+    document.getElementById("amount").value = filteredAmountDefault;
+    document.getElementById("metadata").value = "All";
+    setup_lowest_highest_dates();
 }
 
 function clear_version_filter() {
