@@ -614,10 +614,23 @@ function setup_graph_view_buttons() {
             }
         });
     });
-
+    function update_active_graph_type_buttons(graphChangeButton, activeGraphType) {
+        const camelButtonName = underscore_to_camelcase(graphChangeButton);
+        const buttonTypes = graphChangeButtons[graphChangeButton].split(",");
+        console.log(buttonTypes)
+        buttonTypes.forEach((graphType) => {
+            const buttonId = `${camelButtonName}Graph${graphType}`;
+            const buttonElement = document.getElementById(buttonId);
+            buttonElement.classList.remove("active");
+            if (graphType.toLowerCase() === activeGraphType) {
+                buttonElement.classList.add("active");
+            }
+        });
+    }
     function handle_graph_change_type_button_click(graphChangeButton, graphType, camelButtonName) {
         update_graph_type(`${camelButtonName}GraphType`, graphType)
         window[`create_${graphChangeButton}_graph`]();
+        update_active_graph_type_buttons(graphChangeButton, graphType);
         if (graphChangeButton == 'run_donut') { create_run_donut_total_graph(); }
         if (graphChangeButton == 'suite_folder_donut') { create_suite_folder_fail_donut_graph(); }
     }
@@ -635,6 +648,16 @@ function setup_graph_view_buttons() {
     }
     Object.entries(graphChangeButtons).forEach(([graphChangeButton, buttonTypes]) => {
         add_graph_eventlisteners(graphChangeButton, buttonTypes);
+    });
+    // Initialize active states for all graph types on first load
+    Object.entries(graphChangeButtons).forEach(([graphChangeButton, buttonTypes]) => {
+        console.log(graphChangeButton, buttonTypes)
+        if (graphChangeButton.includes("table")) { return; }
+        const camelButtonName = underscore_to_camelcase(graphChangeButton);
+        const storedGraphType = settings?.graphTypes?.[`${camelButtonName}GraphType`];
+        const defaultGraphType = buttonTypes.split(",")[0].toLowerCase();
+        const activeGraphType = storedGraphType || defaultGraphType;
+        update_active_graph_type_buttons(graphChangeButton, activeGraphType);
     });
 }
 
