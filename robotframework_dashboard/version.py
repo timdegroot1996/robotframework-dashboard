@@ -1,1 +1,1 @@
-__version__ = "Robotdashboard 1.3.1"
+__version__ = "Robotdashboard 1.3.2"
