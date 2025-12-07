@@ -75,7 +75,14 @@ For example, if you ran tests for your software/product version 1.2.1
 robotdashboard -o output.xml --projectversion=1.2.1
 robotdashboard -f ./results --projectversion=1.2.1
 ```
-> Added in RobotDashboard v1.3.0
+If you want to supply versions for each output, use:
+```bash
+robotdashboard -o output.xml:version_1.2.1 -o output2.xml:version_2.3.4
+robotdashboard -f ./results:version_1.1 ./results2:version_2.3.4
+```
+--projectversion and version_ are mutually exclusive
+> Added in RobotDashboard v1.3.0  
+> version_ tag support added in v1.3.2
 
 ## Removing Runs from the Database
 
