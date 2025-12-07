@@ -144,9 +144,13 @@ class RobotDashboard:
 
         outputProcessor = OutputProcessor(output_path)
         run_start = outputProcessor.get_run_start()
+        project_version = next(
+            (tag.removeprefix("version_") for tag in tags if tag.startswith("version_")),
+                self.project_version
+            )
         if not self.database.run_start_exists(run_start):
             output_data = outputProcessor.get_output_data()
-            self.database.insert_output_data(output_data, tags, run_alias, output_path, self.project_version)
+            self.database.insert_output_data(output_data, tags, run_alias, output_path, project_version)
 
             end = time()
             console += self._print_console(
