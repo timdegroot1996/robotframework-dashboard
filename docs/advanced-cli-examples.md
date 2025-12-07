@@ -174,19 +174,26 @@ You can export this configuration from:
 
 After saving it as a file such as `dashboard_config.json`, you can supply it to the dashboard using the `--jsonconfig` flag.
 
-### How it loads
+### Settings Logic
 
-- If a `settings` item already exists in localStorage, **that** configuration is used.
-- If no existing config is found, the provided JSON file becomes the default.
-- This is especially useful for sharing a predefined dashboard layout or consistent UI appearance across teams.
-- **Tip:** If you want to apply a new configuration but localStorage already contains an old one, go to **Settings -> JSON** and paste the new JSON manually.
+1. If `--forcejsonconfig` is set and a `json_config` was provided, use that (merged with defaults).
+2. If `--forcejsonconfig` is set and only an `admin_json_config` is provided, use that (merged with defaults).
+3. If a `settings` item exists in localStorage, use it (merged with defaults). If it fails to parse, fall back to defaults and show an alert.
+4. If not forcing and a `json_config` is provided, use it (merged with defaults).
+5. If not forcing and an `admin_json_config` is provided, use it (merged with defaults).
+6. Otherwise, keep the built-in defaults.
+
+This order lets you pin a forced config, otherwise prefer what’s already stored, and finally fall back to defaults.
 
 ### Load a custom config on first dashboard load
 ```bash
-robotdashboard -j ./configs/dashboard_config.json
+robotdashboard -j ./configs/dashboard_config.json --forcejsonconfig
 ```
 This ensures a consistent dashboard experience for all users.
-
+```bash
+robotdashboard -j ./configs/dashboard_config.json
+```
+With above command, the config is only applied on first load if no localStorage exists yet.
 
 ## Offline Dependencies
 
