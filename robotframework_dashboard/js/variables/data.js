@@ -11,6 +11,7 @@ function decode_and_decompress(base64Str) {
     return JSON.parse(decompressedData);
 }
 
+var unified_dashboard_title = '"placeholder_dashboard_title"'
 var message_config = '"placeholder_message_config"'
 var json_config = "placeholder_json_config"
 var admin_json_config = "placeholder_admin_json_config"
@@ -31,5 +32,6 @@ export {
     filteredAmount,
     filteredAmountDefault,
     use_logs,
-    server
+    server,
+    unified_dashboard_title,
 };

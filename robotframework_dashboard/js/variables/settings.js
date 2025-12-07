@@ -1,6 +1,7 @@
 import { 
     defaultGraphTypes,
     overviewSections,
+    unifiedSections,
     dashboardSections,
     dashboardGraphs,
     compareSections,
@@ -20,6 +21,7 @@ var settings = {
         useLibraryNames: false,
     },
     show: {
+        unified: false,
         dateLabels: true,
         legends: true,
         aliases: false,
@@ -44,6 +46,16 @@ var settings = {
             },
             graphs: {
                 show: [],
+                hide: [],
+            }
+        },
+        unified: {
+            sections: {
+                show: unifiedSections,
+                hide: [],
+            },
+            graphs: {
+                show: dashboardGraphs,
                 hide: [],
             }
         },

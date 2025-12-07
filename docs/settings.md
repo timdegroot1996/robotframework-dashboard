@@ -28,6 +28,7 @@ The **Graphs** tab contains the core configuration options for all charts in the
 
 | Setting | Description |
 |--------|-------------|
+| **Unified Dashboard Sections** | Show all dashboard sections in a single unified view. (Instead of run/suite/test/keyword separate) |
 | **Display Legends** | Show or hide graph legends. Useful to disable this when graphs contain many series. |
 | **Display Axis Titles** | Shows axis labels (e.g., *Run Time*, *Pass/Fail Count*). Disable for a cleaner look. |
 | **Display Run Start/Alias Labels On Axes** | Enables labels directly on graph axes. Disable for a cleaner look. |

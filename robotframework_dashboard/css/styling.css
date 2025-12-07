@@ -14,7 +14,7 @@ body {
 }
 
 .grid-stack {
-  max-height: 2400px;
+  max-height: 10000px;
 }
 
 .grid-stack-item-content {
@@ -365,6 +365,27 @@ body.lock-scroll {
   white-space: nowrap;
 }
 
+.section-filters {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.75rem;
+  row-gap: 0.35rem;
+}
+
+.section-filters .filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.container-fluid .form-check-input,
+#sectionFiltersModal .form-check-input {
+  margin-top: 6px;
+  position: static;
+}
+
 .fullscreen {
   position: fixed !important;
   width: 100% !important;
@@ -580,8 +601,8 @@ canvas {
 }
 
 .btn.collapse-icon:active {
-    border: none;
-    background-color: none;
+  border: none;
+  background-color: none;
 }
 
 @media print {
@@ -602,4 +623,124 @@ canvas {
     height: auto !important;
     max-width: 100% !important;
   }
+}
+
+/* spinner styling */
+/* Fullscreen center wrapper */
+.loader-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 55px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: transparent; /* or any backdrop you prefer */
+}
+
+/* Make the grid larger */
+.ball-grid-beat {
+  width: 120px; /* previously 60px → 2× size */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 12px; /* doubled from 6px */
+}
+
+.ball-grid-beat div {
+  width: 32px; /* doubled from 16px */
+  height: 32px;
+  border-radius: 50%;
+  background-color: #3451b2; /* change color to match your theme */
+  animation: ball-grid-beat 0.7s infinite linear;
+}
+
+.dark-mode .ball-grid-beat div {
+  background-color: #a8b1ff; /* change color to match dark mode theme */
+}
+
+/* Animation timing (same pattern, reused) */
+.ball-grid-beat div:nth-child(1) {
+  animation-delay: 0.15s;
+}
+.ball-grid-beat div:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.ball-grid-beat div:nth-child(3) {
+  animation-delay: 0.05s;
+}
+.ball-grid-beat div:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.ball-grid-beat div:nth-child(5) {
+  animation-delay: 0.15s;
+}
+.ball-grid-beat div:nth-child(6) {
+  animation-delay: 0.1s;
+}
+.ball-grid-beat div:nth-child(7) {
+  animation-delay: 0.25s;
+}
+.ball-grid-beat div:nth-child(8) {
+  animation-delay: 0.2s;
+}
+.ball-grid-beat div:nth-child(9) {
+  animation-delay: 0.15s;
+}
+
+@keyframes ball-grid-beat {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.7);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Section Filters Modal Styling */
+#sectionFiltersModal .modal-body {
+  padding: 1rem;
+}
+
+.dark-mode #sectionFiltersModal .card {
+  background-color: rgba(30, 41, 59, 0.9) !important;
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.dark-mode #sectionFiltersModal .card-header {
+  background-color: rgba(30, 41, 59, 0.9) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.dark-mode #sectionFiltersModal .card-body {
+  background-color: rgba(30, 41, 59, 0.9) !important;
+  padding: 1.25rem;
+}
+
+#sectionFiltersModal .card {
+  background-color: white !important;
+}
+
+#sectionFiltersModal .card-header {
+  background-color: white !important;
+  color: black;
+}
+
+#sectionFiltersModal .card-body {
+  background-color: white !important;
+}
+
+/* Ensure hidden list-group items are properly hidden */
+.list-group-item[hidden] {
+  display: none !important;
 }

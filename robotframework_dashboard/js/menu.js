@@ -27,7 +27,7 @@ function setup_section_menu_buttons() {
         keywordStatisticsSection: sectionButtons[3],
     };
 
-    if (settings.menu.dashboard) {
+    if (settings.menu.dashboard && !settings.show.unified) {
         sectionButtons.forEach(btn => btn.hidden = false);
         sectionButtons.forEach(btn => btn.classList.remove('active'));
         settings.view.dashboard.sections.hide.forEach(hiddenSection => sectionMap[`${space_to_camelcase(hiddenSection)}Section`].hidden = true) // hide section menu buttons that should be hidden
@@ -228,15 +228,18 @@ function setup_data_and_graphs(menuUpdate = false, prepareOverviewProjectData = 
 // function to add a spinner for slow loads
 function setup_spinner(hide) {
     if (hide) {
-        $("#loading").fadeOut(100)
-        $("#overview").fadeIn()
-        $("#projectOverview").fadeIn()
-        $("#dashboard").fadeIn()
-        $("#compare").fadeIn()
-        $("#tables").fadeIn()
+        // Instant transition - hide spinner and show all content immediately
+        $("#loading").fadeOut(200);
+        $("#overview").fadeIn(200);
+        $("#projectOverview").fadeIn(200);
+        $("#unified").fadeIn(200);
+        $("#dashboard").fadeIn(200);
+        $("#compare").fadeIn(200);
+        $("#tables").fadeIn(200);
     } else {
         $("#overview").hide()
         $("#projectOverview").hide()
+        $("#unified").hide()
         $("#dashboard").hide()
         $("#compare").hide()
         $("#tables").hide()

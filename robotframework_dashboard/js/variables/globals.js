@@ -17,6 +17,7 @@ var filteredTests;
 var filteredKeywords;
 
 // vars to keep track of grids
+var gridUnified = null
 var gridRun = null
 var gridSuite = null
 var gridTest = null
