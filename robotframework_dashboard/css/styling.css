@@ -683,3 +683,30 @@ canvas {
     opacity: 1;
   }
 }
+
+/* Section Filters Modal Styling */
+#sectionFiltersModal .modal-body {
+  padding: 1rem;
+}
+
+#sectionFiltersModal .card {
+  background-color: rgba(30, 41, 59, 0.9) !important;
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+#sectionFiltersModal .card-header {
+  background-color: rgba(30, 41, 59, 0.9) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+#sectionFiltersModal .card-body {
+  background-color: rgba(30, 41, 59, 0.9) !important;
+  padding: 1.25rem;
+}
+
+/* Ensure hidden list-group items are properly hidden */
+.list-group-item[hidden] {
+  display: none !important;
+}

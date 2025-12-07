@@ -21,7 +21,8 @@ import {
     setup_lowest_highest_dates,
     clear_all_filters,
     setup_project_versions_in_select_filter_buttons,
-    update_overview_version_select_list
+    update_overview_version_select_list,
+    setup_metadata_filter
 } from "./filter.js"
 import { camelcase_to_underscore, underscore_to_camelcase } from "./common.js";
 import {
@@ -669,6 +670,62 @@ function setup_graph_view_buttons() {
         const defaultGraphType = buttonTypes.split(",")[0].toLowerCase();
         const activeGraphType = storedGraphType || defaultGraphType;
         update_active_graph_type_buttons(graphChangeButton, activeGraphType);
+    });
+
+    // // Setup unified section filters modal
+    // const showSectionFiltersBtn = document.getElementById("showSectionFiltersUnified");
+    // if (showSectionFiltersBtn) {
+    //     showSectionFiltersBtn.addEventListener("click", () => {
+    //         $("#sectionFiltersModal").modal("show");
+    //     });
+    // }
+
+    // Handle modal show event - move filters to modal
+    $("#sectionFiltersModal").on("show.bs.modal", function () {
+        // Move suite filters
+        const suiteFilters = document.getElementById('suiteSectionFilters');
+        const suiteCardBody = document.getElementById('suiteSectionFiltersCardBody');
+        if (suiteFilters && suiteCardBody) {
+            suiteCardBody.appendChild(suiteFilters);
+        }
+        
+        // Move test filters
+        const testFilters = document.getElementById('testSectionFilters');
+        const testCardBody = document.getElementById('testSectionFiltersCardBody');
+        if (testFilters && testCardBody) {
+            testCardBody.appendChild(testFilters);
+        }
+        
+        // Move keyword filters
+        const keywordFilters = document.getElementById('keywordSectionFilters');
+        const keywordCardBody = document.getElementById('keywordSectionFiltersCardBody');
+        if (keywordFilters && keywordCardBody) {
+            keywordCardBody.appendChild(keywordFilters);
+        }
+    });
+
+    // Handle modal hide event - return filters to original positions
+    $("#sectionFiltersModal").on("hide.bs.modal", function () {
+        // Return suite filters
+        const suiteFilters = document.getElementById('suiteSectionFilters');
+        const suiteOriginalContainer = document.getElementById('suiteSectionFiltersContainer');
+        if (suiteFilters && suiteOriginalContainer) {
+            suiteOriginalContainer.appendChild(suiteFilters);
+        }
+        
+        // Return test filters
+        const testFilters = document.getElementById('testSectionFilters');
+        const testOriginalContainer = document.getElementById('testSectionFiltersContainer');
+        if (testFilters && testOriginalContainer) {
+            testOriginalContainer.appendChild(testFilters);
+        }
+        
+        // Return keyword filters
+        const keywordFilters = document.getElementById('keywordSectionFilters');
+        const keywordOriginalContainer = document.getElementById('keywordSectionFiltersContainer');
+        if (keywordFilters && keywordOriginalContainer) {
+            keywordOriginalContainer.appendChild(keywordFilters);
+        }
     });
 }
 
