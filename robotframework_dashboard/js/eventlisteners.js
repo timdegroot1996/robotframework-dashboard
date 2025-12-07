@@ -521,7 +521,7 @@ function setup_graph_view_buttons() {
                     const fullscreenHeader = document.querySelector('.grid-stack-item-content.fullscreen');
                     fullscreenHeader.insertBefore(filters, fullscreenHeader.firstChild);
                 } else {
-                    originalContainer.appendChild(filters);
+                    originalContainer.insertBefore(filters, originalContainer.firstChild);
                 }
             }
         };
@@ -710,21 +710,21 @@ function setup_graph_view_buttons() {
         const suiteFilters = document.getElementById('suiteSectionFilters');
         const suiteOriginalContainer = document.getElementById('suiteSectionFiltersContainer');
         if (suiteFilters && suiteOriginalContainer) {
-            suiteOriginalContainer.appendChild(suiteFilters);
+            suiteOriginalContainer.insertBefore(suiteFilters, suiteOriginalContainer.firstChild);
         }
         
         // Return test filters
         const testFilters = document.getElementById('testSectionFilters');
         const testOriginalContainer = document.getElementById('testSectionFiltersContainer');
         if (testFilters && testOriginalContainer) {
-            testOriginalContainer.appendChild(testFilters);
+            testOriginalContainer.insertBefore(testFilters, testOriginalContainer.firstChild);
         }
         
         // Return keyword filters
         const keywordFilters = document.getElementById('keywordSectionFilters');
         const keywordOriginalContainer = document.getElementById('keywordSectionFiltersContainer');
         if (keywordFilters && keywordOriginalContainer) {
-            keywordOriginalContainer.appendChild(keywordFilters);
+            keywordOriginalContainer.insertBefore(keywordFilters, keywordOriginalContainer.firstChild);
         }
     });
 }
