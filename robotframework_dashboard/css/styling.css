@@ -365,6 +365,27 @@ body.lock-scroll {
   white-space: nowrap;
 }
 
+.section-filters {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.75rem;
+  row-gap: 0.35rem;
+}
+
+.section-filters .filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.container-fluid .form-check-input,
+#sectionFiltersModal .form-check-input {
+  margin-top: 6px;
+  position: static;
+}
+
 .fullscreen {
   position: fixed !important;
   width: 100% !important;

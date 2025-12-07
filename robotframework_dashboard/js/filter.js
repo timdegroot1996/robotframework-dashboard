@@ -31,9 +31,10 @@ function setup_filtered_data_and_filters() {
     // set titles with amount of filtered items
     const runAmount = Object.keys(filteredRuns).length
     const message = `<h6>showing ${runAmount} of ${filteredAmount} runs</h6>`
-    document.getElementById("unifiedTitle").innerHTML = `${(unified_dashboard_title && !unified_dashboard_title.includes("placeholder")) 
-        ? unified_dashboard_title 
-        : "Dashboard Statistics"} (${runAmount}) ${message}`;
+    document.getElementById("unifiedTitle").innerHTML
+        = `${(unified_dashboard_title && !unified_dashboard_title.includes("Robot Framework Dashboard -"))
+            ? unified_dashboard_title
+            : "Dashboard Statistics"} (${runAmount}) ${message}`;
     document.getElementById("runTitle").innerHTML = `Run Statistics (${runAmount}) ${message}`;
     document.getElementById("suiteTitle").innerHTML = `Suite Statistics (${Object.keys(filteredSuites).length}) ${message}`;
     document.getElementById("testTitle").innerHTML = `Test Statistics (${Object.keys(filteredTests).length}) ${message}`;

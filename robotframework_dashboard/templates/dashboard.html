@@ -179,12 +179,19 @@
                         <div class="col-auto align-self-center">
                             <div class="btn btn-sm collapse-icon" id="collapsegridUnified"></div>
                         </div>
-                        <div class="col">
+                        <div class="col-5">
                             <h4 id="unifiedTitle"></h4>
                         </div>
-                        <div class="col">
-                            <button class="btn btn-outline-light btn-sm mt-2" id="showSectionFiltersUnified"
-                                data-bs-toggle="modal" data-bs-target="#sectionFiltersModal">Section Filters</button>
+                        <div class="d-flex flex-wrap align-items-start col align-items-center">
+                            <div class="col-auto">
+                                <button class="btn btn-outline-light btn-sm mt-2" id="showSectionFiltersUnified"
+                                    data-bs-toggle="modal" data-bs-target="#sectionFiltersModal">Section
+                                    Filters</button>
+                            </div>
+                            <div class="col-auto">
+                                <a type="button" class="information information-icon ms-2 mt-1"
+                                    id="unifiedStatisticsInformation"></a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -228,28 +235,31 @@
                             <h4 id="suiteTitle"></h4>
                         </div>
                         <div class="col d-flex align-items-center" id="suiteSectionFiltersContainer">
-                            <div class="d-flex flex-wrap align-items-start col align-items-center"
-                                id="suiteSectionFilters">
-                                <div class="col-auto d-flex me-2">
+                            <div class="section-filters" id="suiteSectionFilters">
+                                <div class="filter-group">
                                     <label class="form-label mb-0" for="suiteFolder">Folder:</label>
-                                    <p class="form-label mb-0 ms-1" id="suiteFolder">All</p>
+                                    <p class="form-label mb-0" id="suiteFolder">All</p>
                                 </div>
-                                <div class="col-auto d-flex me-2">
+                                <div class="filter-group">
                                     <button class="btn btn-outline-light btn-sm" id="resetSuiteFolder">Reset
                                         Folder</button>
                                 </div>
-                                <div class="col-auto d-flex me-2">
-                                    <label class="form-label me-2 mt-1" for="suiteSelectSuites">Suite:</label>
+                                <div class="filter-group">
+                                    <label class="form-label mb-0" for="suiteSelectSuites">Suite:</label>
                                     <select class="form-select form-select-sm" id="suiteSelectSuites"></select>
                                 </div>
-                                <div class="col-auto d-flex me-2">
-                                    <label class="form-check-label mb-0 me-2" for="switchSuitePathsSuiteSection">Use
+                                <div class="filter-group">
+                                    <label class="form-check-label mb-0" for="switchSuitePathsSuiteSection">Use
                                         Suite
                                         Paths</label>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" role="switch"
                                             id="switchSuitePathsSuiteSection" />
                                     </div>
+                                </div>
+                                <div class="filter-group">
+                                    <a type="button" class="information information-icon"
+                                        id="suiteStatisticsInformation"></a>
                                 </div>
                             </div>
                             <div class="col-auto ms-auto">
@@ -276,14 +286,13 @@
                             <h4 id="testTitle"></h4>
                         </div>
                         <div class="col d-flex align-items-center" id="testSectionFiltersContainer">
-                            <div class="d-flex flex-wrap align-items-start col align-items-center"
-                                id="testSectionFilters">
-                                <div class="col-auto d-flex me-2">
-                                    <label class="form-label mb-0 me-2 mt-1" for="suiteSelectTests">Suite:</label>
+                            <div class="section-filters" id="testSectionFilters">
+                                <div class="filter-group">
+                                    <label class="form-label mb-0" for="suiteSelectTests">Suite:</label>
                                     <select class="form-select form-select-sm" id="suiteSelectTests"></select>
                                 </div>
-                                <div class="col-auto d-flex me-2">
-                                    <label class="form-check-label mb-0 me-2" for="switchSuitePathsTestSection">Use
+                                <div class="filter-group">
+                                    <label class="form-check-label mb-0" for="switchSuitePathsTestSection">Use
                                         Suite
                                         Paths</label>
                                     <div class="form-check form-switch">
@@ -291,14 +300,17 @@
                                             id="switchSuitePathsTestSection" />
                                     </div>
                                 </div>
-                                <div class="col-auto d-flex me-2">
-                                    <label class="form-label mb-0 me-2 mt-1" for="testSelect">Test:</label>
+                                <div class="filter-group">
+                                    <label class="form-label mb-0" for="testSelect">Test:</label>
                                     <select class="form-select form-select-sm" id="testSelect"></select>
                                 </div>
-                                <div class="col-auto d-flex flex-nowrap align-items-center me-2">
-                                    <label class="form-label mb-0 me-2 text-nowrap" for="testTagsSelect">Test
-                                        Tags:</label>
+                                <div class="filter-group flex-nowrap">
+                                    <label class="form-label mb-0 text-nowrap" for="testTagsSelect">Test Tags:</label>
                                     <select class="form-select form-select-sm w-auto" id="testTagsSelect"></select>
+                                </div>
+                                <div class="filter-group">
+                                    <a type="button" class="information information-icon"
+                                        id="testStatisticsInformation"></a>
                                 </div>
                             </div>
                             <div class="col-auto ms-auto">
@@ -325,23 +337,21 @@
                             <h4 id="keywordTitle"></h4>
                         </div>
                         <div class="col d-flex align-items-center" id="keywordSectionFiltersContainer">
-                            <div class="d-flex flex-wrap align-items-start col align-items-center"
-                                id="keywordSectionFilters">
-                                <div class="col-auto me-2">
-                                    <div class="btn-group">
-                                        <label class="form-label mt-2" for="keywordSelect">Keyword</label>
-                                    </div>
-                                    <div class="btn-group">
-                                        <select class="form-select form-select-sm" id="keywordSelect"></select>
-                                    </div>
+                            <div class="section-filters" id="keywordSectionFilters">
+                                <div class="filter-group">
+                                    <label class="form-label mb-0" for="keywordSelect">Keyword:</label>
+                                    <select class="form-select form-select-sm" id="keywordSelect"></select>
                                 </div>
-                                <div class="col-auto d-flex me-2">
-                                    <label class="form-check-label mb-0 me-2" for="switchUseLibraryNames">Use Library
-                                        Names</label>
+                                <div class="filter-group">
+                                    <label class="form-check-label mb-0" for="switchUseLibraryNames">Use Library Names</label>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" role="switch"
                                             id="switchUseLibraryNames" />
                                     </div>
+                                </div>
+                                <div class="filter-group">
+                                    <a type="button" class="information information-icon"
+                                        id="keywordStatisticsInformation"></a>
                                 </div>
                             </div>
                         </div>

@@ -23,6 +23,23 @@ const informationMap = {
 - Passed runs represent the percentage of runs with zero failures.
 - Clicking on the run card applies a filter for that project and switches to dashboard
 - Clicking on the version element within the run card additionally applies a filter for that version`,
+    "unifiedStatisticsInformation": `This section provides unified statistics across all projects and runs:
+- It combines run/suite/test/keyword data from all projects into a single dashboard view.
+- You can apply the filters (menu filter icon) to focus on specific projects, versions, or timeframes.
+- You can also apply specific suite/test/keyword filters (section filters) to drill down into particular areas of interest.
+- Use the 'Customize Layout' option to tailor which graphs are displayed and their order.`,
+    "suiteStatisticsInformation": `This section provides statistics on the suite level:
+- Folder Filter: Click on folder donuts to "zoom in" on specific suites. (Applies to Folders, Statistics and Duration Graphs)
+- Suite Selection Dropdown: Choose a specific suite or all suites. (Applies to Statistics and Duration Graphs)
+- Full Suite Paths Toggle: When enabled, shows the full suite path instead of only the suite name. Useful if there are duplicate suite names in different folders. (Applies to all Suite Graphs)`,
+    "testStatisticsInformation": `This section provides statistics on the test level:
+- Suite Filter: Select one or multiple suites from a dropdown. (Applies to Statistics, Duration and Duration Deviation Graphs)
+- Suite Paths Toggle: Same logic as the Suite section; allows distinguishing duplicate suite names. (Applies to all Test Graphs)
+- Test Selection Dropdown: Zoom in on a specific test. (Applies to Statistics, Duration and Duration Deviation Graphs)
+- Test Tag Dropdown: Filter tests by tags. (Applies to Statistics, Duration and Duration Deviation Graphs)`,
+    "keywordStatisticsInformation": `This section provides statistics on the keyword level:
+- Keyword Dropdown: Select a specific keyword to zoom in on. (Applies to Statistics, Times Run, Total Duration, Average Duration, Min Duration, Max Duration Graphs)
+- Library Names Toggle: Include library names in the keyword selection dropdown. (Applies to all Keyword Graphs)`,
     "runStatisticsGraphPercentages": "Percentages: Displays the distribution of passed, failed, skipped tests per run, where 100% equals all tests combined",
     "runStatisticsGraphAmount": "Amount: Displays the actual number of passed, failed, skipped tests per run",
     "runStatisticsGraphLine": "Line: Displays the same data but over a time axis, useful for spotting failure patterns on specific dates or times",
