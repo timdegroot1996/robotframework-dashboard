@@ -82,7 +82,7 @@ robotdashboard -f ./results:version_1.1 ./results2:version_2.3.4
 ```
 --projectversion and version_ are mutually exclusive
 > Added in RobotDashboard v1.3.0  
-> version_ tag support added in v1.3.2
+> version_ tag support added in v1.4.0
 
 ## Removing Runs from the Database
 
