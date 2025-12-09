@@ -53,12 +53,13 @@ class ArgumentParser:
         version_tags = [tag for tag in tags if tag.startswith("version_")]
         version_tag_count = len(version_tags)
         if version_tag_count > 1:
-            print("ERROR: Found multiple version_ tags for one output, not supported.")
+            print(
+                "  ERROR: Found multiple version_ tags for one output, not supported."
+            )
             exit(1)
         if version_tag_count == 1 and arguments.project_version:
-            print("ERROR: Mixing --projectversion and version_ tags not supported")
+            print("  ERROR: Mixing --projectversion and version_ tags not supported")
             exit(2)
-
 
     def _parse_arguments(self):
         """Parses the actual arguments"""
@@ -386,11 +387,17 @@ class ArgumentParser:
                     remove_runs.append(part)
 
         # handles the boolean handling of relevant arguments
-        generate_dashboard =  self._normalize_bool(arguments.generatedashboard, "generatedashboard")
+        generate_dashboard = self._normalize_bool(
+            arguments.generatedashboard, "generatedashboard"
+        )
         list_runs = self._normalize_bool(arguments.listruns, "listruns")
-        offline_dependencies = self._normalize_bool(arguments.offlinedependencies, "offlinedependencies")
+        offline_dependencies = self._normalize_bool(
+            arguments.offlinedependencies, "offlinedependencies"
+        )
         use_logs = self._normalize_bool(arguments.uselogs, "uselogs")
-        force_json_config = self._normalize_bool(arguments.forcejsonconfig, "forcejsonconfig")
+        force_json_config = self._normalize_bool(
+            arguments.forcejsonconfig, "forcejsonconfig"
+        )
 
         # generates the datetime used in the file dashboard name and the html title
         generation_datetime = datetime.now()
