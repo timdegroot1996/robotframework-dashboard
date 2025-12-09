@@ -54,6 +54,7 @@ export {
     filteredSuites,
     filteredTests,
     filteredKeywords,
+    gridUnified,
     gridRun,
     gridSuite,
     gridTest,

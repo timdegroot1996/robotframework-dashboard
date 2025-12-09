@@ -27,6 +27,7 @@ class RobotDashboard:
         quantity: int,
         use_logs: bool,
         offline_dependencies: bool,
+        force_json_config: bool,
         project_version: str,
     ):
         """Sets the parameters provided in the command line"""
@@ -42,6 +43,7 @@ class RobotDashboard:
         self.quantity = quantity
         self.use_logs = use_logs
         self.offline_dependencies = offline_dependencies
+        self.force_json_config = force_json_config
         self.server = False
         self.database = None
         self.project_version = project_version
@@ -226,6 +228,7 @@ class RobotDashboard:
                 self.quantity,
                 self.use_logs,
                 self.offline_dependencies,
+                self.force_json_config,
             )
             end = time()
             console += self._print_console(

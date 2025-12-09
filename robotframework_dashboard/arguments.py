@@ -26,7 +26,7 @@ class ArgumentParser:
             arguments = self._process_arguments(arguments)
         except Exception as error:
             print(
-                f" ERROR: There was an issue during the parsing of the provided arguments"
+                f"  ERROR: There was an issue during the parsing of the provided arguments"
             )
             print(f"  {error}")
             exit(0)
@@ -43,9 +43,9 @@ class ArgumentParser:
             return False
         else:
             print(
-                f" ERROR: The provided value: '{value}' for --{arg_name} is invalid\n"
-                f"  Please provide True, False, or leave empty for the reverse boolean of the default\n"
-                f"  See the --h / --help for more information and usage examples"
+                f"  ERROR: The provided value: '{value}' for --{arg_name} is invalid\n"
+                f"   Please provide True, False, or leave empty for the reverse boolean of the default\n"
+                f"   See the --h / --help for more information and usage examples"
             )
             exit(0)
 
@@ -185,6 +185,20 @@ class ArgumentParser:
                 "  • '-j settings.json'\n"
             ),
             default=None,
+        )
+        parser.add_argument(
+            "--forcejsonconfig",
+            help=(
+                "`boolean` Forces the provided --jsonconfig to override localstorage settings.\n"
+                "Usage behavior:\n"
+                "  • Default value: False\n"
+                "  • Using '--forcejsonconfig' with no value -> True (reverse default)\n"
+                "  • Using '--forcejsonconfig true'  -> True\n"
+                "  • Using '--forcejsonconfig false' -> False\n"
+            ),
+            nargs="?",
+            const=True,
+            default=False,
         )
         parser.add_argument(
             "-t",
@@ -376,6 +390,7 @@ class ArgumentParser:
         list_runs = self._normalize_bool(arguments.listruns, "listruns")
         offline_dependencies = self._normalize_bool(arguments.offlinedependencies, "offlinedependencies")
         use_logs = self._normalize_bool(arguments.uselogs, "uselogs")
+        force_json_config = self._normalize_bool(arguments.forcejsonconfig, "forcejsonconfig")
 
         # generates the datetime used in the file dashboard name and the html title
         generation_datetime = datetime.now()
@@ -392,6 +407,13 @@ class ArgumentParser:
         if arguments.jsonconfig:
             with open(arguments.jsonconfig) as file:
                 json_config = file.read()
+
+        # handles force_json_config if no json_config is provided
+        if force_json_config and not arguments.jsonconfig:
+            print(
+                f"  ERROR: The --forcejsonconfig argument was provided without a valid --jsonconfig path"
+            )
+            exit(0)
 
         # handles the custom dashboard name
         if arguments.namedashboard == "":
@@ -467,6 +489,7 @@ class ArgumentParser:
             "quantity": quantity,
             "use_logs": use_logs,
             "offline_dependencies": offline_dependencies,
+            "force_json_config": force_json_config,
             "project_version": arguments.project_version,
         }
         return dotdict(provided_args)

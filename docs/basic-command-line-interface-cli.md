@@ -115,7 +115,15 @@ robotdashboard -j ./path/to/config.json
 robotdashboard --jsonconfig default_settings.json  
 ```
 - Optional: `-j` or `--jsonconfig` sets a JSON dashboard configuration file used on first load.
-- See [Advanced CLI & Examples](/advanced-cli-examples#message-config-details) for more information on customized loading behaviour!
+- See [Advanced CLI & Examples](/advanced-cli-examples#using-a-custom-dashboard-config-json) for more information on customized loading behaviour!
+
+### Force the JSON config even if local storage exists
+```bash
+robotdashboard -j ./path/to/config.json --forcejsonconfig  
+robotdashboard --jsonconfig default_settings.json --forcejsonconfig  
+```
+- Optional: `--forcejsonconfig` forces the use of the JSON dashboard configuration file even if local storage exists.
+- See [Advanced CLI & Examples](/advanced-cli-examples#using-a-custom-dashboard-config-json) for more information on customized loading behaviour!
 
 ### Control number of runs displayed by default
 ```bash
