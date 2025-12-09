@@ -23,7 +23,7 @@ See how you can reshape the main dashboard layout by:
 - reordering graphs within their sections  
 - hiding graphs you don’t want to display  
 - rearranging entire sections to match your preferred workflow  
-- it is also possible to combine all sections into a single unified view, see [Settings - General Settings (Graphs Tab)](/settings/#general-settings-graphs-tab), for the details
+- it is also possible to combine all sections into a single unified view, see [Settings - General Settings (Graphs Tab)](/settings#general-settings-graphs-tab), for the details
 - the unified title will be the same as the `-t, --dashboardtitle` [CLI argument](/basic-command-line-interface-cli.html#set-a-custom-html-title) if provided, otherwise it defaults to "Dashboard Statistics"
 
 ### 2. The Compare Page
