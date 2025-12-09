@@ -10,6 +10,7 @@ usage: robotdashboard [[]-v[]] [[]-h[]] [[]-o [[]OUTPUTPATH ...[]][]]
                       [[]-f [[]OUTPUTFOLDERPATH ...[]][]]
                       [[]--projectversion PROJECT_VERSION[]] [[]-r [[]REMOVERUNS ...[]][]]
                       [[]-d DATABASEPATH[]] [[]-n NAMEDASHBOARD[]] [[]-j JSONCONFIG[]]
+                      [[]--forcejsonconfig [[]FORCEJSONCONFIG[]][]]
                       [[]-t DASHBOARDTITLE[]] [[]-m MESSAGECONFIG[]] [[]-q QUANTITY[]]
                       [[]-u [[]USELOGS[]][]] [[]-g [[]GENERATEDASHBOARD[]][]] [[]-l [[]LISTRUNS[]][]]
                       [[]--offlinedependencies [[]OFFLINEDEPENDENCIES[]][]]
@@ -40,8 +41,8 @@ options:
                         `string` specifies project version associated with runs
                         Usage behaviour:
                           • Provide text to set a project version for the supplied runs
+                          • Cannot be mixed with version_ tags
                         Examples:
-                          . '--projectversion=1.1'
                           . '--projectversion=1.1'
   -r [[]REMOVERUNS ...[]], --removeruns [[]REMOVERUNS ...[]]
                         `string` Specifies indexes, run_starts, aliases or tags to remove from the database.
@@ -74,6 +75,13 @@ options:
                           • File is used as the initial configuration if no config exists yet in user localstorage
                         Examples:
                           • '-j settings.json'
+  --forcejsonconfig [[]FORCEJSONCONFIG[]]
+                        `boolean` Forces the provided --jsonconfig to override localstorage settings.
+                        Usage behavior:
+                          • Default value: False
+                          • Using '--forcejsonconfig' with no value -> True (reverse default)
+                          • Using '--forcejsonconfig true'  -> True
+                          • Using '--forcejsonconfig false' -> False
   -t DASHBOARDTITLE, --dashboardtitle DASHBOARDTITLE
                         `string` Specifies the dashboard HTML title.
                         Usage behavior:

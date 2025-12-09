@@ -3,12 +3,32 @@ import { runs, suites, tests, keywords } from './variables/data.js';
 
 // set default values
 function setup_database_stats() {
-    document.getElementById("stats").innerHTML = `<table class='table table-striped'>
-                <tr><td>Runs</td><td>${runs.length}</td></tr>
-                <tr><td>Suites</td><td>${suites.length}</td></tr>
-                <tr><td>Tests</td><td>${tests.length}</td></tr>
-                <tr><td>Keywords</td><td>${keywords.length}</td></tr>
-            </table>`
+    document.getElementById("stats").innerHTML = `<div class="list-group">
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span>Runs</span>
+                <div class="d-flex align-items-center">
+                    <span >${runs.length}</span>
+                </div>
+            </div>
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span>Suites</span>
+                <div class="d-flex align-items-center">
+                    <span >${suites.length}</span>
+                </div>
+            </div>
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span>Tests</span>
+                <div class="d-flex align-items-center">
+                    <span >${tests.length}</span>
+                </div>
+            </div>
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span>Keywords</span>
+                <div class="d-flex align-items-center">
+                    <span >${keywords.length}</span>
+                </div>
+            </div>
+        </div>`
 
     window.onbeforeprint = () => {
         return new Promise(res => setTimeout(res, settings.show.duration + 500)); // allow rendering time

@@ -75,7 +75,14 @@ For example, if you ran tests for your software/product version 1.2.1
 robotdashboard -o output.xml --projectversion=1.2.1
 robotdashboard -f ./results --projectversion=1.2.1
 ```
-> Added in RobotDashboard v1.3.0
+If you want to supply versions for each output, use:
+```bash
+robotdashboard -o output.xml:version_1.2.1 -o output2.xml:version_2.3.4
+robotdashboard -f ./results:version_1.1 ./results2:version_2.3.4
+```
+--projectversion and version_ are mutually exclusive
+> Added in RobotDashboard v1.3.0  
+> version_ tag support added in v1.4.0
 
 ## Removing Runs from the Database
 
@@ -99,6 +106,8 @@ robotdashboard -t "My Cool Title"
 ```
 - Optional: `-t` or `--dashboardtitle` sets a custom HTML title for the dashboard.
 - Default: title is **Robot Framework Dashboard - YYYY-MM-DD HH:MM:SS**.
+- It is also possible to combine all sections into a single unified view, see [Settings - General Settings (Graphs Tab)](/settings/#general-settings-graphs-tab), for the details
+- The unified title will be the same as the `-t, --dashboardtitle` argument if provided, otherwise it defaults to "Dashboard Statistics"
 
 ### Use a JSON dashboard configuration file to set default settings
 ```bash
@@ -106,7 +115,15 @@ robotdashboard -j ./path/to/config.json
 robotdashboard --jsonconfig default_settings.json  
 ```
 - Optional: `-j` or `--jsonconfig` sets a JSON dashboard configuration file used on first load.
-- See [Advanced CLI & Examples](/advanced-cli-examples#message-config-details) for more information on customized loading behaviour!
+- See [Advanced CLI & Examples](/advanced-cli-examples#using-a-custom-dashboard-config-json) for more information on customized loading behaviour!
+
+### Force the JSON config even if local storage exists
+```bash
+robotdashboard -j ./path/to/config.json --forcejsonconfig  
+robotdashboard --jsonconfig default_settings.json --forcejsonconfig  
+```
+- Optional: `--forcejsonconfig` forces the use of the JSON dashboard configuration file even if local storage exists.
+- See [Advanced CLI & Examples](/advanced-cli-examples#using-a-custom-dashboard-config-json) for more information on customized loading behaviour!
 
 ### Control number of runs displayed by default
 ```bash

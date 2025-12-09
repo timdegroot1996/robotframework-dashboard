@@ -26,7 +26,7 @@ class ArgumentParser:
             arguments = self._process_arguments(arguments)
         except Exception as error:
             print(
-                f" ERROR: There was an issue during the parsing of the provided arguments"
+                f"  ERROR: There was an issue during the parsing of the provided arguments"
             )
             print(f"  {error}")
             exit(0)
@@ -43,11 +43,23 @@ class ArgumentParser:
             return False
         else:
             print(
-                f" ERROR: The provided value: '{value}' for --{arg_name} is invalid\n"
-                f"  Please provide True, False, or leave empty for the reverse boolean of the default\n"
-                f"  See the --h / --help for more information and usage examples"
+                f"  ERROR: The provided value: '{value}' for --{arg_name} is invalid\n"
+                f"   Please provide True, False, or leave empty for the reverse boolean of the default\n"
+                f"   See the --h / --help for more information and usage examples"
             )
             exit(0)
+
+    def _check_project_version_usage(self, tags, arguments):
+        version_tags = [tag for tag in tags if tag.startswith("version_")]
+        version_tag_count = len(version_tags)
+        if version_tag_count > 1:
+            print(
+                "  ERROR: Found multiple version_ tags for one output, not supported."
+            )
+            exit(1)
+        if version_tag_count == 1 and arguments.project_version:
+            print("  ERROR: Mixing --projectversion and version_ tags not supported")
+            exit(2)
 
     def _parse_arguments(self):
         """Parses the actual arguments"""
@@ -110,8 +122,8 @@ class ArgumentParser:
                 "`string` specifies project version associated with runs\n"
                 "Usage behaviour:\n"
                 "  • Provide text to set a project version for the supplied runs\n"
+                "  • Cannot be mixed with version_ tags\n"
                 "Examples:\n"
-                "  . '--projectversion=1.1'\n"
                 "  . '--projectversion=1.1'\n"
             ),
             dest="project_version",
@@ -174,6 +186,20 @@ class ArgumentParser:
                 "  • '-j settings.json'\n"
             ),
             default=None,
+        )
+        parser.add_argument(
+            "--forcejsonconfig",
+            help=(
+                "`boolean` Forces the provided --jsonconfig to override localstorage settings.\n"
+                "Usage behavior:\n"
+                "  • Default value: False\n"
+                "  • Using '--forcejsonconfig' with no value -> True (reverse default)\n"
+                "  • Using '--forcejsonconfig true'  -> True\n"
+                "  • Using '--forcejsonconfig false' -> False\n"
+            ),
+            nargs="?",
+            const=True,
+            default=False,
         )
         parser.add_argument(
             "-t",
@@ -333,6 +359,7 @@ class ArgumentParser:
                     )  # None values are found by re.split because of the 2 conditions
                 path = splitted[0]
                 tags = splitted[1:]
+                self._check_project_version_usage(tags, arguments)
                 outputs.append([path, tags])
 
         # handles possible tags on all provided --outputfolderpath
@@ -347,6 +374,7 @@ class ArgumentParser:
                     )  # None values are found by re.split because of the 2 conditions
                 path = splitted[0]
                 tags = splitted[1:]
+                self._check_project_version_usage(tags, arguments)
                 outputfolderpaths.append([path, tags])
 
         # handles the processing of --removeruns
@@ -359,10 +387,17 @@ class ArgumentParser:
                     remove_runs.append(part)
 
         # handles the boolean handling of relevant arguments
-        generate_dashboard =  self._normalize_bool(arguments.generatedashboard, "generatedashboard")
+        generate_dashboard = self._normalize_bool(
+            arguments.generatedashboard, "generatedashboard"
+        )
         list_runs = self._normalize_bool(arguments.listruns, "listruns")
-        offline_dependencies = self._normalize_bool(arguments.offlinedependencies, "offlinedependencies")
+        offline_dependencies = self._normalize_bool(
+            arguments.offlinedependencies, "offlinedependencies"
+        )
         use_logs = self._normalize_bool(arguments.uselogs, "uselogs")
+        force_json_config = self._normalize_bool(
+            arguments.forcejsonconfig, "forcejsonconfig"
+        )
 
         # generates the datetime used in the file dashboard name and the html title
         generation_datetime = datetime.now()
@@ -379,6 +414,13 @@ class ArgumentParser:
         if arguments.jsonconfig:
             with open(arguments.jsonconfig) as file:
                 json_config = file.read()
+
+        # handles force_json_config if no json_config is provided
+        if force_json_config and not arguments.jsonconfig:
+            print(
+                f"  ERROR: The --forcejsonconfig argument was provided without a valid --jsonconfig path"
+            )
+            exit(0)
 
         # handles the custom dashboard name
         if arguments.namedashboard == "":
@@ -454,6 +496,7 @@ class ArgumentParser:
             "quantity": quantity,
             "use_logs": use_logs,
             "offline_dependencies": offline_dependencies,
+            "force_json_config": force_json_config,
             "project_version": arguments.project_version,
         }
         return dotdict(provided_args)

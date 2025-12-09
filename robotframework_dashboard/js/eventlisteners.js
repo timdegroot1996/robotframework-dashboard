@@ -21,7 +21,8 @@ import {
     setup_lowest_highest_dates,
     clear_all_filters,
     setup_project_versions_in_select_filter_buttons,
-    update_overview_version_select_list
+    update_overview_version_select_list,
+    setup_metadata_filter
 } from "./filter.js"
 import { camelcase_to_underscore, underscore_to_camelcase } from "./common.js";
 import {
@@ -196,6 +197,11 @@ function setup_settings_modal() {
         };
     }
 
+    const toggle_unified = create_toggle_handler({
+        key: "show.unified",
+        elementId: "toggleUnified"
+    });
+
     const toggle_labels = create_toggle_handler({
         key: "show.dateLabels",
         elementId: "toggleLabels"
@@ -239,6 +245,7 @@ function setup_settings_modal() {
     });
 
     // Initial load
+    toggle_unified(true);
     toggle_labels(true);
     toggle_legends(true);
     toggle_aliases(true);
@@ -249,6 +256,7 @@ function setup_settings_modal() {
     toggle_bar_rounding(true);
 
     // Add event listeners
+    document.getElementById("toggleUnified").addEventListener("click", () => toggle_unified());
     document.getElementById("toggleLabels").addEventListener("click", () => toggle_labels());
     document.getElementById("toggleLegends").addEventListener("click", () => toggle_legends());
     document.getElementById("toggleAliases").addEventListener("click", () => toggle_aliases());
@@ -513,7 +521,7 @@ function setup_graph_view_buttons() {
                     const fullscreenHeader = document.querySelector('.grid-stack-item-content.fullscreen');
                     fullscreenHeader.insertBefore(filters, fullscreenHeader.firstChild);
                 } else {
-                    originalContainer.appendChild(filters);
+                    originalContainer.insertBefore(filters, originalContainer.firstChild);
                 }
             }
         };
@@ -566,7 +574,13 @@ function setup_graph_view_buttons() {
     document.getElementById("testOnlyChanges").addEventListener("change", () => {
         create_test_statistics_graph();
     });
+    document.getElementById("testNoChanges").addEventListener("change", () => {
+        create_test_statistics_graph();
+    });
     document.getElementById("compareOnlyChanges").addEventListener("change", () => {
+        create_compare_tests_graph();
+    });
+    document.getElementById("compareNoChanges").addEventListener("change", () => {
         create_compare_tests_graph();
     });
     // most time consuming only latest run switch event listeners
@@ -614,10 +628,22 @@ function setup_graph_view_buttons() {
             }
         });
     });
-
+    function update_active_graph_type_buttons(graphChangeButton, activeGraphType) {
+        const camelButtonName = underscore_to_camelcase(graphChangeButton);
+        const buttonTypes = graphChangeButtons[graphChangeButton].split(",");
+        buttonTypes.forEach((graphType) => {
+            const buttonId = `${camelButtonName}Graph${graphType}`;
+            const buttonElement = document.getElementById(buttonId);
+            buttonElement.classList.remove("active");
+            if (graphType.toLowerCase() === activeGraphType) {
+                buttonElement.classList.add("active");
+            }
+        });
+    }
     function handle_graph_change_type_button_click(graphChangeButton, graphType, camelButtonName) {
         update_graph_type(`${camelButtonName}GraphType`, graphType)
         window[`create_${graphChangeButton}_graph`]();
+        update_active_graph_type_buttons(graphChangeButton, graphType);
         if (graphChangeButton == 'run_donut') { create_run_donut_total_graph(); }
         if (graphChangeButton == 'suite_folder_donut') { create_suite_folder_fail_donut_graph(); }
     }
@@ -635,6 +661,63 @@ function setup_graph_view_buttons() {
     }
     Object.entries(graphChangeButtons).forEach(([graphChangeButton, buttonTypes]) => {
         add_graph_eventlisteners(graphChangeButton, buttonTypes);
+    });
+    // Initialize active states for all graph types on first load
+    Object.entries(graphChangeButtons).forEach(([graphChangeButton, buttonTypes]) => {
+        if (graphChangeButton.includes("table")) { return; }
+        const camelButtonName = underscore_to_camelcase(graphChangeButton);
+        const storedGraphType = settings?.graphTypes?.[`${camelButtonName}GraphType`];
+        const defaultGraphType = buttonTypes.split(",")[0].toLowerCase();
+        const activeGraphType = storedGraphType || defaultGraphType;
+        update_active_graph_type_buttons(graphChangeButton, activeGraphType);
+    });
+
+    // Handle modal show event - move filters to modal
+    $("#sectionFiltersModal").on("show.bs.modal", function () {
+        // Move suite filters
+        const suiteFilters = document.getElementById('suiteSectionFilters');
+        const suiteCardBody = document.getElementById('suiteSectionFiltersCardBody');
+        if (suiteFilters && suiteCardBody) {
+            suiteCardBody.appendChild(suiteFilters);
+        }
+        
+        // Move test filters
+        const testFilters = document.getElementById('testSectionFilters');
+        const testCardBody = document.getElementById('testSectionFiltersCardBody');
+        if (testFilters && testCardBody) {
+            testCardBody.appendChild(testFilters);
+        }
+        
+        // Move keyword filters
+        const keywordFilters = document.getElementById('keywordSectionFilters');
+        const keywordCardBody = document.getElementById('keywordSectionFiltersCardBody');
+        if (keywordFilters && keywordCardBody) {
+            keywordCardBody.appendChild(keywordFilters);
+        }
+    });
+
+    // Handle modal hide event - return filters to original positions
+    $("#sectionFiltersModal").on("hide.bs.modal", function () {
+        // Return suite filters
+        const suiteFilters = document.getElementById('suiteSectionFilters');
+        const suiteOriginalContainer = document.getElementById('suiteSectionFiltersContainer');
+        if (suiteFilters && suiteOriginalContainer) {
+            suiteOriginalContainer.insertBefore(suiteFilters, suiteOriginalContainer.firstChild);
+        }
+        
+        // Return test filters
+        const testFilters = document.getElementById('testSectionFilters');
+        const testOriginalContainer = document.getElementById('testSectionFiltersContainer');
+        if (testFilters && testOriginalContainer) {
+            testOriginalContainer.insertBefore(testFilters, testOriginalContainer.firstChild);
+        }
+        
+        // Return keyword filters
+        const keywordFilters = document.getElementById('keywordSectionFilters');
+        const keywordOriginalContainer = document.getElementById('keywordSectionFiltersContainer');
+        if (keywordFilters && keywordOriginalContainer) {
+            keywordOriginalContainer.insertBefore(keywordFilters, keywordOriginalContainer.firstChild);
+        }
     });
 }
 

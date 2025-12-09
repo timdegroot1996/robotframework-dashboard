@@ -36,6 +36,7 @@ const compareRunIds = ['compareRun1', 'compareRun2', 'compareRun3', 'compareRun4
 // customize view lists
 const overviewSections = ["Overview"]
 const dashboardSections = ["Run Statistics", "Suite Statistics", "Test Statistics", "Keyword Statistics",]
+const unifiedSections = ["Dashboard Statistics"]
 const compareSections = ["Compare Statistics"]
 const tableSections = ["Table Statistics"]
 const dashboardGraphs = graphMetadata
@@ -60,6 +61,7 @@ export {
     graphVars,
     compareRunIds,
     overviewSections,
+    unifiedSections,
     dashboardSections,
     compareSections,
     tableSections,

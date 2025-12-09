@@ -33,6 +33,7 @@ def main():
         arguments.quantity,
         arguments.use_logs,
         arguments.offline_dependencies,
+        arguments.force_json_config,
         arguments.project_version,
     )
     # If arguments.start_server is provided override some required args

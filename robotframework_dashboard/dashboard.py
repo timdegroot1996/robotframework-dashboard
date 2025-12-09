@@ -26,6 +26,7 @@ class DashboardGenerator:
         quantity: int,
         use_logs: bool,
         offline: bool,
+        force_json_config: bool,
     ):
         """
         Function that generates the dashboard by replacing all relevant placeholders.
@@ -88,6 +89,7 @@ class DashboardGenerator:
                     '"placeholder_json_config"',
                     json_config,
                 )
+            dashboard_data = dashboard_data.replace('"placeholder_force_json_config"', str(force_json_config).lower())
             if use_logs:
                 dashboard_data = dashboard_data.replace(
                     '"placeholder_use_logs"', "true"

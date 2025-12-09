@@ -1,27 +1,44 @@
 import { add_alert } from "./common.js";
 import { settings } from "./variables/settings.js";
-import { json_config, admin_json_config } from "./variables/globals.js";
+import { force_json_config, json_config, admin_json_config } from "./variables/data.js";
 
 // function to setup localstorage on first load
 function setup_local_storage() {
     const storedSettings = localStorage.getItem('settings');
-    if (storedSettings) {
+    const hasJsonConfig = typeof json_config !== "string";
+    const hasAdminConfig = typeof admin_json_config !== "string" && admin_json_config && Object.keys(admin_json_config).length !== 0;
+
+    const mergeWithDefaults = (config) => merge_deep(config, settings);
+    let resolvedSettings = settings;
+
+    if (force_json_config && hasJsonConfig) {
+        // 1) Force use provided json_config when requested
+        resolvedSettings = mergeWithDefaults(json_config);
+    } else if (force_json_config && hasAdminConfig) {
+        // 2) Force use admin_json_config when requested
+        resolvedSettings = mergeWithDefaults(admin_json_config); ``
+    } else if (storedSettings) {
+        // 3) Prefer existing localStorage when not forcing a config
         try {
             const parsedSettings = JSON.parse(storedSettings);
-            settings = merge_deep(parsedSettings, settings);
+            resolvedSettings = mergeWithDefaults(parsedSettings);
         } catch (e) {
             add_alert(`Failed to parse settings from localStorage: ${e}. Resetting settings to defaults.`, "danger");
+            resolvedSettings = settings; // fall back to defaults
         }
-        localStorage.setItem('settings', JSON.stringify(settings));
-    } else if (typeof json_config != "string") {
-        settings = json_config
-        localStorage.setItem('settings', JSON.stringify(json_config));
-    } else if (typeof admin_json_config != "string" && Object.keys(admin_json_config).length != 0) {
-        settings = admin_json_config
-        localStorage.setItem('settings', JSON.stringify(settings));
+    } else if (!force_json_config && hasJsonConfig) {
+        // 4) Use provided json_config when not forcing and no localStorage present
+        resolvedSettings = mergeWithDefaults(json_config);
+    } else if (!force_json_config && hasAdminConfig) {
+        // 5) Use provided admin_json_config when not forcing and no localStorage present
+        resolvedSettings = mergeWithDefaults(admin_json_config);
     } else {
-        localStorage.setItem('settings', JSON.stringify(settings));
+        // 6) Final fallback: existing defaults
+        resolvedSettings = settings;
     }
+
+    settings = resolvedSettings;
+    localStorage.setItem('settings', JSON.stringify(settings));
 }
 
 // function to set an item in localstorage based on a dot-separated path

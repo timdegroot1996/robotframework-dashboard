@@ -27,6 +27,7 @@ class RobotDashboard:
         quantity: int,
         use_logs: bool,
         offline_dependencies: bool,
+        force_json_config: bool,
         project_version: str,
     ):
         """Sets the parameters provided in the command line"""
@@ -42,6 +43,7 @@ class RobotDashboard:
         self.quantity = quantity
         self.use_logs = use_logs
         self.offline_dependencies = offline_dependencies
+        self.force_json_config = force_json_config
         self.server = False
         self.database = None
         self.project_version = project_version
@@ -144,9 +146,13 @@ class RobotDashboard:
 
         outputProcessor = OutputProcessor(output_path)
         run_start = outputProcessor.get_run_start()
+        project_version = next(
+            (tag.removeprefix("version_") for tag in tags if tag.startswith("version_")),
+                self.project_version
+            )
         if not self.database.run_start_exists(run_start):
             output_data = outputProcessor.get_output_data()
-            self.database.insert_output_data(output_data, tags, run_alias, output_path, self.project_version)
+            self.database.insert_output_data(output_data, tags, run_alias, output_path, project_version)
 
             end = time()
             console += self._print_console(
@@ -222,6 +228,7 @@ class RobotDashboard:
                 self.quantity,
                 self.use_logs,
                 self.offline_dependencies,
+                self.force_json_config,
             )
             end = time()
             console += self._print_console(
