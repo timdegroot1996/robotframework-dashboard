@@ -41,8 +41,8 @@ options:
                         `string` specifies project version associated with runs
                         Usage behaviour:
                           • Provide text to set a project version for the supplied runs
+                          • Cannot be mixed with version_ tags
                         Examples:
-                          . '--projectversion=1.1'
                           . '--projectversion=1.1'
   -r [[]REMOVERUNS ...[]], --removeruns [[]REMOVERUNS ...[]]
                         `string` Specifies indexes, run_starts, aliases or tags to remove from the database.
