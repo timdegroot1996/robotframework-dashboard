@@ -49,6 +49,17 @@ class ArgumentParser:
             )
             exit(0)
 
+    def _check_project_version_usage(self, tags, arguments):
+        version_tags = [tag for tag in tags if tag.startswith("version_")]
+        version_tag_count = len(version_tags)
+        if version_tag_count > 1:
+            print("ERROR: Found multiple version_ tags for one output, not supported.")
+            exit(1)
+        if version_tag_count == 1 and arguments.project_version:
+            print("ERROR: Mixing --projectversion and version_ tags not supported")
+            exit(2)
+
+
     def _parse_arguments(self):
         """Parses the actual arguments"""
         parser = argparse.ArgumentParser(
@@ -110,8 +121,8 @@ class ArgumentParser:
                 "`string` specifies project version associated with runs\n"
                 "Usage behaviour:\n"
                 "  • Provide text to set a project version for the supplied runs\n"
+                "  • Cannot be mixed with version_ tags\n"
                 "Examples:\n"
-                "  . '--projectversion=1.1'\n"
                 "  . '--projectversion=1.1'\n"
             ),
             dest="project_version",
@@ -333,6 +344,7 @@ class ArgumentParser:
                     )  # None values are found by re.split because of the 2 conditions
                 path = splitted[0]
                 tags = splitted[1:]
+                self._check_project_version_usage(tags, arguments)
                 outputs.append([path, tags])
 
         # handles possible tags on all provided --outputfolderpath
@@ -347,6 +359,7 @@ class ArgumentParser:
                     )  # None values are found by re.split because of the 2 conditions
                 path = splitted[0]
                 tags = splitted[1:]
+                self._check_project_version_usage(tags, arguments)
                 outputfolderpaths.append([path, tags])
 
         # handles the processing of --removeruns
