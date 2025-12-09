@@ -672,14 +672,6 @@ function setup_graph_view_buttons() {
         update_active_graph_type_buttons(graphChangeButton, activeGraphType);
     });
 
-    // // Setup unified section filters modal
-    // const showSectionFiltersBtn = document.getElementById("showSectionFiltersUnified");
-    // if (showSectionFiltersBtn) {
-    //     showSectionFiltersBtn.addEventListener("click", () => {
-    //         $("#sectionFiltersModal").modal("show");
-    //     });
-    // }
-
     // Handle modal show event - move filters to modal
     $("#sectionFiltersModal").on("show.bs.modal", function () {
         // Move suite filters
