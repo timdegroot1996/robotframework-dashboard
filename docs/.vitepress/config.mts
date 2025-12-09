@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { readFileSync } from "fs";
+import { resolve } from 'node:path';
 
 const python_svg = readFileSync("docs/public/python.svg", "utf-8");
 const slack_svg = readFileSync("docs/public/slack.svg", "utf-8");
@@ -94,5 +95,38 @@ export default defineConfig({
       { icon: { svg: python_svg }, link: 'https://pypi.org/project/robotframework-dashboard/', ariaLabel: 'Python Package on PyPI' },
       { icon: { svg: slack_svg }, link: 'https://robotframework.slack.com/', ariaLabel: 'Robot Framework Slack' },
     ]
+  }, 
+  vite: {
+    plugins: [{
+      name: 'serve-root-example-file',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          const url = req.url || '';
+          const base = '/robotframework-dashboard';
+          const normalizedUrl = url.startsWith(base) ? url.slice(base.length) : url;
+
+          if (normalizedUrl === '/example/robot_dashboard.html') {
+            const filePath = resolve(process.cwd(), 'example/robot_dashboard.html');
+            const html = readFileSync(filePath, 'utf-8');
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.end(html);
+            return;
+          }
+          if (normalizedUrl && normalizedUrl.startsWith('/atest/resources/outputs/')) {
+            const relativePath = normalizedUrl.replace(/^\//, '');
+            const filePath = resolve(process.cwd(), relativePath);
+            try {
+              const html = readFileSync(filePath, 'utf-8');
+              res.setHeader('Content-Type', 'text/html; charset=utf-8');
+              res.end(html);
+              return;
+            } catch (e) {
+              // Not found, continue to next middleware
+            }
+          }
+          next();
+        });
+      }
+    }]
   }
 })
