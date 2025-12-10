@@ -55,7 +55,7 @@ DEPENDENCIES = {
         "type": "css",
         "cdn": "https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.css",
         "local": "dependencies/datatables.css",
-        "admin_page": False,
+        "admin_page": True,
     },
     "bootstrap_js": {
         "type": "js",

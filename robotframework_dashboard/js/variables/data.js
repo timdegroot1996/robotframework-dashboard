@@ -15,7 +15,6 @@ var unified_dashboard_title = '"placeholder_dashboard_title"'
 var message_config = '"placeholder_message_config"'
 var force_json_config = "placeholder_force_json_config"
 var json_config = "placeholder_json_config"
-var admin_json_config = "placeholder_admin_json_config"
 var filteredAmount = "placeholder_amount"
 var filteredAmountDefault = 0
 const use_logs = "placeholder_use_logs"
@@ -30,7 +29,6 @@ export {
     message_config,
     force_json_config,
     json_config,
-    admin_json_config,
     filteredAmount,
     filteredAmountDefault,
     use_logs,

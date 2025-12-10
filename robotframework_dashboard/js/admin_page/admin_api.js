@@ -1,6 +1,8 @@
 import { add_alert } from "./admin_common.js";
+import { confirm_action } from "./admin_eventlisteners.js";
 
-var adminSettings = {}
+let runTable;
+let logTable;
 
 // function to add an output to the database based on a path
 function add_output_path() {
@@ -86,6 +88,23 @@ function remove_outputs() {
     send_request("DELETE", "/remove-outputs", body, "removeSpinner")
 }
 
+async function remove_all_outputs() {
+    const confirmed = await confirm_action(`Are you sure you want to remove ALL outputs from the database?<br><br>
+                This is irreversible and will remove all outputs stored in the database!
+                `);
+    if (confirmed) {
+        try {
+            document.getElementById("removeAllOutputsSpinner").hidden = false
+            const body = JSON.stringify({
+                all: true,
+            });
+            send_request("DELETE", "/remove-outputs", body, "removeAllOutputsSpinner")
+        } catch (e) {
+            add_alert("Failed to remove all outputs: " + e, "danger")
+        }
+    }
+}
+
 // function to retrieve all outputs currently in the database
 function get_outputs() {
     const xhr = new XMLHttpRequest();
@@ -94,52 +113,29 @@ function get_outputs() {
     xhr.onload = () => {
         if (xhr.readyState == 4 && xhr.status == 200) {
             const runs = JSON.parse(xhr.responseText)
-            let table = "<tr><th>Run Index</th><th>Run Start</th><th>Run Name</th><th>Run Alias</th><th>Run Tags</th></tr>"
-            for (const [index, run] of runs.entries()) {
-                table += `<tr><td>${index}</td><td>${run.run_start}</td><td>${run.name}</td><td>${run.alias}</td><td>${run.tags}</td></tr>`
-            }
-            document.getElementById("runTable").innerHTML = table
-        } else {
-            add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, "danger")
-        }
-    };
-    xhr.send();
-}
+            const data = runs.map((run, index) => [
+                index,
+                run.run_start ?? "",
+                run.name ?? "",
+                run.alias ?? "",
+                Array.isArray(run.tags) ? run.tags.join(", ") : (run.tags ?? ""),
+            ])
 
-// function to set the customized view config
-function set_admin_json_config(notifications = true) {
-    const storedSettings = JSON.parse(localStorage.getItem('adminSettings'));
-    document.getElementById("applySettingsSpinner").hidden = false
-    const body = JSON.stringify({
-        admin_json_config: JSON.stringify(storedSettings),
-    });
-    send_request("POST", "set-admin-json-config", body, "applySettingsSpinner", notifications)
-}
-
-// function to get the customized view config
-function get_admin_json_config() {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "/get-admin-json-config");
-    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-    xhr.onload = () => {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            const config = JSON.parse(xhr.responseText)
-            const serverSettings = config.admin_json_config;
-            const storageSettings = JSON.parse(localStorage.getItem("adminSettings"));
-            if (serverSettings != '{}') {
-                // if there IS a serversetting use that
-                adminSettings = JSON.parse(serverSettings);
-                if (!storageSettings) {
-                    // if there IS no local storage yet apply the serversetting to it
-                    localStorage.setItem("adminSettings", JSON.stringify(adminSettings));
-                }
+            if (runTable) {
+                runTable.clear();
+                runTable.rows.add(data);
+                runTable.draw();
             } else {
-                // there is NO serversetting yet
-                if (storageSettings) {
-                    // there IS a local storage setting use that
-                    adminSettings = storageSettings;
-                    set_admin_json_config(false);
-                }
+                runTable = new DataTable("#runTable", {
+                    columns: [
+                        { title: "Run Index" },
+                        { title: "Run Start" },
+                        { title: "Run Name" },
+                        { title: "Run Alias" },
+                        { title: "Run Tags" },
+                    ],
+                    data: data,
+                });
             }
         } else {
             add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, "danger")
@@ -171,12 +167,48 @@ function send_request(method, endpoint, body, spinner, notifications = true) {
                 console.log(response.console)
             }
             get_outputs()
+            get_logs()
         } else {
             document.getElementById(spinner).hidden = true
             add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, "danger")
         }
     };
     xhr.send(body);
+}
+
+// function to retrieve all logs currently on the server
+function get_logs() {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "/get-logs");
+    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+    xhr.onload = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            const logs = JSON.parse(xhr.responseText)
+            const data = logs.map((log, index) => [
+                index,
+                log.log_name,
+            ])
+            console.log(logs)
+            console.log(data)
+
+            if (logTable) {
+                logTable.clear();
+                logTable.rows.add(data);
+                logTable.draw();
+            } else {
+                logTable = new DataTable("#logTable", {
+                    columns: [
+                        { title: "Log Index" },
+                        { title: "Log Name" },
+                    ],
+                    data: data,
+                });
+            }
+        } else {
+            add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, "danger")
+        }
+    };
+    xhr.send();
 }
 
 // function to add a logs raw data to the server and update the database
@@ -205,14 +237,32 @@ function remove_log() {
     send_request("DELETE", "/remove-log", body, "removeLogDataSpinner")
 }
 
+async function remove_all_logs() {
+    const confirmed = await confirm_action(`Are you sure you want to remove ALL logs from the database?<br><br>
+                This is irreversible and will remove all logs stored in the database!
+                `);
+    if (confirmed) {
+        try {
+            document.getElementById("removeAllLogsSpinner").hidden = false
+            const body = JSON.stringify({
+                all: true,
+            });
+            send_request("DELETE", "/remove-log", body, "removeAllLogsSpinner")
+        } catch (e) {
+            add_alert("Failed to remove all logs: " + e, "danger")
+        }
+    }
+}
+
 export {
     add_output_path,
     add_output_data,
     add_output_folder_path,
     remove_outputs,
+    remove_all_outputs,
     get_outputs,
-    set_admin_json_config,
-    get_admin_json_config,
+    get_logs,
     add_log,
     remove_log,
+    remove_all_logs,
 };

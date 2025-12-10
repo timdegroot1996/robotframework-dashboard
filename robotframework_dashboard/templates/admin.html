@@ -26,10 +26,6 @@
         </div>
         <ul class="navbar-nav flex-row flex-wrap ms-md-auto me-4">
             <li class="nav-item">
-                <a class="nav-link p-2 information" id="settings" data-bs-toggle="modal"
-                    data-bs-target="#settingsModal"></a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link p-2 information" id="themeDark"></a>
             </li>
             <li class="nav-item">
@@ -178,6 +174,33 @@
                         </button>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">remove all outputs</p>
+                    </div>
+                    <div class="col-auto" style="height:67px">
+                        <label class="form-label form-label-sm mt-4">This is irreversible, be very
+                            careful when using this option!</label>
+                        <button class="ms-2 btn btn-outline-light btn-sm mt-auto form-input"
+                            id="removeAllOutputs">Remove All&nbsp;
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="removeAllOutputsSpinner" hidden></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3>Runs In The Database</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col">
+                        <table class="table table-striped" id="runTable"></table>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card">
@@ -217,8 +240,8 @@
                         <p class="mt-auto">log.html to remove by name</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm mt-1" for="removeLog">E.g. "log-20250219-172535.html" or
-                            "all" for everything</label>
+                        <label class="form-label form-label-sm mt-1" for="removeLog">E.g.
+                            "log-20250219-172535.html"</label>
                         <input class="form-control form-control-sm" id="removeLog"></input>
                     </div>
                     <div class="col-2 d-flex">
@@ -228,120 +251,58 @@
                         </button>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">remove all logs</p>
+                    </div>
+                    <div class="col-auto" style="height:67px">
+                        <label class="form-label form-label-sm mt-4" for="removeAllLogs">This is irreversible, be very
+                            careful when using this option!</label>
+                        <button class="ms-2 btn btn-outline-light btn-sm mt-auto form-input" id="removeAllLogs">Remove
+                            All&nbsp;
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="removeAllLogsSpinner" hidden></span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card">
             <div class="card-header">
-                <h3>Runs In The Database</h3>
+                <h3>Logs On The Server</h3>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <p>Use "Run ID" or "Run Start" to remove runs from the database.</p>
-                </div>
-                <div class="row">
+
                     <div class="col">
-                        <table class="table table-striped table-bordered" id="runTable"></table>
+                        <table class="table table-striped" id="logTable"></table>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Settings Modal -->
-        <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title" id="settingsModalLabel">Admin Settings</h1>
-                        <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
-                                data-bs-dismiss="modal" id="closeSettings">Close</button>
-                        </div>
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content mt-5">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">Please Confirm</h5>
+                    <div>
+                        <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5" data-bs-dismiss="modal"
+                            id="closeConfirm">Close</button>
                     </div>
-                    <div class="modal-body">
-                        <h4>Instructions</h4>
-                        <div class="row ms-2 mb-3">
-                            <ul>
-                                <li>Copy & Paste:
-                                    <ul>
-                                        <li>You can copy the "JSON Config" from an existing dashboard and paste it into
-                                            the Admin Page input field.</li>
-                                        <li>If you want to empty the admin JSON Config just put in {} and apply.</li>
-                                    </ul>
-                                </li>
-                                <li>Propagation:
-                                    <ul>
-                                        <li>This setting will automatically apply to dashboards on other machines if all
-                                            of the following conditions are met:
-                                            <ul>
-                                                <li>It is the <strong>first load</strong> of the dashboard on that
-                                                    browser or machine. (Otherwise their previous settings are used)
-                                                </li>
-                                                <li>No <strong>--jsonconfig</strong> option was provided via the CLI when
-                                                    starting the server. (Otherwise that is used)</li>
-                                                <li>You can enforce the admin config to apply by <strong>Settings &gt;
-                                                        JSON &gt; Reset Settings JSON</strong></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>Persistence:
-                                    <ul>
-                                        <li>The "Admin JSON Config" exists <strong>only while the server is
-                                                running</strong>.</li>
-                                        <li>If the server is turned off, the configuration is lost.</li>
-                                        <li>When the server starts and you open the Admin Page, the browser's
-                                            <strong>local storage</strong> will automatically restore the previous
-                                            "Admin JSON Config" on the server, provided you are using the same
-                                            machine/browser where it was previously set.</li>
-                                    </ul>
-                                </li>
-                            </ul>
-
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-auto">
-                                <button class="btn btn-outline-light btn-sm mt-auto" id="copySettings">Copy
-                                    Settings
-                                </button>
-                            </div>
-                            <div class="col-auto">
-                                <button class="btn btn-outline-light btn-sm mt-auto" id="applySettings">Apply
-                                    Settings<span class="spinner-border spinner-border-sm" role="status"
-                                        aria-hidden="true" id="applySettingsSpinner" hidden></span></button>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col">
-                                <label for="settingsTextArea" class="form-label">Current Settings JSON</label>
-                                <textarea id="settingsTextArea" class="form-control" rows="14"></textarea>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+                <div class="modal-body" id="confirmModalMessage">
+                    Are you sure you want to proceed?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-light btn-sm" id="confirmCancel">Cancel</button>
+                    <button type="button" class="btn btn-outline-light btn-sm" id="confirmOk">Confirm</button>
                 </div>
             </div>
         </div>
-
-        <!-- Confirmation Modal -->
-        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel">
-            <div class="modal-dialog">
-                <div class="modal-content mt-5">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmModalLabel">Please Confirm</h5>
-                        <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
-                                data-bs-dismiss="modal" id="closeConfirm">Close</button>
-                        </div>
-                    </div>
-                    <div class="modal-body" id="confirmModalMessage">
-                        Are you sure you want to proceed?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-light btn-sm" id="confirmCancel">Cancel</button>
-                        <button type="button" class="btn btn-outline-light btn-sm" id="confirmOk">Confirm</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    </div>
     </div>
 
     <!-- placeholder_javascript -->

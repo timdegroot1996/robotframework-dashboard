@@ -51,18 +51,40 @@ add_output_model_config = {
                 "output_tags": ["tag1", "cool-tag2", "production_tag"],
             },
             {
-                "output_data": """<?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 7.2.2 (Python 3.12.9 on win32)" generated="2025-02-19T17:25:58.443716" rpa="false" schemaversion="5">
-<suite id="s1" name="Scripts" source="C:\\docs">
-<suite id="s1-s1" name="Google" source="C:\\docs\\google.robot">
-<test id="s1-s1-t1" name="Test 01" line="6">... etc""",
+                "output_data": """<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<robot generator=\"Robot 7.2.2 (Python 3.12.9 on win32)\" generated=\"2025-02-19T17:25:58.443716\" rpa=\"false\" schemaversion=\"5\">\n<suite id=\"s1\" name=\"Scripts\" source=\"C:\\docs\">\n<suite id=\"s1-s1\" name=\"Google\" source=\"C:\\docs\\google.robot\">\n<test id=\"s1-s1-t1\" name=\"Test 01\" line=\"6\">... etc""",
                 "output_alias": "some_cool_alias",
             },
             {
-                "output_path": "C:\\users\\docs\\prod-outputs",
+                "output_folder_path": "C:\\users\\docs\\prod-outputs",
                 "output_tags": ["production-run"],
             },
-        ]
+        ],
+        "openapi_examples": {
+            "single_output_path": {
+                "summary": "Add a single output.xml by path",
+                "description": "Provide an absolute path to a Robot Framework output.xml and optional tags to label the run.",
+                "value": {
+                    "output_path": "C:\\users\\docs\\output.xml",
+                    "output_tags": ["tag1", "cool-tag2", "production_tag"],
+                },
+            },
+            "raw_output_data": {
+                "summary": "Add output.xml via raw XML data",
+                "description": "Send the raw XML content of output.xml directly; optionally give an alias to name the run.",
+                "value": {
+                    "output_data": """<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<robot generator=\"Robot 7.2.2 (Python 3.12.9 on win32)\" generated=\"2025-02-19T17:25:58.443716\" rpa=\"false\" schemaversion=\"5\">\n<suite id=\"s1\" name=\"Scripts\" source=\"C:\\docs\">\n<suite id=\"s1-s1\" name=\"Google\" source=\"C:\\docs\\google.robot\">\n<test id=\"s1-s1-t1\" name=\"Test 01\" line=\"6\">... etc""",
+                    "output_alias": "some_cool_alias",
+                },
+            },
+            "folder_with_outputs": {
+                "summary": "Add all outputs from a folder",
+                "description": "Provide a folder path (recursively scanned) where output.xml files are located. Optional tags apply to all added runs.",
+                "value": {
+                    "output_folder_path": "C:\\users\\docs\\prod-outputs",
+                    "output_tags": ["production-run"],
+                },
+            },
+        },
     }
 }
 remove_outputs_model_config = {
@@ -80,85 +102,88 @@ remove_outputs_model_config = {
                 "indexes": ["0", "-1"],
                 "tags": ["tag1", "tag2", "tag3"],
             },
-        ]
+            {"all": True},
+        ],
+        "openapi_examples": {
+            "by_indexes": {
+                "summary": "Remove by index or index range",
+                "description": "Use explicit indexes (including negative for last) or ranges like 'start:stop' to delete runs.",
+                "value": {"indexes": ["0", "-1", "5", "10"]},
+            },
+            "by_run_starts": {
+                "summary": "Remove by run_start timestamps",
+                "description": "Provide one or more run_start datetime strings that match rows in the database.",
+                "value": {
+                    "run_starts": [
+                        "2024-10-14 12:32:59.123456",
+                        "2024-10-14 22:32:59.580309",
+                    ]
+                },
+            },
+            "by_aliases_and_tags": {
+                "summary": "Remove by aliases and tags",
+                "description": "Delete runs using the stored alias names and/or test tags.",
+                "value": {
+                    "aliases": ["alias1", "alias2"],
+                    "indexes": ["0", "-1"],
+                    "tags": ["tag1", "tag2", "tag3"],
+                },
+            },
+            "all": {
+                "summary": "Remove all outputs",
+                "description": "Delete all runs currently stored in the database. This is irreversible.",
+                "value": {"all": True},
+            },
+        },
     }
 }
-add_outputs_openapi_examples = {
-    "output path": {
-        "summary": "When using an absolute path of an output.xml",
-        "description": "When using an absolute path of an output.xml",
-        "value": {
-            "output_path": "C:\\users\\docs\\output.xml",
-            "output_tags": ["tag1", "cool-tag2", "production_tag"],
-        },
-    },
-    "output xml data": {
-        "summary": "When using the raw data of the output.xml and sending that directly",
-        "description": "When using the raw data of the output.xml and sending that directly",
-        "value": {
-            "output_data": """<?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 7.2.2 (Python 3.12.9 on win32)" generated="2025-02-19T17:25:58.443716" rpa="false" schemaversion="5">
-<suite id="s1" name="Scripts" source="C:\\docs">
-<suite id="s1-s1" name="Google" source="C:\\docs\\google.robot">
-<test id="s1-s1-t1" name="Test 01" line="6">... etc""",
-            "output_alias": "some_cool_alias",
-        },
-    },
-    "output folder path": {
-        "summary": "When using an absolute folder path that contains output.xml's",
-        "description": "When using an absolute folder path that contains output.xml's",
-        "value": {
-            "output_folder_path": "C:\\users\\docs\\prod-outputs",
-            "output_tags": ["production-run"],
-        },
-    },
-}
-remove_outputs_openapi_examples = {
-    "indexes": {
-        "summary": "When removing outputs based on indexes",
-        "description": "when removing outputs based on indexes",
-        "value": {"indexes": ["0", "-1", "5", "10"]},
-    },
-    "run_starts": {
-        "summary": "When removing outputs based on run_starts",
-        "description": "When removing outputs based on run_starts",
-        "value": {
-            "run_starts": [
-                "2024-10-14 12:32:59.123456",
-                "2024-10-14 22:32:59.580309",
-            ]
-        },
-    },
-    "aliases, indexes and tags": {
-        "summary": "When removing outputs based on multiple types: aliases, indexes and tags",
-        "description": "When removing outputs based on multiple types: aliases, indexes and tags",
-        "value": {
-            "aliases": ["alias1", "alias2"],
-            "indexes": ["0", "-1"],
-            "tags": ["tag1", "tag2", "tag3"],
-        },
-    },
+get_log_model_config = {
+    "json_schema_extra": {
+        "examples": [
+            {
+                "log_name": "log-20250219-172527.html",
+            }
+        ]
+    }
 }
 add_log_model_config = {
     "json_schema_extra": {
         "examples": [
             {
                 "log_name": "log-20250219-172527.html",
-                "log_data": """<!DOCTYPE html><html lang="en"><head>...etc""",
+                "log_data": '<!DOCTYPE html><html lang="en"><head>...etc',
             }
-        ]
+        ],
+        "openapi_examples": {
+            "single_log": {
+                "summary": "Add a single log HTML",
+                "description": "Provide the log file name (matching the output.xml alias) and the HTML content to store.",
+                "value": {
+                    "log_name": "log-20250219-172527.html",
+                    "log_data": '<!DOCTYPE html><html lang="en"><head>...etc',
+                },
+            }
+        },
     }
 }
 remove_log_model_config = {
     "json_schema_extra": {
         "examples": [
-            {
-                "log_name": "log-20250219-172527.html",
+            {"log_name": "log-20250219-172527.html"},
+            {"all": True},
+        ],
+        "openapi_examples": {
+            "single_log": {
+                "summary": "Remove a single log",
+                "description": "Provide the log file name to delete it from the server log folder.",
+                "value": {"log_name": "log-20250219-172527.html"},
             },
-            {
-                "log_name": "all",
+            "all": {
+                "summary": "Remove all logs",
+                "description": "Delete all log files from the server log folder. This is irreversible.",
+                "value": {"all": True},
             },
-        ]
+        },
     }
 }
 
@@ -170,10 +195,6 @@ class ResponseMessage(BaseModel):
     message: str
     console: str
     model_config = response_message_model_config
-
-
-class AdminJsonConfig(BaseModel):
-    admin_json_config: str
 
 
 class GetOutput(BaseModel):
@@ -204,7 +225,15 @@ class RemoveOutputs(BaseModel):
     indexes: Optional[List[str]] = None
     aliases: Optional[List[str]] = None
     tags: Optional[List[str]] = None
+    all: Optional[bool] = False
     model_config = remove_outputs_model_config
+
+
+class GetLog(BaseModel):
+    """The response model that is returned when getting logs"""
+
+    log_name: str
+    model_config = get_log_model_config
 
 
 class AddLog(BaseModel):
@@ -218,7 +247,8 @@ class AddLog(BaseModel):
 class RemoveLog(BaseModel):
     """The model to remove log files from the server"""
 
-    log_name: str
+    log_name: Optional[str] = None
+    all: Optional[bool] = False
     model_config = remove_log_model_config
 
 
@@ -234,7 +264,9 @@ class ApiServer:
         offline_dependencies: bool,
     ):
         """Init function that starts up the fastapi app and initializes all the vars and endpoints"""
-        self.app = FastAPIOffline(title="Robot Framework Dashboard Server", version=__version__)
+        self.app = FastAPIOffline(
+            title="Robot Framework Dashboard Server", version=__version__
+        )
         self.security = HTTPBasic()
         self.robotdashboard: RobotDashboard
         self.server_host = server_host
@@ -242,7 +274,6 @@ class ApiServer:
         self.server_user = server_user
         self.server_pass = server_pass
         self.offline = offline_dependencies
-        self.admin_json_config = "{}"
         self.log_dir = "robot_logs"
         self.latest_log_dir = None
 
@@ -269,6 +300,12 @@ class ApiServer:
         return admin_html
 
     def _setup_routes(self):
+        def model_examples(model_cls: BaseModel):
+            cfg = getattr(model_cls, "model_config", None)
+            extra = cfg.get("json_schema_extra")
+            openapi_examples = extra.get("openapi_examples")
+            return openapi_examples
+
         def authenticate(credentials: HTTPBasicCredentials = Depends(self.security)):
             if not self.server_user or not self.server_pass:
                 return "anonymous"
@@ -302,9 +339,6 @@ class ApiServer:
         async def dashboard_page():
             """Serve robotdashboard HTML endpoint function"""
             robot_dashboard_html = open("robot_dashboard.html", "r").read()
-            robot_dashboard_html = robot_dashboard_html.replace(
-                '"placeholder_admin_json_config"', self.admin_json_config
-            )
             return robot_dashboard_html
 
         @self.app.get("/log", response_class=HTMLResponse, include_in_schema=False)
@@ -327,36 +361,6 @@ class ApiServer:
                 """
             return HTMLResponse(content=log_html)
 
-        @self.app.get("/get-admin-json-config", include_in_schema=False)
-        async def get_admin_json_config() -> AdminJsonConfig:
-            response = {
-                "admin_json_config": self.admin_json_config,
-            }
-            return response
-
-        @self.app.post("/set-admin-json-config", include_in_schema=False)
-        async def set_admin_json_config(
-            config: AdminJsonConfig,
-        ) -> ResponseMessage:
-            """Adds the config to the class variables for use when generating the dashboard"""
-            console = "no console output"
-            try:
-                self.admin_json_config = config.admin_json_config
-                console = self.robotdashboard.create_dashboard()
-            except Exception as error:
-                response = {
-                    "success": "0",
-                    "message": f"ERROR: something went wrong while setting the admin customized view config: {error}",
-                    "console": console,
-                }
-                return response
-            response = {
-                "success": "1",
-                "message": f"SUCCESS: set the new config and generated the report",
-                "console": console,
-            }
-            return response
-
         @self.app.get("/get-outputs")
         async def get_outputs() -> List[GetOutput]:
             """Get a list of dictionaries containting the runs (run_starts) and names of the runs
@@ -378,7 +382,7 @@ class ApiServer:
         async def add_output_to_database(
             add_output: AddOutput = Body(
                 ...,
-                openapi_examples=add_outputs_openapi_examples,
+                openapi_examples=model_examples(AddOutput),
             ),
         ) -> ResponseMessage:
             """Add output to database endpoint function
@@ -460,7 +464,7 @@ class ApiServer:
         async def remove_outputs_from_database(
             remove_output: RemoveOutputs = Body(
                 ...,
-                openapi_examples=remove_outputs_openapi_examples,
+                openapi_examples=model_examples(RemoveOutputs),
             ),
         ) -> ResponseMessage:
             """Remove outputs from database endpoint function
@@ -471,18 +475,25 @@ class ApiServer:
                 # Because the argparser makes use of the format: [[outputtoremove1], [outputtoremove2]]
                 # We have to create a list of lists with 1 item to match the handling of the API
                 remove_runs = []
-                if remove_output.run_starts != None:
-                    for run in remove_output.run_starts:
-                        remove_runs.append(f"run_start={run}")
-                if remove_output.indexes != None:
-                    for run in remove_output.indexes:
-                        remove_runs.append(f"index={run}")
-                if remove_output.aliases != None:
-                    for run in remove_output.aliases:
-                        remove_runs.append(f"alias={run}")
-                if remove_output.tags != None:
-                    for run in remove_output.tags:
-                        remove_runs.append(f"tag={run}")
+                # Handle 'all' flag: when True, delete all outputs; when False, do nothing special
+                if remove_output.all:
+                    runs, _, _, _ = self.robotdashboard.get_runs()
+                    if len(runs) > 0:
+                        # Use index range to remove all runs efficiently
+                        remove_runs = [f"index=0:{len(runs) - 1}"]
+                else:
+                    if remove_output.run_starts != None:
+                        for run in remove_output.run_starts:
+                            remove_runs.append(f"run_start={run}")
+                    if remove_output.indexes != None:
+                        for run in remove_output.indexes:
+                            remove_runs.append(f"index={run}")
+                    if remove_output.aliases != None:
+                        for run in remove_output.aliases:
+                            remove_runs.append(f"alias={run}")
+                    if remove_output.tags != None:
+                        for run in remove_output.tags:
+                            remove_runs.append(f"tag={run}")
                 console = self.robotdashboard.remove_outputs(remove_runs)
                 console += self.robotdashboard.create_dashboard()
                 response = {
@@ -495,8 +506,25 @@ class ApiServer:
                 response = {"success": "0", "message": message, "console": console}
             return response
 
+        @self.app.get("/get-logs")
+        async def get_logs() -> List[GetLog]:
+            """Get a list containing the log file names currently available on the server"""
+            logs = listdir(self.log_dir) if exists(self.log_dir) else []
+            log_names = [
+                {
+                    "log_name": str(log_name),
+                }
+                for log_name in logs
+            ]
+            return log_names
+
         @self.app.post("/add-log")
-        async def add_log(add_log: AddLog) -> ResponseMessage:
+        async def add_log(
+            add_log: AddLog = Body(
+                ...,
+                openapi_examples=model_examples(AddLog),
+            ),
+        ) -> ResponseMessage:
             """Adds the log file to a folder and updates the database for the required output
             IMPORTANT! The log_name that is provided should be similar to the output.xml that has been uploaded
             If you added 'output-123.xml' then the log should be 'log-123.html', otherwise the database won't update correctly!
@@ -537,11 +565,16 @@ class ApiServer:
             return response
 
         @self.app.delete("/remove-log")
-        async def remove_log(remove_log: RemoveLog) -> ResponseMessage:
+        async def remove_log(
+            remove_log: RemoveLog = Body(
+                ...,
+                openapi_examples=model_examples(RemoveLog),
+            )
+        ) -> ResponseMessage:
             """Removes the log file from the folder on the server"""
             console = ""
             try:
-                if remove_log.log_name.lower() == "all":
+                if remove_log.all:
                     for file in listdir(self.log_dir):
                         remove(join(self.log_dir, file))
                         console += f"Removed {file} from the folder {self.log_dir}\n"
@@ -560,7 +593,7 @@ class ApiServer:
                 return response
             response = {
                 "success": "1",
-                "message": f"SUCCESS: the log file has been removed from the local folder",
+                "message": f"SUCCESS: the log file(s) has been removed from the local folder",
                 "console": console,
             }
             return response
