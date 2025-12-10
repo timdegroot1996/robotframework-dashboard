@@ -70,6 +70,7 @@ The built-in server exposes several HTTP endpoints to manage and serve dashboard
 | `/get-outputs` | Returns a JSON list of stored runs (`run_start`, `alias`, `tags`), callable |
 | `/add-outputs` | Accepts new output data via JSON (file path, raw XML or folder), callable |
 | `/remove-outputs` | Deletes runs by index, alias, `run_start`, or tags, callable |
+| `/get-logs` | Returns a JSON list of stored logs on the server (`log_name`), callable |
 | `/add-log` | Upload HTML log files and associate them with runs (for `uselogs`), callable |
 | `/remove-log` | Remove previously uploaded log files, callable |
 
@@ -95,10 +96,8 @@ You can interact with the server programmatically using HTTP, Python, or Robot F
 These scripts demonstrate how to:
 
 - List existing outputs  
-- Add a new `output.xml` by path or by raw XML content  
+- Add a new `output.xml` by path  
 - Remove runs by index, alias, or timestamp  
-- Upload log files for runs  
-- Remove log files
 
 > **Tip:** to implement your server into your test runs look at the example [listener](/listener-integration.md) integration!
 
