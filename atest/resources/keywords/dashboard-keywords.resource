@@ -69,7 +69,6 @@ Set Date Filter
     IF    '${fromTime}' != '${None}'    Type Text    selector=id=fromTime    txt=${fromTime}    clear=True
     IF    '${toDate}' != '${None}'    Type Text    selector=id=toDate    txt=${toDate}    clear=True
     IF    '${toTime}' != '${None}'    Type Text    selector=id=toTime    txt=${toTime}    clear=True
-    Take Screenshot
     Click    selector=id=closeFilters
 
 Set Amount Filter

@@ -62,7 +62,7 @@ function update_height(verticalId, labels, graphType, internal = false) {
     if (inFullscreen) {
         baseHeight = baseHeight - 103;
     } else { // fix for not in fullscreen take off the svg row and padding
-        baseHeight = baseHeight - 72;
+        baseHeight = baseHeight - 75;
     }
     vertical.style.height = `${baseHeight}px`;
     if (labels > 10 && graphType != "bar") {
