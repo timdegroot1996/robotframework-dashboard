@@ -59,6 +59,24 @@ function setup_section_order() {
     order_sections(settings.view.dashboard.sections, "topDashboardSection");
     order_sections(settings.view.overview.sections, "topOverviewSection");
 
+    // expand only the top section in the overview page
+    const overviewBars = document.querySelectorAll("#overview .overview-bar");
+    overviewBars.forEach((bar, i) => {
+        const btn = bar.querySelector(".collapse-icon");
+        const isExpanded = !!btn.querySelector(".lucide-chevron-down-icon");   // ▼
+        const isCollapsed = !!btn.querySelector(".lucide-chevron-right-icon"); // ▶
+        if (i === 0) {
+            if (isCollapsed) {
+                btn.click();
+            }
+            return;
+        }
+        if (isExpanded) {
+            btn.click();
+        }
+    });
+
+
     if (gridEditMode) {
         document.querySelectorAll(".move-up-section").forEach(btn => { btn.hidden = false })
         document.querySelectorAll(".move-down-section").forEach(btn => { btn.hidden = false })

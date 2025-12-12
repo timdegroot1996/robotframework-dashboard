@@ -161,7 +161,7 @@ function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate)
                                 - Clicking on the run card applies a filter for that project and switches to dashboard
                                 - Clicking on the version element within the run card additionally applies a filter for that version`;
     const projectCard = `
-    <div class="card mb-3 overview-project-card" id="${projectName}Section">
+    <div class="card mb-3 overview-bar overview-project-card" id="${projectName}Section">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto align-self-center">
