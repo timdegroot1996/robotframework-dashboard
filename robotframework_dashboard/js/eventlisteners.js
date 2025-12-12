@@ -33,6 +33,7 @@ import {
 import {
     create_overview_statistics_graphs,
     update_overview_statistics_heading,
+    update_projectbar_visibility,
     set_filter_show_current_project,
     set_filter_show_current_version,
 } from "./graph_creation/overview.js";
@@ -722,8 +723,13 @@ function setup_graph_view_buttons() {
 }
 
 // function to setup collapse buttons and icons
-function setup_collapsables(elementToSearch = document) {
-    elementToSearch.querySelectorAll(".collapse-icon").forEach(icon => {
+function setup_collapsables() {
+    document.querySelectorAll(".collapse-icon").forEach(origIcon => {
+        // Replace the element with a clone to remove existing listeners
+        // required to readd collapsables for overview project sections
+        const icon = origIcon.cloneNode(true);
+        origIcon.replaceWith(icon);
+
         const sectionId = icon.id.replace("collapse", "");
         const update_icon = () => {
             const section = document.getElementById(sectionId);

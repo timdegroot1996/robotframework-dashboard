@@ -90,6 +90,7 @@
         </div>
 
         <div id="overview" hidden>
+            <div id="topOverviewSection" hidden></div>
             <div class="card" id="overviewStatisticsSection">
                 <div class="card-header">
                     <div class="row">
@@ -156,6 +157,10 @@
                                 <a type="button" class="information information-icon ms-2"
                                     id="overviewStatisticsInformation"></a>
                             </div>
+                            <div class="col-auto ms-auto">
+                                <a class="move-up-section information" id="overviewSectionMoveUp" hidden></a>
+                                <a class="move-down-section information" id="overviewSectionMoveDown" hidden></a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -164,11 +169,6 @@
                 <div class="card-body" id="gridOverview">
                     <div id="overviewRunCardsContainer" class="project-run-cards-container"></div>
                 </div>
-            </div>
-        </div>
-        <div id="projectOverview" hidden>
-            <!-- Placeholder to add the project overview-->
-            <div id="projectOverviewData">
             </div>
         </div>
 
@@ -202,7 +202,7 @@
         </div>
 
         <div id="dashboard" hidden>
-            <div id="topSection" hidden></div>
+            <div id="topDashboardSection" hidden></div>
             <div class="card" id="runStatisticsSection">
                 <div class="card-header">
                     <div class="row">
@@ -343,7 +343,8 @@
                                     <select class="form-select form-select-sm" id="keywordSelect"></select>
                                 </div>
                                 <div class="filter-group">
-                                    <label class="form-check-label mb-0" for="switchUseLibraryNames">Use Library Names</label>
+                                    <label class="form-check-label mb-0" for="switchUseLibraryNames">Use Library
+                                        Names</label>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" role="switch"
                                             id="switchUseLibraryNames" />

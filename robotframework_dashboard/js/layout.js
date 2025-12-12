@@ -21,40 +21,58 @@ function setup_section_order() {
     document.getElementById("dashboard").hidden = !(settings.menu.dashboard && !settings.show.unified);
     document.getElementById("compare").hidden = !settings.menu.compare;
     document.getElementById("tables").hidden = !settings.menu.tables;
-    let prevId = "#topSection";
-
-    for (const section of settings.view.dashboard.sections.show) {
-        const sectionId = space_to_camelcase(section + "Section");
-        const sectionEl = document.getElementById(sectionId);
-        sectionEl.hidden = false;
-        $(`#${sectionId}`).insertAfter(prevId);
-        prevId = `#${sectionId}`;
-    }
-    for (const section of settings.view.dashboard.sections.hide) {
-        const sectionId = space_to_camelcase(section + "Section");
-        const sectionEl = document.getElementById(sectionId);
-        if (gridEditMode) {
-            sectionEl.hidden = false;
+    const order_sections = (sectionsConfig, topAnchorId) => {
+        let prevId = `#${topAnchorId}`;
+        // Show
+        for (const section of sectionsConfig.show) {
+            let sectionId;
+            if (section === "Overview Statistics" || topAnchorId !== "topOverviewSection") {
+                // 1. Keep overview statistics as-is (camel-cased id)
+                sectionId = space_to_camelcase(section + "Section");
+            } else {
+                // 2. For overview non-defaults, use raw id pattern: section+"Section"
+                sectionId = section + "Section";
+            }
+            const sectionEl = document.getElementById(sectionId);
+            if (!sectionEl) continue;
+            if (topAnchorId === "topDashboardSection") {
+                sectionEl.hidden = false;
+            }
             $(`#${sectionId}`).insertAfter(prevId);
             prevId = `#${sectionId}`;
-        } else {
-            sectionEl.hidden = true;
         }
-    }
+        // Hide
+        for (const section of sectionsConfig.hide) {
+            const sectionId = space_to_camelcase(section + "Section");
+            const sectionEl = document.getElementById(sectionId);
+            if (!sectionEl) continue;
+            if (gridEditMode) {
+                sectionEl.hidden = false;
+                $(`#${sectionId}`).insertAfter(prevId);
+                prevId = `#${sectionId}`;
+            } else {
+                sectionEl.hidden = true;
+            }
+        }
+    };
+
+    order_sections(settings.view.dashboard.sections, "topDashboardSection");
+    order_sections(settings.view.overview.sections, "topOverviewSection");
 
     if (gridEditMode) {
         document.querySelectorAll(".move-up-section").forEach(btn => { btn.hidden = false })
         document.querySelectorAll(".move-down-section").forEach(btn => { btn.hidden = false })
         document.querySelectorAll(".shown-section, .hidden-section").forEach(btn => {
             const prefix = btn.id.slice(0, 3);
-            const label = prefix.charAt(0).toUpperCase()
-            var shouldShow = false;
-            for (const section of settings.view.dashboard.sections.show) {
-                if (section.startsWith(label)) {
-                    shouldShow = true;
-                    break
-                }
-            }
+            const label = prefix.charAt(0).toUpperCase();
+            // Decide context: dashboard or overview based on the containing section/card
+            const isOverview = !!btn.closest('#overview');
+            const showList = isOverview
+                ? settings.view.overview.sections.show
+                : settings.view.dashboard.sections.show;
+
+            let shouldShow = showList.some(section => section.startsWith(label));
+
             if (btn.classList.contains("shown-section")) {
                 btn.hidden = !shouldShow;
             } else if (btn.classList.contains("hidden-section")) {
@@ -338,13 +356,13 @@ function save_layout() {
         set_local_storage_item("view.tables.graphs.hide", hiddenTables)
     }
     // save dashboard section layout
-    const shownDashboardSections = [...document.querySelectorAll(".shown-section:not([hidden])")]
+    const shownDashboardSections = [...document.querySelectorAll("#dashboard .shown-section:not([hidden])")]
         .map(el => {
             var key = el.id.replace("SectionShown", "");
             key = String(key).charAt(0).toUpperCase() + String(key).slice(1);
             return `${key} Statistics`
         });
-    const hiddenDashboardSections = [...document.querySelectorAll(".hidden-section:not([hidden])")]
+    const hiddenDashboardSections = [...document.querySelectorAll("#dashboard .hidden-section:not([hidden])")]
         .map(el => {
             var key = el.id.replace("SectionHidden", "");
             key = String(key).charAt(0).toUpperCase() + String(key).slice(1);
@@ -353,6 +371,17 @@ function save_layout() {
     if (shownDashboardSections.length + hiddenDashboardSections.length > 0) {
         set_local_storage_item("view.dashboard.sections.show", shownDashboardSections)
         set_local_storage_item("view.dashboard.sections.hide", hiddenDashboardSections)
+    }
+    // save overview section layout always shown
+    const shownOverviewSections = [...document.querySelectorAll("#overview .move-up-section")]
+        .map(el => {
+            if (el.id === "overviewSectionMoveUp") {
+                return "Overview Statistics"
+            }
+            return el.id.replace("SectionMoveUp", "");
+        });
+    if (shownOverviewSections.length > 0) {
+        set_local_storage_item("view.overview.sections.show", shownOverviewSections)
     }
 
     add_alert("Layout has been updated and saved to settings in local storage!", "success")
@@ -384,8 +413,47 @@ function setup_edit_mode_icons(hidden) {
     }
 }
 
+// Reusable handler to wire show/hide and move controls within a container
+function attach_section_order_buttons(containerId) {
+    const root = `#${containerId}`;
+    // Toggle shown/hidden buttons
+    document.querySelectorAll(`${root} .shown-section`).forEach(btn => {
+        btn.addEventListener("click", () => {
+            btn.hidden = true;
+            const target = document.getElementById(`${btn.id.replace("Shown", "Hidden")}`);
+            if (target) target.hidden = false;
+        });
+    });
+    document.querySelectorAll(`${root} .hidden-section`).forEach(btn => {
+        btn.addEventListener("click", () => {
+            btn.hidden = true;
+            const target = document.getElementById(`${btn.id.replace("Hidden", "Shown")}`);
+            if (target) target.hidden = false;
+        });
+    });
+    // Move cards up/down within the container
+    document.querySelectorAll(`${root} .move-up-section`).forEach(btn => {
+        btn.addEventListener("click", () => {
+            const card = btn.closest(".card");
+            const previousCard = card?.previousElementSibling;
+            if (previousCard && !previousCard.hidden && previousCard.classList.contains("card")) {
+                card.parentNode.insertBefore(card, previousCard);
+            }
+        });
+    });
+    document.querySelectorAll(`${root} .move-down-section`).forEach(btn => {
+        btn.addEventListener("click", () => {
+            const card = btn.closest(".card");
+            const nextCard = card?.nextElementSibling;
+            if (nextCard && !nextCard.hidden && nextCard.classList.contains("card")) {
+                card.parentNode.insertBefore(nextCard, card);
+            }
+        });
+    });
+}
+
 // function to add the layout eventlisteners
-function setup_layout() {
+function setup_dashboard_section_layout_buttons() {
     document.addEventListener("graphs-finalized", () => {
         if (gridEditMode) {
             setup_edit_mode_icons(true);
@@ -403,43 +471,19 @@ function setup_layout() {
         save_layout()
         setup_data_and_graphs();
     });
-    // disable or enable sections
-    document.querySelectorAll(".shown-section").forEach(btn => {
-        btn.addEventListener("click", () => {
-            btn.hidden = true;
-            document.getElementById(`${btn.id.replace("Shown", "Hidden")}`).hidden = false;
-        })
-    });
-    document.querySelectorAll(".hidden-section").forEach(btn => {
-        btn.addEventListener("click", () => {
-            btn.hidden = true;
-            document.getElementById(`${btn.id.replace("Hidden", "Shown")}`).hidden = false;
-        })
-    });
-    // move sections up or down
-    document.querySelectorAll(".move-up-section").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const card = btn.closest(".card");
-            const previousCard = card.previousElementSibling;
-            if (previousCard && !previousCard.hidden && previousCard.classList.contains("card")) {
-                card.parentNode.insertBefore(card, previousCard);
-            }
-        });
-    });
-    document.querySelectorAll(".move-down-section").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const card = btn.closest(".card");
-            const nextCard = card.nextElementSibling;
-            if (nextCard && !nextCard.hidden && nextCard.classList.contains("card")) {
-                card.parentNode.insertBefore(nextCard, card);
-            }
-        });
-    });
+    attach_section_order_buttons("dashboard");
+}
+
+// function to separately add the eventlisteners for overview section layout buttons
+// this happens on first render of overview section only
+function setup_overview_section_layout_buttons() {
+    attach_section_order_buttons("overview");
 }
 
 export {
     setup_section_order,
     setup_graph_order,
     setup_tables,
-    setup_layout,
+    setup_dashboard_section_layout_buttons,
+    setup_overview_section_layout_buttons,
 };

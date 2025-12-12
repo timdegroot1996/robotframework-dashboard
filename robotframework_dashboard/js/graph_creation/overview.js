@@ -71,9 +71,8 @@ function create_overview_statistics_graphs(preFilteredRuns = null) {
     }
 }
 
-function update_donut_charts(scopeElement) {
-    const donutContainer = document.getElementById(scopeElement);
-    donutContainer.querySelectorAll(".overview-canvas").forEach(canvas => {
+function update_donut_charts() {
+    document.querySelectorAll(".overview-canvas").forEach(canvas => {
         const chart = canvas.querySelector("canvas").chartInstance;
         if (chart) chart.update();
     });
@@ -123,15 +122,13 @@ function prepare_projects_grouped_data() {
 }
 
 function create_project_overview() {
-    const projectOverviewData = document.getElementById("projectOverviewData");
-    projectOverviewData.innerHTML = "";
     const projectData = { ...projects_by_name, ...projects_by_tag };
     // create run cards for each project
     Object.keys(projectData).sort().forEach(projectName => {
         create_project_cards_container(projectName, projectData[projectName]);
     });
     // setup collapsables specifically for overview project sections
-    setup_collapsables(projectOverviewData);
+    setup_collapsables();
     // set project bar visibility based on switch settings
     update_projectbar_visibility();
 }
@@ -164,7 +161,7 @@ function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate)
                                 - Clicking on the run card applies a filter for that project and switches to dashboard
                                 - Clicking on the version element within the run card additionally applies a filter for that version`;
     const projectCard = `
-    <div class="card mb-3" id="${projectName}Card">
+    <div class="card mb-3 overview-project-card" id="${projectName}Section">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto align-self-center">
@@ -208,6 +205,10 @@ function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate)
                         <div class="col-auto">
                             <a type="button" class="information information-icon ms-2" id="${projectName}Information" data-title="${projectInformation}"></a>
                         </div>
+                        <div class="col-auto ms-auto">
+                            <a class="move-up-section information" id="${projectName}SectionMoveUp" hidden></a>
+                            <a class="move-down-section information" id="${projectName}SectionMoveDown" hidden></a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -216,7 +217,8 @@ function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate)
             </div>
         </div>
     `;
-    projectOverviewData.appendChild(document.createRange().createContextualFragment(projectCard));
+    const overview = document.getElementById("overview")
+    overview.appendChild(document.createRange().createContextualFragment(projectCard));
     // percentage selector
     const projectPercentageSelector = document.getElementById(`${projectName}DurationPercentage`);
     projectPercentageSelector.addEventListener('change', () => {
@@ -374,9 +376,7 @@ function create_overview_run_donut(run, chartElementPostfix, projectName) {
 
 // hide project bars based on switch config
 function update_projectbar_visibility() {
-    const container = document.getElementById("projectOverviewData");
-    if (!container) return;
-    const bars = container.querySelectorAll('[id$="Card"]');
+    const bars = document.querySelectorAll('.overview-project-card');
     const tagged = [];
     const untagged = [];
     for (const el of bars) {

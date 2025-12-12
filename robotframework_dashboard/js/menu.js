@@ -1,12 +1,12 @@
 import { setup_filtered_data_and_filters, update_overview_version_select_list } from "./filter.js";
 import { areGroupedProjectsPrepared } from "./variables/globals.js";
 import { space_to_camelcase } from "./common.js";
-import { set_local_storage_item } from "./localstorage.js";
+import { set_local_storage_item, setup_overview_localstorage } from "./localstorage.js";
 import { setup_dashboard_graphs } from "./graph_creation/all.js";
 import { settings } from "./variables/settings.js";
 import { setup_theme } from "./theme.js";
 import { setup_graph_view_buttons } from "./eventlisteners.js";
-import { setup_section_order, setup_graph_order } from "./layout.js";
+import { setup_section_order, setup_graph_order, setup_overview_section_layout_buttons } from "./layout.js";
 import { setup_information_popups } from "./information.js";
 import { update_overview_statistics_heading, prepare_overview } from "./graph_creation/overview.js";
 
@@ -129,8 +129,6 @@ function update_menu(item) {
     });
     ["menuOverview", "menuDashboard", "menuCompare", "menuTables"].forEach(id => {
         document.getElementById(id).classList.toggle("active", id === item);
-        document.getElementById("customizeLayout").hidden = item == "menuOverview";
-        document.getElementById("projectOverview").hidden = item !== "menuOverview";
     });
     setup_data_and_graphs(true, item === "menuOverview" && !areGroupedProjectsPrepared);
 }
@@ -189,6 +187,8 @@ function setup_data_and_graphs(menuUpdate = false, prepareOverviewProjectData = 
         requestAnimationFrame(() => {
             if (prepareOverviewProjectData) {
                 prepare_overview();
+                setup_overview_localstorage();
+                setup_overview_section_layout_buttons();
                 update_overview_version_select_list();
                 update_overview_statistics_heading();
             }
@@ -231,14 +231,12 @@ function setup_spinner(hide) {
         // Instant transition - hide spinner and show all content immediately
         $("#loading").fadeOut(200);
         $("#overview").fadeIn(200);
-        $("#projectOverview").fadeIn(200);
         $("#unified").fadeIn(200);
         $("#dashboard").fadeIn(200);
         $("#compare").fadeIn(200);
         $("#tables").fadeIn(200);
     } else {
         $("#overview").hide()
-        $("#projectOverview").hide()
         $("#unified").hide()
         $("#dashboard").hide()
         $("#compare").hide()
