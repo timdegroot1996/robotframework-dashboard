@@ -9,12 +9,15 @@ function add_output_path() {
     document.getElementById("addPathSpinner").hidden = false
     const outputPath = document.getElementById("outputPath").value
     const outputTags = document.getElementById("outputTags").value.split(":")
+    const outputVersion = document.getElementById("outputVersion").value
     document.getElementById("outputPath").value = ""
     document.getElementById("outputTags").value = ""
+    document.getElementById("outputVersion").value = ""
 
     const body = JSON.stringify({
         output_path: outputPath,
         output_tags: outputTags,
+        output_version: outputVersion,
     });
     send_request("POST", "/add-outputs", body, "addPathSpinner")
 }
@@ -25,14 +28,17 @@ function add_output_data() {
     const outputData = document.getElementById("outputData").value
     const outputDataTags = document.getElementById("outputDataTags").value.split(":")
     const outputAlias = document.getElementById("outputDataAlias").value
+    const outputDataVersion = document.getElementById("outputDataVersion").value
     document.getElementById("outputData").value = ""
     document.getElementById("outputDataTags").value = ""
     document.getElementById("outputDataAlias").value = ""
+    document.getElementById("outputDataVersion").value = ""
 
     const body = JSON.stringify({
         output_data: outputData,
         output_tags: outputDataTags,
         output_alias: outputAlias,
+        output_version: outputDataVersion,
     });
     send_request("POST", "/add-outputs", body, "addDataSpinner")
 }
@@ -42,12 +48,15 @@ function add_output_folder_path() {
     document.getElementById("addFolderSpinner").hidden = false
     const outputFolderPath = document.getElementById("outputFolderPath").value
     const outputFolderTags = document.getElementById("outputFolderTags").value.split(":")
+    const outputFolderVersion = document.getElementById("outputFolderVersion").value
     document.getElementById("outputFolderPath").value = ""
     document.getElementById("outputFolderTags").value = ""
+    document.getElementById("outputFolderVersion").value = ""
 
     const body = JSON.stringify({
         output_folder_path: outputFolderPath,
         output_tags: outputFolderTags,
+        output_version: outputFolderVersion,
     });
     send_request("POST", "/add-outputs", body, "addFolderSpinner")
 }

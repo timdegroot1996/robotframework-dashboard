@@ -59,33 +59,38 @@
                     <div class="col-2 d-flex">
                         <p class="mt-auto">output.xml</p>
                     </div>
-                    <div class="col-5">
+                    <div class="col-4">
                         <label class="form-label form-label-sm" for="outputPath">Absolute Path (E.g.
                             "C:/users/your_user/output.xml")</label>
                         <input class="form-control form-control-sm" id="outputPath"></input>
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <label class="form-label form-label-sm" for="outputTags">Run Tags (separate with ":")</label>
                         <input class="form-control form-control-sm" id="outputTags"></input>
                     </div>
+                    <div class="col-2">
+                        <label class="form-label form-label-sm" for="outputVersion">Version Label</label>
+                        <input class="form-control form-control-sm" id="outputVersion"></input>
+                    </div>
                     <div class="col-2 d-flex">
-                        <button class="btn btn-outline-light btn-sm mt-auto" id="addOutputPath">Add&nbsp;
+                        <button class="btn btn-success btn-sm btn-success mt-auto" id="addOutputPath">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addPathSpinner" hidden></span>
                         </button>
                     </div>
                 </div>
+                <hr>
                 <div class="row">
                     <div class="col-2 d-flex">
                         <p class="mt-auto">output.xml</p>
                     </div>
-                    <div class="col-5">
+                    <div class="col-4">
                         <label class="form-label form-label-sm mt-1" for="outputData">XML Data (copy paste the
                             output.xml
                             here)</label>
                         <textarea class="form-control form-control-sm" id="outputData" rows="10"></textarea>
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <label class="form-label form-label-sm mt-1" for="outputDataTags">Run Tags (separate with
                             ":")</label>
                         <input class="form-control form-control-sm" id="outputDataTags"></input>
@@ -93,29 +98,38 @@
                         <input class="form-control form-control-sm" id="outputDataAlias"></input>
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-outline-light btn-sm" style="margin-top:36px"
+                        <label class="form-label form-label-sm" for="outputDataVersion">Version Label</label>
+                        <input class="form-control form-control-sm" id="outputDataVersion"></input>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-success btn-sm" style="margin-top:36px"
                             id="addOutputData">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addDataSpinner" hidden></span>
                         </button>
                     </div>
                 </div>
+                <hr>
                 <div class="row">
                     <div class="col-2 d-flex">
                         <p class="mt-auto">output folder</p>
                     </div>
-                    <div class="col-5">
+                    <div class="col-4">
                         <label class="form-label form-label-sm mt-1" for="outputFolderPath">Absolute Path (E.g.
                             "C:/some_folder/your_output_folder")</label>
                         <input class="form-control form-control-sm" id="outputFolderPath"></input>
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <label class="form-label form-label-sm mt-1" for="outputFolderTags">Run Tags (separate with
                             ":")</label>
                         <input class="form-control form-control-sm" id="outputFolderTags"></input>
                     </div>
+                    <div class="col-2">
+                        <label class="form-label form-label-sm" for="outputFolderVersion">Version Label</label>
+                        <input class="form-control form-control-sm" id="outputFolderVersion"></input>
+                    </div>
                     <div class="col-2 d-flex">
-                        <button class="btn btn-outline-light btn-sm mt-auto" id="addOutputFolderPath">Add&nbsp;
+                        <button class="btn btn-success btn-sm mt-auto" id="addOutputFolderPath">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addFolderSpinner" hidden></span>
                         </button>
@@ -168,12 +182,13 @@
                         <input class="form-control form-control-sm" id="removeTags"></input>
                     </div>
                     <div class="col-2 d-flex">
-                        <button class="btn btn-outline-light btn-sm mt-auto" id="removeOutputs">Remove&nbsp;
+                        <button class="btn btn-danger btn-sm mt-auto" id="removeOutputs">Remove&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="removeSpinner" hidden></span>
                         </button>
                     </div>
                 </div>
+                <hr>
                 <div class="row">
                     <div class="col-2 d-flex">
                         <p class="mt-auto">remove all outputs</p>
@@ -181,7 +196,7 @@
                     <div class="col-auto" style="height:67px">
                         <label class="form-label form-label-sm mt-4">This is irreversible, be very
                             careful when using this option!</label>
-                        <button class="ms-2 btn btn-outline-light btn-sm mt-auto form-input"
+                        <button class="ms-2 btn btn-danger btn-sm mt-auto form-input"
                             id="removeAllOutputs">Remove All&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="removeAllOutputsSpinner" hidden></span>
@@ -229,12 +244,13 @@
                         <input class="form-control form-control-sm" id="logName"></input>
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-outline-light btn-sm" style="margin-top:36px" id="addLogData">Add&nbsp;
+                        <button class="btn btn-success btn-sm" style="margin-top:36px" id="addLogData">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addLogDataSpinner" hidden></span>
                         </button>
                     </div>
                 </div>
+                <hr>
                 <div class="row">
                     <div class="col-2 d-flex">
                         <p class="mt-auto">log.html to remove by name</p>
@@ -245,12 +261,13 @@
                         <input class="form-control form-control-sm" id="removeLog"></input>
                     </div>
                     <div class="col-2 d-flex">
-                        <button class="btn btn-outline-light btn-sm mt-auto" id="removeLogData">Remove&nbsp;
+                        <button class="btn btn-danger btn-sm mt-auto" id="removeLogData">Remove&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="removeLogDataSpinner" hidden></span>
                         </button>
                     </div>
                 </div>
+                <hr>
                 <div class="row">
                     <div class="col-2 d-flex">
                         <p class="mt-auto">remove all logs</p>
@@ -258,7 +275,7 @@
                     <div class="col-auto" style="height:67px">
                         <label class="form-label form-label-sm mt-4" for="removeAllLogs">This is irreversible, be very
                             careful when using this option!</label>
-                        <button class="ms-2 btn btn-outline-light btn-sm mt-auto form-input" id="removeAllLogs">Remove
+                        <button class="ms-2 btn btn-danger btn-sm mt-auto form-input" id="removeAllLogs">Remove
                             All&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="removeAllLogsSpinner" hidden></span>
@@ -289,7 +306,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="confirmModalLabel">Please Confirm</h5>
                     <div>
-                        <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5" data-bs-dismiss="modal"
+                        <button type="button" class="btn btn-success btn-sm mt-auto ms-5" data-bs-dismiss="modal"
                             id="closeConfirm">Close</button>
                     </div>
                 </div>
@@ -297,8 +314,8 @@
                     Are you sure you want to proceed?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-light btn-sm" id="confirmCancel">Cancel</button>
-                    <button type="button" class="btn btn-outline-light btn-sm" id="confirmOk">Confirm</button>
+                    <button type="button" class="btn btn-success btn-sm" id="confirmCancel">Cancel</button>
+                    <button type="button" class="btn btn-success btn-sm" id="confirmOk">Confirm</button>
                 </div>
             </div>
         </div>

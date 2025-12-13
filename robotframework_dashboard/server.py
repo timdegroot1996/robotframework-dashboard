@@ -84,6 +84,15 @@ add_output_model_config = {
                     "output_tags": ["production-run"],
                 },
             },
+            "output_with_version": {
+                "summary": "Add an output with a version label",
+                "description": "Provide an output.xml path along with a version string to label the run accordingly. (e.g., software version)",
+                "value": {
+                    "output_path": "C:\\users\\docs\\output.xml",
+                    "output_tags": ["production-run"],
+                    "output_version": "v1.2",
+                },
+            },
         },
     }
 }
@@ -215,6 +224,7 @@ class AddOutput(BaseModel):
     output_folder_path: Optional[str] = None
     output_tags: Optional[List[str]] = None
     output_alias: Optional[str] = None
+    output_version: Optional[str] = None
     model_config = add_output_model_config
 
 
@@ -387,9 +397,9 @@ class ApiServer:
         ) -> ResponseMessage:
             """Add output to database endpoint function
             The following combinations of parameters are valid:
-            1. output_path: str valid path to output.xml (+ optional: output_tags: List[str] tags for that output.xml)
-            2. output_data: str output.xml content (+ optional: output_tags: List[str] tags for that output.xml + optional output_alias)
-            3. output_folder_path: str valid path to folder (might have subfolders) that contain output.xml (multiple allowed) (+ optional: output_tags: List[str] tags for that output.xml)
+            1. output_path: str valid path to output.xml (+ optional 'output_tags: List[str]' or optional 'output_version: str' version)
+            2. output_data: str output.xml content (+ optional 'output_tags: List[str]', optional 'output_alias: str` or optional 'output_version: str' version)
+            3. output_folder_path: str valid path to folder (subfolders are also searched) that contain *output*.xml (+ optional 'output_tags: List[str]' or optional 'output_version: str' version)
             """
             input = "provided input, overwritten on runtime"
             console = "no console output"
@@ -415,6 +425,10 @@ class ApiServer:
                 output_tags = []
                 if add_output.output_tags:
                     output_tags = add_output.output_tags
+                if add_output.output_version:
+                    self.robotdashboard.project_version = add_output.output_version
+                else:
+                    self.robotdashboard.project_version = None
                 if add_output.output_path != None:
                     input = add_output.output_path
                     outputs = [[add_output.output_path, output_tags]]
