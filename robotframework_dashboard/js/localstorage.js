@@ -1,6 +1,8 @@
 import { add_alert } from "./common.js";
+import { overviewSections } from "./variables/graphs.js";
 import { settings } from "./variables/settings.js";
 import { force_json_config, json_config, admin_json_config } from "./variables/data.js";
+import { projects_by_name, projects_by_tag } from "./variables/globals.js";
 
 // function to setup localstorage on first load
 function setup_local_storage() {
@@ -127,7 +129,8 @@ function merge_view(localView, defaultView) {
         result[page] = {
             sections: merge_view_section_or_graph(
                 localPage.sections || {},
-                defaultPage.sections
+                defaultPage.sections,
+                page
             ),
             graphs: merge_view_section_or_graph(
                 localPage.graphs || {},
@@ -139,8 +142,9 @@ function merge_view(localView, defaultView) {
 }
 
 // function to merge view sections or graphs from localstorage with defaults from settings
-function merge_view_section_or_graph(local, defaults) {
+function merge_view_section_or_graph(local, defaults, page = null) {
     const result = { show: [], hide: [] };
+    const isOverview = page === "overview";
     const allowed = new Set([
         ...defaults.show,
         ...defaults.hide
@@ -148,11 +152,17 @@ function merge_view_section_or_graph(local, defaults) {
     const localShow = new Set(local.show || []);
     const localHide = new Set(local.hide || []);
     // 1. Remove values not in defaults (allowed)
+    // For overview, preserve additional dynamic items in SHOW (added later),
+    // but still clean up HIDE to avoid hiding unknown entries.
     for (const val of [...localShow]) {
-        if (!allowed.has(val)) localShow.delete(val);
+        if (!allowed.has(val) && !isOverview) {
+            localShow.delete(val);
+        }
     }
     for (const val of [...localHide]) {
-        if (!allowed.has(val)) localHide.delete(val);
+        if (!allowed.has(val)) {
+            localHide.delete(val);
+        }
     }
     // 2. Add missing defaults: always added to SHOW
     for (const val of allowed) {
@@ -229,10 +239,30 @@ function update_graph_type(graph, type) {
     set_local_storage_item('graphTypes', settings.graphTypes);
 }
 
+// function to setup the overview sections that are dynamically created
+function setup_overview_localstorage() {
+    if (Object.keys(projects_by_name).length > 0) {
+        Object.keys(projects_by_name).forEach(projectName => {
+            overviewSections.push(projectName)
+        });
+    }
+    if (Object.keys(projects_by_tag).length > 0) {
+        Object.keys(projects_by_tag).forEach(tagName => {
+            overviewSections.push(tagName)
+        });
+    }
+    // on first load without localstorage only overview sections is present
+    // if more items are available, set them in localstorage, previous order is lost
+    if (settings.view.overview.sections.show.length < overviewSections.length) {
+        set_local_storage_item("view.overview.sections.show", overviewSections)
+    }
+}
+
 export {
     setup_local_storage,
     set_local_storage_item,
     set_nested_setting,
     update_switch_local_storage,
-    update_graph_type
+    update_graph_type,
+    setup_overview_localstorage
 };
