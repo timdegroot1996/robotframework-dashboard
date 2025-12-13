@@ -136,7 +136,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-auto">
+                            <div class="col-auto me-2">
                                 <div class="btn-group">
                                     <div id="overviewVersionFilterDropDown" class="dropdown">
                                         <button class="btn btn-sm btn-outline-dark dropdown-toggle" type="button"
@@ -151,6 +151,21 @@
                                             <!-- placeholder for overview version listitems -->
                                         </ul>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-auto me-1">
+                                <div class="btn-group">
+                                    <label class="form-label mb-0" for="overviewStatisticsSectionOrder">Sort</label>
+                                </div>
+                                <div class="btn-group">
+                                    <select class="form-select form-select-sm section-order-filter"
+                                        id="overviewStatisticsSectionOrder">
+                                        <option value="newest" selected>Most Recent</option>
+                                        <option value="oldest">Oldest</option>
+                                        <option value="most failed">Most Failed</option>
+                                        <option value="most skipped">Most Skipped</option>
+                                        <option value="most passed">Most Passed</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-auto">

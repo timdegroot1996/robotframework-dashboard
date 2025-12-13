@@ -5,7 +5,7 @@ import { set_local_storage_item, setup_overview_localstorage } from "./localstor
 import { setup_dashboard_graphs } from "./graph_creation/all.js";
 import { settings } from "./variables/settings.js";
 import { setup_theme } from "./theme.js";
-import { setup_graph_view_buttons } from "./eventlisteners.js";
+import { setup_graph_view_buttons, setup_overview_order_filters } from "./eventlisteners.js";
 import { setup_section_order, setup_graph_order, setup_overview_section_layout_buttons } from "./layout.js";
 import { setup_information_popups } from "./information.js";
 import { update_overview_statistics_heading, prepare_overview } from "./graph_creation/overview.js";
@@ -331,6 +331,7 @@ function update_menu(item) {
     ["menuOverview", "menuDashboard", "menuCompare", "menuTables"].forEach(id => {
         document.getElementById(id).classList.toggle("active", id === item);
     });
+    document.getElementById("filters").hidden = (item === "menuOverview");
     setup_data_and_graphs(true, item === "menuOverview" && !areGroupedProjectsPrepared);
 }
 
@@ -390,6 +391,7 @@ function setup_data_and_graphs(menuUpdate = false, prepareOverviewProjectData = 
                 prepare_overview();
                 setup_overview_localstorage();
                 setup_overview_section_layout_buttons();
+                setup_overview_order_filters();
                 update_overview_version_select_list();
                 update_overview_statistics_heading();
             }
