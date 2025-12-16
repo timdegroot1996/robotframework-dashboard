@@ -61,21 +61,6 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-2 d-flex">
-                        <p class="mt-auto">output.xml (file)</p>
-                    </div>
-                    <div class="col-8">
-                        <label class="form-label form-label-sm" for="outputFile">Select output.xml file</label>
-                        <input class="form-control form-control-sm" type="file" id="outputFile">
-                    </div>
-                    <div class="col-2 d-flex">
-                        <button class="btn btn-outline-light btn-sm mt-auto" id="addOutputFile">Upload&nbsp;
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
-                                id="addFileSpinner" hidden></span>
-                        </button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-2 d-flex">
                         <p class="mt-auto">output.xml</p>
                     </div>
                     <div class="col-5">
@@ -137,6 +122,21 @@
                         <button class="btn btn-outline-light btn-sm mt-auto" id="addOutputFolderPath">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addFolderSpinner" hidden></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">output.xml (file)</p>
+                    </div>
+                    <div class="col-8">
+                        <label class="form-label form-label-sm" for="outputFile">Select output.xml file</label>
+                        <input class="form-control form-control-sm" type="file" id="outputFile">
+                    </div>
+                    <div class="col-2 d-flex">
+                        <button class="btn btn-outline-light btn-sm mt-auto" id="addOutputFile">Upload&nbsp;
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="addFileSpinner" hidden></span>
                         </button>
                     </div>
                 </div>
@@ -291,7 +291,8 @@
                                                 <li>It is the <strong>first load</strong> of the dashboard on that
                                                     browser or machine. (Otherwise their previous settings are used)
                                                 </li>
-                                                <li>No <strong>--jsonconfig</strong> option was provided via the CLI when
+                                                <li>No <strong>--jsonconfig</strong> option was provided via the CLI
+                                                    when
                                                     starting the server. (Otherwise that is used)</li>
                                                 <li>You can enforce the admin config to apply by <strong>Settings &gt;
                                                         JSON &gt; Reset Settings JSON</strong></li>
@@ -307,7 +308,8 @@
                                         <li>When the server starts and you open the Admin Page, the browser's
                                             <strong>local storage</strong> will automatically restore the previous
                                             "Admin JSON Config" on the server, provided you are using the same
-                                            machine/browser where it was previously set.</li>
+                                            machine/browser where it was previously set.
+                                        </li>
                                     </ul>
                                 </li>
                             </ul>
