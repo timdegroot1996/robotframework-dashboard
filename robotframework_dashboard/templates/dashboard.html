@@ -90,7 +90,8 @@
         </div>
 
         <div id="overview" hidden>
-            <div class="card" id="overviewStatisticsSection">
+            <div id="topOverviewSection" hidden></div>
+            <div class="card overview-bar" id="overviewStatisticsSection">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-auto align-self-center">
@@ -135,7 +136,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-auto">
+                            <div class="col-auto me-2">
                                 <div class="btn-group">
                                     <div id="overviewVersionFilterDropDown" class="dropdown">
                                         <button class="btn btn-sm btn-outline-dark dropdown-toggle" type="button"
@@ -152,9 +153,28 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-auto me-1">
+                                <div class="btn-group">
+                                    <label class="form-label mb-0" for="overviewStatisticsSectionOrder">Sort</label>
+                                </div>
+                                <div class="btn-group">
+                                    <select class="form-select form-select-sm section-order-filter"
+                                        id="overviewStatisticsSectionOrder">
+                                        <option value="newest" selected>Most Recent</option>
+                                        <option value="oldest">Oldest</option>
+                                        <option value="most failed">Most Failed</option>
+                                        <option value="most skipped">Most Skipped</option>
+                                        <option value="most passed">Most Passed</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="col-auto">
                                 <a type="button" class="information information-icon ms-2"
                                     id="overviewStatisticsInformation"></a>
+                            </div>
+                            <div class="col-auto ms-auto">
+                                <a class="move-up-section information" id="overviewSectionMoveUp" hidden></a>
+                                <a class="move-down-section information" id="overviewSectionMoveDown" hidden></a>
                             </div>
                         </div>
                     </div>
@@ -164,11 +184,6 @@
                 <div class="card-body" id="gridOverview">
                     <div id="overviewRunCardsContainer" class="project-run-cards-container"></div>
                 </div>
-            </div>
-        </div>
-        <div id="projectOverview" hidden>
-            <!-- Placeholder to add the project overview-->
-            <div id="projectOverviewData">
             </div>
         </div>
 
@@ -202,7 +217,7 @@
         </div>
 
         <div id="dashboard" hidden>
-            <div id="topSection" hidden></div>
+            <div id="topDashboardSection" hidden></div>
             <div class="card" id="runStatisticsSection">
                 <div class="card-header">
                     <div class="row">
@@ -343,7 +358,8 @@
                                     <select class="form-select form-select-sm" id="keywordSelect"></select>
                                 </div>
                                 <div class="filter-group">
-                                    <label class="form-check-label mb-0" for="switchUseLibraryNames">Use Library Names</label>
+                                    <label class="form-check-label mb-0" for="switchUseLibraryNames">Use Library
+                                        Names</label>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" role="switch"
                                             id="switchUseLibraryNames" />

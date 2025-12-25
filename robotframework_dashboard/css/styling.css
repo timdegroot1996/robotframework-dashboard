@@ -1,3 +1,10 @@
+#overview,
+#dashboard,
+#unified,
+#compare,
+#tables {
+  margin-bottom: 35vh;
+}
 /* LIGHT MODE STYLING */
 body {
   background-color: #eee;

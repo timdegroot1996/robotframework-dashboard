@@ -33,6 +33,7 @@ import {
 import {
     create_overview_statistics_graphs,
     update_overview_statistics_heading,
+    update_projectbar_visibility,
     set_filter_show_current_project,
     set_filter_show_current_version,
 } from "./graph_creation/overview.js";
@@ -722,8 +723,13 @@ function setup_graph_view_buttons() {
 }
 
 // function to setup collapse buttons and icons
-function setup_collapsables(elementToSearch = document) {
-    elementToSearch.querySelectorAll(".collapse-icon").forEach(icon => {
+function setup_collapsables() {
+    document.querySelectorAll(".collapse-icon").forEach(origIcon => {
+        // Replace the element with a clone to remove existing listeners
+        // required to readd collapsables for overview project sections
+        const icon = origIcon.cloneNode(true);
+        origIcon.replaceWith(icon);
+
         const sectionId = icon.id.replace("collapse", "");
         const update_icon = () => {
             const section = document.getElementById(sectionId);
@@ -748,11 +754,73 @@ function attach_run_card_version_listener(versionElement, projectName, projectVe
     });
 }
 
+function setup_overview_order_filters() {
+    const parseProjectId = (selectId) => selectId.replace(/SectionOrder$/i, "");
+    const parseRunStatsFromCard = (cardEl) => {
+        const text = cardEl.innerText || "";
+        const runMatch = text.match(/#\s*(\d+)/); // e.g., "#8"
+        const passedMatch = text.match(/Passed:\s*(\d+)/i);
+        const failedMatch = text.match(/Failed:\s*(\d+)/i);
+        const skippedMatch = text.match(/Skipped:\s*(\d+)/i);
+        return {
+            runNumber: runMatch ? parseInt(runMatch[1]) : 0,
+            passed: passedMatch ? parseInt(passedMatch[1]) : 0,
+            failed: failedMatch ? parseInt(failedMatch[1]) : 0,
+            skipped: skippedMatch ? parseInt(skippedMatch[1]) : 0,
+        };
+    };
+
+    const reorderProjectCards = (projectId, order) => {
+        // Determine correct container for both overview and project sections
+        const containerId = `${projectId}RunCardsContainer`;
+        const container = document.getElementById(containerId);
+        if (!container) return; // guard against missing containers
+        const cards = Array.from(container.querySelectorAll('.overview-card'));
+        if (cards.length === 0) return;
+        const enriched = cards.map(card => ({ el: card, stats: parseRunStatsFromCard(card) }));
+
+        const cmpDesc = (a, b, key) => (b.stats[key] - a.stats[key]);
+        const cmpAsc = (a, b, key) => (a.stats[key] - b.stats[key]);
+
+        if (order === "oldest" || order.toLowerCase() === "oldest run") {
+            enriched.sort((a, b) => cmpAsc(a, b, 'runNumber'));
+        } else if (order === "most failed") {
+            enriched.sort((a, b) => cmpDesc(a, b, 'failed'));
+        } else if (order === "most skipped") {
+            enriched.sort((a, b) => cmpDesc(a, b, 'skipped'));
+        } else if (order === "most passed") {
+            enriched.sort((a, b) => cmpDesc(a, b, 'passed'));
+        } else {
+            enriched.sort((a, b) => cmpDesc(a, b, 'runNumber'));
+        }
+        const fragment = document.createDocumentFragment();
+        enriched.forEach(item => fragment.appendChild(item.el));
+        container.innerHTML = '';
+        container.appendChild(fragment);
+    };
+
+    document.querySelectorAll('.section-order-filter').forEach(select => {
+        const selectId = select.id;
+        if (selectId === "overviewStatisticsSectionOrder") {
+            select.addEventListener('change', (e) => {
+                create_overview_statistics_graphs();
+            });
+        } else {
+            const projectId = parseProjectId(selectId);
+            select.addEventListener('change', (e) => {
+                const order = (e.target.value || '').toLowerCase();
+                reorderProjectCards(projectId, order);
+            });
+        }
+    });
+}
+
 export {
     setup_filter_modal,
     setup_settings_modal,
     setup_sections_filters,
     setup_graph_view_buttons,
     setup_collapsables,
-    attach_run_card_version_listener
+    attach_run_card_version_listener,
+    setup_overview_order_filters
 };

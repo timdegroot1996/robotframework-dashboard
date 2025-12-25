@@ -7,7 +7,6 @@ import {
 import { update_menu } from '../menu.js';
 import {
     setup_collapsables,
-    setup_filter_checkbox_handler_listeners,
     attach_run_card_version_listener
 } from '../eventlisteners.js';
 import { clockDarkSVG, clockLightSVG, arrowRight } from '../variables/svg.js';
@@ -32,10 +31,11 @@ import {
     areGroupedProjectsPrepared
 } from '../variables/globals.js';
 import { runs, use_logs } from '../variables/data.js';
-import { clear_all_filters, update_filter_active_indicator } from '../filter.js';
+import { clear_all_filters, update_filter_active_indicator, setup_filter_checkbox_handler_listeners } from '../filter.js';
 
 // function to create overview statistics blocks in the overview section
 function create_overview_statistics_graphs(preFilteredRuns = null) {
+    const order = document.getElementById("overviewStatisticsSectionOrder").value;
     const overviewCardsContainer = document.getElementById("overviewRunCardsContainer");
     overviewCardsContainer.innerHTML = '';
     const allProjects = { ...projects_by_name, ...projects_by_tag };
@@ -44,12 +44,31 @@ function create_overview_statistics_graphs(preFilteredRuns = null) {
         const durations = projectRuns.map(r => r.elapsed_s);
         durationsByProject[projectName] = durations;
     }
-    const latestRunByProject = {};
+    let latestRunByProject = {};
     if (!preFilteredRuns) {
         settings.switch.runName && Object.assign(latestRunByProject, latestRunByProjectName);
         settings.switch.runTags && Object.assign(latestRunByProject, latestRunByProjectTag);
     } else { // if called by version filter listener
         Object.assign(latestRunByProject, preFilteredRuns);
+    }
+    // default order by newest (keep current insertion order)
+    if (order === 'oldest') {
+        // Reverse current order while preserving the same key->value pairs
+        latestRunByProject = Object.fromEntries(
+            Object.entries(latestRunByProject).reverse()
+        );
+    } else if (order === 'most failed') {
+        latestRunByProject = Object.fromEntries(
+            Object.entries(latestRunByProject).sort(([, runA], [, runB]) => runB.failed - runA.failed)
+        );
+    } else if (order === 'most skipped') {
+        latestRunByProject = Object.fromEntries(
+            Object.entries(latestRunByProject).sort(([, runA], [, runB]) => runB.skipped - runA.skipped)
+        );
+    } else if (order === 'most passed') {
+        latestRunByProject = Object.fromEntries(
+            Object.entries(latestRunByProject).sort(([, runA], [, runB]) => runB.passed - runA.passed)
+        );
     }
     for (const [projectName, latestRun] of Object.entries(latestRunByProject)) {
         const projectRuns = allProjects[projectName];
@@ -71,9 +90,8 @@ function create_overview_statistics_graphs(preFilteredRuns = null) {
     }
 }
 
-function update_donut_charts(scopeElement) {
-    const donutContainer = document.getElementById(scopeElement);
-    donutContainer.querySelectorAll(".overview-canvas").forEach(canvas => {
+function update_donut_charts() {
+    document.querySelectorAll(".overview-canvas").forEach(canvas => {
         const chart = canvas.querySelector("canvas").chartInstance;
         if (chart) chart.update();
     });
@@ -123,15 +141,13 @@ function prepare_projects_grouped_data() {
 }
 
 function create_project_overview() {
-    const projectOverviewData = document.getElementById("projectOverviewData");
-    projectOverviewData.innerHTML = "";
     const projectData = { ...projects_by_name, ...projects_by_tag };
     // create run cards for each project
     Object.keys(projectData).sort().forEach(projectName => {
         create_project_cards_container(projectName, projectData[projectName]);
     });
     // setup collapsables specifically for overview project sections
-    setup_collapsables(projectOverviewData);
+    setup_collapsables();
     // set project bar visibility based on switch settings
     update_projectbar_visibility();
 }
@@ -164,7 +180,7 @@ function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate)
                                 - Clicking on the run card applies a filter for that project and switches to dashboard
                                 - Clicking on the version element within the run card additionally applies a filter for that version`;
     const projectCard = `
-    <div class="card mb-3" id="${projectName}Card">
+    <div class="card mb-3 overview-bar overview-project-card" id="${projectName}Section">
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto align-self-center">
@@ -187,7 +203,7 @@ function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate)
                                 </select>
                             </div>
                         </div>
-                        <div class="col-auto">
+                        <div class="col-auto me-2">
                             <div class="btn-group">
                                 <div id="${projectName}VersionFilterDropDown" class="dropdown" >
                                     <button class="btn btn-sm btn-outline-dark dropdown-toggle"
@@ -205,8 +221,26 @@ function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate)
                                 <input type="text" class="form-control form-control-sm" id="${projectName}VersionFilterSearch" placeholder="Version Filter...">
                             </div>
                         </div>
+                        <div class="col-auto me-1">
+                            <div class="btn-group">
+                                <label class="form-label mb-0" for="${projectName}SectionOrder">Sort</label>
+                            </div>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm section-order-filter" id="${projectName}SectionOrder">
+                                    <option value="newest" selected>Most Recent</option>
+                                    <option value="oldest">Oldest</option>
+                                    <option value="most failed">Most Failed</option>
+                                    <option value="most skipped">Most Skipped</option>
+                                    <option value="most passed">Most Passed</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-auto">
                             <a type="button" class="information information-icon ms-2" id="${projectName}Information" data-title="${projectInformation}"></a>
+                        </div>
+                        <div class="col-auto ms-auto">
+                            <a class="move-up-section information" id="${projectName}SectionMoveUp" hidden></a>
+                            <a class="move-down-section information" id="${projectName}SectionMoveDown" hidden></a>
                         </div>
                     </div>
                 </div>
@@ -216,7 +250,8 @@ function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate)
             </div>
         </div>
     `;
-    projectOverviewData.appendChild(document.createRange().createContextualFragment(projectCard));
+    const overview = document.getElementById("overview")
+    overview.appendChild(document.createRange().createContextualFragment(projectCard));
     // percentage selector
     const projectPercentageSelector = document.getElementById(`${projectName}DurationPercentage`);
     projectPercentageSelector.addEventListener('change', () => {
@@ -374,9 +409,7 @@ function create_overview_run_donut(run, chartElementPostfix, projectName) {
 
 // hide project bars based on switch config
 function update_projectbar_visibility() {
-    const container = document.getElementById("projectOverviewData");
-    if (!container) return;
-    const bars = container.querySelectorAll('[id$="Card"]');
+    const bars = document.querySelectorAll('.overview-project-card');
     const tagged = [];
     const untagged = [];
     for (const el of bars) {
