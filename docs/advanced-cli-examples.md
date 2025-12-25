@@ -177,11 +177,9 @@ After saving it as a file such as `dashboard_config.json`, you can supply it to 
 ### Settings Logic
 
 1. If `--forcejsonconfig` is set and a `json_config` was provided, use that (merged with defaults).
-2. If `--forcejsonconfig` is set and only an `admin_json_config` is provided, use that (merged with defaults).
-3. If a `settings` item exists in localStorage, use it (merged with defaults). If it fails to parse, fall back to defaults and show an alert.
-4. If not forcing and a `json_config` is provided, use it (merged with defaults).
-5. If not forcing and an `admin_json_config` is provided, use it (merged with defaults).
-6. Otherwise, keep the built-in defaults.
+2. If a `settings` item exists in localStorage, use it (merged with defaults). If it fails to parse, fall back to defaults and show an alert.
+3. If not forcing and a `json_config` is provided, use it (merged with defaults).
+4. Otherwise, keep the built-in defaults.
 
 This order lets you pin a forced config, otherwise prefer what’s already stored, and finally fall back to defaults.
 
