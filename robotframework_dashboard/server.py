@@ -1,5 +1,5 @@
 from fastapi_offline import FastAPIOffline
-from fastapi import Body, Depends, HTTPException, status
+from fastapi import Body, Depends, HTTPException, status, File, UploadFile
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
@@ -453,6 +453,39 @@ class ApiServer:
                 }
             except Exception as error:
                 message = f"Something went wrong while processing {input}, ERROR: {error}, see the browser console for more details!"
+                response = {"success": "0", "message": message, "console": console}
+            return response
+
+        @self.app.post("/add-output-file")
+        async def add_output_file(
+            file: UploadFile = File(...),
+            tags: str = Body(default=""),
+        ) -> ResponseMessage:
+            """Add output file to database endpoint function"""
+            console = "no console output"
+            try:
+                output_path = abspath(file.filename)
+                with open(output_path, "wb") as buffer:
+                    buffer.write(await file.read())
+
+                output_tags = []
+                if tags:
+                    output_tags = tags.split(":")
+
+                outputs = [[output_path, output_tags]]
+                console = self.robotdashboard.process_outputs(
+                    output_file_info_list=outputs
+                )
+                remove(output_path)
+
+                console += self.robotdashboard.create_dashboard()
+                response = {
+                    "success": "1",
+                    "message": f"SUCCESS: processed {file.filename}, see the browser console for more details!",
+                    "console": console,
+                }
+            except Exception as error:
+                message = f"Something went wrong while processing {file.filename}, ERROR: {error}, see the browser console for more details!"
                 response = {"success": "0", "message": message, "console": console}
             return response
 
