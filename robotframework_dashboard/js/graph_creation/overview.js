@@ -316,7 +316,7 @@ function create_project_run_card(run, projectName, runIndex, runNumber, passRate
     const duration_rounded = Math.round(duration);
     const durationsForAvg = durations.filter(item => item !== duration);
     const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
-    const status = run.failed > 0 ? 'failed' : run.skipped > 0 ? 'skipped' : 'passed';
+    const status = run.failed > 0 ? 'failed' : (run.skipped > 0 && run.passed === 0 ? 'skipped' : 'passed');
     const logPath = use_logs ? transform_file_path(run.path).replaceAll('\\', '\\\\') : '';
     const logName = use_logs ? 'log.html' : '';
     const isDark = document.documentElement.classList.contains("dark-mode");
