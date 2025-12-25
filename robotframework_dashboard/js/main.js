@@ -1,6 +1,6 @@
 import { setup_local_storage } from "./localstorage.js";
 import { setup_database_stats } from "./database.js";
-import { setup_layout } from "./layout.js";
+import { setup_dashboard_section_layout_buttons } from "./layout.js";
 import {
     setup_sections_filters,
     setup_collapsables,
@@ -14,7 +14,7 @@ import { setup_menu } from "./menu.js";
 function main() {
     setup_local_storage();
     setup_database_stats();
-    setup_layout();
+    setup_dashboard_section_layout_buttons();
     setup_sections_filters();
     setup_collapsables();
     setup_filter_modal();

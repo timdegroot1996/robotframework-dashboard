@@ -4,6 +4,7 @@ extras = {
     "server": [
         "fastapi_offline>=1.7.5",
         "uvicorn>=0.33.0",
+        "python-multipart",
     ],
 }
 
