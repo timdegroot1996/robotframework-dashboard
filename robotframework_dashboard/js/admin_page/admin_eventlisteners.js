@@ -1,6 +1,7 @@
 import {
     add_output_path,
     add_output_data,
+    add_output_file,
     add_output_folder_path,
     remove_outputs,
     remove_all_outputs,
@@ -13,6 +14,7 @@ import { toggle_theme } from './admin_theme.js';
 function setup_output_button_eventlisteners() {
     // add eventlisteners to all buttons
     document.getElementById("addOutputPath").addEventListener("click", add_output_path);
+    document.getElementById("addOutputFile").addEventListener("click", add_output_file);
     document.getElementById("addOutputData").addEventListener("click", add_output_data);
     document.getElementById("addOutputFolderPath").addEventListener("click", add_output_folder_path);
     document.getElementById("removeOutputs").addEventListener("click", remove_outputs);

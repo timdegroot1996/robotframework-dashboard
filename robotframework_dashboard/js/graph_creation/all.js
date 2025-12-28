@@ -58,7 +58,7 @@ import {
 function setup_dashboard_graphs() {
     if (settings.menu.overview) {
         create_overview_statistics_graphs();
-        update_donut_charts("projectOverviewData");
+        update_donut_charts();
     } else if (settings.menu.dashboard) {
         create_run_statistics_graph();
         create_run_donut_graph();

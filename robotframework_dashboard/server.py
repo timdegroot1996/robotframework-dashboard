@@ -1,5 +1,5 @@
 from fastapi_offline import FastAPIOffline
-from fastapi import Body, Depends, HTTPException, status
+from fastapi import Body, Depends, HTTPException, status, File, UploadFile, Form
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
@@ -474,6 +474,48 @@ class ApiServer:
                 response = {"success": "0", "message": message, "console": console}
             return response
 
+        @self.app.post("/add-output-file")
+        async def add_output_file(
+            file: UploadFile = File(...),
+            tags: str = Form(default=""),
+            version: str = Form(default=""),
+        ) -> ResponseMessage:
+            """Add output file to database endpoint function
+            The tags parameter should be provided as colon-separated values (e.g., 'tag1:tag2:tag3')
+            The version parameter is an optional string to label the run (e.g., software version)
+            """
+            console = "no console output"
+            try:
+                output_path = abspath(file.filename)
+                with open(output_path, "wb") as buffer:
+                    buffer.write(await file.read())
+
+                output_tags = []
+                if tags:
+                    output_tags = tags.split(":")
+
+                if version:
+                    self.robotdashboard.project_version = version
+                else:
+                    self.robotdashboard.project_version = None
+
+                outputs = [[output_path, output_tags]]
+                console = self.robotdashboard.process_outputs(
+                    output_file_info_list=outputs
+                )
+                remove(output_path)
+
+                console += self.robotdashboard.create_dashboard()
+                response = {
+                    "success": "1",
+                    "message": f"SUCCESS: processed {file.filename}, see the browser console for more details!",
+                    "console": console,
+                }
+            except Exception as error:
+                message = f"Something went wrong while processing {file.filename}, ERROR: {error}, see the browser console for more details!"
+                response = {"success": "0", "message": message, "console": console}
+            return response
+
         @self.app.delete("/remove-outputs")
         async def remove_outputs_from_database(
             remove_output: RemoveOutputs = Body(
@@ -589,6 +631,14 @@ class ApiServer:
             console = ""
             try:
                 if remove_log.all:
+                    if not exists(self.log_dir):
+                        console += f"SUCCESS: No logs to remove on the server\n"
+                        response = {
+                            "success": "1",
+                            "message": f"SUCCESS: the log file(s) has been removed from the local folder",
+                            "console": console,
+                        }
+                        return response
                     for file in listdir(self.log_dir):
                         remove(join(self.log_dir, file))
                         console += f"Removed {file} from the folder {self.log_dir}\n"

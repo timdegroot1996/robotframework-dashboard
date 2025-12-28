@@ -135,6 +135,31 @@
                         </button>
                     </div>
                 </div>
+                <hr>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">output.xml (file)</p>
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label form-label-sm" for="outputFile">Select output.xml file</label>
+                        <input class="form-control form-control-sm" type="file" id="outputFile">
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label form-label-sm mt-1" for="outputFileTags">Run Tags (separate with
+                            ":")</label>
+                        <input class="form-control form-control-sm" id="outputFileTags"></input>
+                    </div>
+                     <div class="col-2">
+                        <label class="form-label form-label-sm" for="outputFileVersion">Version Label</label>
+                        <input class="form-control form-control-sm" id="outputFileVersion"></input>
+                    </div>
+                    <div class="col-2 d-flex">
+                        <button class="btn btn-success btn-sm mt-auto" id="addOutputFile">Add&nbsp;
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="addFileSpinner" hidden></span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card">
@@ -306,7 +331,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="confirmModalLabel">Please Confirm</h5>
                     <div>
-                        <button type="button" class="btn btn-success btn-sm mt-auto ms-5" data-bs-dismiss="modal"
+                        <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5" data-bs-dismiss="modal"
                             id="closeConfirm">Close</button>
                     </div>
                 </div>
@@ -314,8 +339,8 @@
                     Are you sure you want to proceed?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success btn-sm" id="confirmCancel">Cancel</button>
-                    <button type="button" class="btn btn-success btn-sm" id="confirmOk">Confirm</button>
+                    <button type="button" class="btn btn-outline-light btn-sm" id="confirmCancel">Cancel</button>
+                    <button type="button" class="btn btn-outline-light btn-sm" id="confirmOk">Confirm</button>
                 </div>
             </div>
         </div>

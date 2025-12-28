@@ -22,6 +22,28 @@ function add_output_path() {
     send_request("POST", "/add-outputs", body, "addPathSpinner")
 }
 
+// function to upload an output file to the database
+function add_output_file() {
+    document.getElementById("addFileSpinner").hidden = false
+    const fileInput = document.getElementById("outputFile")
+    const file = fileInput.files[0]
+
+    if (!file) {
+        alert("Please select a file first!")
+        document.getElementById("addFileSpinner").hidden = true
+        return
+    }
+
+    const formData = new FormData()
+    formData.append("file", file)
+    formData.append("tags", document.getElementById("outputFileTags").value)
+    formData.append("version", document.getElementById("outputFileVersion").value)
+
+    console.log(formData)
+
+    send_request("POST", "/add-output-file", formData, "addFileSpinner")
+}
+
 // function to add an output to the database based on raw data
 function add_output_data() {
     document.getElementById("addDataSpinner").hidden = false
@@ -157,7 +179,9 @@ function get_outputs() {
 function send_request(method, endpoint, body, spinner, notifications = true) {
     const xhr = new XMLHttpRequest();
     xhr.open(method, endpoint);
-    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+    if (endpoint != "/add-output-file") {
+        xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+    }
     xhr.onload = () => {
         if (xhr.readyState == 4 && xhr.status == 200) {
             document.getElementById(spinner).hidden = true
@@ -197,9 +221,6 @@ function get_logs() {
                 index,
                 log.log_name,
             ])
-            console.log(logs)
-            console.log(data)
-
             if (logTable) {
                 logTable.clear();
                 logTable.rows.add(data);
@@ -265,6 +286,7 @@ async function remove_all_logs() {
 
 export {
     add_output_path,
+    add_output_file,
     add_output_data,
     add_output_folder_path,
     remove_outputs,
