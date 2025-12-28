@@ -40,9 +40,10 @@ def main():
     if arguments.start_server:
         try:
             from robotframework_dashboard.server import ApiServer
+            import python_multipart
         except ModuleNotFoundError:
             print(
-                "  ERROR: The packages 'fastapi-offline' and 'uvicorn' are required to run the server!"
+                "  ERROR: The packages 'fastapi-offline', 'uvicorn' and 'python_multipart' are required to run the server!"
             )
             print(
                 "         Please install them using  'pip install robotframework-dashboard[server]'"

@@ -27,7 +27,6 @@ function add_output_file() {
     document.getElementById("addFileSpinner").hidden = false
     const fileInput = document.getElementById("outputFile")
     const file = fileInput.files[0]
-    const outputTags = document.getElementById("outputTags").value
 
     if (!file) {
         alert("Please select a file first!")
@@ -37,28 +36,12 @@ function add_output_file() {
 
     const formData = new FormData()
     formData.append("file", file)
-    formData.append("tags", document.getElementById("outputTags").value)
+    formData.append("tags", document.getElementById("outputFileTags").value)
+    formData.append("version", document.getElementById("outputFileVersion").value)
 
+    console.log(formData)
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/add-output-file");
-    xhr.onload = () => {
-        document.getElementById("addFileSpinner").hidden = true
-        if (xhr.status == 200) {
-            const response = JSON.parse(xhr.responseText);
-            if (response.success == "1") {
-                console.log(response.console)
-                add_alert(response.message, "success")
-            } else {
-                add_alert(response.message, "danger")
-                console.log(response.console)
-            }
-            get_outputs()
-        } else {
-            add_alert(`Error: ${xhr.status}, ${xhr.responseText}`, "danger")
-        }
-    };
-    xhr.send(formData);
+    send_request("POST", "/add-output-file", formData, "addFileSpinner")
 }
 
 // function to add an output to the database based on raw data
@@ -196,7 +179,9 @@ function get_outputs() {
 function send_request(method, endpoint, body, spinner, notifications = true) {
     const xhr = new XMLHttpRequest();
     xhr.open(method, endpoint);
-    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+    if (endpoint != "/add-output-file") {
+        xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+    }
     xhr.onload = () => {
         if (xhr.readyState == 4 && xhr.status == 200) {
             document.getElementById(spinner).hidden = true
@@ -236,9 +221,6 @@ function get_logs() {
                 index,
                 log.log_name,
             ])
-            console.log(logs)
-            console.log(data)
-
             if (logTable) {
                 logTable.clear();
                 logTable.rows.add(data);
