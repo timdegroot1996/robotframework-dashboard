@@ -9,7 +9,7 @@ import {
     setup_collapsables,
     attach_run_card_version_listener
 } from '../eventlisteners.js';
-import { clockDarkSVG, clockLightSVG, arrowRight } from '../variables/svg.js';
+import { clockSVG, arrowRight } from '../variables/svg.js';
 import {
     passedBackgroundColor,
     passedBackgroundBorderColor,
@@ -320,7 +320,7 @@ function create_project_run_card(run, projectName, runIndex, runNumber, passRate
     const logPath = use_logs ? transform_file_path(run.path).replaceAll('\\', '\\\\') : '';
     const logName = use_logs ? 'log.html' : '';
     const isDark = document.documentElement.classList.contains("dark-mode");
-    const svg = isDark ? clockDarkSVG : clockLightSVG;
+    const svg = isDark ? clockSVG("white") : clockSVG("black");
     const compares = compare_to_average(duration, average, percent);
     const projectNameForId = isForOverview ? `overview${projectName}` : projectName;
 

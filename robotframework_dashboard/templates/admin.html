@@ -19,35 +19,31 @@
     </div>
     <nav class="navbar navbar-expand-sm sticky-top navbar-dark ps-4 pe-4 border-bottom pb-1" id="navigation">
         <div class="navbar-nav ms-4">
-            <a class="nav-link p-2 information" id="rflogo" href="https://robotframework.org/" target="_blank"></a>
+            <a class="nav-link information" id="rflogo" href="https://robotframework.org/" target="_blank"></a>
             <a class="nav-item nav-link" id="openDocs" href="/docs">Swagger API Docs</a>
             <a class="nav-item nav-link" id="openDocs" href="/redoc">Redoc API Docs</a>
             <a class="nav-item nav-link" id="openDashboard" href="/dashboard">Dashboard</a>
         </div>
         <ul class="navbar-nav flex-row flex-wrap ms-md-auto me-4">
             <li class="nav-item">
-                <a class="nav-link p-2 information" id="settings" data-bs-toggle="modal"
-                    data-bs-target="#settingsModal"></a>
+                <a class="nav-link information" id="themeDark"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2 information" id="themeDark"></a>
+                <a class="nav-link information" id="themeLight" hidden></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2 information" id="themeLight" hidden></a>
+                <a class="nav-link information" id="versionInformation"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2 information" id="versionInformation"></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link p-2 information" target="_blank" id="bug"
+                <a class="nav-link information" target="_blank" id="bug"
                     href="https://github.com/timdegroot1996/robotframework-dashboard/issues"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2 information" target="_blank" id="github"
+                <a class="nav-link information" target="_blank" id="github"
                     href="https://github.com/timdegroot1996/robotframework-dashboard"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link p-2 information" target="_blank" id="docs"
+                <a class="nav-link information" target="_blank" id="docs"
                     href="https://timdegroot1996.github.io/robotframework-dashboard/"></a>
             </li>
         </ul>
@@ -63,33 +59,38 @@
                     <div class="col-2 d-flex">
                         <p class="mt-auto">output.xml</p>
                     </div>
-                    <div class="col-5">
+                    <div class="col-4">
                         <label class="form-label form-label-sm" for="outputPath">Absolute Path (E.g.
                             "C:/users/your_user/output.xml")</label>
                         <input class="form-control form-control-sm" id="outputPath"></input>
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <label class="form-label form-label-sm" for="outputTags">Run Tags (separate with ":")</label>
                         <input class="form-control form-control-sm" id="outputTags"></input>
                     </div>
+                    <div class="col-2">
+                        <label class="form-label form-label-sm" for="outputVersion">Version Label</label>
+                        <input class="form-control form-control-sm" id="outputVersion"></input>
+                    </div>
                     <div class="col-2 d-flex">
-                        <button class="btn btn-outline-light btn-sm mt-auto" id="addOutputPath">Add&nbsp;
+                        <button class="btn btn-success btn-sm btn-success mt-auto" id="addOutputPath">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addPathSpinner" hidden></span>
                         </button>
                     </div>
                 </div>
+                <hr>
                 <div class="row">
                     <div class="col-2 d-flex">
                         <p class="mt-auto">output.xml</p>
                     </div>
-                    <div class="col-5">
+                    <div class="col-4">
                         <label class="form-label form-label-sm mt-1" for="outputData">XML Data (copy paste the
                             output.xml
                             here)</label>
                         <textarea class="form-control form-control-sm" id="outputData" rows="10"></textarea>
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <label class="form-label form-label-sm mt-1" for="outputDataTags">Run Tags (separate with
                             ":")</label>
                         <input class="form-control form-control-sm" id="outputDataTags"></input>
@@ -97,44 +98,63 @@
                         <input class="form-control form-control-sm" id="outputDataAlias"></input>
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-outline-light btn-sm" style="margin-top:36px"
+                        <label class="form-label form-label-sm" for="outputDataVersion">Version Label</label>
+                        <input class="form-control form-control-sm" id="outputDataVersion"></input>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-success btn-sm" style="margin-top:36px"
                             id="addOutputData">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addDataSpinner" hidden></span>
                         </button>
                     </div>
                 </div>
+                <hr>
                 <div class="row">
                     <div class="col-2 d-flex">
                         <p class="mt-auto">output folder</p>
                     </div>
-                    <div class="col-5">
+                    <div class="col-4">
                         <label class="form-label form-label-sm mt-1" for="outputFolderPath">Absolute Path (E.g.
                             "C:/some_folder/your_output_folder")</label>
                         <input class="form-control form-control-sm" id="outputFolderPath"></input>
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <label class="form-label form-label-sm mt-1" for="outputFolderTags">Run Tags (separate with
                             ":")</label>
                         <input class="form-control form-control-sm" id="outputFolderTags"></input>
                     </div>
+                    <div class="col-2">
+                        <label class="form-label form-label-sm" for="outputFolderVersion">Version Label</label>
+                        <input class="form-control form-control-sm" id="outputFolderVersion"></input>
+                    </div>
                     <div class="col-2 d-flex">
-                        <button class="btn btn-outline-light btn-sm mt-auto" id="addOutputFolderPath">Add&nbsp;
+                        <button class="btn btn-success btn-sm mt-auto" id="addOutputFolderPath">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addFolderSpinner" hidden></span>
                         </button>
                     </div>
                 </div>
+                <hr>
                 <div class="row">
                     <div class="col-2 d-flex">
                         <p class="mt-auto">output.xml (file)</p>
                     </div>
-                    <div class="col-8">
+                    <div class="col-4">
                         <label class="form-label form-label-sm" for="outputFile">Select output.xml file</label>
                         <input class="form-control form-control-sm" type="file" id="outputFile">
                     </div>
+                    <div class="col-2">
+                        <label class="form-label form-label-sm mt-1" for="outputFileTags">Run Tags (separate with
+                            ":")</label>
+                        <input class="form-control form-control-sm" id="outputFileTags"></input>
+                    </div>
+                     <div class="col-2">
+                        <label class="form-label form-label-sm" for="outputFileVersion">Version Label</label>
+                        <input class="form-control form-control-sm" id="outputFileVersion"></input>
+                    </div>
                     <div class="col-2 d-flex">
-                        <button class="btn btn-outline-light btn-sm mt-auto" id="addOutputFile">Upload&nbsp;
+                        <button class="btn btn-success btn-sm mt-auto" id="addOutputFile">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addFileSpinner" hidden></span>
                         </button>
@@ -187,10 +207,38 @@
                         <input class="form-control form-control-sm" id="removeTags"></input>
                     </div>
                     <div class="col-2 d-flex">
-                        <button class="btn btn-outline-light btn-sm mt-auto" id="removeOutputs">Remove&nbsp;
+                        <button class="btn btn-danger btn-sm mt-auto" id="removeOutputs">Remove&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="removeSpinner" hidden></span>
                         </button>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">remove all outputs</p>
+                    </div>
+                    <div class="col-auto" style="height:67px">
+                        <label class="form-label form-label-sm mt-4">This is irreversible, be very
+                            careful when using this option!</label>
+                        <button class="ms-2 btn btn-danger btn-sm mt-auto form-input"
+                            id="removeAllOutputs">Remove All&nbsp;
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="removeAllOutputsSpinner" hidden></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3>Runs In The Database</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col">
+                        <table class="table table-striped" id="runTable"></table>
                     </div>
                 </div>
             </div>
@@ -221,25 +269,57 @@
                         <input class="form-control form-control-sm" id="logName"></input>
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-outline-light btn-sm" style="margin-top:36px" id="addLogData">Add&nbsp;
+                        <button class="btn btn-success btn-sm" style="margin-top:36px" id="addLogData">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addLogDataSpinner" hidden></span>
                         </button>
                     </div>
                 </div>
+                <hr>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">log.html (file)</p>
+                    </div>
+                    <div class="col-8">
+                        <label class="form-label form-label-sm" for="logFile">Select log.html file</label>
+                        <input class="form-control form-control-sm" type="file" id="logFile">
+                    </div>
+                    <div class="col-2 d-flex">
+                        <button class="btn btn-success btn-sm mt-auto" id="addLogFile">Add&nbsp;
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="addLogFileSpinner" hidden></span>
+                        </button>
+                    </div>
+                </div>
+                <hr>
                 <div class="row">
                     <div class="col-2 d-flex">
                         <p class="mt-auto">log.html to remove by name</p>
                     </div>
                     <div class="col-8">
-                        <label class="form-label form-label-sm mt-1" for="removeLog">E.g. "log-20250219-172535.html" or
-                            "all" for everything</label>
+                        <label class="form-label form-label-sm mt-1" for="removeLog">E.g.
+                            "log-20250219-172535.html"</label>
                         <input class="form-control form-control-sm" id="removeLog"></input>
                     </div>
                     <div class="col-2 d-flex">
-                        <button class="btn btn-outline-light btn-sm mt-auto" id="removeLogData">Remove&nbsp;
+                        <button class="btn btn-danger btn-sm mt-auto" id="removeLogData">Remove&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="removeLogDataSpinner" hidden></span>
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">remove all logs</p>
+                    </div>
+                    <div class="col-auto" style="height:67px">
+                        <label class="form-label form-label-sm mt-4" for="removeAllLogs">This is irreversible, be very
+                            careful when using this option!</label>
+                        <button class="ms-2 btn btn-danger btn-sm mt-auto form-input" id="removeAllLogs">Remove
+                            All&nbsp;
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                id="removeAllLogsSpinner" hidden></span>
                         </button>
                     </div>
                 </div>
@@ -247,118 +327,40 @@
         </div>
         <div class="card">
             <div class="card-header">
-                <h3>Runs In The Database</h3>
+                <h3>Logs On The Server</h3>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <p>Use "Run ID" or "Run Start" to remove runs from the database.</p>
-                </div>
-                <div class="row">
+
                     <div class="col">
-                        <table class="table table-striped table-bordered" id="runTable"></table>
+                        <table class="table table-striped" id="logTable"></table>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Settings Modal -->
-        <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title" id="settingsModalLabel">Admin Settings</h1>
-                        <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
-                                data-bs-dismiss="modal" id="closeSettings">Close</button>
-                        </div>
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content mt-5">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">Please Confirm</h5>
+                    <div>
+                        <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5" data-bs-dismiss="modal"
+                            id="closeConfirm">Close</button>
                     </div>
-                    <div class="modal-body">
-                        <h4>Instructions</h4>
-                        <div class="row ms-2 mb-3">
-                            <ul>
-                                <li>Copy & Paste:
-                                    <ul>
-                                        <li>You can copy the "JSON Config" from an existing dashboard and paste it into
-                                            the Admin Page input field.</li>
-                                        <li>If you want to empty the admin JSON Config just put in {} and apply.</li>
-                                    </ul>
-                                </li>
-                                <li>Propagation:
-                                    <ul>
-                                        <li>This setting will automatically apply to dashboards on other machines if all
-                                            of the following conditions are met:
-                                            <ul>
-                                                <li>It is the <strong>first load</strong> of the dashboard on that
-                                                    browser or machine. (Otherwise their previous settings are used)
-                                                </li>
-                                                <li>No <strong>--jsonconfig</strong> option was provided via the CLI
-                                                    when
-                                                    starting the server. (Otherwise that is used)</li>
-                                                <li>You can enforce the admin config to apply by <strong>Settings &gt;
-                                                        JSON &gt; Reset Settings JSON</strong></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>Persistence:
-                                    <ul>
-                                        <li>The "Admin JSON Config" exists <strong>only while the server is
-                                                running</strong>.</li>
-                                        <li>If the server is turned off, the configuration is lost.</li>
-                                        <li>When the server starts and you open the Admin Page, the browser's
-                                            <strong>local storage</strong> will automatically restore the previous
-                                            "Admin JSON Config" on the server, provided you are using the same
-                                            machine/browser where it was previously set.
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-auto">
-                                <button class="btn btn-outline-light btn-sm mt-auto" id="copySettings">Copy
-                                    Settings
-                                </button>
-                            </div>
-                            <div class="col-auto">
-                                <button class="btn btn-outline-light btn-sm mt-auto" id="applySettings">Apply
-                                    Settings<span class="spinner-border spinner-border-sm" role="status"
-                                        aria-hidden="true" id="applySettingsSpinner" hidden></span></button>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col">
-                                <label for="settingsTextArea" class="form-label">Current Settings JSON</label>
-                                <textarea id="settingsTextArea" class="form-control" rows="14"></textarea>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+                <div class="modal-body" id="confirmModalMessage">
+                    Are you sure you want to proceed?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-light btn-sm" id="confirmCancel">Cancel</button>
+                    <button type="button" class="btn btn-outline-light btn-sm" id="confirmOk">Confirm</button>
                 </div>
             </div>
         </div>
-
-        <!-- Confirmation Modal -->
-        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel">
-            <div class="modal-dialog">
-                <div class="modal-content mt-5">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmModalLabel">Please Confirm</h5>
-                        <div>
-                            <button type="button" class="btn btn-outline-light btn-sm mt-auto ms-5"
-                                data-bs-dismiss="modal" id="closeConfirm">Close</button>
-                        </div>
-                    </div>
-                    <div class="modal-body" id="confirmModalMessage">
-                        Are you sure you want to proceed?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-light btn-sm" id="confirmCancel">Cancel</button>
-                        <button type="button" class="btn btn-outline-light btn-sm" id="confirmOk">Confirm</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    </div>
     </div>
 
     <!-- placeholder_javascript -->
