@@ -69,12 +69,14 @@ The built-in server exposes several HTTP endpoints to manage and serve dashboard
 | `/dashboard` | Serves the HTML dashboard (reflects current database), not callable through scripts |
 | `/get-outputs` | Returns a JSON list of stored runs (`run_start`, `alias`, `tags`), callable |
 | `/add-outputs` | Accepts new output data via JSON (file path, raw XML or folder), callable |
-| `/remove-outputs` | Deletes runs by index, alias, `run_start`, or tags, callable |
+| `/add-output-file` | Accepts new output data via file input, callable |
+| `/remove-outputs` | Deletes runs by index, alias, `run_start`, tags or 'all=true' for all outputs, callable |
 | `/get-logs` | Returns a JSON list of stored logs on the server (`log_name`), callable |
-| `/add-log` | Upload HTML log files and associate them with runs (for `uselogs`), callable |
-| `/remove-log` | Remove previously uploaded log files, callable |
+| `/add-log` | Upload HTML a log file and associate them with runs (for `uselogs`), callable |
+| `/add-log-file` | Upload a HTML log file (for `uselogs`), callable |
+| `/remove-log` | Remove previously uploaded log files or provide 'all=true' for all logs, callable |
 
-All API endpoints are documented and described in the server’s own OpenAPI schema, accessible via the admin interface under “API Docs”, after starting the server.
+All API endpoints are documented and described in the server’s own OpenAPI schema, accessible via the admin interface under “Swagger API Docs” or "Redoc API Docs", after starting the server.
 
 ## Security: Basic Auth (Optional)
 
