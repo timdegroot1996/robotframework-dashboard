@@ -1,3 +1,5 @@
+import { getActiveDecorationName } from "./admin_theme.js";
+
 const informationMap = {
     "rflogo": "Robot Framework",
     "settings": "Settings",
@@ -9,10 +11,29 @@ const informationMap = {
     "docs": "Docs",
 }
 
+const holidayGreetings = {
+    christmas: "Robot Framework - Happy Christmas",
+    aprilFools: "Robot Framework - Happy April Fools",
+    stPatricksDay: "Robot Framework - Happy St. Patrick's Day",
+    valentinesDay: "Robot Framework - Happy Valentine's Day",
+    halloween: "Robot Framework - Happy Halloween",
+    piDay: "Robot Framework - Happy Pi Day",
+    earthDay: "Robot Framework - Happy Earth Day",
+    oktoberfest: "Robot Framework - Happy Oktoberfest",
+    easter: "Robot Framework - Happy Easter",
+};
+
 // function to fill the information icons with the correct data
 function setup_information_popups() {
-    for (const id in informationMap) {
-        const title = informationMap[id];
+    const activeDecoration = getActiveDecorationName();
+    const customInfoMap = { ...informationMap };
+
+    if (activeDecoration && holidayGreetings[activeDecoration]) {
+        customInfoMap["rflogo"] = holidayGreetings[activeDecoration];
+    }
+
+    for (const id in customInfoMap) {
+        const title = customInfoMap[id];
         const element = document.getElementById(id);
         if (!element) continue;  // safety check if element not found
         element.setAttribute("data-title", title);

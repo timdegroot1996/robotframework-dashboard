@@ -751,3 +751,9 @@ canvas {
 .list-group-item[hidden] {
   display: none !important;
 }
+
+#navigation .nav-link svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
