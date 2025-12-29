@@ -619,6 +619,47 @@ class ApiServer:
                 "console": console,
             }
             return response
+        
+        @self.app.post("/add-log-file")
+        async def add_log_file(
+            file: UploadFile = File(...),
+        ) -> ResponseMessage:
+            """Add log file to server endpoint function
+            The log file name should match the output.xml alias (e.g., 'log-alias.html' for 'output-alias.xml')
+            """
+            console = ""
+            try:
+                if not exists(self.log_dir):
+                    mkdir(self.log_dir)
+                log_path = join(self.log_dir, file.filename)
+                console += self.robotdashboard.update_output_path(log_path)
+                if "ERROR" in console:
+                    raise Exception(
+                        "A problem occurred while adding the log file, check the console message!"
+                    )
+                console += "======================================================================================\n"
+                with open(log_path, "wb") as buffer:
+                    buffer.write(await file.read())
+                console += f"Added {file.filename} to the folder {self.log_dir}\n"
+                console += "======================================================================================\n"
+                console += self.robotdashboard.create_dashboard()
+                if "ERROR" in console:
+                    raise Exception(
+                        "A problem occurred while adding the log file, check the console message!"
+                    )
+            except Exception as error:
+                response = {
+                    "success": "0",
+                    "message": f"ERROR: something went wrong while adding the log file or updating the database: {error}",
+                    "console": console,
+                }
+                return response
+            response = {
+                "success": "1",
+                "message": f"SUCCESS: the log file has been placed and the database was updated",
+                "console": console,
+            }
+            return response
 
         @self.app.delete("/remove-log")
         async def remove_log(

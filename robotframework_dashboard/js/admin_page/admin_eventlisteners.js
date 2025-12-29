@@ -6,6 +6,7 @@ import {
     remove_outputs,
     remove_all_outputs,
     add_log,
+    add_log_file,
     remove_log,
     remove_all_logs,
 } from './admin_api.js';
@@ -20,6 +21,7 @@ function setup_output_button_eventlisteners() {
     document.getElementById("removeOutputs").addEventListener("click", remove_outputs);
     document.getElementById("removeAllOutputs").addEventListener("click", remove_all_outputs);
     document.getElementById("addLogData").addEventListener("click", add_log);
+    document.getElementById("addLogFile").addEventListener("click", add_log_file);
     document.getElementById("removeLogData").addEventListener("click", remove_log);
     document.getElementById("removeAllLogs").addEventListener("click", remove_all_logs);
     document.getElementById("themeLight").addEventListener("click", () => toggle_theme());

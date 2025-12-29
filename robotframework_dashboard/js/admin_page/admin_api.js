@@ -39,8 +39,6 @@ function add_output_file() {
     formData.append("tags", document.getElementById("outputFileTags").value)
     formData.append("version", document.getElementById("outputFileVersion").value)
 
-    console.log(formData)
-
     send_request("POST", "/add-output-file", formData, "addFileSpinner")
 }
 
@@ -179,7 +177,7 @@ function get_outputs() {
 function send_request(method, endpoint, body, spinner, notifications = true) {
     const xhr = new XMLHttpRequest();
     xhr.open(method, endpoint);
-    if (endpoint != "/add-output-file") {
+    if (endpoint != "/add-output-file" && endpoint != "/add-log-file") {
         xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
     }
     xhr.onload = () => {
@@ -256,6 +254,24 @@ function add_log() {
     send_request("POST", "/add-log", body, "addLogDataSpinner")
 }
 
+// function to upload an log file to the server
+function add_log_file() {
+    document.getElementById("addFileSpinner").hidden = false
+    const fileInput = document.getElementById("logFile")
+    const file = fileInput.files[0]
+
+    if (!file) {
+        alert("Please select a file first!")
+        document.getElementById("addLogFileSpinner").hidden = true
+        return
+    }
+
+    const formData = new FormData()
+    formData.append("file", file)
+
+    send_request("POST", "/add-log-file", formData, "addFileSpinner")
+}
+
 // function to remove outputs from the database
 function remove_log() {
     document.getElementById("removeLogDataSpinner").hidden = false
@@ -294,6 +310,7 @@ export {
     get_outputs,
     get_logs,
     add_log,
+    add_log_file,
     remove_log,
     remove_all_logs,
 };
