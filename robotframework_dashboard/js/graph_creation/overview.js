@@ -32,7 +32,12 @@ import {
     areGroupedProjectsPrepared
 } from '../variables/globals.js';
 import { runs, use_logs } from '../variables/data.js';
-import { clear_all_filters, update_filter_active_indicator, setup_filter_checkbox_handler_listeners } from '../filter.js';
+import {
+    clear_all_filters,
+    update_filter_active_indicator,
+    setup_filter_checkbox_handler_listeners,
+    generate_version_filter_list_item_html
+} from '../filter.js';
 
 // function to create overview statistics blocks in the overview section
 function create_overview_statistics_graphs(preFilteredRuns = null) {
@@ -315,7 +320,7 @@ function create_project_cards_container(projectName, projectRuns, percent = 20) 
 // create a run card that will be displayed within each project section in overview
 function create_project_run_card(run, projectName, runIndex, runNumber, passRate, percent, durations, isForOverview = false) {
     const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
-    const stats = [run.passed, run.failed, run.skipped, run.elapsed_s, run.path];
+    const stats = [run.passed, run.failed, run.skipped, run.elapsed_s, run.path, run.full_name];
     const duration = run.elapsed_s;
     const duration_rounded = format_duration(Number(duration));
     const durationsForAvg = durations.filter(item => item !== duration);
@@ -509,25 +514,32 @@ function generate_overview_card_html(
     const versionsForProject = Object.keys(versionsByProject[projectName]);
     const projectHasVersions = !(versionsForProject.length === 1 && versionsForProject[0] === "None");
     const versionClass = "fw-semibold";
-    let versionTitle = '';
-    if (projectHasVersions) { // version title
-        versionTitle = `
-            <div class="mx-auto run-card-version-title"
-            title="Click to filter for project and version"
-            data-js-target="apply-version-filter">
-                <h5 class="card-title mb-0 d-inline text-muted">Version:</h5>
-                <h5 class="card-title mb-0 d-inline ${versionClass}">
-                    ${normalizedProjectVersion}
-                </h5>
-            </div>
-        `;
-    } else { // empty title
-        versionTitle = `
-            <h5 class="card-title mb-0 ${versionClass}"></h5>
-        `;
-    }
+    
     if (!isForOverview) {
-        cardTitle = versionTitle;
+        // Project bar cards: customize based on project type
+        if (projectName.startsWith('project_')) {
+            // Tagged projects: display name with inline version
+            cardTitle = `
+                <h5 class="card-title mb-0 fw-semibold">${stats[5]}, <span class="text-muted">Version:</span> ${normalizedProjectVersion}</h5>
+            `;
+        } else if (projectHasVersions) {
+            // Non-tagged projects with versions: interactive version title
+            cardTitle = `
+                <div class="mx-auto run-card-version-title"
+                title="Click to filter for project and version"
+                data-js-target="apply-version-filter">
+                    <h5 class="card-title mb-0 d-inline text-muted">Version:</h5>
+                    <h5 class="card-title mb-0 d-inline ${versionClass}">
+                        ${normalizedProjectVersion}
+                    </h5>
+                </div>
+            `;
+        } else {
+            // Non-tagged projects without versions: empty title placeholder
+            cardTitle = `
+                <h5 class="card-title mb-0 ${versionClass}"></h5>
+            `;
+        }
         smallVersionHtml = '';
     }
     return `

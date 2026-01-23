@@ -662,5 +662,6 @@ export {
     setup_filter_checkbox_handler_listeners,
     update_overview_version_select_list,
     clear_all_filters,
-    set_filter_show_current_version
+    set_filter_show_current_version,
+    generate_version_filter_list_item_html
 };
