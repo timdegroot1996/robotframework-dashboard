@@ -2,6 +2,7 @@ import { get_graph_config } from '../graph_data/graph_config.js';
 import {
     compare_to_average,
     transform_file_path,
+    format_duration,
     debounce,
 } from '../common.js';
 import { update_menu } from '../menu.js';
@@ -313,7 +314,7 @@ function create_project_run_card(run, projectName, runIndex, runNumber, passRate
     const avg = arr => arr.reduce((a, b) => a + parseFloat(b), 0) / arr.length;
     const stats = [run.passed, run.failed, run.skipped, run.elapsed_s, run.path];
     const duration = run.elapsed_s;
-    const duration_rounded = Math.round(duration);
+    const duration_rounded = format_duration(Number(duration));
     const durationsForAvg = durations.filter(item => item !== duration);
     const average = durationsForAvg.length ? avg(durationsForAvg) : duration;
     const status = run.failed > 0 ? 'failed' : (run.skipped > 0 && run.passed === 0 ? 'skipped' : 'passed');
@@ -520,7 +521,7 @@ function generate_overview_card_html(
                                     ${svg}
                                 </span>
                                 <i id="${projectNameForElementId}RunCardComparesValue${idPostfix}" value="${rounded_duration}">
-                                    ${rounded_duration}s
+                                    ${rounded_duration}
                                 </i>
                             </div>
                             <div>Passed Runs: ${passed_runs}%</div>
