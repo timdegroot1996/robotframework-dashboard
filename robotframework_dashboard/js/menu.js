@@ -8,7 +8,7 @@ import { setup_theme } from "./theme.js";
 import { setup_graph_view_buttons, setup_overview_order_filters } from "./eventlisteners.js";
 import { setup_section_order, setup_graph_order, setup_overview_section_layout_buttons } from "./layout.js";
 import { setup_information_popups } from "./information.js";
-import { update_overview_statistics_heading, prepare_overview } from "./graph_creation/overview.js";
+import { update_overview_statistics_heading, prepare_overview, update_overview_prefix_display } from "./graph_creation/overview.js";
 
 // Track overview nav listeners so we can cleanly remove them when leaving Overview
 let __overviewNavStore = {
@@ -172,6 +172,10 @@ function setup_overview_section_menu_buttons() {
     const makeButtonForSection = (sectionEl) => {
         const sectionId = sectionEl.id || "";
         let baseName = sectionId.replace(/Section$/i, "");
+        // Apply prefix display setting to tagged sections
+        if (!settings.show.prefixes && baseName.startsWith('project_')) {
+            baseName = baseName.replace(/^project_/, '');
+        }
         if (baseName === "overviewStatistics") baseName = "Overview Statistics";
         const btnId = `overview-${sectionId}Nav`;
         let btn = document.getElementById(btnId);
@@ -242,6 +246,17 @@ function setup_overview_section_menu_buttons() {
             }
             return;
         }
+        // Refresh labels to reflect current prefix setting
+        sections.forEach(section => {
+            const btn = buttonMap.get(section.id);
+            if (!btn) return;
+            let name = section.id.replace(/Section$/i, "");
+            if (!settings.show.prefixes && name.startsWith('project_')) {
+                name = name.replace(/^project_/, '');
+            }
+            const label = btn.querySelector('i');
+            if (label) label.textContent = (name === 'overviewStatistics') ? 'Overview Statistics' : name;
+        });
         // Determine most visible section and neighboring indices
         const bestIndex = compute_best_visible_index(sections);
         const indices = neighbor_indices(bestIndex, sections.length);
@@ -409,6 +424,9 @@ function setup_data_and_graphs(menuUpdate = false, prepareOverviewProjectData = 
                 setup_dashboard_section_menu_buttons();
                 setup_overview_section_menu_buttons();
                 setup_dashboard_graphs();
+
+                // Ensure overview titles reflect current prefix setting
+                update_overview_prefix_display();
 
                 document.dispatchEvent(new Event("graphs-finalized"));
 

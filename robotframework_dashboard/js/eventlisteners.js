@@ -245,6 +245,11 @@ function setup_settings_modal() {
         isNumber: true
     });
 
+    const toggle_prefixes = create_toggle_handler({
+        key: "show.prefixes",
+        elementId: "togglePrefixes"
+    });
+
     // Initial load
     toggle_unified(true);
     toggle_labels(true);
@@ -255,6 +260,7 @@ function setup_settings_modal() {
     toggle_animations(true);
     toggle_animation_duration(true);
     toggle_bar_rounding(true);
+    toggle_prefixes(true);
 
     // Add event listeners
     document.getElementById("toggleUnified").addEventListener("click", () => toggle_unified());
@@ -266,6 +272,7 @@ function setup_settings_modal() {
     document.getElementById("toggleAnimations").addEventListener("click", () => toggle_animations());
     document.getElementById("toggleAnimationDuration").addEventListener("change", () => toggle_animation_duration());
     document.getElementById("toggleBarRounding").addEventListener("change", () => toggle_bar_rounding());
+    document.getElementById("togglePrefixes").addEventListener("click", () => toggle_prefixes());
     document.getElementById("themeLight").addEventListener("click", () => toggle_theme());
     document.getElementById("themeDark").addEventListener("click", () => toggle_theme());
 

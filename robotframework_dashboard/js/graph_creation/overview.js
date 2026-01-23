@@ -173,7 +173,10 @@ function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate)
         `<option value="${val}" ${val === DEFAULT_DURATION_PERCENTAGE ? 'selected' : ''}>${val}</option>`
     ).join('');
     // added here instead of adding to informationMap, since the dynamic IDs don't work with the map
-    const projectInformation = `This section shows the runs associated with the project '${projectName}':
+    const displayProjectName = (!settings.show.prefixes && projectName.startsWith('project_'))
+        ? projectName.replace(/^project_/, '')
+        : projectName;
+    const projectInformation = `This section shows the runs associated with the project '${displayProjectName}':
                                 - Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle. Version filters do not affect this.
                                 - Passed runs represent the percentage of runs with zero failures. Version filters do not affect this.
                                 - The 'Select Versions' dropdown menu allows filtering the runs of the current project by the desired versions. Click 'All' to quickly deselect all other checkboxes.
@@ -190,7 +193,7 @@ function create_project_bar(projectName, projectRuns, totalRunsAmount, passRate)
                         </div>
                     </div>
                     <div class="col-3">
-                        <h4>${projectName}</h4>
+                        <h4>${displayProjectName}</h4>
                         <h6>Total Runs: ${totalRunsAmount} | Passed Runs: ${passRate}%</h6>
                     </div>
                     <div class="d-flex flex-wrap align-items-start col align-items-center">
@@ -423,6 +426,40 @@ function update_projectbar_visibility() {
     toggleVisibility(untagged, settings.switch.runName);
 }
 
+// Update displayed project names to show/hide the 'project_' prefix everywhere
+function update_overview_prefix_display() {
+    const showPrefixes = !!(settings && settings.show && settings.show.prefixes);
+    // Update Overview Statistics card titles
+    const overviewCards = document.querySelectorAll('#overviewRunCardsContainer .overview-card');
+    overviewCards.forEach(card => {
+        const id = card.id; // e.g., overviewproject_1Card0
+        const match = id.match(/^overview(.+?)Card\d+$/);
+        if (!match) return;
+        const originalProjectName = match[1];
+        const headerTitle = card.querySelector('.col.text-center h5.card-title');
+        if (!headerTitle) return;
+        headerTitle.textContent = showPrefixes
+            ? originalProjectName
+            : (originalProjectName.startsWith('project_')
+                ? originalProjectName.replace(/^project_/, '')
+                : originalProjectName);
+    });
+
+    // Update Project Bar section headers
+    const projectBars = document.querySelectorAll('.overview-project-card');
+    projectBars.forEach(section => {
+        const sectionId = section.id; // e.g., project_1Section or MyRunSection
+        const originalProjectName = sectionId.replace(/Section$/, '');
+        const headerTitle = section.querySelector('.card-header h4');
+        if (!headerTitle) return;
+        headerTitle.textContent = showPrefixes
+            ? originalProjectName
+            : (originalProjectName.startsWith('project_')
+                ? originalProjectName.replace(/^project_/, '')
+                : originalProjectName);
+    });
+}
+
 // prevents regeneration of run cards, just changes class for duration highlight
 function update_duration_comparison_for_project(projectName, projectRuns, percentage) {
     for (let i = 0; i < projectRuns.length; i++) {
@@ -616,6 +653,7 @@ export {
     prepare_projects_grouped_data,
     create_project_overview,
     update_projectbar_visibility,
+    update_overview_prefix_display,
     update_donut_charts,
     clear_project_filter,
     prepare_overview,
