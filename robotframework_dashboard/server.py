@@ -7,6 +7,7 @@ from uvicorn import run
 
 from os.path import join, abspath, dirname, exists
 from os import remove, mkdir, listdir
+from gzip import decompress
 from pathlib import Path
 from typing import List, Optional
 from secrets import compare_digest
@@ -486,9 +487,19 @@ class ApiServer:
             """
             console = "no console output"
             try:
-                output_path = abspath(file.filename)
-                with open(output_path, "wb") as buffer:
-                    buffer.write(await file.read())
+                file_bytes = await file.read()
+                # Accept gzipped uploads to reduce bandwidth; decompress before processing
+                if file.filename.endswith(".gzip") or file.filename.endswith(".gz"):
+                    output_filename = Path(file.filename).with_suffix("")
+                    if output_filename.suffix == "":
+                        output_filename = output_filename.with_suffix(".xml")
+                    output_path = abspath(output_filename)
+                    with open(output_path, "wb") as buffer:
+                        buffer.write(decompress(file_bytes))
+                else:
+                    output_path = abspath(file.filename)
+                    with open(output_path, "wb") as buffer:
+                        buffer.write(file_bytes)
 
                 output_tags = []
                 if tags:
@@ -631,15 +642,26 @@ class ApiServer:
             try:
                 if not exists(self.log_dir):
                     mkdir(self.log_dir)
-                log_path = join(self.log_dir, file.filename)
+                file_bytes = await file.read()
+                # Accept gzipped uploads (.gz/.gzip) to reduce bandwidth; decompress before saving
+                if file.filename.endswith(".gzip") or file.filename.endswith(".gz"):
+                    log_filename = Path(file.filename).with_suffix("")
+                    if log_filename.suffix == "":
+                        log_filename = log_filename.with_suffix(".html")
+                    log_path = abspath(join(self.log_dir, log_filename.name))
+                    with open(log_path, "wb") as buffer:
+                        buffer.write(decompress(file_bytes))
+                else:
+                    log_path = abspath(join(self.log_dir, file.filename))
+                    with open(log_path, "wb") as buffer:
+                        buffer.write(file_bytes)
+
                 console += self.robotdashboard.update_output_path(log_path)
                 if "ERROR" in console:
                     raise Exception(
                         "A problem occurred while adding the log file, check the console message!"
                     )
                 console += "======================================================================================\n"
-                with open(log_path, "wb") as buffer:
-                    buffer.write(await file.read())
                 console += f"Added {file.filename} to the folder {self.log_dir}\n"
                 console += "======================================================================================\n"
                 console += self.robotdashboard.create_dashboard()
