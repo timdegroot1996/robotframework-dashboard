@@ -207,9 +207,41 @@ function setup_theme() {
             set_light_mode();
         }
     }
+    
+    // Apply custom theme colors if set
+    apply_theme_colors();
+}
+
+// function to apply custom theme colors
+function apply_theme_colors() {
+    const themeColors = settings.theme_colors || {};
+    const root = document.documentElement;
+    
+    if (themeColors.background) {
+        root.style.setProperty('--custom-bg-color', themeColors.background);
+    }
+    if (themeColors.card) {
+        root.style.setProperty('--custom-card-color', themeColors.card);
+    }
+    if (themeColors.menuText) {
+        root.style.setProperty('--custom-menu-text-color', themeColors.menuText);
+    }
+    if (themeColors.text) {
+        root.style.setProperty('--custom-text-color', themeColors.text);
+    }
+    if (themeColors.passed) {
+        root.style.setProperty('--custom-passed-color', themeColors.passed);
+    }
+    if (themeColors.skipped) {
+        root.style.setProperty('--custom-skipped-color', themeColors.skipped);
+    }
+    if (themeColors.failed) {
+        root.style.setProperty('--custom-failed-color', themeColors.failed);
+    }
 }
 
 export {
     toggle_theme,
-    setup_theme
+    setup_theme,
+    apply_theme_colors
 };

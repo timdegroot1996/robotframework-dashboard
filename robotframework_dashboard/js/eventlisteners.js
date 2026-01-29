@@ -14,7 +14,7 @@ import {
 import { arrowDown, arrowRight } from "./variables/svg.js";
 import { fullscreenButtons, graphChangeButtons, compareRunIds } from "./variables/graphs.js";
 import { add_alert } from "./common.js";
-import { toggle_theme } from "./theme.js";
+import { toggle_theme, apply_theme_colors } from "./theme.js";
 import { setup_data_and_graphs, update_menu } from "./menu.js";
 import {
     setup_run_amount_filter,
@@ -268,6 +268,94 @@ function setup_settings_modal() {
     document.getElementById("toggleBarRounding").addEventListener("change", () => toggle_bar_rounding());
     document.getElementById("themeLight").addEventListener("click", () => toggle_theme());
     document.getElementById("themeDark").addEventListener("click", () => toggle_theme());
+
+    // Theme color handlers
+    const defaultThemeColors = {
+        background: '#0f172a',
+        card: 'rgba(30, 41, 59, 0.9)',
+        menuText: '#ffffff',
+        text: '#eee',
+        passed: '#4ade80',
+        skipped: '#fbbf24',
+        failed: '#f87171'
+    };
+
+    function create_theme_color_handler(colorKey, elementId, resetButtonId) {
+        function load_color() {
+            const element = document.getElementById(elementId);
+            const storedColor = settings.theme_colors?.[colorKey];
+            if (storedColor) {
+                element.value = storedColor;
+            } else {
+                element.value = defaultThemeColors[colorKey];
+            }
+        }
+
+        function update_color() {
+            const element = document.getElementById(elementId);
+            const newColor = element.value;
+            
+            if (!settings.theme_colors) {
+                settings.theme_colors = {};
+            }
+            
+            settings.theme_colors[colorKey] = newColor;
+            set_local_storage_item('theme_colors.' + colorKey, newColor);
+            apply_theme_colors();
+        }
+
+        function reset_color() {
+            const element = document.getElementById(elementId);
+            element.value = defaultThemeColors[colorKey];
+            
+            if (settings.theme_colors) {
+                delete settings.theme_colors[colorKey];
+                set_local_storage_item('theme_colors', settings.theme_colors);
+            }
+            
+            apply_theme_colors();
+        }
+
+        return { load_color, update_color, reset_color };
+    }
+
+    const backgroundColorHandler = create_theme_color_handler('background', 'themeBackgroundColor', 'resetBackgroundColor');
+    const cardColorHandler = create_theme_color_handler('card', 'themeCardColor', 'resetCardColor');
+    const menuTextColorHandler = create_theme_color_handler('menuText', 'themeMenuTextColor', 'resetMenuTextColor');
+    const textColorHandler = create_theme_color_handler('text', 'themeTextColor', 'resetTextColor');
+    const passedColorHandler = create_theme_color_handler('passed', 'themePassedColor', 'resetPassedColor');
+    const skippedColorHandler = create_theme_color_handler('skipped', 'themeSkippedColor', 'resetSkippedColor');
+    const failedColorHandler = create_theme_color_handler('failed', 'themeFailedColor', 'resetFailedColor');
+
+    // Load colors on modal open
+    $("#settingsModal").on("shown.bs.modal", function () {
+        backgroundColorHandler.load_color();
+        cardColorHandler.load_color();
+        menuTextColorHandler.load_color();
+        textColorHandler.load_color();
+        passedColorHandler.load_color();
+        skippedColorHandler.load_color();
+        failedColorHandler.load_color();
+    });
+
+    // Add event listeners for color inputs
+    document.getElementById('themeBackgroundColor').addEventListener('change', () => backgroundColorHandler.update_color());
+    document.getElementById('themeCardColor').addEventListener('change', () => cardColorHandler.update_color());
+    document.getElementById('themeMenuTextColor').addEventListener('change', () => menuTextColorHandler.update_color());
+    document.getElementById('themeTextColor').addEventListener('change', () => textColorHandler.update_color());
+    document.getElementById('themePassedColor').addEventListener('change', () => passedColorHandler.update_color());
+    document.getElementById('themeSkippedColor').addEventListener('change', () => skippedColorHandler.update_color());
+    document.getElementById('themeFailedColor').addEventListener('change', () => failedColorHandler.update_color());
+
+    // Add event listeners for reset buttons
+    document.getElementById('resetBackgroundColor').addEventListener('click', () => backgroundColorHandler.reset_color());
+    document.getElementById('resetCardColor').addEventListener('click', () => cardColorHandler.reset_color());
+    document.getElementById('resetMenuTextColor').addEventListener('click', () => menuTextColorHandler.reset_color());
+    document.getElementById('resetTextColor').addEventListener('click', () => textColorHandler.reset_color());
+    document.getElementById('resetPassedColor').addEventListener('click', () => passedColorHandler.reset_color());
+    document.getElementById('resetSkippedColor').addEventListener('click', () => skippedColorHandler.reset_color());
+    document.getElementById('resetFailedColor').addEventListener('click', () => failedColorHandler.reset_color());
+
 
     function show_settings_in_textarea() {
         const textArea = document.getElementById("settingsTextArea");
