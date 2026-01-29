@@ -18,5 +18,8 @@ Validate Overview Page Base View
 
 Validate Overview Page Use Run Tags
     Open Overview Page
+    Click    selector=id=settings
+    Click    selector=id=overview-tab
     Click    selector=id=switchRunTags
+    Click    selector=id=closeSettings
     Validate Component    id=overviewLatestRunsSection    name=runTags    folder=overview
