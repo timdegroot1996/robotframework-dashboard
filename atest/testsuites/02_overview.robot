@@ -14,9 +14,9 @@ Test Teardown    Run Keywords    Close Dashboard    Remove Database And Dashboar
 *** Test Cases ***
 Validate Overview Page Base View
     Open Overview Page
-    Validate Component    id=overviewStatisticsSection    name=baseView    folder=overview
+    Validate Component    id=overviewLatestRunsSection    name=baseView    folder=overview
 
 Validate Overview Page Use Run Tags
     Open Overview Page
     Click    selector=id=switchRunTags
-    Validate Component    id=overviewStatisticsSection    name=runTags    folder=overview
+    Validate Component    id=overviewLatestRunsSection    name=runTags    folder=overview
