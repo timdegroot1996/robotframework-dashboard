@@ -8,7 +8,7 @@ import { setup_theme } from "./theme.js";
 import { setup_graph_view_buttons, setup_overview_order_filters } from "./eventlisteners.js";
 import { setup_section_order, setup_graph_order, setup_overview_section_layout_buttons } from "./layout.js";
 import { setup_information_popups } from "./information.js";
-import { update_overview_statistics_heading, prepare_overview, update_overview_prefix_display } from "./graph_creation/overview.js";
+import { prepare_overview, update_overview_prefix_display } from "./graph_creation/overview.js";
 
 // Track overview nav listeners so we can cleanly remove them when leaving Overview
 let __overviewNavStore = {
@@ -176,7 +176,6 @@ function setup_overview_section_menu_buttons() {
         if (!settings.show.prefixes && baseName.startsWith('project_')) {
             baseName = baseName.replace(/^project_/, '');
         }
-        if (baseName === "overviewStatistics") baseName = "Overview Statistics";
         const btnId = `overview-${sectionId}Nav`;
         let btn = document.getElementById(btnId);
         if (!btn) {
@@ -255,7 +254,6 @@ function setup_overview_section_menu_buttons() {
                 name = name.replace(/^project_/, '');
             }
             const label = btn.querySelector('i');
-            if (label) label.textContent = (name === 'overviewStatistics') ? 'Overview Statistics' : name;
         });
         // Determine most visible section and neighboring indices
         const bestIndex = compute_best_visible_index(sections);
@@ -312,7 +310,6 @@ function get_most_visible_section() {
         "keywordTableCanvas"
     ];
     const viewportTop = window.scrollY;
-    const viewportBottom = viewportTop + window.innerHeight;
     const focusTop = viewportTop + window.innerHeight * 0.2;
     const focusBottom = viewportTop + window.innerHeight * 0.5;
 
@@ -408,7 +405,6 @@ function setup_data_and_graphs(menuUpdate = false, prepareOverviewProjectData = 
                 setup_overview_section_layout_buttons();
                 setup_overview_order_filters();
                 update_overview_version_select_list();
-                update_overview_statistics_heading();
             }
             setup_filtered_data_and_filters();
             setup_section_order();

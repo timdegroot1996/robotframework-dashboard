@@ -1,4 +1,5 @@
 import { runs, keywords, filteredAmount, filteredAmountDefault, server } from './variables/data.js';
+import { settings } from "./variables/settings.js";
 import {
     showingRunTags,
     ignoreSkips,
@@ -31,11 +32,15 @@ import {
     update_graph_type,
 } from "./localstorage.js";
 import {
-    create_overview_statistics_graphs,
-    update_overview_statistics_heading,
+    create_overview_latest_graphs,
+    create_overview_total_graphs,
+    update_overview_latest_heading,
+    update_overview_total_heading,
+    update_overview_sections_visibility,
     update_projectbar_visibility,
     set_filter_show_current_project,
     set_filter_show_current_version,
+    update_overview_filter_visibility,
 } from "./graph_creation/overview.js";
 import { create_run_donut_total_graph, create_run_heatmap_graph } from "./graph_creation/run.js";
 import {
@@ -369,24 +374,61 @@ function confirm_action(message = "Are you sure?") {
 function setup_sections_filters() {
     update_switch_local_storage("switch.runTags", settings.switch.runTags, true);
     update_switch_local_storage("switch.runName", settings.switch.runName, true);
+    update_switch_local_storage("switch.totalStats", settings.switch.totalStats, true);
+    update_switch_local_storage("switch.latestRuns", settings.switch.latestRuns, true);
+    update_switch_local_storage("switch.percentageFilters", settings.switch.percentageFilters, true);
+    update_switch_local_storage("switch.versionFilters", settings.switch.versionFilters, true);
+    update_switch_local_storage("switch.sortFilters", settings.switch.sortFilters, true);
     document.getElementById("switchRunTags").addEventListener("click", function () {
         settings.switch.runTags = !settings.switch.runTags
         update_switch_local_storage("switch.runTags", settings.switch.runTags);
-        create_overview_statistics_graphs();
-        update_overview_statistics_heading();
+        // create latest and total bars and set visibility
+        create_overview_latest_graphs();
+        update_overview_latest_heading();
+        create_overview_total_graphs();
+        update_overview_total_heading();
+        update_overview_sections_visibility();
+        // update all tagged bars
         update_overview_version_select_list();
         update_projectbar_visibility();
     });
     document.getElementById("switchRunName").addEventListener("click", function () {
         settings.switch.runName = !settings.switch.runName
         update_switch_local_storage("switch.runName", settings.switch.runName);
-        create_overview_statistics_graphs();
-        update_overview_statistics_heading();
+        // create latest and total bars and set visibility
+        create_overview_latest_graphs();
+        update_overview_latest_heading();
+        create_overview_total_graphs();
+        update_overview_total_heading();
+        update_overview_sections_visibility();
+        // update all named project bars
         update_overview_version_select_list();
         update_projectbar_visibility();
     });
-    document.getElementById("overviewDurationPercentage").addEventListener("change", function () {
-        create_overview_statistics_graphs();
+    document.getElementById("switchLatestRuns").addEventListener("click", function () {
+        settings.switch.latestRuns = !settings.switch.latestRuns
+        update_switch_local_storage("switch.latestRuns", settings.switch.latestRuns);
+        update_overview_sections_visibility();
+    });
+    document.getElementById("switchTotalStats").addEventListener("click", function () {
+        settings.switch.totalStats = !settings.switch.totalStats
+        update_switch_local_storage("switch.totalStats", settings.switch.totalStats);
+        update_overview_sections_visibility();
+    });
+    document.getElementById("switchPercentageFilters").addEventListener("click", function () {
+        settings.switch.percentageFilters = !settings.switch.percentageFilters
+        update_switch_local_storage("switch.percentageFilters", settings.switch.percentageFilters);
+        update_overview_filter_visibility();
+    });
+    document.getElementById("switchSortFilters").addEventListener("click", function () {
+        settings.switch.sortFilters = !settings.switch.sortFilters
+        update_switch_local_storage("switch.sortFilters", settings.switch.sortFilters);
+        update_overview_filter_visibility();
+    });
+    document.getElementById("switchVersionFilters").addEventListener("click", function () {
+        settings.switch.versionFilters = !settings.switch.versionFilters
+        update_switch_local_storage("switch.versionFilters", settings.switch.versionFilters);
+        update_overview_filter_visibility();
     });
     document.getElementById("suiteSelectSuites").addEventListener("change", () => {
         create_suite_duration_graph();
@@ -761,6 +803,7 @@ function attach_run_card_version_listener(versionElement, projectName, projectVe
     });
 }
 
+// this function setups the project bar "sort by" filters eventlisteners
 function setup_overview_order_filters() {
     const parseProjectId = (selectId) => selectId.replace(/SectionOrder$/i, "");
     const parseRunStatsFromCard = (cardEl) => {
@@ -808,9 +851,9 @@ function setup_overview_order_filters() {
 
     document.querySelectorAll('.section-order-filter').forEach(select => {
         const selectId = select.id;
-        if (selectId === "overviewStatisticsSectionOrder") {
+        if (selectId === "overviewLatestSectionOrder") {
             select.addEventListener('change', (e) => {
-                create_overview_statistics_graphs();
+                create_overview_latest_graphs();
             });
         } else {
             const projectId = parseProjectId(selectId);

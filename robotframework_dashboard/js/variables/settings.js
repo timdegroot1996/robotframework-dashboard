@@ -15,6 +15,11 @@ var settings = {
     switch: {
         runTags: false,
         runName: true,
+        totalStats: true,
+        latestRuns: true,
+        percentageFilters: true,
+        versionFilters: true,
+        sortFilters: true,
         suitePathsSuiteSection: false,
         suitePathsTestSection: false,
         suitePathsCompareSection: false,

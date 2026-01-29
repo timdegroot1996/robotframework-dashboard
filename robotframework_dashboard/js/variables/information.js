@@ -13,16 +13,18 @@ const informationMap = {
     "docs": "Docs",
     "amount": "Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.",
     "amountLabel": "Amount of runs that are shown. Only the most recent x runs are shown after applying the other filters.",
-    "overviewStatisticsInformation": `This section shows the projects and their associated runs:
-- Overview Statistics show the latest result for each project
-- The additional project bars contain all runs for that project
-- You can define your own projects or groupings by appending '-o path/to/output.xml:project_yourprojectname' when generating results.
-- If runs don't include custom 'project_' tags, they will be grouped by their run name by default.
-- Choose which project types to show by toggling their respective "Display by" switch.
-- Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle.
+    "overviewTotalInformation": `This section displays aggregate statistics across all runs:
+- Passed/Failed/Skipped Runs: total count of runs with each status
+- Average Duration: the mean duration across all runs in the project
+- Average Pass Rate: the mean pass rate across all runs in the project
+- Check out all options in the settings: 'Gear Icon' > 'Overview'`,
+    "overviewLatestInformation": `This section displays the latest run for each project:
+- Duration color indicates performance relative to the average: green if more than x% faster, red if more than x% slower. You can adjust this threshold using the Percentage toggle. Version filters do not affect this.
 - Passed runs represent the percentage of runs with zero failures.
+- The 'Select Versions' dropdown menu allows filtering by desired versions. Click 'All' to quickly deselect all other checkboxes.
+- The runs can also be filtered to only those whose version contains the text entered in the 'Version Filter...' input.
 - Clicking on the run card applies a filter for that project and switches to dashboard
-- Clicking on the version element within the run card additionally applies a filter for that version`,
+- Check out all options in the settings: 'Gear Icon' > 'Overview'`,
     "unifiedStatisticsInformation": `This section provides unified statistics across all projects and runs:
 - It combines run/suite/test/keyword data from all projects into a single dashboard view.
 - You can apply the filters (menu filter icon) to focus on specific projects, versions, or timeframes.

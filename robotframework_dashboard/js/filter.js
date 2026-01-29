@@ -496,57 +496,61 @@ function unselect_checkboxes(checkBoxesToUnselect) {
     }
 }
 
-function handle_overview_version_selection(overviewVersionSelectorList, latestRunByProject) {
+function handle_overview_latest_version_selection(overviewVersionSelectorList, latestRunByProject) {
     const selectedOptions = Array.from(
         overviewVersionSelectorList.querySelectorAll("input:checked")
     ).map(inputElement => inputElement.value);
     if (selectedOptions.includes("All")) {
-        create_overview_statistics_graphs(latestRunByProject);
+        create_overview_latest_graphs(latestRunByProject);
     } else {
         const filteredLatestRunByProject = Object.fromEntries(
             Object.entries(latestRunByProject)
                 .filter(([projectName, run]) => selectedOptions.includes(run.project_version ?? "None"))
         );
-        create_overview_statistics_graphs(filteredLatestRunByProject);
+        create_overview_latest_graphs(filteredLatestRunByProject);
     }
-    update_overview_statistics_heading();
+    update_overview_latest_heading();
 }
 
+// this function updates the version select list in the latest runs bar
 function update_overview_version_select_list() {
-    const overviewVersionSelectorList = document.getElementById("overviewVersionSelectorList");
-    overviewVersionSelectorList.innerHTML = '';
-    if (!settings.switch.runName && !settings.switch.runTags) return;
-    const filteredLatestRunByProject = {};
-    settings.switch.runName && Object.assign(filteredLatestRunByProject, latestRunByProjectName);
-    settings.switch.runTags && Object.assign(filteredLatestRunByProject, latestRunByProjectTag);
-    const runAmountByVersion = {};
-    for (const run of Object.values(filteredLatestRunByProject)) {
-        const projectVersion = run.project_version ?? "None";
-        runAmountByVersion[projectVersion] ??= 0;
-        runAmountByVersion[projectVersion]++;
+    const overviewLatestVersionSelectorList = document.getElementById("overviewLatestVersionSelectorList");
+    if (overviewLatestVersionSelectorList) {
+        overviewLatestVersionSelectorList.innerHTML = '';
+        if (settings.switch.runName || settings.switch.runTags) {
+            const filteredLatestRunByProject = {};
+            settings.switch.runName && Object.assign(filteredLatestRunByProject, latestRunByProjectName);
+            settings.switch.runTags && Object.assign(filteredLatestRunByProject, latestRunByProjectTag);
+            const runAmountByVersion = {};
+            for (const run of Object.values(filteredLatestRunByProject)) {
+                const projectVersion = run.project_version ?? "None";
+                runAmountByVersion[projectVersion] ??= 0;
+                runAmountByVersion[projectVersion]++;
+            }
+            const allVersionAmountInFilter = Object.keys(runAmountByVersion).length;
+            const versionFilterListItemAllHtml = generate_version_filter_list_item_html("All", "overviewLatest", "checked", allVersionAmountInFilter, "version");
+            const specificVersionFilterListItemHtml = Object.keys(runAmountByVersion)
+                .sort()
+                .reverse()
+                .map(version => {
+                    return generate_version_filter_list_item_html(
+                        version,
+                        "overviewLatest",
+                        "", //not checked
+                        runAmountByVersion[version],
+                        "run"
+                    )
+                }).join('');
+            overviewLatestVersionSelectorList.innerHTML = versionFilterListItemAllHtml + specificVersionFilterListItemHtml;
+            const allCheckBox = document.getElementById("overviewLatestVersionFilterListItemAllInput");
+            setup_filter_checkbox_handler_listeners(
+                overviewLatestVersionSelectorList,
+                allCheckBox,
+                "overviewLatestVersionSelectedIndicator",
+                () => { handle_overview_latest_version_selection(overviewLatestVersionSelectorList, filteredLatestRunByProject) }
+            );
+        }
     }
-    const allVersionAmountInFilter = Object.keys(runAmountByVersion).length;
-    const versionFilterListItemAllHtml = generate_version_filter_list_item_html("All", "overview", "checked", allVersionAmountInFilter, "version");
-    const specificVersionFilterListItemHtml = Object.keys(runAmountByVersion)
-        .sort()
-        .reverse()
-        .map(version => {
-            return generate_version_filter_list_item_html(
-                version,
-                "overview",
-                "", //not checked
-                runAmountByVersion[version],
-                "run"
-            )
-        }).join('');
-    overviewVersionSelectorList.innerHTML = versionFilterListItemAllHtml + specificVersionFilterListItemHtml;
-    const allCheckBox = document.getElementById("overviewVersionFilterListItemAllInput");
-    setup_filter_checkbox_handler_listeners(
-        overviewVersionSelectorList,
-        allCheckBox,
-        "overviewVersionSelectedIndicator",
-        () => { handle_overview_version_selection(overviewVersionSelectorList, filteredLatestRunByProject) }
-    );
 }
 
 // for runTag/version filter popup and overview
