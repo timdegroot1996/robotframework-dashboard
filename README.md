@@ -83,3 +83,8 @@ And many thanks to the following people for contributing to the project with fee
 This project is licensed under the MIT License.
 
 > **Note:** This project is not officially affiliated with or endorsed by Robot Framework.
+
+## 🎬 RoboCon Talk
+See also my 2025 [RoboCon](https://robocon.io) talk, where I explain robotdashboard and its use cases. Note that the UI has improved significantly since then.
+
+[![Robocon 2025 talk](https://img.youtube.com/vi/olf1_pd9YfM/0.jpg)](https://www.youtube.com/watch?v=olf1_pd9YfM)
