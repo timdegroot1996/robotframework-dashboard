@@ -29,6 +29,7 @@ class RobotDashboard:
         offline_dependencies: bool,
         force_json_config: bool,
         project_version: str,
+        no_vacuum: bool,
     ):
         """Sets the parameters provided in the command line"""
         self.database_path = database_path
@@ -47,6 +48,7 @@ class RobotDashboard:
         self.server = False
         self.database = None
         self.project_version = project_version
+        self.no_vacuum = no_vacuum
 
     def initialize_database(self, suppress=True):
         """Function that initializes the database if it does not exist
@@ -198,6 +200,8 @@ class RobotDashboard:
             console += self._print_console(f" 4. Removing runs from the database")
             self.database.open_database()
             console += self.database.remove_runs(remove_runs)
+            if not self.no_vacuum:
+                console += self.database.vacuum_database()
             self.database.close_database()
         else:
             console += self._print_console(

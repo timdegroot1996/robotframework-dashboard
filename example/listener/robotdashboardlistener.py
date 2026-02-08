@@ -189,36 +189,17 @@ class robotdashboardlistener:
             )
 
     def _remove_runs_over_limit(self):
-        response = get(f"http://{self.host}:{self.port}/get-outputs")
-        if response.status_code == 200:
-            response_json = response.json()
-            self._print_listener(
-                f"amount of runs in the database: {len(response_json)}, limit {self.limit}"
+        if self.limit > 0:
+            body = {"limit": int(self.limit)}
+            response = delete(
+                f"http://{self.host}:{self.port}/remove-outputs", json=body
             )
-            if self.limit != 0 and len(response_json) > self.limit:
-                amount_to_remove = len(response_json) - self.limit
-                self._print_listener(
-                    f"removing {amount_to_remove} run(s) from the database"
-                )
-                run_starts = []
-                for i in range(0, amount_to_remove):
-                    run_starts.append(response_json[i]["run_start"])
-                body = {"run_starts": run_starts}
-                response = delete(
-                    f"http://{self.host}:{self.port}/remove-outputs", json=body
-                )
-                if response.status_code == 200:
-                    self._print_console_message(response)
-                else:
-                    self._print_listener(
-                        f"ERROR something went wrong while deleting the runs from the database: {response.json()}"
-                    )
+            if response.status_code == 200:
+                self._print_console_message(response)
             else:
-                self._print_listener(f"no runs have to be removed")
-        else:
-            self._print_listener(
-                f"ERROR something went wrong while retrieving the outputs from the database: {response.json()}"
-            )
+                self._print_listener(
+                    f"ERROR something went wrong while deleting the runs from the database: {response.json()}"
+                )
 
     def _print_listener(self, value: str):
         print(f"robotdashboardlistener: {value}")

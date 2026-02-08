@@ -86,17 +86,19 @@ robotdashboard -f ./results:version_1.1 ./results2:version_2.3.4
 
 ## Removing Runs from the Database
 
-### Remove runs by index, run start, alias, or tag
+### Remove runs by index, run start, alias, tag, or limit
 ```bash
 robotdashboard -r index=0,index=1:4;9,index=10  
 robotdashboard --removeruns 'run_start=2024-07-30 15:27:20.184407,index=20'  
 robotdashboard -r alias=some_cool_alias,tag=prod,tag=dev -r alias=alias12345  
+robotdashboard -r limit=10
 ```
 - Optional: `-r` or `--removeruns` specifies one or more runs to remove.  
-- Runs can be identified by index, run_start, alias, or tag.  
-- Multiple types of identifiers can be used at once.  
-- Index ranges use `:` for ranges and `;` for singular indexes.  
+- Multiple values are separated by commas (,).  
+- Must specify data types: index, run_start, alias, tag or limit.  
+- Index ranges use `:` for ranges and `;` for lists.  
 - Quotation marks are required when spaces exist in identifiers.
+- With limit=10 only the 10 most recent runs will be kept, all others will be removed.
 
 ## Customizing the Dashboard
 
@@ -160,6 +162,14 @@ robotdashboard --offlinedependencies True
 - Optional: `--offlinedependencies` specifies to use locally downloaded js/css files and embed them directly into the dashboard.  
 - By default, urls to the actual JS and CSS CDN are used. 
 - See [Advanced CLI & Examples](/advanced-cli-examples#offline-dependencies) for more information.
+
+### Disable automatic database vacuuming
+```bash
+robotdashboard --novacuum
+robotdashboard --novacuum True
+```
+- Optional: `--novacuum` disables automatic database vacuuming.
+- Default: False. Using `--novacuum` with no value sets it to True.
 
 ### Use a custom database class
 ```bash
