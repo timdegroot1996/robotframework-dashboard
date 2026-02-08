@@ -13,8 +13,10 @@ The dashboard listener is a python script that hooks into Robot Framework's [Lis
 Its responsibilities include:
 
 - Detecting when an `output.xml` file is created  
-- Sending the output file to the robotdashboard server
-- Adding optional tags to the run  
+- Sending the output file to the robotdashboard server (gzip-compressed via `/add-output-file`)
+- Optionally uploading the log file to the server  
+- Optionally adding tags to the run  
+- Optionally labeling runs with a version string  
 - The script is pabot compatible  
 - Enforcing an optional database run limit (e.g., keep only latest 100 runs)  
 
@@ -40,6 +42,18 @@ robot --listener robotdashboardlistener.py tests.robot
 robot --listener robotdashboardlistener.py:tags=smoke,regression tests.robot  
 ```
 
+**With version label**
+
+```bash
+robot --listener robotdashboardlistener.py:version=v1.2.3 tests.robot  
+```
+
+**With log file upload**
+
+```bash
+robot --listener robotdashboardlistener.py:uploadlog=true tests.robot  
+```
+
 **With custom host/port and a path**
 
 ```bash
@@ -53,6 +67,8 @@ The listener supports the following arguments:
 | Argument | Description |
 |---|---|
 | `tags` | Comma-separated list of tags attached to the test run in the Dashboard |
+| `version` | Version label for the run (e.g., software version, release tag) |
+| `uploadlog` | Set to `true` to upload the log file to the server (default: `false`) |
 | `host` | Dashboard server hostname (default: `127.0.0.1`) |
 | `port` | Dashboard server port (default: `8543`) |
 | `limit` | Maximum number of runs stored in the database (older runs will be auto-deleted, based on the order in the database) |
@@ -61,7 +77,7 @@ The listener supports the following arguments:
 **Example with all options**
 
 ```bash
-robot --listener robotdashboardlistener.py:tags=dev1,dev2:host=127.0.0.2:port=8888:limit=100 tests.robot  
+robot --listener robotdashboardlistener.py:tags=dev1,dev2:version=v2.0:host=127.0.0.2:port=8888:limit=100:uploadlog=true tests.robot  
 ```
 
 ## Using the Listener with Pabot
@@ -93,7 +109,7 @@ The listener will wait for the final merged output and then send it to the Dashb
 
 ## Using the Listener with RobotCode (robot.toml)
 
-RobotDashboard also supports a listener in the `robot.toml` of **RobotCode**. The example can be found here: [robot.toml]()
+RobotDashboard also supports a listener in the `robot.toml` of **RobotCode**. The example can be found here: [robot.toml](https://github.com/timdegroot1996/robotframework-dashboard/blob/main/example/listener/robot.toml)
 Place both `robot.toml` and `robotdashboardlistener.py` in your project root (or adjust paths accordingly).
 
 ### Basic usage steps
@@ -142,4 +158,11 @@ Place both `robot.toml` and `robotdashboardlistener.py` in your project root (or
 ```bash
 [listeners]  
 "robotdashboardlistener.py" = ["tags=dev1,dev2,dev3", "limit=100"]  
+```
+
+**Combined: tags, version, log upload, and limit**
+
+```bash
+[listeners]  
+"robotdashboardlistener.py" = ["tags=dev1,dev2", "version=v2.0", "uploadlog=true", "limit=100"]  
 ```

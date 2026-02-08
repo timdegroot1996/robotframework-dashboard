@@ -1,28 +1,34 @@
-# steps to use:
-# 1. place the robot.toml in the root of the project
-# 2. place the robotdashboardlistener.py in the root, or update the "robotdashboardlistener.py" paths below to the correct path
-# 3. run "pip install robotcode-runner"
-# 4. start the robotdashboard server "robotdashboard --server default" (or with custom host/port ofcourse!)
-# 5. choose any of the listener implementations below (choose 1!!)
-# 6. run your tests with "robotcode robot ."
+# RobotCode Configuration for RobotDashboard Listener
+#
+# Setup:
+#   1. Place robot.toml in project root
+#   2. Place robotdashboardlistener.py in root (or update path below)
+#   3. pip install robotcode-runner
+#   4. robotdashboard --server (start the dashboard server)
+#   5. Choose one listener configuration below (uncomment to use)
+#   6. robotcode robot .
+#
+# Reference: https://robotcode.io/02_get_started/configuration
+# Run examples:
+#   robotcode robot path/to/tests/
+#   robotcode -p dev robot -d results ./tests/
 
-# extra robotcode command examples
-# robotcode robot path/to/tests/
-# robotcode -p dev robot -d results ./tests/
-# see https://robotcode.io/02_get_started/configuration for robot.toml/robotcode documentation
-
-# most basic toml usage
+# Basic - no parameters
 [listeners]
 "robotdashboardlistener.py" = []
 
-# usage with tags
+# With tags and version
 # [listeners]
-# "robotdashboardlistener.py" = ["tags=dev1,dev2,dev3"]
+# "robotdashboardlistener.py" = ["tags=dev1,dev2,dev3", "version=v1.2.3"]
 
-# usage with changed host/port for the server
+# With log upload
 # [listeners]
-# "robotdashboardlistener.py" = ["tags=dev1,dev2,dev3", "host=127.0.0.2", "port=8888"]
+# "robotdashboardlistener.py" = ["uploadlog=true"]
 
-# usage where you automatically delete the oldest run if there are more than 100 in the database
+# Custom host/port with limit
 # [listeners]
-# "robotdashboardlistener.py" = ["tags=dev1,dev2,dev3", "limit=100"]
+# "robotdashboardlistener.py" = ["host=127.0.0.2", "port=8888", "limit=100"]
+
+# All features combined
+# [listeners]
+# "robotdashboardlistener.py" = ["tags=dev1,dev2", "version=v2.0", "uploadlog=true", "limit=100", "host=127.0.0.2", "port=8888"]

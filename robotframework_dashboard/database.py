@@ -353,7 +353,7 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
     def update_output_path(self, log_path: str):
         """Function to update the output_path using the log path that the server has used"""
         console = ""
-        log_name = log_path[11:]
+        log_name = Path(log_path).name
         output_name = log_name.replace("log", "output").replace(".html", ".xml")
         data = self.connection.cursor().execute(SELECT_FROM_RUNS).fetchall()
         for entry in data:
