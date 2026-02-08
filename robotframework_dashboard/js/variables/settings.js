@@ -31,6 +31,26 @@ var settings = {
         duration: 1500,
         rounding: 6,
     },
+    theme_colors: {
+        light: {
+            background: '#eee',
+            card: '#ffffff',
+            menuText: '#000000',
+            text: '#000000',
+            passed: '#97bd61',
+            skipped: '#fed84f',
+            failed: '#ce3e01',
+        },
+        dark: {
+            background: '#0f172a',
+            card: 'rgba(30, 41, 59, 0.9)',
+            menuText: '#ffffff',
+            text: '#eee',
+            passed: '#97bd61',
+            skipped: '#fed84f',
+            failed: '#ce3e01',
+        }
+    },
     menu: {
         overview: false,
         dashboard: true,

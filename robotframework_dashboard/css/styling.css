@@ -7,7 +7,7 @@
 }
 /* LIGHT MODE STYLING */
 body {
-  background-color: #eee;
+  background-color: var(--theme-bg-color, #eee);
 }
 
 .border-bottom {
@@ -17,7 +17,7 @@ body {
 .fullscreen,
 .sticky-top,
 body {
-  background-color: #eee;
+  background-color: var(--theme-bg-color, #eee);
 }
 
 .grid-stack {
@@ -25,7 +25,7 @@ body {
 }
 
 .grid-stack-item-content {
-  background-color: white;
+  background-color: var(--theme-card-color, #ffffff);
 }
 
 .form-switch .form-check-input:not(:checked) {
@@ -150,11 +150,20 @@ body {
 /* DARK MODE STYLING */
 .dark-mode :root {
   color-scheme: dark;
+  
+  /* Dark mode theme color variables */
+  --theme-bg-color: #0f172a;
+  --theme-card-color: rgba(30, 41, 59, 0.9);
+  --theme-menu-text-color: #ffffff;
+  --theme-text-color: #eee;
+  --theme-passed-color: #97bd61;
+  --theme-skipped-color: #fed84f;
+  --theme-failed-color: #ce3e01;
 }
 
 .dark-mode .grid-stack-item-content,
 .dark-mode .overview-card .card {
-  background: rgba(30, 41, 59, 0.9);
+  background: var(--theme-card-color, rgba(30, 41, 59, 0.9));
 }
 
 .dark-mode .fullscreen {
@@ -162,7 +171,7 @@ body {
 }
 
 .dark-mode .modal-content {
-  background: #0f172a;
+  background: var(--theme-bg-color, #0f172a);
 }
 
 .dark-mode .border-bottom {
@@ -173,15 +182,15 @@ body {
 .dark-mode .card,
 .dark-mode body,
 .dark-mode .modal-dialog {
-  background: #0f172a;
-  color: #eee;
+  background: var(--theme-bg-color, #0f172a);
+  color: var(--theme-text-color, #eee);
 }
 
 .dark-mode .list-group-item:not(.disabled),
 .dark-mode .form-label,
 .dark-mode .form-control,
 .dark-mode .form-select {
-  color: #eee;
+  color: var(--theme-text-color, #eee);
 }
 
 .dark-mode .list-group-item .disabled {
@@ -194,11 +203,11 @@ body {
 }
 
 .dark-mode .table > :not(caption) > * > * {
-  color: #eee;
+  color: var(--theme-text-color, #eee);
 }
 
 .dark-mode .collapse-icon {
-  color: #eee;
+  color: var(--theme-text-color, #eee);
 }
 
 .dark-mode .stat-label {
@@ -207,12 +216,12 @@ body {
 }
 
 .dark-mode .white-text {
-  color: #eee;
+  color: var(--theme-text-color, #eee);
 }
 
 /* Dark mode */
 .dark-mode .nav-item {
-  color: white;
+  color: var(--theme-menu-text-color, white);
 }
 
 .dark-mode .nav-item.active,
@@ -277,6 +286,15 @@ body {
 /* GENERAL STYLING */
 :root {
   font-family: Helvetica, sans-serif;
+  
+  /* Theme color variables */
+  --theme-bg-color: #eee;
+  --theme-card-color: #ffffff;
+  --theme-menu-text-color: #000000;
+  --theme-text-color: #000000;
+  --theme-passed-color: #97bd61;
+  --theme-skipped-color: #fed84f;
+  --theme-failed-color: #ce3e01;
 }
 
 .html-scroll {

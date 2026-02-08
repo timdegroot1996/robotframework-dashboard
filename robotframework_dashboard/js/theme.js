@@ -214,30 +214,35 @@ function setup_theme() {
 
 // function to apply custom theme colors
 function apply_theme_colors() {
-    const themeColors = settings.theme_colors || {};
     const root = document.documentElement;
+    const isDarkMode = root.classList.contains("dark-mode");
+    const themeMode = isDarkMode ? 'dark' : 'light';
     
-    if (themeColors.background) {
-        root.style.setProperty('--custom-bg-color', themeColors.background);
-    }
-    if (themeColors.card) {
-        root.style.setProperty('--custom-card-color', themeColors.card);
-    }
-    if (themeColors.menuText) {
-        root.style.setProperty('--custom-menu-text-color', themeColors.menuText);
-    }
-    if (themeColors.text) {
-        root.style.setProperty('--custom-text-color', themeColors.text);
-    }
-    if (themeColors.passed) {
-        root.style.setProperty('--custom-passed-color', themeColors.passed);
-    }
-    if (themeColors.skipped) {
-        root.style.setProperty('--custom-skipped-color', themeColors.skipped);
-    }
-    if (themeColors.failed) {
-        root.style.setProperty('--custom-failed-color', themeColors.failed);
-    }
+    // Get default colors for current theme mode
+    const defaultColors = settings.theme_colors[themeMode];
+    
+    // Get custom colors if they exist
+    const customColors = settings.theme_colors?.custom?.[themeMode] || {};
+    
+    // Apply colors (custom overrides default)
+    const finalColors = {
+        background: customColors.background || defaultColors.background,
+        card: customColors.card || defaultColors.card,
+        menuText: customColors.menuText || defaultColors.menuText,
+        text: customColors.text || defaultColors.text,
+        passed: customColors.passed || defaultColors.passed,
+        skipped: customColors.skipped || defaultColors.skipped,
+        failed: customColors.failed || defaultColors.failed,
+    };
+    
+    // Set CSS custom properties
+    root.style.setProperty('--theme-bg-color', finalColors.background);
+    root.style.setProperty('--theme-card-color', finalColors.card);
+    root.style.setProperty('--theme-menu-text-color', finalColors.menuText);
+    root.style.setProperty('--theme-text-color', finalColors.text);
+    root.style.setProperty('--theme-passed-color', finalColors.passed);
+    root.style.setProperty('--theme-skipped-color', finalColors.skipped);
+    root.style.setProperty('--theme-failed-color', finalColors.failed);
 }
 
 export {

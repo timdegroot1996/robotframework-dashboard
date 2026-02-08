@@ -270,47 +270,61 @@ function setup_settings_modal() {
     document.getElementById("themeDark").addEventListener("click", () => toggle_theme());
 
     // Theme color handlers
-    const defaultThemeColors = {
-        background: '#0f172a',
-        card: 'rgba(30, 41, 59, 0.9)',
-        menuText: '#ffffff',
-        text: '#eee',
-        passed: '#4ade80',
-        skipped: '#fbbf24',
-        failed: '#f87171'
-    };
+    function get_current_theme_defaults() {
+        const isDarkMode = document.documentElement.classList.contains("dark-mode");
+        const themeMode = isDarkMode ? 'dark' : 'light';
+        return settings.theme_colors[themeMode];
+    }
 
     function create_theme_color_handler(colorKey, elementId, resetButtonId) {
         function load_color() {
             const element = document.getElementById(elementId);
-            const storedColor = settings.theme_colors?.[colorKey];
+            const isDarkMode = document.documentElement.classList.contains("dark-mode");
+            const themeMode = isDarkMode ? 'dark' : 'light';
+            
+            // Check if user has custom colors for this theme mode
+            const customColors = settings.theme_colors?.custom?.[themeMode];
+            const storedColor = customColors?.[colorKey];
+            
             if (storedColor) {
                 element.value = storedColor;
             } else {
-                element.value = defaultThemeColors[colorKey];
+                // Use default from settings for current theme mode
+                const defaults = settings.theme_colors[themeMode];
+                element.value = defaults[colorKey];
             }
         }
 
         function update_color() {
             const element = document.getElementById(elementId);
             const newColor = element.value;
+            const isDarkMode = document.documentElement.classList.contains("dark-mode");
+            const themeMode = isDarkMode ? 'dark' : 'light';
             
-            if (!settings.theme_colors) {
-                settings.theme_colors = {};
+            if (!settings.theme_colors.custom) {
+                settings.theme_colors.custom = { light: {}, dark: {} };
+            }
+            if (!settings.theme_colors.custom[themeMode]) {
+                settings.theme_colors.custom[themeMode] = {};
             }
             
-            settings.theme_colors[colorKey] = newColor;
-            set_local_storage_item('theme_colors.' + colorKey, newColor);
+            settings.theme_colors.custom[themeMode][colorKey] = newColor;
+            set_local_storage_item(`theme_colors.custom.${themeMode}.${colorKey}`, newColor);
             apply_theme_colors();
         }
 
         function reset_color() {
             const element = document.getElementById(elementId);
-            element.value = defaultThemeColors[colorKey];
+            const isDarkMode = document.documentElement.classList.contains("dark-mode");
+            const themeMode = isDarkMode ? 'dark' : 'light';
             
-            if (settings.theme_colors) {
-                delete settings.theme_colors[colorKey];
-                set_local_storage_item('theme_colors', settings.theme_colors);
+            // Reset to default from settings
+            const defaults = settings.theme_colors[themeMode];
+            element.value = defaults[colorKey];
+            
+            if (settings.theme_colors?.custom?.[themeMode]) {
+                delete settings.theme_colors.custom[themeMode][colorKey];
+                set_local_storage_item('theme_colors.custom', settings.theme_colors.custom);
             }
             
             apply_theme_colors();
