@@ -331,20 +331,20 @@ class ApiServer:
 
         if not self.server_user or not self.server_pass:
 
-            @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
+            @self.app.get("/admin", response_class=HTMLResponse, include_in_schema=False)
             async def admin_page():
                 """Admin page endpoint function"""
                 return self._get_admin_page()
 
         else:
 
-            @self.app.get("/", response_class=HTMLResponse, include_in_schema=False)
+            @self.app.get("/admin", response_class=HTMLResponse, include_in_schema=False)
             async def admin_page(username: str = Depends(authenticate)):
                 """Admin page endpoint function"""
                 return self._get_admin_page()
 
         @self.app.get(
-            "/dashboard", response_class=HTMLResponse, include_in_schema=False
+            "/", response_class=HTMLResponse, include_in_schema=False
         )
         async def dashboard_page():
             """Serve robotdashboard HTML endpoint function"""
