@@ -43,3 +43,5 @@ DELETE_FROM_TESTS = """ DELETE FROM tests WHERE run_start="{run_start}" """
 DELETE_FROM_KEYWORDS = """ DELETE FROM keywords WHERE run_start="{run_start}" """
 
 UPDATE_RUN_PATH = """ UPDATE runs SET path="{path}" WHERE run_start="{run_start}" """
+
+VACUUM_DATABASE = """ VACUUM """

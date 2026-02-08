@@ -134,15 +134,16 @@ class ArgumentParser:
             "-r",
             "--removeruns",
             help=(
-                "`string` Specifies indexes, run_starts, aliases or tags to remove from the database.\n"
+                "`string` Specifies indexes, run_starts, aliases, tags or limit to remove from the database.\n"
                 "Usage behavior:\n"
                 "  • Multiple values separated by commas (,)\n"
-                "  • Must specify data types: index, run_start, alias or tag\n"
+                "  • Must specify data types: index, run_start, alias, tag or limit\n"
                 "  • Ranges supported using ':' and lists using ';'\n"
                 "Examples:\n"
                 "  • '-r index=0,index=1:4;9,index=10' -> remove index 0, 1, 2, 3, 9, 10\n"
                 "  • '-r run_start=2024-07-30 15:27:20.184407,index=20' -> remove specified run and index 20\n"
                 "  • '-r alias=some_alias,tag=prod,tag=dev' -> remove all runs with alias some_alias or tag prod or dev\n"
+                "  • '-r limit=10' -> remove all runs, leaving only the 10 most recent additions\n"
             ),
             action="append",
             nargs="*",
@@ -257,7 +258,6 @@ class ArgumentParser:
             const=True,
             default=False,
         )
-
         parser.add_argument(
             "-g",
             "--generatedashboard",
@@ -273,7 +273,6 @@ class ArgumentParser:
             const=False,
             default=True,
         )
-
         parser.add_argument(
             "-l",
             "--listruns",
@@ -289,7 +288,6 @@ class ArgumentParser:
             const=False,
             default=True,
         )
-
         parser.add_argument(
             "--offlinedependencies",
             help=(
@@ -304,7 +302,20 @@ class ArgumentParser:
             const=True,
             default=False,
         )
-
+        parser.add_argument(
+            "--novacuum",
+            help=(
+                "`boolean` Disables automatic database vacuuming.\n"
+                "Usage behavior:\n"
+                "  • Default value: False\n"
+                "  • Using '--novacuum' with no value -> True (reverse default)\n"
+                "  • Using '--novacuum true'  -> True\n"
+                "  • Using '--novacuum false' -> False\n"
+            ),
+            nargs="?",
+            const=True,
+            default=False,
+        )
         parser.add_argument(
             "-c",
             "--databaseclass",
@@ -319,7 +330,6 @@ class ArgumentParser:
             ),
             default=None,
         )
-
         parser.add_argument(
             "-s",
             "--server",
@@ -398,6 +408,7 @@ class ArgumentParser:
         force_json_config = self._normalize_bool(
             arguments.forcejsonconfig, "forcejsonconfig"
         )
+        no_vacuum = self._normalize_bool(arguments.novacuum, "novacuum")
 
         # generates the datetime used in the file dashboard name and the html title
         generation_datetime = datetime.now()
@@ -498,5 +509,6 @@ class ArgumentParser:
             "offline_dependencies": offline_dependencies,
             "force_json_config": force_json_config,
             "project_version": arguments.project_version,
+            "no_vacuum": no_vacuum,
         }
         return dotdict(provided_args)
