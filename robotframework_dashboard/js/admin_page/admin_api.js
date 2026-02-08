@@ -104,6 +104,8 @@ function remove_outputs() {
     }
     if (aliases.length > 0) { data["aliases"] = aliases }
     const removeTags = document.getElementById("removeTags").value.split(",")
+    const removeLimit = document.getElementById("removeLimit").value
+    if (removeLimit != "") { data["limit"] = removeLimit }
     for (const removeTag of removeTags) {
         if (removeTag == "") { continue }
         tags.push(removeTag)
@@ -113,6 +115,7 @@ function remove_outputs() {
     document.getElementById("removeIndexes").value = ""
     document.getElementById("removeAliases").value = ""
     document.getElementById("removeTags").value = ""
+    document.getElementById("removeLimit").value = ""
     const body = JSON.stringify(data)
     send_request("DELETE", "/remove-outputs", body, "removeSpinner")
 }

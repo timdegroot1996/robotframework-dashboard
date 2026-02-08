@@ -112,6 +112,7 @@ remove_outputs_model_config = {
                 "indexes": ["0", "-1"],
                 "tags": ["tag1", "tag2", "tag3"],
             },
+            {"limit": 10},
             {"all": True},
         ],
         "openapi_examples": {
@@ -138,6 +139,11 @@ remove_outputs_model_config = {
                     "indexes": ["0", "-1"],
                     "tags": ["tag1", "tag2", "tag3"],
                 },
+            },
+            "limit": {
+                "summary": "Remove all but the N most recent runs",
+                "description": "Keep only the specified number of most recent runs, deleting the rest.",
+                "value": {"limit": 10},
             },
             "all": {
                 "summary": "Remove all outputs",
@@ -237,6 +243,7 @@ class RemoveOutputs(BaseModel):
     aliases: Optional[List[str]] = None
     tags: Optional[List[str]] = None
     all: Optional[bool] = False
+    limit: Optional[int] = None
     model_config = remove_outputs_model_config
 
 
@@ -561,6 +568,8 @@ class ApiServer:
                     if remove_output.tags != None:
                         for run in remove_output.tags:
                             remove_runs.append(f"tag={run}")
+                    if remove_output.limit != None:
+                        remove_runs.append(f"limit={remove_output.limit}")
                 console = self.robotdashboard.remove_outputs(remove_runs)
                 console += self.robotdashboard.create_dashboard()
                 response = {
