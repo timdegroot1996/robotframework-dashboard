@@ -33,7 +33,8 @@ Close Dashboard
 
 Open Overview Page
     Click    selector=id=menuOverview
-    Wait For Elements State    selector=id=overviewStatisticsSection
+    Wait For Elements State    selector=id=overviewLatestRunsSection
+    Wait For Elements State    selector=id=overviewTotalStatsSection
 
 Open Compare Page
     Click    selector=id=menuCompare

@@ -33,8 +33,7 @@
         </div>
         <ul class="navbar-nav flex-row flex-wrap ms-md-auto me-4">
             <li class="nav-item">
-                <a class="nav-link information" id="filters" data-bs-toggle="modal"
-                    data-bs-target="#filtersModal"></a>
+                <a class="nav-link information" id="filters" data-bs-toggle="modal" data-bs-target="#filtersModal"></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link information" id="customizeLayout"></a>
@@ -91,100 +90,6 @@
 
         <div id="overview" hidden>
             <div id="topOverviewSection" hidden></div>
-            <div class="card overview-bar" id="overviewStatisticsSection">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col-auto align-self-center">
-                            <div class="btn btn-sm collapse-icon" id="collapsegridOverview"></div>
-                        </div>
-                        <div class="col-3">
-                            <h4 id="overviewTitle"></h4>
-                        </div>
-                        <div class="d-flex flex-wrap align-items-start col align-items-center">
-                            <div class="col-auto">
-                                <div class="btn-group">
-                                    <label class="form-check-label" for="switchRunName">Display by Name</label>
-                                </div>
-                                <div class="btn-group form-switch ms-1 mb-1">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="switchRunName" />
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <div class="btn-group">
-                                    <label class="form-check-label ms-2" for="switchRunTags">Display by Tag</label>
-                                </div>
-                                <div class="btn-group form-switch ms-1 mb-1">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="switchRunTags" />
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <div class="btn-group">
-                                    <label class="form-check-label" for="overviewDurationPercentage">Percentage</label>
-                                </div>
-                                <div class="btn-group">
-                                    <select class="form-select form-select-sm me-2" id="overviewDurationPercentage">
-                                        <option value="10">10</option>
-                                        <option value="20" selected>20</option>
-                                        <option value="30">30</option>
-                                        <option value="40">40</option>
-                                        <option value="50">50</option>
-                                        <option value="60">60</option>
-                                        <option value="70">70</option>
-                                        <option value="80">80</option>
-                                        <option value="90">90</option>
-                                        <option value="100">100</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-auto me-2">
-                                <div class="btn-group">
-                                    <div id="overviewVersionFilterDropDown" class="dropdown">
-                                        <button class="btn btn-sm btn-outline-dark dropdown-toggle" type="button"
-                                            id="overviewVersionFilterBtn" data-bs-toggle="dropdown"
-                                            data-bs-auto-close="outside">
-                                            Select Versions
-                                            <span id="overviewVersionSelectedIndicator" class="version-selected-dot"
-                                                style="display:none;"></span>
-                                        </button>
-                                        <ul id="overviewVersionSelectorList" class="dropdown-menu p-3"
-                                            style="max-height: 50vh; overflow-y: auto;">
-                                            <!-- placeholder for overview version listitems -->
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-auto me-1">
-                                <div class="btn-group">
-                                    <label class="form-label mb-0" for="overviewStatisticsSectionOrder">Sort</label>
-                                </div>
-                                <div class="btn-group">
-                                    <select class="form-select form-select-sm section-order-filter"
-                                        id="overviewStatisticsSectionOrder">
-                                        <option value="newest" selected>Most Recent</option>
-                                        <option value="oldest">Oldest</option>
-                                        <option value="most failed">Most Failed</option>
-                                        <option value="most skipped">Most Skipped</option>
-                                        <option value="most passed">Most Passed</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <a type="button" class="information information-icon ms-2"
-                                    id="overviewStatisticsInformation"></a>
-                            </div>
-                            <div class="col-auto ms-auto">
-                                <a class="move-up-section information" id="overviewSectionMoveUp" hidden></a>
-                                <a class="move-down-section information" id="overviewSectionMoveDown" hidden></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Placeholder DIV to keep the graphs, they will be moved based on the config to the card overviewData -->
-                <div id="overviewDataHidden" hidden></div>
-                <div class="card-body" id="gridOverview">
-                    <div id="overviewRunCardsContainer" class="project-run-cards-container"></div>
-                </div>
-            </div>
         </div>
 
         <div id="unified" hidden>
@@ -630,6 +535,11 @@
                                     aria-selected="false">Keywords</button>
                             </li>
                             <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="overview-tab" data-bs-toggle="tab"
+                                    data-bs-target="#overview-settings" type="button" role="tab"
+                                    aria-controls="overview-settings" aria-selected="false">Overview</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="json-tab" data-bs-toggle="tab" data-bs-target="#json"
                                     type="button" role="tab" aria-controls="json" aria-selected="false">JSON</button>
                             </li>
@@ -707,6 +617,68 @@
                                                 <option value="6">6</option>
                                                 <option value="8">8</option>
                                             </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="overview-settings" role="tabpanel"
+                                aria-labelledby="overview-tab">
+                                <p><i>Configure overview page display options.</i></p>
+                                <div class="list-group">
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>Display bar with Latest Runs</span>
+                                        <div class="form-check form-switch mb-0">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                id="switchLatestRuns" />
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>Display bar with Total Stats</span>
+                                        <div class="form-check form-switch mb-0">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                id="switchTotalStats" />
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>Display bars with projects by Name</span>
+                                        <div class="form-check form-switch mb-0">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                id="switchRunName" />
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>Display bars with projects by Tag</span>
+                                        <div class="form-check form-switch mb-0">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                id="switchRunTags" />
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>Display "project_" prefix in tags on the overview page</span>
+                                        <div class="form-check form-switch mb-0">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                id="togglePrefixes">
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>Display Percentage Filters</span>
+                                        <div class="form-check form-switch mb-0">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                id="switchPercentageFilters" />
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>Display Version Filters</span>
+                                        <div class="form-check form-switch mb-0">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                id="switchVersionFilters" />
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>Display Sort Filters</span>
+                                        <div class="form-check form-switch mb-0">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                id="switchSortFilters" />
                                         </div>
                                     </div>
                                 </div>

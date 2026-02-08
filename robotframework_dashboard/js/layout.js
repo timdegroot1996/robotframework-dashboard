@@ -26,7 +26,7 @@ function setup_section_order() {
         // Show
         for (const section of sectionsConfig.show) {
             let sectionId;
-            if (section === "Overview Statistics" || topAnchorId !== "topOverviewSection") {
+            if (topAnchorId !== "topOverviewSection") {
                 // 1. Keep overview statistics as-is (camel-cased id)
                 sectionId = space_to_camelcase(section + "Section");
             } else {
