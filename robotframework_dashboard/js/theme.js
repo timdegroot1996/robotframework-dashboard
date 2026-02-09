@@ -229,20 +229,16 @@ function apply_theme_colors() {
         background: customColors.background || defaultColors.background,
         card: customColors.card || defaultColors.card,
         menuText: customColors.menuText || defaultColors.menuText,
+        highlight: customColors.highlight || defaultColors.highlight,
         text: customColors.text || defaultColors.text,
-        passed: customColors.passed || defaultColors.passed,
-        skipped: customColors.skipped || defaultColors.skipped,
-        failed: customColors.failed || defaultColors.failed,
     };
     
     // Set CSS custom properties
     root.style.setProperty('--theme-bg-color', finalColors.background);
     root.style.setProperty('--theme-card-color', finalColors.card);
     root.style.setProperty('--theme-menu-text-color', finalColors.menuText);
+    root.style.setProperty('--theme-highlight-color', finalColors.highlight);
     root.style.setProperty('--theme-text-color', finalColors.text);
-    root.style.setProperty('--theme-passed-color', finalColors.passed);
-    root.style.setProperty('--theme-skipped-color', finalColors.skipped);
-    root.style.setProperty('--theme-failed-color', finalColors.failed);
 }
 
 export {

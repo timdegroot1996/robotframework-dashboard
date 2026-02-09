@@ -19,7 +19,9 @@ function setup_local_storage() {
         } else if (storedSettings) {
             // 2) Prefer existing localStorage when not forcing a config
             const parsedSettings = JSON.parse(storedSettings);
+            console.log(settings, parsedSettings)
             resolvedSettings = mergeWithDefaults(parsedSettings);
+            console.log(parsedSettings)
         } else if (!force_json_config && hasJsonConfig) {
             // 3) Use provided json_config when not forcing and no localStorage present
             resolvedSettings = mergeWithDefaults(json_config);

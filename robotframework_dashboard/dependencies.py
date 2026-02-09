@@ -219,4 +219,6 @@ class DependencyProcessor():
 
             files.append(str(relpath(p, base)))
 
+        print(files)
+
         return files

@@ -269,14 +269,7 @@ function setup_settings_modal() {
     document.getElementById("themeLight").addEventListener("click", () => toggle_theme());
     document.getElementById("themeDark").addEventListener("click", () => toggle_theme());
 
-    // Theme color handlers
-    function get_current_theme_defaults() {
-        const isDarkMode = document.documentElement.classList.contains("dark-mode");
-        const themeMode = isDarkMode ? 'dark' : 'light';
-        return settings.theme_colors[themeMode];
-    }
-
-    function create_theme_color_handler(colorKey, elementId, resetButtonId) {
+    function create_theme_color_handler(colorKey, elementId) {
         function load_color() {
             const element = document.getElementById(elementId);
             const isDarkMode = document.documentElement.classList.contains("dark-mode");
@@ -333,43 +326,34 @@ function setup_settings_modal() {
         return { load_color, update_color, reset_color };
     }
 
-    const backgroundColorHandler = create_theme_color_handler('background', 'themeBackgroundColor', 'resetBackgroundColor');
-    const cardColorHandler = create_theme_color_handler('card', 'themeCardColor', 'resetCardColor');
-    const menuTextColorHandler = create_theme_color_handler('menuText', 'themeMenuTextColor', 'resetMenuTextColor');
-    const textColorHandler = create_theme_color_handler('text', 'themeTextColor', 'resetTextColor');
-    const passedColorHandler = create_theme_color_handler('passed', 'themePassedColor', 'resetPassedColor');
-    const skippedColorHandler = create_theme_color_handler('skipped', 'themeSkippedColor', 'resetSkippedColor');
-    const failedColorHandler = create_theme_color_handler('failed', 'themeFailedColor', 'resetFailedColor');
+    const backgroundColorHandler = create_theme_color_handler('background', 'themeBackgroundColor');
+    const cardColorHandler = create_theme_color_handler('card', 'themeCardColor');
+    const menuTextColorHandler = create_theme_color_handler('menuText', 'themeMenuTextColor');
+    const highlightColorHandler = create_theme_color_handler('highlight', 'themeHighlightColor');
+    const textColorHandler = create_theme_color_handler('text', 'themeTextColor');
 
     // Load colors on modal open
     $("#settingsModal").on("shown.bs.modal", function () {
         backgroundColorHandler.load_color();
         cardColorHandler.load_color();
         menuTextColorHandler.load_color();
+        highlightColorHandler.load_color();
         textColorHandler.load_color();
-        passedColorHandler.load_color();
-        skippedColorHandler.load_color();
-        failedColorHandler.load_color();
     });
 
     // Add event listeners for color inputs
     document.getElementById('themeBackgroundColor').addEventListener('change', () => backgroundColorHandler.update_color());
     document.getElementById('themeCardColor').addEventListener('change', () => cardColorHandler.update_color());
     document.getElementById('themeMenuTextColor').addEventListener('change', () => menuTextColorHandler.update_color());
+    document.getElementById('themeHighlightColor').addEventListener('change', () => highlightColorHandler.update_color());
     document.getElementById('themeTextColor').addEventListener('change', () => textColorHandler.update_color());
-    document.getElementById('themePassedColor').addEventListener('change', () => passedColorHandler.update_color());
-    document.getElementById('themeSkippedColor').addEventListener('change', () => skippedColorHandler.update_color());
-    document.getElementById('themeFailedColor').addEventListener('change', () => failedColorHandler.update_color());
 
     // Add event listeners for reset buttons
     document.getElementById('resetBackgroundColor').addEventListener('click', () => backgroundColorHandler.reset_color());
     document.getElementById('resetCardColor').addEventListener('click', () => cardColorHandler.reset_color());
     document.getElementById('resetMenuTextColor').addEventListener('click', () => menuTextColorHandler.reset_color());
+    document.getElementById('resetHighlightColor').addEventListener('click', () => highlightColorHandler.reset_color());
     document.getElementById('resetTextColor').addEventListener('click', () => textColorHandler.reset_color());
-    document.getElementById('resetPassedColor').addEventListener('click', () => passedColorHandler.reset_color());
-    document.getElementById('resetSkippedColor').addEventListener('click', () => skippedColorHandler.reset_color());
-    document.getElementById('resetFailedColor').addEventListener('click', () => failedColorHandler.reset_color());
-
 
     function show_settings_in_textarea() {
         const textArea = document.getElementById("settingsTextArea");
