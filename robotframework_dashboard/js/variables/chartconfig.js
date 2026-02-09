@@ -1,12 +1,12 @@
 import { settings } from "./settings.js";
 
 // colors
-const passedBackgroundBorderColor = '#97bd61';
-const passedBackgroundColor = '#97bd61';
-const skippedBackgroundBorderColor = '#fed84f';
-const skippedBackgroundColor = '#fed84f';
-const failedBackgroundBorderColor = '#ce3e01';
-const failedBackgroundColor = '#ce3e01';
+const passedBackgroundBorderColor = "#97bd61";
+const passedBackgroundColor = "rgba(151, 189, 97, 0.7)";
+const skippedBackgroundBorderColor = "#fed84f";
+const skippedBackgroundColor = "rgba(254, 216, 79, 0.7)";
+const failedBackgroundBorderColor = "#ce3e01";
+const failedBackgroundColor = "rgba(206, 62, 1, 0.7)";
 const greyBackgroundBorderColor = "#0f172a";
 const greyBackgroundColor = "rgba(33, 37, 41, 0.7)";
 const blueBackgroundBorderColor = "rgba(54, 162, 235)";

@@ -16,7 +16,7 @@
 .card {
   margin-bottom: 1rem;
   box-shadow: 0 4px 20px var(--color-shadow-strong);
-  background: var(--color-card);
+  background: var(--color-bg);
   color: var(--color-text);
 }
 
@@ -196,6 +196,7 @@
   flex-direction: column;
   padding: 20px;
   box-shadow: 0 4px 20px var(--color-shadow-strong);
+  background-color: var(--color-section-card-bg)
 }
 
 .graph-header {
