@@ -376,13 +376,13 @@ function create_project_cards_container(projectName, projectRuns, percent = null
     const durations = projectRuns.map(r => r.elapsed_s);
     // create section for project in overview if not present
     if (!cardsContainer) create_project_bar(projectName, projectRuns, totalRunsAmount, passRate);
-    
+
     // Read percentage from selector if not provided
     if (percent === null) {
         const percentageSelector = document.getElementById(`${projectName}DurationPercentage`);
         percent = percentageSelector ? parseInt(percentageSelector.value, 10) : DEFAULT_DURATION_PERCENTAGE;
     }
-    
+
     const container = document.getElementById(`${projectName}RunCardsContainer`);
     container.innerHTML = '';
     const projectRunsToShow = projectRuns.slice().reverse();
@@ -493,7 +493,7 @@ function create_overview_total_graphs(preFilteredRuns = null) {
             elapsed_s: avgDuration,
             stats: [passedRunsAmount, failedRunsAmount, skippedRunsAmount],
             project_version: null,
-            full_name: latestRun?.full_name ?? projectName,
+            full_name: projectName,
             passed: passedRunsAmount,
             failed: failedRunsAmount,
             skipped: skippedRunsAmount,
@@ -640,10 +640,6 @@ function generate_overview_card_html(
     const normalizedProjectVersion = projectVersion ?? "None";
     // ensure overview stats and project bar card ids unique
     const projectNameForElementId = isForOverview ? `${sectionPrefix}${projectName}` : projectName;
-    // for overview statistics
-    let cardTitle = `
-            <h5 class="card-title mb-0 fw-semibold">${projectName}</h5>
-        `;
     const showRunNumber = !(isForOverview && isTotalStats);
     const runNumberHtml = showRunNumber ? `<div class="col-auto"><h5>#${runNumber}</h5></div>` : '';
     let smallVersionHtml = `
@@ -663,6 +659,11 @@ function generate_overview_card_html(
     const versionsForProject = Object.keys(versionsByProject[projectName]);
     const projectHasVersions = !(versionsForProject.length === 1 && versionsForProject[0] === "None");
     const versionClass = "fw-semibold";
+    // for overview statistics
+    projectName = settings.show.prefixes ? projectName : projectName.replace(/^project_/, '');
+    let cardTitle = `
+            <h5 class="card-title mb-0 fw-semibold">${projectName}</h5>
+        `;
     if (!isForOverview) {
         // Project bar cards: customize based on project type
         if (projectName.startsWith('project_')) {
@@ -917,7 +918,7 @@ function update_duration_comparison_for_project(projectName, projectRuns, percen
         const comparesElement = document.getElementById(`${projectName}RunCardCompares${idx}`);
         const comparesValueElement = document.getElementById(`${projectName}RunCardComparesValue${idx}`);
         if (!comparesElement || !comparesValueElement) return;
-        
+
         const duration = parseFloat(comparesValueElement.getAttribute("value"));
         const durationsForAvg = projectRunsReversed
             .map(r => parseFloat(r.elapsed_s))
