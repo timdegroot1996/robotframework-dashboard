@@ -14,7 +14,7 @@ usage: robotdashboard [[]-v[]] [[]-h[]] [[]-o [[]OUTPUTPATH ...[]][]]
                       [[]-t DASHBOARDTITLE[]] [[]-m MESSAGECONFIG[]] [[]-q QUANTITY[]]
                       [[]-u [[]USELOGS[]][]] [[]-g [[]GENERATEDASHBOARD[]][]] [[]-l [[]LISTRUNS[]][]]
                       [[]--offlinedependencies [[]OFFLINEDEPENDENCIES[]][]]
-                      [[]-c DATABASECLASS[]] [[]-s [[]SERVER[]][]]
+                      [[]--novacuum [[]NOVACUUM[]][]] [[]-c DATABASECLASS[]] [[]-s [[]SERVER[]][]]
 
 options:
   -v, --version         Display application version information.
@@ -45,15 +45,16 @@ options:
                         Examples:
                           . '--projectversion=1.1'
   -r [[]REMOVERUNS ...[]], --removeruns [[]REMOVERUNS ...[]]
-                        `string` Specifies indexes, run_starts, aliases or tags to remove from the database.
+                        `string` Specifies indexes, run_starts, aliases, tags or limit to remove from the database.
                         Usage behavior:
                           • Multiple values separated by commas (,)
-                          • Must specify data types: index, run_start, alias or tag
+                          • Must specify data types: index, run_start, alias, tag or limit
                           • Ranges supported using ':' and lists using ';'
                         Examples:
                           • '-r index=0,index=1:4;9,index=10' -> remove index 0, 1, 2, 3, 9, 10
                           • '-r run_start=2024-07-30 15:27:20.184407,index=20' -> remove specified run and index 20
                           • '-r alias=some_alias,tag=prod,tag=dev' -> remove all runs with alias some_alias or tag prod or dev
+                          • '-r limit=10' -> remove all runs, leaving only the 10 most recent additions
   -d DATABASEPATH, --databasepath DATABASEPATH
                         `path` Specifies the path to the database file.
                         Usage behavior:
@@ -133,6 +134,13 @@ options:
                           • Using '--offlinedependencies' with no value -> True (reverse default)
                           • Using '--offlinedependencies true'  -> True
                           • Using '--offlinedependencies false' -> False
+  --novacuum [[]NOVACUUM[]]
+                        `boolean` Disables automatic database vacuuming.
+                        Usage behavior:
+                          • Default value: False
+                          • Using '--novacuum' with no value -> True (reverse default)
+                          • Using '--novacuum true'  -> True
+                          • Using '--novacuum false' -> False
   -c DATABASECLASS, --databaseclass DATABASECLASS
                         `path` Specifies a custom database class to override SQLite.
                         Usage behavior:

@@ -35,6 +35,7 @@ def main():
         arguments.offline_dependencies,
         arguments.force_json_config,
         arguments.project_version,
+        arguments.no_vacuum,
     )
     # If arguments.start_server is provided override some required args
     if arguments.start_server:

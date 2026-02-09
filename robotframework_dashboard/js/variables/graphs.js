@@ -34,7 +34,7 @@ graphVars.forEach(name => {
 const compareRunIds = ['compareRun1', 'compareRun2', 'compareRun3', 'compareRun4']
 
 // customize view lists
-const overviewSections = ["Overview Statistics"]
+const overviewSections = ["overviewLatestRuns", "overviewTotalStats",]
 const dashboardSections = ["Run Statistics", "Suite Statistics", "Test Statistics", "Keyword Statistics",]
 const unifiedSections = ["Dashboard Statistics"]
 const compareSections = ["Compare Statistics"]

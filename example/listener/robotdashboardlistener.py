@@ -1,31 +1,35 @@
 from sys import exit
 from os.path import exists
+from gzip import compress
 from requests import post, get, delete
 from requests.exceptions import ConnectionError
 from robot.libraries.BuiltIn import BuiltIn
 from time import sleep
 from pathlib import Path
 
-# for usage with a "robot.toml" see robot.toml in this folder
-
-# usage with robot command line:
-# robot --listener path/to/robotdashboardlistener.py:tags=tag1,tag2 path/to/tests.robot
-
-# most basic usage:
-# robot --listener robotdashboardlistener.py tests.robot
-# with run tags (comma separated):
-# robot --listener robotdashboardlistener.py:tags=prod,dev tests.robot
-# with changed server host/port:
-# robot --listener robotdashboardlistener.py:tags=prod,dev:host=127.0.0.2:port=8544 tests.robot
-# with a database limit and automatic run deletion:
-# robot --listener robotdashboardlistener.py:limit=1000 tests.robot
-
-# pabot basic usage:
-# pabot --listener robotdashboardlistener.py tests.robot
-# pabot testlevelsplit usage:
-# pabot --testlevelsplit --listener robotdashboardlistener.py tests.robot
-# pabot usage with custom output.xml name
-# pabot --testlevelsplit --listener robotdashboardlistener.py:output=custom_output.xml -o custom_output.xml tests.robot
+# For usage with robot.toml, see robot.toml in this folder
+#
+# Robot Framework:
+#   robot --listener robotdashboardlistener.py tests.robot
+#   robot --listener robotdashboardlistener.py:tags=tag1,tag2:version=v1.2.3:uploadlog=true tests.robot
+#
+# Pabot:
+#   pabot --listener robotdashboardlistener.py tests.robot
+#   pabot --testlevelsplit --listener robotdashboardlistener.py tests.robot
+#   pabot --testlevelsplit --listener robotdashboardlistener.py:output=custom_output.xml -o custom_output.xml tests.robot
+#
+# Parameters:
+#   tags=tag1,tag2       - Comma-separated tags for the run
+#   version=v1.2.3       - Version label (e.g., software version)
+#   uploadlog=true       - Upload log file to server (default: false)
+#   host=127.0.0.1       - Server hostname (default: 127.0.0.1)
+#   port=8543            - Server port (default: 8543)
+#   limit=100            - Max runs in database; auto-delete oldest (default: 0 = unlimited)
+#   output=custom.xml    - Custom output filename (required for pabot with custom -o)
+#
+# Features:
+#   - Output files are gzip-compressed and sent to /add-output-file
+#   - Log files are gzip-compressed and sent to /add-log-file (when uploadlog=true)
 
 
 class robotdashboardlistener:
@@ -36,14 +40,19 @@ class robotdashboardlistener:
         host: str = "127.0.0.1",
         port: str = "8543",
         limit: str = "0",
+        version: str = None,
+        uploadlog: bool = False,
         output: str = None,  # this option is only required when using pabot and a custom output.xml name!
     ):
         self.host = host
         self.port = port
         self.tags = tags.split(",") if tags != None else [""]
         self.limit = int(limit)
+        self.version = version
+        self.uploadlog = str(uploadlog).lower() == "true"
         self.output = output if output != None else "output.xml"
         self.path: str
+        self.log_path: str
         self.last_execution: str
 
     def end_suite(self, data, result):
@@ -53,6 +62,9 @@ class robotdashboardlistener:
 
     def output_file(self, path):
         self.path = str(path)
+
+    def log_file(self, path):
+        self.log_path = str(path)
 
     def close(self):
         if (
@@ -68,7 +80,8 @@ class robotdashboardlistener:
             # added to make sure the output file is created, make this longer if the output generation is longer!
             timeout = 0
             while timeout < 10:
-                if exists(self.path): break
+                if exists(self.path):
+                    break
                 sleep(1)
                 timeout += 1
             if not exists(self.path):
@@ -77,10 +90,12 @@ class robotdashboardlistener:
                 )
                 exit(0)
             self._add_output_to_database(path=str(self.path))
+            self._upload_log_file()
             self._remove_runs_over_limit()
         elif self.last_execution == None:  # normal robot usage
             if exists(self.path):
                 self._add_output_to_database(path=str(self.path))
+                self._upload_log_file()
                 self._remove_runs_over_limit()
             else:
                 self._print_listener(
@@ -93,14 +108,33 @@ class robotdashboardlistener:
 
     def _add_output_to_database(self, path: str):
         self._print_listener(f"starting processing output.xml '{path}'")
-        body = {"output_path": path, "output_tags": self.tags}
+        tags = ":".join(filter(None, self.tags)) if self.tags else ""
+        form_data = {"tags": tags}
+        if self.version:
+            form_data["version"] = self.version
         try:
+            with open(path, "rb") as output_file:
+                compressed_output = compress(output_file.read())
+            files = {
+                "file": (
+                    f"{Path(path).name}.gz",
+                    compressed_output,
+                    "application/gzip",
+                )
+            }
             response = post(
-                f"http://{self.host}:{self.port}/add-outputs", json=body
+                f"http://{self.host}:{self.port}/add-output-file",
+                data=form_data,
+                files=files,
             )
         except ConnectionError as e:
             self._print_listener(
-                f"ERROR the server is not running or the url http://{self.host}:{self.port}/add-outputs is not correct!"
+                f"ERROR the server is not running or the url http://{self.host}:{self.port}/add-output-file is not correct!"
+            )
+            exit(0)
+        except Exception as e:
+            self._print_listener(
+                f"ERROR something went wrong while compressing or sending '{path}': {e}"
             )
             exit(0)
         if response.status_code == 200:
@@ -110,36 +144,62 @@ class robotdashboardlistener:
                 f"ERROR something went wrong while sending results to the server: {response.json()}"
             )
 
-
-    def _remove_runs_over_limit(self):
-        response = get(f"http://{self.host}:{self.port}/get-outputs")
-        if response.status_code == 200:
-            response_json = response.json()
+    def _upload_log_file(self):
+        if not self.uploadlog:
+            return
+        if not self.log_path:
             self._print_listener(
-                f"amount of runs in the database: {len(response_json)}, limit {self.limit}"
+                "WARNING uploadlog enabled but no log file was provided by Robot Framework"
             )
-            if self.limit != 0 and len(response_json) > self.limit:
-                amount_to_remove = len(response_json) - self.limit
-                self._print_listener(
-                    f"removing {amount_to_remove} run(s) from the database"
+            return
+        if not exists(self.log_path):
+            self._print_listener(
+                f"WARNING uploadlog enabled but log file '{self.log_path}' not found"
+            )
+            return
+        try:
+            with open(self.log_path, "rb") as log_file:
+                compressed_log = compress(log_file.read())
+            files = {
+                "file": (
+                    f"{Path(self.log_path).name}.gz",
+                    compressed_log,
+                    "application/gzip",
                 )
-                run_starts = []
-                for i in range(0, amount_to_remove):
-                    run_starts.append(response_json[i]["run_start"])
-                body = {"run_starts": run_starts}
-                response = delete("http://127.0.0.1:8543/remove-outputs", json=body)
-                if response.status_code == 200:
-                    self._print_console_message(response)
-                else:
-                    self._print_listener(
-                        f"ERROR something went wrong while deleting the runs from the database: {response.json()}"
-                    )
-            else:
-                self._print_listener(f"no runs have to be removed")
+            }
+            response = post(
+                f"http://{self.host}:{self.port}/add-log-file",
+                files=files,
+            )
+        except ConnectionError:
+            self._print_listener(
+                f"ERROR the server is not running or the url http://{self.host}:{self.port}/add-log-file is not correct!"
+            )
+            return
+        except Exception as e:
+            self._print_listener(
+                f"ERROR something went wrong while compressing or sending log '{self.log_path}': {e}"
+            )
+            return
+        if response.status_code == 200:
+            self._print_console_message(response)
         else:
             self._print_listener(
-                f"ERROR something went wrong while retrieving the outputs from the database: {response.json()}"
+                f"ERROR something went wrong while sending the log file to the server: {response.json()}"
             )
+
+    def _remove_runs_over_limit(self):
+        if self.limit > 0:
+            body = {"limit": int(self.limit)}
+            response = delete(
+                f"http://{self.host}:{self.port}/remove-outputs", json=body
+            )
+            if response.status_code == 200:
+                self._print_console_message(response)
+            else:
+                self._print_listener(
+                    f"ERROR something went wrong while deleting the runs from the database: {response.json()}"
+                )
 
     def _print_listener(self, value: str):
         print(f"robotdashboardlistener: {value}")

@@ -50,11 +50,11 @@ robotdashboard -s host:port:user:password
 
 Once the server is running, open your browser at the configured address (for example, `http://127.0.0.1:8543/`) to access:
 
-- The **admin page** (for manual control), this page lives on the default url: `http://127.0.0.1:8543/`
+- The **admin page** (for manual control), this page lives on `/admin`: `http://127.0.0.1:8543/admin`
     - On the admin page a menu option [`Swagger API Docs`](https://swagger.io/docs/) is available to open the swagger openapi documentation
     - On the admin page a menu option [`Redoc API Docs`](https://redocly.com/docs/redoc) is available to open the redoc openapi documentation
     - On the admin page a menu option `Dashboard` is available to open the dashboard
-- The **dashboard HTML** , this page lives on `/dashboard`: `http://127.0.0.1:8543/dashboard`
+- The **dashboard HTML** , this page lives on the root url: `http://127.0.0.1:8543/`
     - On the dashboard page a menu option `Admin` is available to open the admin page
 - The **Swagger API documentation**, this page lives on `/docs`: `http://127.0.0.1:8543/docs`
 - The **Redoc API documentation**, this page lives on `/redoc`: `http://127.0.0.1:8543/redoc`
@@ -65,12 +65,12 @@ The built-in server exposes several HTTP endpoints to manage and serve dashboard
 
 | Endpoint | Purpose |
 |---|---|
-| `/` | Admin page for manual management of runs and logs, not callable through scripts |
-| `/dashboard` | Serves the HTML dashboard (reflects current database), not callable through scripts |
+| `/` | Serves the HTML dashboard (reflects current database), not callable through scripts |
+| `/admin` | Admin page for manual management of runs and logs, not callable through scripts |
 | `/get-outputs` | Returns a JSON list of stored runs (`run_start`, `alias`, `tags`), callable |
 | `/add-outputs` | Accepts new output data via JSON (file path, raw XML or folder), callable |
 | `/add-output-file` | Accepts new output data via file input, callable |
-| `/remove-outputs` | Deletes runs by index, alias, `run_start`, tags or 'all=true' for all outputs, callable |
+| `/remove-outputs` | Deletes runs by index, alias, `run_start`, tags, limit or 'all=true' for all outputs, callable |
 | `/get-logs` | Returns a JSON list of stored logs on the server (`log_name`), callable |
 | `/add-log` | Upload HTML a log file and associate them with runs (for `uselogs`), callable |
 | `/add-log-file` | Upload a HTML log file (for `uselogs`), callable |

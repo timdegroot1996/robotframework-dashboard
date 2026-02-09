@@ -2,6 +2,7 @@ import sqlite3
 from pathlib import Path
 from .queries import *
 from .abstractdb import AbstractDatabaseProcessor
+from time import time
 
 
 class DatabaseProcessor(AbstractDatabaseProcessor):
@@ -127,29 +128,33 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         tags: list,
         run_alias: str,
         path: Path,
-        project_version: str
+        project_version: str,
     ):
         """This function inserts the data of an output file into the database"""
         try:
-            self._insert_runs(output_data["runs"], tags, run_alias, path, project_version)
+            self._insert_runs(
+                output_data["runs"], tags, run_alias, path, project_version
+            )
             self._insert_suites(output_data["suites"], run_alias)
             self._insert_tests(output_data["tests"], run_alias)
             self._insert_keywords(output_data["keywords"], run_alias)
         except Exception as error:
             print(f"   ERROR: something went wrong with the database: {error}")
 
-    def _insert_runs(self, runs: list, tags: list, run_alias: str, path: Path, project_version):
+    def _insert_runs(
+        self, runs: list, tags: list, run_alias: str, path: Path, project_version
+    ):
         """Helper function to insert the run data with the run tags"""
         full_runs = []
         for run in runs:
             *rest, metadata = run
             new_run = (
-                    *rest,
-                    ",".join(tags),
-                    run_alias,
-                    str(path),
-                    metadata,
-                    project_version
+                *rest,
+                ",".join(tags),
+                run_alias,
+                str(path),
+                metadata,
+                project_version,
             )
             full_runs.append(new_run)
         self.connection.executemany(INSERT_INTO_RUNS, full_runs)
@@ -277,67 +282,104 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         for run in remove_runs:
             try:
                 if "run_start=" in run:
-                    run_start = run.replace("run_start=", "")
-                    if not run_start in run_starts:
-                        print(
-                            f"  ERROR: Could not find run to remove from the database: run_start={run_start}"
-                        )
-                        console += f"  ERROR: Could not find run to remove from the database: run_start={run_start}\n"
-                        continue
-                    self._remove_run(run_start)
-                    print(f"  Removed run from the database: run_start={run_start}")
-                    console += (
-                        f"  Removed run from the database: run_start={run_start}\n"
-                    )
+                    console += self._remove_by_run_start(run, run_starts)
                 elif "index=" in run:
-                    runs = run.replace("index=", "").split(";")
-                    indexes = []
-                    for run in runs:
-                        if ":" in run:
-                            start, stop = run.split(":")
-                            for i in range(int(start), int(stop) + 1):
-                                indexes.append(i)
-                        else:
-                            indexes.append(int(run))
-                    for index in indexes:
-                        self._remove_run(run_starts[index])
-                        print(
-                            f"  Removed run from the database: index={index}, run_start={run_starts[index]}"
-                        )
-                        console += f"  Removed run from the database: index={index}, run_start={run_starts[index]}\n"
+                    console += self._remove_by_index(run, run_starts)
                 elif "alias=" in run:
-                    alias = run.replace("alias=", "")
-                    self._remove_run(run_starts[run_aliases.index(alias)])
-                    print(
-                        f"  Removed run from the database: alias={alias}, run_start={run_starts[run_aliases.index(alias)]}"
-                    )
-                    console += f"  Removed run from the database: alias={alias}, run_start={run_starts[run_aliases.index(alias)]}\n"
+                    console += self._remove_by_alias(run, run_starts, run_aliases)
                 elif "tag=" in run:
-                    tag = run.replace("tag=", "")
-                    removed = 0
-                    for index, run_tag in enumerate(run_tags):
-                        if tag in run_tag:
-                            self._remove_run(run_starts[index])
-                            print(
-                                f"  Removed run from the database: tag={tag}, run_start={run_starts[index]}"
-                            )
-                            console += f"  Removed run from the database: tag={tag}, run_start={run_starts[index]}\n"
-                            removed += 1
-                    if removed == 0:
-                        print(
-                            f"  WARNING: no runs were removed as no runs were found with tag: {tag}"
-                        )
-                        console += f"  WARNING: no runs were removed as no runs were found with tag: {tag}\n"
+                    console += self._remove_by_tag(run, run_starts, run_tags)
+                elif "limit=" in run:
+                    console += self._remove_by_limit(run, run_starts)
                 else:
                     print(
                         f"  ERROR: incorrect usage of the remove_run feature ({run}), check out robotdashboard --help for instructions"
                     )
                     console += f"  ERROR: incorrect usage of the remove_run feature ({run}), check out robotdashboard --help for instructions\n"
             except:
-                print(f"  ERROR: Could not find run to remove from the database: {run}")
-                console += (
-                    f"  ERROR: Could not find run to remove from the database: {run}\n"
+                print(
+                    f"  ERROR: Could not find run to remove from the database: {run}, check out robotdashboard --help for instructions"
                 )
+                console += f"  ERROR: Could not find run to remove from the database: {run}, check out robotdashboard --help for instructions\n"
+        return console
+
+    def _remove_by_run_start(self, run: str, run_starts: list):
+        console = ""
+        run_start = run.replace("run_start=", "")
+        if not run_start in run_starts:
+            print(
+                f"  ERROR: Could not find run to remove from the database: run_start={run_start}"
+            )
+            console += f"  ERROR: Could not find run to remove from the database: run_start={run_start}\n"
+            return console
+        self._remove_run(run_start)
+        print(f"  Removed run from the database: run_start={run_start}")
+        console += f"  Removed run from the database: run_start={run_start}\n"
+        return console
+
+    def _remove_by_index(self, run: str, run_starts: list):
+        console = ""
+        runs = run.replace("index=", "").split(";")
+        indexes = []
+        for run in runs:
+            if ":" in run:
+                start, stop = run.split(":")
+                for i in range(int(start), int(stop) + 1):
+                    indexes.append(i)
+            else:
+                indexes.append(int(run))
+        for index in indexes:
+            self._remove_run(run_starts[index])
+            print(
+                f"  Removed run from the database: index={index}, run_start={run_starts[index]}"
+            )
+            console += f"  Removed run from the database: index={index}, run_start={run_starts[index]}\n"
+        return console
+
+    def _remove_by_alias(self, run: str, run_starts: list, run_aliases: list):
+        console = ""
+        alias = run.replace("alias=", "")
+        self._remove_run(run_starts[run_aliases.index(alias)])
+        print(
+            f"  Removed run from the database: alias={alias}, run_start={run_starts[run_aliases.index(alias)]}"
+        )
+        console += f"  Removed run from the database: alias={alias}, run_start={run_starts[run_aliases.index(alias)]}\n"
+        return console
+
+    def _remove_by_tag(self, run: str, run_starts: list, run_tags: list):
+        console = ""
+        tag = run.replace("tag=", "")
+        removed = 0
+        for index, run_tag in enumerate(run_tags):
+            if tag in run_tag:
+                self._remove_run(run_starts[index])
+                print(
+                    f"  Removed run from the database: tag={tag}, run_start={run_starts[index]}"
+                )
+                console += f"  Removed run from the database: tag={tag}, run_start={run_starts[index]}\n"
+                removed += 1
+        if removed == 0:
+            print(
+                f"  WARNING: no runs were removed as no runs were found with tag: {tag}"
+            )
+            console += f"  WARNING: no runs were removed as no runs were found with tag: {tag}\n"
+        return console
+
+    def _remove_by_limit(self, run: str, run_starts: list):
+        console = ""
+        limit = int(run.replace("limit=", ""))
+        if limit >= len(run_starts):
+            print(
+                f"  WARNING: no runs were removed as the provided limit ({limit}) is higher than the total number of runs ({len(run_starts)})"
+            )
+            console += f"  WARNING: no runs were removed as the provided limit ({limit}) is higher than the total number of runs ({len(run_starts)})\n"
+            return console
+        for index in range(len(run_starts) - limit):
+            self._remove_run(run_starts[index])
+            print(
+                f"  Removed run from the database: index={index}, run_start={run_starts[index]}"
+            )
+            console += f"  Removed run from the database: index={index}, run_start={run_starts[index]}\n"
         return console
 
     def _remove_run(self, run_start: str):
@@ -350,10 +392,20 @@ class DatabaseProcessor(AbstractDatabaseProcessor):
         )
         self.connection.commit()
 
+    def vacuum_database(self):
+        """This function vacuums the database to reduce the size after removing runs"""
+        start = time()
+        self.connection.cursor().execute(VACUUM_DATABASE)
+        self.connection.commit()
+        end = time()
+        console = f"  Vacuumed the database in {round(end - start, 2)} seconds\n"
+        print(f"  Vacuumed the database in {round(end - start, 2)} seconds")
+        return console
+
     def update_output_path(self, log_path: str):
         """Function to update the output_path using the log path that the server has used"""
         console = ""
-        log_name = log_path[11:]
+        log_name = Path(log_path).name
         output_name = log_name.replace("log", "output").replace(".html", ".xml")
         data = self.connection.cursor().execute(SELECT_FROM_RUNS).fetchall()
         for entry in data:

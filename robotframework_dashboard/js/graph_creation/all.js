@@ -1,7 +1,8 @@
 import { settings } from "../variables/settings.js";
 
 import { 
-    create_overview_statistics_graphs,
+    create_overview_latest_graphs,
+    create_overview_total_graphs,
     update_donut_charts
 } from "./overview.js";
 import {
@@ -57,7 +58,8 @@ import {
 // function that updates all graphs based on the new filtered data and hidden choices
 function setup_dashboard_graphs() {
     if (settings.menu.overview) {
-        create_overview_statistics_graphs();
+        create_overview_latest_graphs();
+        create_overview_total_graphs();
         update_donut_charts();
     } else if (settings.menu.dashboard) {
         create_run_statistics_graph();

@@ -22,7 +22,7 @@
             <a class="nav-link information" id="rflogo" href="https://robotframework.org/" target="_blank"></a>
             <a class="nav-item nav-link" id="openDocs" href="/docs">Swagger API Docs</a>
             <a class="nav-item nav-link" id="openDocs" href="/redoc">Redoc API Docs</a>
-            <a class="nav-item nav-link" id="openDashboard" href="/dashboard">Dashboard</a>
+            <a class="nav-item nav-link" id="openDashboard" href="/">Dashboard</a>
         </div>
         <ul class="navbar-nav flex-row flex-wrap ms-md-auto me-4">
             <li class="nav-item">
@@ -102,8 +102,7 @@
                         <input class="form-control form-control-sm" id="outputDataVersion"></input>
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-success btn-sm" style="margin-top:36px"
-                            id="addOutputData">Add&nbsp;
+                        <button class="btn btn-success btn-sm" style="margin-top:36px" id="addOutputData">Add&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="addDataSpinner" hidden></span>
                         </button>
@@ -149,7 +148,7 @@
                             ":")</label>
                         <input class="form-control form-control-sm" id="outputFileTags"></input>
                     </div>
-                     <div class="col-2">
+                    <div class="col-2">
                         <label class="form-label form-label-sm" for="outputFileVersion">Version Label</label>
                         <input class="form-control form-control-sm" id="outputFileVersion"></input>
                     </div>
@@ -206,6 +205,16 @@
                             separated)</label>
                         <input class="form-control form-control-sm" id="removeTags"></input>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 d-flex">
+                        <p class="mt-auto">outputs to remove by limit</p>
+                    </div>
+                    <div class="col-8">
+                        <label class="form-label form-label-sm mt-1" for="removeLimit">E.g. "10" (number of most recent
+                            runs to keep)</label>
+                        <input class="form-control form-control-sm" id="removeLimit" type="number"></input>
+                    </div>
                     <div class="col-2 d-flex">
                         <button class="btn btn-danger btn-sm mt-auto" id="removeOutputs">Remove&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
@@ -221,8 +230,8 @@
                     <div class="col-auto" style="height:67px">
                         <label class="form-label form-label-sm mt-4">This is irreversible, be very
                             careful when using this option!</label>
-                        <button class="ms-2 btn btn-danger btn-sm mt-auto form-input"
-                            id="removeAllOutputs">Remove All&nbsp;
+                        <button class="ms-2 btn btn-danger btn-sm mt-auto form-input" id="removeAllOutputs">Remove
+                            All&nbsp;
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                 id="removeAllOutputsSpinner" hidden></span>
                         </button>
@@ -256,7 +265,7 @@
                 </div>
                 <div class="row">
                     <div class="col-2 d-flex">
-                        <p class="mt-4">log.html</p>
+                        <p class="mt-4">add log.html (data)</p>
                     </div>
                     <div class="col-5">
                         <label class="form-label form-label-sm mt-1" for="logData">HTML Data (copy paste the
@@ -278,7 +287,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-2 d-flex">
-                        <p class="mt-auto">log.html (file)</p>
+                        <p class="mt-auto">add log.html (file)</p>
                     </div>
                     <div class="col-8">
                         <label class="form-label form-label-sm" for="logFile">Select log.html file</label>
@@ -294,7 +303,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-2 d-flex">
-                        <p class="mt-auto">log.html to remove by name</p>
+                        <p class="mt-auto">remove log.html by name</p>
                     </div>
                     <div class="col-8">
                         <label class="form-label form-label-sm mt-1" for="removeLog">E.g.

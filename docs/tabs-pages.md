@@ -8,7 +8,8 @@ An overview of all pages available in the generated dashboard.html. Learn the pu
 
 ## Overview Page
 The Overview page provides a high-level summary of all test runs, highlighting the latest results for each project.  
-It shows key metrics such as pass/fail/skip counts, recent trends, and overall performance, enabling users to quickly assess the health of their test suites.   
+It shows key metrics such as pass/fail/skip counts, recent trends, and overall performance, enabling users to quickly assess the health of their test suites.  
+There are also 2 special sections on the Overview page: The "Latest Runs" and "Total Stats" which show the latest run for each project and the total stats for all runs by project/tag respectively.
 The Overview Statistics section shows the latest run for each project, the sections below it show all runs for each project.  
 You can toggle if you want to show or hide runs for projects or custom project tags.  
 See [Advanced CLI & Examples](advanced-cli-examples.md#project-tagging) for more information on Tags!  

@@ -15,6 +15,11 @@ var settings = {
     switch: {
         runTags: false,
         runName: true,
+        totalStats: true,
+        latestRuns: true,
+        percentageFilters: true,
+        versionFilters: true,
+        sortFilters: true,
         suitePathsSuiteSection: false,
         suitePathsTestSection: false,
         suitePathsCompareSection: false,
@@ -30,6 +35,7 @@ var settings = {
         animation: true,
         duration: 1500,
         rounding: 6,
+        prefixes: true,
     },
     theme_colors: {
         light: {
