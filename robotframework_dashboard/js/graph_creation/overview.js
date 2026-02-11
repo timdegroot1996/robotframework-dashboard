@@ -658,15 +658,18 @@ function generate_overview_card_html(
     // for project bars
     const versionsForProject = Object.keys(versionsByProject[projectName]);
     const projectHasVersions = !(versionsForProject.length === 1 && versionsForProject[0] === "None");
-    const versionClass = "fw-semibold";
     // for overview statistics
-    projectName = settings.show.prefixes ? projectName : projectName.replace(/^project_/, '');
+    // Preserve the original project name (used for logic like tag-detection),
+    // but compute a display name that omits the 'project_' prefix when prefixes are hidden.
+    const originalProjectName = projectName;
+    const displayProjectName = settings.show.prefixes ? projectName : projectName.replace(/^project_/, '');
+    projectName = displayProjectName;
     let cardTitle = `
-            <h5 class="card-title mb-0 fw-semibold">${projectName}</h5>
+            <h5 class="card-title mb-0 fw-semibold">${displayProjectName}</h5>
         `;
     if (!isForOverview) {
         // Project bar cards: customize based on project type
-        if (projectName.startsWith('project_')) {
+        if (originalProjectName.startsWith('project_')) {
             // Tagged projects: display name with inline version
             cardTitle = `
                 <h5 class="card-title mb-0 fw-semibold">${stats[5]}, <span class="text-muted">Version:</span> ${normalizedProjectVersion}</h5>
@@ -678,7 +681,7 @@ function generate_overview_card_html(
                 title="Click to filter for project and version"
                 data-js-target="apply-version-filter">
                     <h5 class="card-title mb-0 d-inline text-muted">Version:</h5>
-                    <h5 class="card-title mb-0 d-inline ${versionClass}">
+                    <h5 class="card-title mb-0 d-inline fw-semibold">
                         ${normalizedProjectVersion}
                     </h5>
                 </div>
@@ -686,7 +689,7 @@ function generate_overview_card_html(
         } else {
             // Non-tagged projects without versions: empty title placeholder
             cardTitle = `
-                <h5 class="card-title mb-0 ${versionClass}"></h5>
+                <h5 class="card-title mb-0 fw-semibold"></h5>
             `;
         }
         smallVersionHtml = '';
