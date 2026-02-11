@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html data-bs-theme="dark" class="dark-mode w-100 html-scroll">
 <head>
-<title>Robot Framework Dashboard - 2026-02-09 22:14:31</title>
+<title>Robot Framework Dashboard - 2026-02-11 22:57:34</title>
 <!-- JS/CSS Dependencies -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
@@ -721,15 +721,15 @@ data-bs-target="#databaseModal"></a>
 </li>
 <li class="nav-item">
 <a class="nav-link information" target="_blank" id="bug"
-href="https://github.com/timdegroot1996/robotframework-dashboard/issues"></a>
+href="https://github.com/marketsquare/robotframework-dashboard/issues"></a>
 </li>
 <li class="nav-item">
 <a class="nav-link information" target="_blank" id="github"
-href="https://github.com/timdegroot1996/robotframework-dashboard"></a>
+href="https://github.com/marketsquare/robotframework-dashboard"></a>
 </li>
 <li class="nav-item">
 <a class="nav-link information" target="_blank" id="docs"
-href="https://timdegroot1996.github.io/robotframework-dashboard/"></a>
+href="https://marketsquare.github.io/robotframework-dashboard/"></a>
 </li>
 </ul>
 </nav>
@@ -2677,7 +2677,7 @@ const compressedData = Uint8Array.from(atob(base64Str), c => c.charCodeAt(0));
 const decompressedData = pako.inflate(compressedData, { to: 'string' });
 return JSON.parse(decompressedData);
 }
-var unified_dashboard_title = 'Robot Framework Dashboard - 2026-02-09 22:14:31'
+var unified_dashboard_title = 'Robot Framework Dashboard - 2026-02-11 22:57:34'
 var message_config = '"placeholder_message_config"'
 var force_json_config = false
 var json_config = "placeholder_json_config"
@@ -4668,7 +4668,7 @@ const informationMap = {
 "themeLight": "Theme",
 "themeDark": "Theme",
 "database": "Database Summary",
-"versionInformation": 'Robotdashboard 1.6.1',
+"versionInformation": 'Robotdashboard 1.6.2',
 "bug": "Report a bug or request a feature",
 "github": "Github",
 "docs": "Docs",
@@ -6119,15 +6119,18 @@ compares = '';
 // for project bars
 const versionsForProject = Object.keys(versionsByProject[projectName]);
 const projectHasVersions = !(versionsForProject.length === 1 && versionsForProject[0] === "None");
-const versionClass = "fw-semibold";
 // for overview statistics
-projectName = settings.show.prefixes ? projectName : projectName.replace(/^project_/, '');
+// Preserve the original project name (used for logic like tag-detection),
+// but compute a display name that omits the 'project_' prefix when prefixes are hidden.
+const originalProjectName = projectName;
+const displayProjectName = settings.show.prefixes ? projectName : projectName.replace(/^project_/, '');
+projectName = displayProjectName;
 let cardTitle = `
-<h5 class="card-title mb-0 fw-semibold">${projectName}</h5>
+<h5 class="card-title mb-0 fw-semibold">${displayProjectName}</h5>
 `;
 if (!isForOverview) {
 // Project bar cards: customize based on project type
-if (projectName.startsWith('project_')) {
+if (originalProjectName.startsWith('project_')) {
 // Tagged projects: display name with inline version
 cardTitle = `
 <h5 class="card-title mb-0 fw-semibold">${stats[5]}, <span class="text-muted">Version:</span> ${normalizedProjectVersion}</h5>
@@ -6139,7 +6142,7 @@ cardTitle = `
 title="Click to filter for project and version"
 data-js-target="apply-version-filter">
 <h5 class="card-title mb-0 d-inline text-muted">Version:</h5>
-<h5 class="card-title mb-0 d-inline ${versionClass}">
+<h5 class="card-title mb-0 d-inline fw-semibold">
 ${normalizedProjectVersion}
 </h5>
 </div>
@@ -6147,7 +6150,7 @@ ${normalizedProjectVersion}
 } else {
 // Non-tagged projects without versions: empty title placeholder
 cardTitle = `
-<h5 class="card-title mb-0 ${versionClass}"></h5>
+<h5 class="card-title mb-0 fw-semibold"></h5>
 `;
 }
 smallVersionHtml = '';
